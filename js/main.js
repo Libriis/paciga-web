@@ -43,13 +43,14 @@
 
   /* ---------- fallbacks when GSAP or motion is unavailable ---------- */
   function navSolidFallback() {
-    var onScroll = function () {
-      var y = window.scrollY || 0;
-      if (y > 60 || (nav && nav.classList.contains('nav-open'))) nav.setAttribute('data-solid', '1');
-      else nav.removeAttribute('data-solid');
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    /* IntersectionObserver namiesto scroll listenera (žiadny per-frame JS) */
+    var sentinel = document.createElement('div');
+    sentinel.style.cssText = 'position:absolute;top:60px;left:0;width:1px;height:1px;pointer-events:none;';
+    document.body.prepend(sentinel);
+    new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting && !nav.classList.contains('nav-open')) nav.removeAttribute('data-solid');
+      else nav.setAttribute('data-solid', '1');
+    }).observe(sentinel);
   }
 
   if (!hasGsap || reduced) {
@@ -71,7 +72,7 @@
   pre.id = 'preloader';
   pre.innerHTML = '<img src="assets/feather.png" alt="">' +
     '<div class="pre-line"><span></span></div>' +
-    '<div class="pre-label">Paciga · s úctou od 2018</div>';
+    '<div class="pre-label">S úctou od roku 2018</div>';
   document.body.appendChild(pre);
   gsap.to(pre.querySelector('.pre-line span'), { scaleX: 1, duration: 2.0, ease: 'power2.inOut' });
 
@@ -159,15 +160,13 @@
   var heroTl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
   heroTl
     .from('#hero-title .ch', { yPercent: 120, duration: 1.05, stagger: 0.026 }, 0)
-    .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45)
-    .from('#scroll-hint', { opacity: 0, duration: 1.2 }, 1.0);
+    .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
 
   gsap.timeline({
     scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
   })
     .to('#hero-media', { yPercent: 14, scale: 1.08, ease: 'none' }, 0)
-    .to('#hero-content', { yPercent: -18, opacity: 0.1, ease: 'none' }, 0)
-    .to('#scroll-hint', { opacity: 0, ease: 'none' }, 0);
+    .to('#hero-content', { yPercent: -18, opacity: 0.1, ease: 'none' }, 0);
 
   /* ---------- quote: word-by-word scrub reveal ---------- */
   var quoteText = document.getElementById('quote-text');
@@ -214,27 +213,6 @@
       onUpdate: function () { el.textContent = obj.v; },
       scrollTrigger: { trigger: el, start: 'top 86%', once: true }
     });
-  });
-
-  /* ---------- custom cursor ring ---------- */
-  var ring = document.createElement('div');
-  ring.id = 'cursor-ring';
-  document.body.appendChild(ring);
-  var cx = -100, cy = -100, ringX = -100, ringY = -100;
-  window.addEventListener('mousemove', function (e) {
-    cx = e.clientX; cy = e.clientY;
-    ring.classList.add('on');
-  }, { passive: true });
-  gsap.ticker.add(function () {
-    ringX += (cx - ringX) * 0.16;
-    ringY += (cy - ringY) * 0.16;
-    ring.style.transform = 'translate(' + ringX + 'px,' + ringY + 'px)';
-  });
-  document.addEventListener('mouseover', function (e) {
-    if (e.target.closest && e.target.closest('a, button')) ring.classList.add('grow');
-  });
-  document.addEventListener('mouseout', function (e) {
-    if (e.target.closest && e.target.closest('a, button')) ring.classList.remove('grow');
   });
 
   /* ---------- magnetické tlačidlá ---------- */
