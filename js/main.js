@@ -41,6 +41,18 @@
     }
   }
 
+  /* ---------- scene videá: hrať len vo viewporte (perf), pri reduced-motion vôbec ---------- */
+  if (!reduced && 'IntersectionObserver' in window) {
+    var vio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var v = en.target;
+        if (en.isIntersecting) { var pp = v.play(); if (pp && pp.catch) pp.catch(function () {}); }
+        else v.pause();
+      });
+    }, { rootMargin: '140px' });
+    document.querySelectorAll('.scene-video').forEach(function (v) { vio.observe(v); });
+  }
+
   /* ---------- fallbacks when GSAP or motion is unavailable ---------- */
   function navSolidFallback() {
     /* IntersectionObserver namiesto scroll listenera (žiadny per-frame JS) */
@@ -272,7 +284,7 @@
         .fromTo('#fleet-media',
           { clipPath: 'inset(18% 26% 18% 26% round 22px)' },
           { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none', duration: 0.6 }, 0)
-        .fromTo('#fleet-media img', { scale: 1.18 }, { scale: 1, ease: 'none', duration: 1 }, 0)
+        .fromTo('#fleet-video', { scale: 1.18 }, { scale: 1, ease: 'none', duration: 1 }, 0)
         .from('#fleet-content', { opacity: 0, y: 50, duration: 0.35, ease: 'power2.out' }, 0.55);
     }
 
