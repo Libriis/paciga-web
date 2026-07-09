@@ -341,8 +341,19 @@
       for (var i = 3; i < d.length; i += 40) { if (d[i] > 10) n++; }
       pixels = { sampled: Math.floor(d.length / 40), visible: n };
     } catch (e) { pixels = { err: String(e && e.message) }; }
+    var vids = [];
+    try {
+      document.querySelectorAll('.scene-video').forEach(function (v) {
+        vids.push({
+          src: (v.currentSrc || v.src || '').split('/').pop(),
+          paused: v.paused, t: Math.round(v.currentTime * 10) / 10,
+          ready: v.readyState, blocked: v.dataset.blocked || null
+        });
+      });
+    } catch (e) {}
     var payload = {
       page: 'index', ts: new Date().toISOString(), ua: navigator.userAgent,
+      videos: vids, videoDbg: window.__videoDbg || null,
       vw: innerWidth, vh: innerHeight, scrollY: window.scrollY,
       canvas: !!c, canvasRect: c ? c.getBoundingClientRect().width + 'x' + c.getBoundingClientRect().height : null,
       canvasStyle: c ? getComputedStyle(c).display + '/' + getComputedStyle(c).mixBlendMode + '/z' + getComputedStyle(c).zIndex : null,

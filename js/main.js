@@ -29,28 +29,53 @@
     });
   }
 
-  /* ---------- hero video: keep playing, politely ---------- */
-  var heroVideo = document.getElementById('hero-video');
-  if (heroVideo) {
-    if (reduced) {
-      heroVideo.removeAttribute('autoplay');
-      heroVideo.pause();
-    } else {
-      var p = heroVideo.play();
-      if (p && p.catch) p.catch(function () { /* poster stays — fine */ });
-    }
+  /* ---------- scene videá ----------
+     Hrajú len vo viewporte (perf). Ak prehliadač blokuje autoplay
+     (Firefox nastavenie), označia sa a spustia pri prvom geste užívateľa. */
+  var videoDbg = window.__videoDbg = { attempts: 0, blocked: 0, lastErr: null };
+
+  function tryPlay(v) {
+    videoDbg.attempts++;
+    var p = v.play();
+    if (p && p.catch) p.catch(function (e) {
+      videoDbg.blocked++;
+      videoDbg.lastErr = e && e.name;
+      v.dataset.blocked = '1';
+    });
   }
 
-  /* ---------- scene videá: hrať len vo viewporte (perf), pri reduced-motion vôbec ---------- */
-  if (!reduced && 'IntersectionObserver' in window) {
-    var vio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        var v = en.target;
-        if (en.isIntersecting) { var pp = v.play(); if (pp && pp.catch) pp.catch(function () {}); }
-        else v.pause();
+  var heroVideo = document.getElementById('hero-video');
+  if (heroVideo && reduced) {
+    heroVideo.removeAttribute('autoplay');
+    heroVideo.pause();
+  }
+
+  if (!reduced) {
+    if ('IntersectionObserver' in window) {
+      var vio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) tryPlay(en.target);
+          else en.target.pause();
+        });
+      }, { rootMargin: '140px' });
+      document.querySelectorAll('.scene-video').forEach(function (v) { vio.observe(v); });
+    } else if (heroVideo) {
+      tryPlay(heroVideo);
+    }
+
+    /* gesto = povolenie médií: pri scrolle/kliku znova spusti zablokované videá vo viewporte */
+    var unlockVideos = function () {
+      document.querySelectorAll('.scene-video[data-blocked]').forEach(function (v) {
+        var r = v.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < (window.innerHeight || 800)) {
+          delete v.dataset.blocked;
+          tryPlay(v);
+        }
       });
-    }, { rootMargin: '140px' });
-    document.querySelectorAll('.scene-video').forEach(function (v) { vio.observe(v); });
+    };
+    ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(function (ev) {
+      window.addEventListener(ev, unlockVideos, { passive: true });
+    });
   }
 
   /* ---------- fallbacks when GSAP or motion is unavailable ---------- */
