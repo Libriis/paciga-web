@@ -44,12 +44,6 @@
     });
   }
 
-  var heroVideo = document.getElementById('hero-video');
-  if (heroVideo && reduced) {
-    heroVideo.removeAttribute('autoplay');
-    heroVideo.pause();
-  }
-
   if (!reduced) {
     if ('IntersectionObserver' in window) {
       var vio = new IntersectionObserver(function (entries) {
@@ -59,8 +53,6 @@
         });
       }, { rootMargin: '140px' });
       document.querySelectorAll('.scene-video').forEach(function (v) { vio.observe(v); });
-    } else if (heroVideo) {
-      tryPlay(heroVideo);
     }
 
     /* gesto = povolenie médií: pri scrolle/kliku znova spusti zablokované videá vo viewporte */
@@ -199,11 +191,47 @@
     .from('#hero-title .ch', { yPercent: 120, duration: 1.05, stagger: 0.026 }, 0)
     .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
 
+  /* vrstvený parallax: podklad (obloha+lúka) najpomalšie, flotila rýchlejšie, hmla proti pohybu */
   gsap.timeline({
     scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
   })
-    .to('#hero-media', { yPercent: 14, scale: 1.08, ease: 'none' }, 0)
+    .to('#hero-plate', { yPercent: 7, ease: 'none' }, 0)
+    .to('#hero-fg', { yPercent: 17, scale: 1.05, ease: 'none' }, 0)
+    .to('.hero-mist', { yPercent: -9, opacity: 0.12, ease: 'none' }, 0)
     .to('#hero-content', { yPercent: -18, opacity: 0.1, ease: 'none' }, 0);
+
+  /* spoločná WebGL sonda pre 3D scény (limuzína, kniha) */
+  var glOK = (function () {
+    try {
+      var c = document.createElement('canvas');
+      return !!(c.getContext('webgl2') || c.getContext('webgl'));
+    } catch (e) { return false; }
+  })();
+  var bookFallback = reduced || window.innerWidth < 901 || !glOK;
+  if (bookFallback) {
+    document.documentElement.classList.add('book-fallback');
+    var bookCss = document.getElementById('book-css');
+    if (bookCss) bookCss.removeAttribute('hidden');
+  }
+
+  /* sviečky v Opustili nás — zapálenie zostáva uložené v prehliadači */
+  var litKey = 'paciga-candles';
+  var lit = [];
+  try { lit = JSON.parse(localStorage.getItem(litKey) || '[]'); } catch (e) {}
+  document.querySelectorAll('.memoriam-card').forEach(function (card) {
+    var name = (card.querySelector('h3') || {}).textContent || '';
+    if (lit.indexOf(name) !== -1) card.classList.add('lit');
+    var btn = card.querySelector('.candle-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      if (card.classList.contains('lit')) return;
+      card.classList.add('lit');
+      if (name && lit.indexOf(name) === -1) {
+        lit.push(name);
+        try { localStorage.setItem(litKey, JSON.stringify(lit)); } catch (e) {}
+      }
+    });
+  });
 
   /* ---------- quote: word-by-word scrub reveal ---------- */
   var quoteText = document.getElementById('quote-text');
@@ -272,12 +300,60 @@
 
   mm.add('(min-width: 901px)', function () {
 
+    /* POZOR: pinované triggery vytvárame v poradí dokumentu (vozidlá → služby → kniha),
+       inak ScrollTrigger zle započíta pin spacery predchádzajúcich sekcií */
+
+    /* posledná cesta: pinned fotosekvencia s Ken Burns + 3D finále limuzíny */
+    var fleetPin = document.getElementById('fleet-pin');
+    if (fleetPin) {
+      var frames = gsap.utils.toArray('#seq .seq-frame');
+      var photo = frames.slice(0, 3);
+      var frame3d = document.getElementById('seq-3d');
+      var use3d = glOK && frame3d;
+      window.__limoProgress = 0;
+
+      var seqTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: fleetPin,
+          start: 'top top',
+          end: '+=320%',
+          pin: true,
+          scrub: 1,
+          onUpdate: function (self) {
+            gsap.set('#seq-bar', { scaleX: self.progress });
+            /* 3D finále: mapuj poslednú štvrtinu pinu na otočenie modelu */
+            window.__limoProgress = use3d ? Math.min(Math.max((self.progress - 0.68) / 0.32, 0), 1) : 0;
+          }
+        },
+        defaults: { ease: 'none' }
+      });
+
+      /* Ken Burns — pomalý nájazd počas života každého záberu */
+      seqTl
+        .fromTo(photo[0].querySelector('img'), { scale: 1.02 }, { scale: 1.16, duration: 1.1 }, 0)
+        .fromTo(photo[1].querySelector('img'), { scale: 1.04 }, { scale: 1.18, duration: 1.3 }, 0.78)
+        .fromTo(photo[2].querySelector('img'), { scale: 1.04 }, { scale: 1.18, duration: 1.3 }, 1.78);
+
+      /* prelínanie: 1 → 2 → 3 → (3D) → claim */
+      seqTl
+        .to(photo[1], { opacity: 1, duration: 0.22 }, 0.78)
+        .to(photo[2], { opacity: 1, duration: 0.22 }, 1.78);
+      if (use3d) {
+        seqTl.to(frame3d, { opacity: 1, duration: 0.24 }, 2.72);
+      }
+      seqTl
+        .to('#seq-kicker', { opacity: 0, duration: 0.2 }, use3d ? 2.72 : 2.5)
+        .to('#fleet-content', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, use3d ? 3.1 : 2.6)
+        .to({}, { duration: 0.6 }); /* dobeh — claim chvíľu drží */
+      gsap.set('#fleet-content', { y: 40 });
+    }
+
     /* services: pinned horizontal scroll */
     var track = document.getElementById('services-track');
     var pin = document.getElementById('services-pin');
     if (track && pin) {
       var dist = function () { return Math.max(0, track.scrollWidth - window.innerWidth); };
-      var horiz = gsap.to(track, {
+      gsap.to(track, {
         x: function () { return -dist(); },
         ease: 'none',
         scrollTrigger: {
@@ -294,23 +370,40 @@
       });
     }
 
-    /* fleet: clip-path window opens to full bleed */
-    var fleetPin = document.getElementById('fleet-pin');
-    if (fleetPin) {
+    /* kniha spomienok: pin + scrub, samotné 3D kreslí book3d.js */
+    var bookPin = document.getElementById('book-pin');
+    if (bookPin && !bookFallback) {
+      window.__bookProgress = 0;
+      var caps = [
+        'Keď obrad skončí, spomienka zostáva. Listujte scrollom.',
+        'Spomienkové šperky s odtlačkom prsta — „Nikdy nezabudnem.“',
+        'Spomienkové karty — odkaz, ktorý si rodina ponechá.',
+        'Kondolencie — tichá spomienka patrí všetkým.'
+      ];
+      var capEl = document.getElementById('book-cap');
+      var capIdx = 0;
       gsap.timeline({
         scrollTrigger: {
-          trigger: fleetPin,
+          trigger: bookPin,
           start: 'top top',
-          end: '+=120%',
+          end: '+=280%',
           pin: true,
-          scrub: 1
+          scrub: 1,
+          onUpdate: function (self) {
+            window.__bookProgress = self.progress;
+            var idx = self.progress < 0.22 ? 0 : self.progress < 0.5 ? 1 : self.progress < 0.76 ? 2 : 3;
+            if (idx !== capIdx && capEl) {
+              capIdx = idx;
+              gsap.to(capEl, {
+                opacity: 0, duration: 0.18, onComplete: function () {
+                  capEl.textContent = caps[capIdx];
+                  gsap.to(capEl, { opacity: 1, duration: 0.3 });
+                }
+              });
+            }
+          }
         }
-      })
-        .fromTo('#fleet-media',
-          { clipPath: 'inset(18% 26% 18% 26% round 22px)' },
-          { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none', duration: 0.6 }, 0)
-        .fromTo('#fleet-video', { scale: 1.18 }, { scale: 1, ease: 'none', duration: 1 }, 0)
-        .from('#fleet-content', { opacity: 0, y: 50, duration: 0.35, ease: 'power2.out' }, 0.55);
+      }).to({}, { duration: 1 }); /* dĺžku drží scrub — kreslenie rieši modul */
     }
 
     /* 3D tilt kariet za kurzorom */

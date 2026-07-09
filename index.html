@@ -42,11 +42,18 @@
 
 <main id="paci">
 
-  <!-- ============ HERO (pinned, video) ============ -->
+  <!-- ============ HERO (vrstvená fotka, parallax kódom — žiadne video) ============ -->
   <section class="hero" id="hero">
     <div class="hero-media" id="hero-media">
-      <video id="hero-video" class="scene-video" src="assets/hero.mp4" poster="assets/asset-07.jpg"
-        autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <picture>
+        <source media="(max-width: 700px)" srcset="assets/hero-plate-m.webp">
+        <img class="hero-layer hero-plate" id="hero-plate" src="assets/hero-plate.webp" alt="" fetchpriority="high" decoding="async">
+      </picture>
+      <img class="hero-layer hero-fg" id="hero-fg"
+        src="assets/hero-fg.webp"
+        srcset="assets/hero-fg-m.webp 1280w, assets/hero-fg.webp 2048w" sizes="100vw"
+        alt="Tím Paciga s flotilou vozidiel pred Vysokými Tatrami" decoding="async">
+      <div class="hero-layer hero-mist" aria-hidden="true"></div>
       <div class="hero-shade" aria-hidden="true"></div>
     </div>
     <div class="container hero-content" id="hero-content">
@@ -67,6 +74,7 @@
       <div class="quote-mark" aria-hidden="true">“</div>
       <p id="quote-text">V ťažkých chvíľach nám boli oporou, všetko vybavili spoľahlivo a s úctou.</p>
       <div class="quote-author" data-reveal>Michaela Fontani · recenzia Google</div>
+      <div class="quote-badge" data-reveal><span class="stars" aria-hidden="true">★★★★★</span><span>Hodnotenie rodín na Google</span></div>
     </div>
   </section>
 
@@ -88,7 +96,27 @@
     </div>
   </section>
 
-  <!-- ============ SERVICES (pinned horizontal) ============ -->
+  <!-- ============ POSLEDNÁ CESTA (fotosekvencia + 3D finále limuzíny) ============ -->
+  <section class="fleet" id="vozidla">
+    <div class="fleet-pin" id="fleet-pin">
+      <div class="seq" id="seq" role="img" aria-label="Posledná cesta — vozidlá a personál Paciga pod Vysokými Tatrami">
+        <figure class="seq-frame is-first"><img src="assets/seq-01.jpg" alt="" loading="lazy" decoding="async"></figure>
+        <figure class="seq-frame"><img src="assets/seq-02.jpg" alt="" loading="lazy" decoding="async"></figure>
+        <figure class="seq-frame"><img src="assets/seq-03.jpg" alt="" loading="lazy" decoding="async"></figure>
+        <div class="seq-frame seq-3d" id="seq-3d" aria-hidden="true"><canvas id="limo-canvas"></canvas></div>
+        <div class="fleet-shade" aria-hidden="true"></div>
+      </div>
+      <div class="seq-kicker" id="seq-kicker" aria-hidden="true">Posledná cesta</div>
+      <div class="fleet-content" id="fleet-content">
+        <div class="badge-pill"><span>Ocenená ako najkrajšia na Slovensku</span></div>
+        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
+        <p>Posledná cesta dôstojná do posledného detailu. Naša ocenená limuzína je súčasťou úcty, ktorú si každý zaslúži.</p>
+      </div>
+      <div class="seq-progress" aria-hidden="true"><span id="seq-bar"></span></div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES (pinned horizontal, 3 kapitoly) ============ -->
   <section id="sluzby" class="services">
     <div class="services-pin" id="services-pin">
       <div class="orb" style="top:8%;left:-14%" aria-hidden="true"></div>
@@ -98,6 +126,7 @@
         <h2 data-reveal>Kompletná starostlivosť<br>pod jednou strechou</h2>
       </div>
       <div class="services-track" id="services-track">
+        <div class="svc-chapter"><span class="svc-chapter-num">Kapitola I</span><h3>Obrad a preprava</h3><p>Od prvého telefonátu po dôstojnú rozlúčku.</p></div>
         <a class="svc" href="pohrebne-sluzby.html#rakvy"><span class="svc-num">01</span><h3>Rakvy</h3><p>Široký výber elegantných rakiev z prvotriednych materiálov.</p><span class="svc-more">Viac →</span></a>
         <a class="svc has-photo" href="pohrebne-sluzby.html#limuzina"><span class="svc-photo" style="background-image:url('assets/asset-06.jpg')"></span><span class="svc-num">02</span><h3>Pohrebná limuzína</h3><p>Exkluzívna limuzína, ocenená ako najkrajšia na Slovensku.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#chladenie"><span class="svc-num">03</span><h3>Prenosné chladenie</h3><p>Špeciálna technológia chladenia priamo u vás.</p><span class="svc-more">Viac →</span></a>
@@ -105,31 +134,18 @@
         <a class="svc has-photo" href="pohrebne-sluzby.html#prevoz"><span class="svc-photo" style="background-image:url('assets/asset-04.jpg')"></span><span class="svc-num">05</span><h3>Prevoz zosnulých</h3><p>NON STOP dôstojný a rýchly prevoz z bytov a nemocníc.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#kremacia"><span class="svc-num">06</span><h3>Kremácia</h3><p>S obradom alebo bez, s rešpektom k želaniam zosnulého aj pozostalých.</p><span class="svc-more">Viac →</span></a>
         <a class="svc has-photo" href="pohrebne-sluzby.html#medzinarodny-prevoz"><span class="svc-photo" style="background-image:url('assets/asset-09.jpg')"></span><span class="svc-num">07</span><h3>Medzinárodný prevoz</h3><p>Preprava zo zahraničia vrátane vybavenia dokumentov.</p><span class="svc-more">Viac →</span></a>
+        <div class="svc-chapter"><span class="svc-chapter-num">Kapitola II</span><h3>Starostlivosť o pozostalých</h3><p>Čo pomáha niesť smútok — kvety, spomienky, podpora.</p></div>
         <a class="svc" href="pohrebne-sluzby.html#kvetinarstvo"><span class="svc-num">08</span><h3>Kvetinárstvo</h3><p>Vlastná výroba kytíc, vencov a smútočnej výzdoby.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#predpriprava"><span class="svc-num">09</span><h3>Predpríprava pohrebu</h3><p>Naplánujte rozlúčku vopred a odbremeňte blízkych.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#karty"><span class="svc-num">10</span><h3>Spomienkové karty</h3><p>Uctenie pamiatky a zdieľanie odkazu s rodinou.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#oblecenie"><span class="svc-num">11</span><h3>Oblečenie pre zosnulého</h3><p>Kompletné sady oblečenia, s rešpektom a úctou.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" id="kamenarstvo" href="pohrebne-sluzby.html#kamenarstvo"><span class="svc-num">12</span><h3>Kamenárstvo</h3><p>Hrobky, žulové pomníky, montáž a rekonštrukcie.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="pohrebne-sluzby.html#poradenstvo"><span class="svc-num">13</span><h3>Smútkové poradenstvo</h3><p>Podpora a sprevádzanie v procese smútenia.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc has-photo" href="pohrebne-sluzby.html#sperky"><span class="svc-photo" style="background-image:url('assets/asset-08.jpg')"></span><span class="svc-num">14</span><h3>Spomienkové šperky</h3><p>Náramky a retiazky s odtlačkom prsta zosnulého.</p><span class="svc-more">Viac →</span></a>
+        <a class="svc" href="pohrebne-sluzby.html#poradenstvo"><span class="svc-num">12</span><h3>Smútkové poradenstvo</h3><p>Podpora a sprevádzanie v procese smútenia.</p><span class="svc-more">Viac →</span></a>
+        <a class="svc has-photo" href="pohrebne-sluzby.html#sperky"><span class="svc-photo" style="background-image:url('assets/asset-08.jpg')"></span><span class="svc-num">13</span><h3>Spomienkové šperky</h3><p>Náramky a retiazky s odtlačkom prsta zosnulého.</p><span class="svc-more">Viac →</span></a>
+        <div class="svc-chapter svc-chapter-stone"><span class="svc-chapter-num">Kapitola III</span><h3>Kamenárstvo</h3><p>Spomienka vytesaná do žuly.</p></div>
+        <a class="svc" id="kamenarstvo" href="pohrebne-sluzby.html#kamenarstvo"><span class="svc-num">14</span><h3>Kamenárstvo</h3><p>Hrobky, žulové pomníky, montáž a rekonštrukcie.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#vizualizacia"><span class="svc-num">15</span><h3>3D vizualizácia pomníka</h3><p>Uvidíte výsledok ešte pred samotnou výrobou.</p><span class="svc-more">Viac →</span></a>
       </div>
       <div class="services-progress" aria-hidden="true"><span id="services-bar"></span></div>
-    </div>
-  </section>
-
-  <!-- ============ FLEET showcase (clip reveal) ============ -->
-  <section class="fleet" id="vozidla">
-    <div class="fleet-pin" id="fleet-pin">
-      <div class="fleet-media" id="fleet-media" role="img" aria-label="Pohrebné limuzíny Paciga pred Vysokými Tatrami">
-        <video id="fleet-video" class="scene-video" src="assets/fleet.mp4" poster="assets/asset-04.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
-        <div class="fleet-shade" aria-hidden="true"></div>
-      </div>
-      <div class="fleet-content" id="fleet-content">
-        <div class="badge-pill"><span>Ocenené ako najkrajšia na Slovensku</span></div>
-        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
-        <p>Posledná cesta dôstojná do posledného detailu. Naša ocenená limuzína je súčasťou úcty, ktorú si každý zaslúži.</p>
-      </div>
     </div>
   </section>
 
@@ -147,6 +163,37 @@
       <div class="stat" data-reveal>
         <div class="stat-num">24/7</div>
         <div class="stat-label">NON STOP prevoz zosnulých</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KNIHA SPOMIENOK (Three.js scroll book / CSS fallback) ============ -->
+  <section class="book" id="kniha">
+    <div class="book-pin" id="book-pin">
+      <div class="container book-head">
+        <div class="eyebrow" data-reveal>Spomienka, ktorá zostáva</div>
+        <h2 data-reveal>Kniha spomienok</h2>
+      </div>
+      <div class="book-stage" id="book-stage">
+        <canvas id="book-canvas" aria-hidden="true"></canvas>
+        <div class="book-glow" aria-hidden="true"></div>
+      </div>
+      <div class="book-caption" aria-live="polite"><span id="book-cap">Keď obrad skončí, spomienka zostáva. Listujte scrollom.</span></div>
+      <div class="book-cta"><a class="link-underline gold" href="opustili-nas.html">Zanechať kondolenciu →</a></div>
+    </div>
+    <!-- fallback bez WebGL / na mobile: statické dvojstrany -->
+    <div class="book-css container" id="book-css" hidden>
+      <div class="spread" data-reveal>
+        <div class="spread-photo"><img src="assets/sperk.jpg" alt="Spomienkový náhrdelník s odtlačkom prsta" loading="lazy"></div>
+        <div class="spread-text"><h3>„Nikdy nezabudnem.“</h3><p>Spomienkové šperky s gravírovaním odtlačku prsta. Kúsok blízkeho človeka, ktorý zostáva s vami.</p></div>
+      </div>
+      <div class="spread" data-reveal>
+        <div class="spread-photo"><img src="assets/bokeh.webp" alt="" loading="lazy"></div>
+        <div class="spread-text"><h3>Spomienkové karty</h3><p>Uctenie pamiatky a odkaz, ktorý si rodina ponechá. Pripravíme ich s citom a podľa vášho želania.</p></div>
+      </div>
+      <div class="spread" data-reveal>
+        <div class="spread-photo spread-paper"><img src="assets/paper.webp" alt="" loading="lazy"></div>
+        <div class="spread-text"><h3>Kondolencie</h3><p>Tichá spomienka patrí všetkým. Zapáľte sviečku alebo zanechajte odkaz v sekcii Opustili nás.</p><a class="link-underline gold" href="opustili-nas.html">Zanechať kondolenciu →</a></div>
       </div>
     </div>
   </section>
@@ -210,26 +257,51 @@
           <div class="memoriam-photo" aria-hidden="true"><span>JS</span></div>
           <h3>Jozefa Siváková</h3>
           <div class="memoriam-date">† 28. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
         </div>
         <div class="memoriam-card" data-reveal>
           <div class="memoriam-photo" aria-hidden="true"><span>SB</span></div>
           <h3>Stanislav Benko</h3>
           <div class="memoriam-date">† 26. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
         </div>
         <div class="memoriam-card" data-reveal>
           <div class="memoriam-photo" aria-hidden="true"><span>JB</span></div>
           <h3>Jozef Biskup</h3>
           <div class="memoriam-date">† 23. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
         </div>
         <div class="memoriam-card" data-reveal>
           <div class="memoriam-photo" aria-hidden="true"><span>MO</span></div>
           <h3>MUDr. Mikuláš Ondo</h3>
           <div class="memoriam-date">† 22. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RECENZIE (svetlá sekcia) ============ -->
+  <section class="reviews" id="recenzie">
+    <div class="container">
+      <div class="reviews-head">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <h2 data-reveal>Skutočné rodiny. Skutočné slová.</h2>
+        <p data-reveal>Recenzie z profilu Google — bez úprav.</p>
+      </div>
+      <div class="reviews-grid">
+        <blockquote class="review" data-reveal>
+          <p>„Ďakujem spoločnosti a chlapcom za poslednú rozlúčku s mojím otcom. Bola krásna a slávnostná.“</p>
+          <footer>Jela Harbin</footer>
+        </blockquote>
+        <blockquote class="review" data-reveal>
+          <p>„Ďakujeme veľmi pekne za zorganizovanie poslednej cesty nášho zosnulého. Prístup váš bol nanajvýš profesionálny a zdvorilý.“</p>
+          <footer>Branislav</footer>
+        </blockquote>
+        <blockquote class="review" data-reveal>
+          <p>„Ďakujeme veľmi pekne za profesionálny a ľudský prístup. Odporúčame každému, kto hľadá spoľahlivé pohrebníctvo.“</p>
+          <footer>Mária Gardošová</footer>
+        </blockquote>
       </div>
     </div>
   </section>
@@ -276,7 +348,7 @@
     <div class="container footer-grid">
       <div class="footer-brand">
         <img src="assets/asset-02.png" alt="Paciga, pohrebné a kamenárske služby">
-        <p>Pohrebné a kamenárske služby Paciga s.r.o. Rodinná firma, ktorá vás sprevádza s úctou od roku 2018.</p>
+        <p>Pohrebné a kamenárske služby Paciga. Rodinná firma, ktorá vás sprevádza s úctou od roku 2018.</p>
         <div class="footer-social">
           <a href="https://www.facebook.com/pakspaciga/" target="_blank" rel="noopener">Facebook</a>
           <a href="https://www.youtube.com/@PacigaPohrebneSluzby" target="_blank" rel="noopener">YouTube</a>
@@ -313,7 +385,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="container">© 2026 Paciga s.r.o. · Všetky práva vyhradené</div>
+      <div class="container">© 2026 Paciga · Všetky práva vyhradené</div>
     </div>
   </footer>
 
@@ -325,44 +397,7 @@
 <script src="js/main.js"></script>
 <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js"}}</script>
 <script type="module" src="js/three-layer.js"></script>
-<script>
-/* DOČASNÝ diagnostický beacon — zmazať pred nasadením */
-(function () {
-  var errs = [];
-  window.addEventListener('error', function (e) { errs.push((e.message || e.type) + ' @ ' + (e.filename || '').split('/').pop() + ':' + e.lineno); }, true);
-  setTimeout(function () {
-    var c = document.getElementById('gl3d');
-    var mat = null, pixels = null;
-    try { mat = window.__gl3d || null; } catch (e) {}
-    try {
-      var g = c.getContext('2d');
-      var d = g.getImageData(0, 0, c.width, c.height).data;
-      var n = 0;
-      for (var i = 3; i < d.length; i += 40) { if (d[i] > 10) n++; }
-      pixels = { sampled: Math.floor(d.length / 40), visible: n };
-    } catch (e) { pixels = { err: String(e && e.message) }; }
-    var vids = [];
-    try {
-      document.querySelectorAll('.scene-video').forEach(function (v) {
-        vids.push({
-          src: (v.currentSrc || v.src || '').split('/').pop(),
-          paused: v.paused, t: Math.round(v.currentTime * 10) / 10,
-          ready: v.readyState, blocked: v.dataset.blocked || null
-        });
-      });
-    } catch (e) {}
-    var payload = {
-      page: 'index', ts: new Date().toISOString(), ua: navigator.userAgent,
-      videos: vids, videoDbg: window.__videoDbg || null,
-      vw: innerWidth, vh: innerHeight, scrollY: window.scrollY,
-      canvas: !!c, canvasRect: c ? c.getBoundingClientRect().width + 'x' + c.getBoundingClientRect().height : null,
-      canvasStyle: c ? getComputedStyle(c).display + '/' + getComputedStyle(c).mixBlendMode + '/z' + getComputedStyle(c).zIndex : null,
-      gl3d: mat, pixels: pixels, htmlClass: document.documentElement.className,
-      errors: errs
-    };
-    fetch('/__diag', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-  }, 4000);
-})();
-</script>
+<script type="module" src="js/limo3d.js"></script>
+<script type="module" src="js/book3d.js"></script>
 </body>
 </html>
