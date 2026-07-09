@@ -191,14 +191,44 @@
     .from('#hero-title .ch', { yPercent: 120, duration: 1.05, stagger: 0.026 }, 0)
     .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
 
-  /* vrstvený parallax: podklad (obloha+lúka) najpomalšie, flotila rýchlejšie, hmla proti pohybu */
-  gsap.timeline({
-    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
-  })
-    .to('#hero-plate', { yPercent: 7, ease: 'none' }, 0)
-    .to('#hero-fg', { yPercent: 17, scale: 1.05, ease: 'none' }, 0)
-    .to('.hero-mist', { yPercent: -9, opacity: 0.12, ease: 'none' }, 0)
-    .to('#hero-content', { yPercent: -18, opacity: 0.1, ease: 'none' }, 0);
+  /* ---------- posledná cesta: pinovaná jazda (frame scrub kreslí journey.js) ---------- */
+  var journeyPin = document.getElementById('journey-pin');
+  if (journeyPin) {
+    window.__journeyProgress = 0;
+    var jStations = gsap.utils.toArray('.jh-station');
+    var jTexts = gsap.utils.toArray('.journey-text');
+    var jTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: journeyPin,
+        start: 'top top',
+        end: function () { return '+=' + (window.innerWidth < 701 ? 320 : 450) + '%'; },
+        pin: true,
+        scrub: 0.8,
+        invalidateOnRefresh: true,
+        onUpdate: function (self) {
+          window.__journeyProgress = self.progress;
+          gsap.set('#jh-fill', { height: (self.progress * 100) + '%' });
+          var st = Math.min(4, Math.floor(self.progress * 5));
+          for (var i = 0; i < jStations.length; i++) jStations[i].classList.toggle('on', i === st);
+          for (var t = 0; t < jTexts.length; t++) {
+            jTexts[t].classList.toggle('is-on', parseFloat(gsap.getProperty(jTexts[t], 'opacity')) > 0.5);
+          }
+        }
+      },
+      defaults: { ease: 'none' }
+    });
+    /* okná textov: každá stanica má svoje (čas 0–5 = päť klipov) */
+    jTl
+      .to(jTexts[0], { autoAlpha: 0, duration: 0.35 }, 0.55)
+      .fromTo(jTexts[1], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 1.15)
+      .to(jTexts[1], { autoAlpha: 0, duration: 0.3 }, 1.8)
+      .fromTo(jTexts[2], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 2.15)
+      .to(jTexts[2], { autoAlpha: 0, duration: 0.3 }, 2.8)
+      .fromTo(jTexts[3], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 3.15)
+      .to(jTexts[3], { autoAlpha: 0, duration: 0.3 }, 3.8)
+      .fromTo(jTexts[4], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35 }, 4.35)
+      .to({}, { duration: 0.65 });
+  }
 
   /* spoločná WebGL sonda pre 3D scény (limuzína, kniha) */
   var glOK = (function () {
@@ -300,53 +330,9 @@
 
   mm.add('(min-width: 901px)', function () {
 
-    /* POZOR: pinované triggery vytvárame v poradí dokumentu (vozidlá → služby → kniha),
-       inak ScrollTrigger zle započíta pin spacery predchádzajúcich sekcií */
-
-    /* posledná cesta: pinned fotosekvencia s Ken Burns + 3D finále limuzíny */
-    var fleetPin = document.getElementById('fleet-pin');
-    if (fleetPin) {
-      var frames = gsap.utils.toArray('#seq .seq-frame');
-      var photo = frames.slice(0, 3);
-      var frame3d = document.getElementById('seq-3d');
-      var use3d = glOK && frame3d;
-      window.__limoProgress = 0;
-
-      var seqTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: fleetPin,
-          start: 'top top',
-          end: '+=320%',
-          pin: true,
-          scrub: 1,
-          onUpdate: function (self) {
-            gsap.set('#seq-bar', { scaleX: self.progress });
-            /* 3D finále: mapuj poslednú štvrtinu pinu na otočenie modelu */
-            window.__limoProgress = use3d ? Math.min(Math.max((self.progress - 0.68) / 0.32, 0), 1) : 0;
-          }
-        },
-        defaults: { ease: 'none' }
-      });
-
-      /* Ken Burns — pomalý nájazd počas života každého záberu */
-      seqTl
-        .fromTo(photo[0].querySelector('img'), { scale: 1.02 }, { scale: 1.16, duration: 1.1 }, 0)
-        .fromTo(photo[1].querySelector('img'), { scale: 1.04 }, { scale: 1.18, duration: 1.3 }, 0.78)
-        .fromTo(photo[2].querySelector('img'), { scale: 1.04 }, { scale: 1.18, duration: 1.3 }, 1.78);
-
-      /* prelínanie: 1 → 2 → 3 → (3D) → claim */
-      seqTl
-        .to(photo[1], { opacity: 1, duration: 0.22 }, 0.78)
-        .to(photo[2], { opacity: 1, duration: 0.22 }, 1.78);
-      if (use3d) {
-        seqTl.to(frame3d, { opacity: 1, duration: 0.24 }, 2.72);
-      }
-      seqTl
-        .to('#seq-kicker', { opacity: 0, duration: 0.2 }, use3d ? 2.72 : 2.5)
-        .to('#fleet-content', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, use3d ? 3.1 : 2.6)
-        .to({}, { duration: 0.6 }); /* dobeh — claim chvíľu drží */
-      gsap.set('#fleet-content', { y: 40 });
-    }
+    /* POZOR: pinované triggery vytvárame v poradí dokumentu (jazda → služby → kniha),
+       inak ScrollTrigger zle započíta pin spacery predchádzajúcich sekcií.
+       Jazda (journey) sa vytvára už vyššie, pred matchMedia. */
 
     /* services: pinned horizontal scroll */
     var track = document.getElementById('services-track');
@@ -431,17 +417,6 @@
     return function () {};
   });
 
-  /* fleet on mobile: simple reveal instead of pin */
-  mm.add('(max-width: 900px)', function () {
-    gsap.from('#fleet-content', {
-      opacity: 0,
-      y: 36,
-      duration: 1,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: '#fleet-pin', start: 'top 70%', once: true }
-    });
-    return function () {};
-  });
 
   /* ---------- refresh after everything (fonts, video poster) settles ---------- */
   window.addEventListener('load', function () {

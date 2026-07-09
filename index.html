@@ -42,28 +42,60 @@
 
 <main id="paci">
 
-  <!-- ============ HERO (vrstvená fotka, parallax kódom — žiadne video) ============ -->
-  <section class="hero" id="hero">
-    <div class="hero-media" id="hero-media">
-      <picture>
-        <source media="(max-width: 700px)" srcset="assets/hero-plate-m.webp">
-        <img class="hero-layer hero-plate" id="hero-plate" src="assets/hero-plate.webp" alt="" fetchpriority="high" decoding="async">
-      </picture>
-      <img class="hero-layer hero-fg" id="hero-fg"
-        src="assets/hero-fg.webp"
-        srcset="assets/hero-fg-m.webp 1280w, assets/hero-fg.webp 2048w" sizes="100vw"
-        alt="Tím Paciga s flotilou vozidiel pred Vysokými Tatrami" decoding="async">
-      <div class="hero-layer hero-mist" aria-hidden="true"></div>
-      <div class="hero-shade" aria-hidden="true"></div>
-    </div>
-    <div class="container hero-content" id="hero-content">
-      <div class="eyebrow" data-hero-el>Rodinná pohrebná a kamenárska služba · od 2018</div>
-      <h1 id="hero-title"><span class="line"><span>Dôstojná rozlúčka</span></span><span class="line"><span>za&nbsp;každých okolností.</span></span></h1>
-      <p class="hero-lead" data-hero-el>Pohrebné obrady, preprava a kamenárstvo. Sme pri vás nepretržite, 24 hodín denne, každý deň v roku.</p>
-      <div class="hero-actions" data-hero-el>
-        <a href="tel:0903596364" class="btn-gold">NON STOP · 0903 596 364</a>
-        <a href="#sluzby" class="link-underline">Naše služby →</a>
+  <!-- ============ POSLEDNÁ CESTA (scrollovaná filmová jazda — frame scrub) ============ -->
+  <section class="journey" id="hero">
+    <div class="journey-pin" id="journey-pin">
+      <img class="journey-poster" id="journey-poster" src="assets/journey-poster.jpg" alt="Flotila vozidiel Paciga v rannej hmle pod Vysokými Tatrami" fetchpriority="high" decoding="async">
+      <canvas id="journey-canvas" aria-hidden="true"
+        data-frames="322" data-path="assets/journey/f-{i}.webp"
+        data-frames-m="161" data-path-m="assets/journey-m/f-{i}.webp"></canvas>
+      <div class="journey-shade" aria-hidden="true"></div>
+
+      <!-- HUD: stanice cesty -->
+      <div class="journey-hud" aria-hidden="true">
+        <span class="jh-line"><i id="jh-fill"></i></span>
+        <span class="jh-station" data-station="0">Rozlúčka</span>
+        <span class="jh-station" data-station="1">Cesta</span>
+        <span class="jh-station" data-station="2">Starostlivosť</span>
+        <span class="jh-station" data-station="3">Spomienka</span>
+        <span class="jh-station" data-station="4">Svetlo</span>
       </div>
+
+      <!-- texty staníc (pinované nad canvasom) -->
+      <div class="journey-text jt-hero" data-jt="0">
+        <div class="container">
+          <div class="eyebrow" data-hero-el>Rodinná pohrebná a kamenárska služba · od 2018</div>
+          <h1 id="hero-title"><span class="line"><span>Dôstojná rozlúčka</span></span><span class="line"><span>za&nbsp;každých okolností.</span></span></h1>
+          <p class="hero-lead" data-hero-el>Pohrebné obrady, preprava a kamenárstvo. Príbeh rozlúčky prejdite scrollom.</p>
+          <div class="hero-actions" data-hero-el>
+            <a href="tel:0903596364" class="btn-gold">NON STOP · 0903 596 364</a>
+            <a href="#sluzby" class="link-underline">Naše služby →</a>
+          </div>
+        </div>
+      </div>
+      <div class="journey-text jt-mid" data-jt="1">
+        <h2>Sme pri vás v&nbsp;ktorúkoľvek hodinu.</h2>
+        <p>NON STOP prevoz zosnulých — aj v noci, aj cez sviatky.</p>
+        <a href="tel:0903596364" class="jt-phone">0903 596 364</a>
+      </div>
+      <div class="journey-text jt-mid" data-jt="2">
+        <div class="badge-pill"><span>Ocenená ako najkrajšia na Slovensku</span></div>
+        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
+      </div>
+      <div class="journey-text jt-mid" data-jt="3">
+        <h2>Spomienka, ktorá zostáva.</h2>
+        <p>Sviečka, kniha, odtlačok prsta — kúsok blízkeho človeka navždy.</p>
+      </div>
+      <div class="journey-text jt-mid" data-jt="4">
+        <h2>Sme z&nbsp;tohto kraja.<br>A&nbsp;sme tu pre vás.</h2>
+        <p>Poprad · Spišská Belá · Liptovský Mikuláš</p>
+        <span class="jt-scroll">Pokračujte nižšie ↓</span>
+      </div>
+    </div>
+
+    <!-- reduced-motion / no-JS: kľúčové zábery pod sebou -->
+    <div class="journey-fallback" aria-hidden="true">
+      <img src="assets/journey-poster.jpg" alt="" loading="lazy">
     </div>
   </section>
 
@@ -93,26 +125,6 @@
         <a href="tel:0903596364" class="phone-primary">0903 596 364</a>
         <a href="tel:0948110109" class="phone-secondary">0948 110 109</a>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ POSLEDNÁ CESTA (fotosekvencia + 3D finále limuzíny) ============ -->
-  <section class="fleet" id="vozidla">
-    <div class="fleet-pin" id="fleet-pin">
-      <div class="seq" id="seq" role="img" aria-label="Posledná cesta — vozidlá a personál Paciga pod Vysokými Tatrami">
-        <figure class="seq-frame is-first"><img src="assets/seq-01.jpg" alt="" loading="lazy" decoding="async"></figure>
-        <figure class="seq-frame"><img src="assets/seq-02.jpg" alt="" loading="lazy" decoding="async"></figure>
-        <figure class="seq-frame"><img src="assets/seq-03.jpg" alt="" loading="lazy" decoding="async"></figure>
-        <div class="seq-frame seq-3d" id="seq-3d" aria-hidden="true"><canvas id="limo-canvas"></canvas></div>
-        <div class="fleet-shade" aria-hidden="true"></div>
-      </div>
-      <div class="seq-kicker" id="seq-kicker" aria-hidden="true">Posledná cesta</div>
-      <div class="fleet-content" id="fleet-content">
-        <div class="badge-pill"><span>Ocenená ako najkrajšia na Slovensku</span></div>
-        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
-        <p>Posledná cesta dôstojná do posledného detailu. Naša ocenená limuzína je súčasťou úcty, ktorú si každý zaslúži.</p>
-      </div>
-      <div class="seq-progress" aria-hidden="true"><span id="seq-bar"></span></div>
     </div>
   </section>
 
@@ -395,9 +407,9 @@
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/lenis.min.js"></script>
 <script src="js/main.js"></script>
+<script src="js/journey.js"></script>
 <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js"}}</script>
 <script type="module" src="js/three-layer.js"></script>
-<script type="module" src="js/limo3d.js"></script>
 <script type="module" src="js/book3d.js"></script>
 </body>
 </html>
