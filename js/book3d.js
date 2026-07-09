@@ -101,17 +101,17 @@ import * as THREE from 'three';
 
   /* ---------- inicializácia ---------- */
   function init() {
-    var ctx2d = canvas.getContext('2d');
-    var glCanvas = document.createElement('canvas');
+    /* priamy render do nepriehľadného canvasu — bez alfy niet kompozitorského
+       bugu (Firefox/Windows) a odpadá drahé kopírovanie do 2D canvasu */
     var renderer;
     try {
-      renderer = new THREE.WebGLRenderer({ canvas: glCanvas, alpha: true, antialias: true, premultipliedAlpha: true, preserveDrawingBuffer: true });
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: false, antialias: true, powerPreference: 'high-performance' });
       DBG.stage = 'renderer-ok';
     } catch (e) {
       DBG.stage = 'renderer-fail'; DBG.err = String(e && e.message);
       return;
     }
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0x0c0d0f, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     var scene = new THREE.Scene();
@@ -119,19 +119,32 @@ import * as THREE from 'three';
     /* pohľad zhora-spredu (~40°), aby boli strany čitateľné, nie hrana knihy */
     camera.position.set(0, 5.0, 6.4);
     camera.lookAt(0, -0.5, 0);
+    var needsRender = true;
 
     function size() {
       var r = stage.getBoundingClientRect();
-      var dpr = Math.min(window.devicePixelRatio || 1, 1.6);
-      renderer.setPixelRatio(dpr);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
       renderer.setSize(r.width, r.height);
-      canvas.width = Math.round(r.width * dpr);
-      canvas.height = Math.round(r.height * dpr);
       camera.aspect = r.width / r.height;
       camera.updateProjectionMatrix();
+      needsRender = true;
     }
     size();
     window.addEventListener('resize', size);
+
+    /* zlatý dosvit pod knihou (nahrádza CSS .book-glow, ktorý opaque canvas prekryl) */
+    var gc = document.createElement('canvas');
+    gc.width = gc.height = 256;
+    var gg = gc.getContext('2d');
+    var ggrad = gg.createRadialGradient(128, 128, 8, 128, 128, 126);
+    ggrad.addColorStop(0, 'rgba(216,181,110,0.15)');
+    ggrad.addColorStop(1, 'rgba(216,181,110,0)');
+    gg.fillStyle = ggrad;
+    gg.fillRect(0, 0, 256, 256);
+    var glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), depthWrite: false, transparent: true }));
+    glow.scale.set(13, 8, 1);
+    glow.position.set(0, -0.8, -2.5);
+    scene.add(glow);
 
     scene.add(new THREE.HemisphereLight(0xfff6e6, 0x1a1812, 1.25));
     var key = new THREE.PointLight(0xffe6b8, 70, 30, 1.9);
@@ -270,22 +283,25 @@ import * as THREE from 'three';
         group.add(pg);
       });
 
+      needsRender = true;
       DBG.stage = 'build-ok';
     }
 
-    var clock = new THREE.Clock();
+    /* render na požiadanie: kreslí sa len pri zmene scroll progressu */
+    var lastP = -1;
     function loop() {
       requestAnimationFrame(loop);
       if (!visible || !group) return;
-      DBG.frames++;
       var p = Math.min(Math.max(window.__bookProgress || 0, 0), 1);
-      var t = clock.getElapsedTime();
+      if (p === lastP && !needsRender) return;
+      lastP = p;
+      needsRender = false;
+      DBG.frames++;
 
       /* intro: kniha sa nadýchne */
       var intro = smooth(p / 0.1);
       group.scale.setScalar(0.94 + intro * 0.06);
       group.position.y = -0.35 + intro * 0.15;
-      group.rotation.z = Math.sin(t * 0.3) * 0.008;
 
       /* otváranie: obal → list 1 → list 2 (rotation.y = pánt, strany sa
          dvíhajú oblúkom nahor; poradie výšok sa počas otočenia vymení,
@@ -305,8 +321,6 @@ import * as THREE from 'three';
       }
 
       renderer.render(scene, camera);
-      ctx2d.clearRect(0, 0, canvas.width, canvas.height);
-      ctx2d.drawImage(glCanvas, 0, 0, canvas.width, canvas.height);
     }
     loop();
   }

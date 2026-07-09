@@ -32,10 +32,10 @@ import * as THREE from 'three';
   }
 
   var isMobile = window.innerWidth < 900;
-  var DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+  var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
 
   function sizeAll() {
-    DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+    DPR = Math.min(window.devicePixelRatio || 1, 1.5);
     renderer.setPixelRatio(DPR);
     renderer.setSize(window.innerWidth, window.innerHeight);
     canvas.width = Math.round(window.innerWidth * DPR);

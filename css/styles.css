@@ -625,14 +625,24 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .hero-fg { will-change: transform; z-index: 1; object-position: 50% 62%; }
 .hero-mist {
   z-index: 2;
-  background-image: url('../assets/mist.webp');
-  background-size: 140% auto;
-  background-repeat: repeat-x;
-  background-position: 0% 42%;
   mix-blend-mode: screen;
   opacity: 0.4;
-  animation: mistDrift 46s linear infinite;
+  overflow: hidden;
   pointer-events: none;
+}
+/* drift hmly cez transform (GPU kompozícia) — animácia background-position
+   by nútila prekresľovať celý viewport každý frame */
+.hero-mist::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 300%;
+  background-image: url('../assets/mist.webp');
+  background-size: 50% auto;
+  background-repeat: repeat-x;
+  background-position: 0 42%;
+  will-change: transform;
+  animation: mistDrift 70s linear infinite;
 }
 .hero-shade { z-index: 3; }
 .hero-content { z-index: 4; }
@@ -641,8 +651,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   100% { transform: scale(1.06) translateX(0.8%); }
 }
 @keyframes mistDrift {
-  0% { background-position: 0% 42%; }
-  100% { background-position: -280% 42%; }
+  to { transform: translateX(-50%); }
 }
 
 /* ---- quote: Google badge ---- */

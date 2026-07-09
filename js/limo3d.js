@@ -29,19 +29,18 @@ import { GLTFLoader } from '../assets/vendor/GLTFLoader.js';
   io.observe(pinEl);
 
   function init() {
-    /* rovnaký kompozičný trik ako three-layer.js: WebGL bokom, kopírované do 2D canvasu */
-    var ctx2d = canvas.getContext('2d');
-    var glCanvas = document.createElement('canvas');
+    /* priamy render do nepriehľadného canvasu — bez alfy niet kompozitorského
+       bugu (Firefox/Windows) a odpadá drahé kopírovanie do 2D canvasu */
     var renderer;
     try {
-      renderer = new THREE.WebGLRenderer({ canvas: glCanvas, alpha: true, antialias: true, premultipliedAlpha: true, preserveDrawingBuffer: true });
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: false, antialias: true, powerPreference: 'high-performance' });
       DBG.stage = 'renderer-ok';
     } catch (e) {
       DBG.stage = 'renderer-fail'; DBG.err = String(e && e.message);
       return;
     }
 
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0x0c0d0f, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
 
@@ -50,20 +49,34 @@ import { GLTFLoader } from '../assets/vendor/GLTFLoader.js';
     scene.fog = new THREE.Fog(0x0c0d0f, 12, 26);
 
     var camera = new THREE.PerspectiveCamera(30, 1, 0.1, 60);
+    var needsRender = true;
 
     function size() {
       var w = pinEl.clientWidth || window.innerWidth;
       var h = pinEl.clientHeight || window.innerHeight;
-      var dpr = Math.min(window.devicePixelRatio || 1, 1.6);
-      renderer.setPixelRatio(dpr);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
       renderer.setSize(w, h);
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+      needsRender = true;
     }
     size();
     window.addEventListener('resize', size);
+
+    /* zlatý dosvit za autom (nahrádza CSS gradient, ktorý opaque canvas prekryl) */
+    var gc = document.createElement('canvas');
+    gc.width = gc.height = 256;
+    var gg = gc.getContext('2d');
+    var ggrad = gg.createRadialGradient(128, 128, 8, 128, 128, 126);
+    ggrad.addColorStop(0, 'rgba(216,181,110,0.16)');
+    ggrad.addColorStop(1, 'rgba(216,181,110,0)');
+    gg.fillStyle = ggrad;
+    gg.fillRect(0, 0, 256, 256);
+    var glowTex = new THREE.CanvasTexture(gc);
+    var glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, depthWrite: false, transparent: true }));
+    glow.scale.set(17, 10, 1);
+    glow.position.set(0, 0.6, -6);
+    scene.add(glow);
 
     camera.position.set(0, 1.15, 8.2);
     camera.lookAt(0, 0.1, 0);
@@ -110,26 +123,29 @@ import { GLTFLoader } from '../assets/vendor/GLTFLoader.js';
       model.position.z -= center.z;
       model.position.y -= box.min.y;
       group.add(model);
+      needsRender = true;
       DBG.stage = 'model-ok';
     }, undefined, function (e) {
       DBG.stage = 'model-fail'; DBG.err = String(e && (e.message || e.type));
     });
 
-    var clock = new THREE.Clock();
+    /* render na požiadanie: kreslí sa len pri zmene scroll progressu,
+       inak frame nič nestojí */
+    var lastP = -1;
     function loop() {
       requestAnimationFrame(loop);
       if (!visible) return;
-      DBG.frames++;
       var p = Math.min(Math.max(window.__limoProgress || 0, 0), 1);
-      var t = clock.getElapsedTime();
+      if (p === lastP && !needsRender) return;
+      lastP = p;
+      needsRender = false;
+      DBG.frames++;
       /* scroll otáča autom zo zadného 3/4 pohľadu na predný */
-      group.rotation.y = -0.95 + p * 1.55 + Math.sin(t * 0.4) * 0.012;
+      group.rotation.y = -0.95 + p * 1.55;
       camera.position.z = 8.2 - p * 0.9;
       camera.position.y = 1.15 + p * 0.1;
       camera.lookAt(0, 0.1, 0);
       renderer.render(scene, camera);
-      ctx2d.clearRect(0, 0, canvas.width, canvas.height);
-      ctx2d.drawImage(glCanvas, 0, 0, canvas.width, canvas.height);
     }
     loop();
   }
