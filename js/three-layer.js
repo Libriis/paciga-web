@@ -7,24 +7,41 @@ import * as THREE from 'three';
 (function () {
   'use strict';
 
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var DBG = window.__gl3d = { stage: 'start', frames: 0, err: null };
 
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { DBG.stage = 'reduced-motion'; return; }
+
+  /* Viditeľný canvas je 2D — WebGL kreslíme bokom a kopírujeme doň.
+     Obchádza to chybné skladanie priehľadných WebGL canvasov
+     (Firefox + Windows/NVIDIA kompozítor skladá canvas ako čierny). */
   var canvas = document.createElement('canvas');
   canvas.id = 'gl3d';
   canvas.setAttribute('aria-hidden', 'true');
   document.body.appendChild(canvas);
+  var ctx2d = canvas.getContext('2d');
 
+  var glCanvas = document.createElement('canvas');
   var renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
+    renderer = new THREE.WebGLRenderer({ canvas: glCanvas, alpha: true, antialias: false, premultipliedAlpha: true, preserveDrawingBuffer: true });
+    DBG.stage = 'renderer-ok';
   } catch (e) {
+    DBG.stage = 'renderer-fail'; DBG.err = String(e && e.message);
     canvas.remove();
     return;
   }
 
   var isMobile = window.innerWidth < 900;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  var DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+
+  function sizeAll() {
+    DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+    renderer.setPixelRatio(DPR);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    canvas.width = Math.round(window.innerWidth * DPR);
+    canvas.height = Math.round(window.innerHeight * DPR);
+  }
+  sizeAll();
   renderer.setClearColor(0x000000, 0);
 
   var scene = new THREE.Scene();
@@ -52,7 +69,8 @@ import * as THREE from 'three';
     });
     var mesh = new THREE.Mesh(geo, featherMat);
     feather.add(mesh);
-  });
+    DBG.stage = 'texture-ok';
+  }, undefined, function (e) { DBG.stage = 'texture-fail'; DBG.err = String(e && (e.message || e.type)); });
   scene.add(feather);
 
   /* ---------- častice (prach v lúči svetla) ---------- */
@@ -142,7 +160,7 @@ import * as THREE from 'three';
     isMobile = window.innerWidth < 900;
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    sizeAll();
   });
 
   function progress() {
@@ -161,6 +179,7 @@ import * as THREE from 'three';
   function loop() {
     if (!running) return;
     requestAnimationFrame(loop);
+    DBG.frames++;
 
     var t = clock.getElapsedTime();
     var k = sample(progress());
@@ -197,6 +216,10 @@ import * as THREE from 'three';
     particles.rotation.y = Math.sin(t * 0.05) * 0.12 + mx * 0.05;
 
     renderer.render(scene, camera);
+
+    // prekopíruj WebGL výsledok do 2D canvasu (spoľahlivá kompozícia)
+    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+    ctx2d.drawImage(glCanvas, 0, 0, canvas.width, canvas.height);
   }
   loop();
 })();

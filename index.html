@@ -81,6 +81,7 @@
 
   <!-- ============ QUOTE (scrub word reveal) ============ -->
   <section class="quote" id="quote">
+    <div class="orb" style="top:-20%;right:-12%" aria-hidden="true"></div>
     <div class="container quote-inner">
       <div class="quote-mark" aria-hidden="true">“</div>
       <p id="quote-text">V ťažkých chvíľach nám boli oporou, všetko vybavili spoľahlivo a s úctou. Krásna výzdoba, dôstojný priebeh rozlúčky a ochotný personál.</p>
@@ -109,6 +110,8 @@
   <!-- ============ SERVICES (pinned horizontal) ============ -->
   <section id="sluzby" class="services">
     <div class="services-pin" id="services-pin">
+      <div class="orb" style="top:8%;left:-14%" aria-hidden="true"></div>
+      <div class="orb cool" style="bottom:-24%;right:-10%" aria-hidden="true"></div>
       <div class="container services-head">
         <div class="eyebrow" data-reveal>Čo pre vás zabezpečíme</div>
         <h2 data-reveal>Kompletná starostlivosť<br>pod jednou strechou</h2>
@@ -169,6 +172,7 @@
 
   <!-- ============ POBOCKY ============ -->
   <section id="pobocky" class="branches">
+    <div class="orb" style="top:-16%;left:30%" aria-hidden="true"></div>
     <div class="container">
       <div class="section-head">
         <div class="eyebrow" data-reveal>Kde nás nájdete</div>
@@ -212,6 +216,7 @@
 
   <!-- ============ OPUSTILI NAS ============ -->
   <section id="opustili" class="memoriam">
+    <div class="orb cool" style="bottom:-18%;left:-14%" aria-hidden="true"></div>
     <div class="container">
       <div class="memoriam-head">
         <div>
@@ -342,5 +347,33 @@
 <script src="js/main.js"></script>
 <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js"}}</script>
 <script type="module" src="js/three-layer.js"></script>
+<script>
+/* DOČASNÝ diagnostický beacon — zmazať pred nasadením */
+(function () {
+  var errs = [];
+  window.addEventListener('error', function (e) { errs.push((e.message || e.type) + ' @ ' + (e.filename || '').split('/').pop() + ':' + e.lineno); }, true);
+  setTimeout(function () {
+    var c = document.getElementById('gl3d');
+    var mat = null, pixels = null;
+    try { mat = window.__gl3d || null; } catch (e) {}
+    try {
+      var g = c.getContext('2d');
+      var d = g.getImageData(0, 0, c.width, c.height).data;
+      var n = 0;
+      for (var i = 3; i < d.length; i += 40) { if (d[i] > 10) n++; }
+      pixels = { sampled: Math.floor(d.length / 40), visible: n };
+    } catch (e) { pixels = { err: String(e && e.message) }; }
+    var payload = {
+      page: 'index', ts: new Date().toISOString(), ua: navigator.userAgent,
+      vw: innerWidth, vh: innerHeight, scrollY: window.scrollY,
+      canvas: !!c, canvasRect: c ? c.getBoundingClientRect().width + 'x' + c.getBoundingClientRect().height : null,
+      canvasStyle: c ? getComputedStyle(c).display + '/' + getComputedStyle(c).mixBlendMode + '/z' + getComputedStyle(c).zIndex : null,
+      gl3d: mat, pixels: pixels, htmlClass: document.documentElement.className,
+      errors: errs
+    };
+    fetch('/__diag', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+  }, 4000);
+})();
+</script>
 </body>
 </html>

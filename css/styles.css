@@ -152,6 +152,9 @@ h3 { font-size: 20px; }
   height: 100%;
   z-index: 55;
   pointer-events: none;
+  /* screen blend: čierna = neviditeľná — aj keby prehliadač zložil canvas
+     ako nepriehľadný, stránku nikdy nezačierni (dizajn je tmavý, pierko biele) */
+  mix-blend-mode: screen;
 }
 
 /* ---- scroll progress ---- */
@@ -579,8 +582,113 @@ h3 { font-size: 20px; }
   .quote-mark { font-size: 90px; }
 }
 
+/* ============================================================
+   MotionSites luxury layer — preloader, glow, glass, cursor
+   ============================================================ */
+
+/* ---- preloader (zobrazí ho až JS — bez JS neexistuje bariéra) ---- */
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+#preloader img { width: 92px; height: auto; opacity: 0.95; animation: preFloat 2.4s ease-in-out infinite; }
+@keyframes preFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
+#preloader .pre-line { width: 180px; height: 1px; background: var(--line); overflow: hidden; }
+#preloader .pre-line span { display: block; height: 100%; width: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left center; }
+#preloader .pre-label { font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--dim); }
+
+/* ---- ambientné glow orby ---- */
+.orb {
+  position: absolute;
+  width: 46vw;
+  height: 46vw;
+  max-width: 720px;
+  max-height: 720px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.5;
+  background: radial-gradient(circle, rgba(216, 181, 110, 0.16), rgba(216, 181, 110, 0.05) 45%, transparent 70%);
+  animation: orbDrift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.orb.cool { background: radial-gradient(circle, rgba(150, 165, 200, 0.10), rgba(150, 165, 200, 0.03) 45%, transparent 70%); animation-duration: 34s; }
+@keyframes orbDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(9vw, -6vh) scale(1.18); }
+}
+section { position: relative; }
+section > .container, .services-pin > .container, .services-track, .services-progress, .cta-inner { position: relative; z-index: 1; }
+/* orby musia zostať absolútne — nesmú vstúpiť do flex layoutu */
+.orb, section .orb, .services-pin .orb { position: absolute; z-index: 0; }
+
+/* ---- glassmorphism karty (prekrýva základné panely) ---- */
+.svc, .branch-card, .memoriam-card {
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+.svc:hover, .branch-card:hover, .memoriam-card:hover {
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.nonstop-inner, .quote-inner { position: relative; z-index: 1; }
+
+/* ---- custom cursor ring (len desktop s myšou) ---- */
+#cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1px solid rgba(216, 181, 110, 0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 150;
+  transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+#cursor-ring.on { opacity: 1; }
+#cursor-ring.grow {
+  width: 64px; height: 64px;
+  margin: -32px 0 0 -32px;
+  border-color: rgba(216, 181, 110, 0.9);
+}
+@media (hover: none), (pointer: coarse) { #cursor-ring { display: none; } }
+
+/* ---- shimmer na zlatých číslach ---- */
+.stat-num, .phone-primary {
+  background: linear-gradient(100deg, var(--gold) 40%, #f0dcae 50%, var(--gold) 60%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5.5s ease-in-out infinite;
+}
+@keyframes shimmer { 0%, 72% { background-position: 110% 0; } 88%, 100% { background-position: -60% 0; } }
+
+/* ---- 3D tilt kariet ---- */
+.branch-grid, .memoriam-grid, .services-track { perspective: 1100px; }
+.svc, .branch-card, .memoriam-card { transform-style: preserve-3d; }
+
+/* ---- hero title chars ---- */
+.hero h1 .word { display: inline-block; white-space: nowrap; }
+.hero h1 .ch { display: inline-block; will-change: transform; }
+
 /* ---- reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track, .partners-track, .scroll-hint-line::after, .dot, .dot-sm { animation: none !important; }
+  .marquee-track, .partners-track, .scroll-hint-line::after, .dot, .dot-sm,
+  .orb, .stat-num, .phone-primary, #preloader img { animation: none !important; }
+  #cursor-ring, #preloader { display: none !important; }
   html { scroll-behavior: auto; }
 }
