@@ -31,16 +31,33 @@
 
   /* ---------- kreslenie ----------
      Canvas beží v natívnom rozlíšení frames (1:1 blit bez škálovania);
-     na viewport ho roztiahne GPU cez CSS object-fit: cover. */
-  function draw(i) {
+     na viewport ho roztiahne GPU cez CSS object-fit: cover.
+     Pri pomalom pohybe sa susedné frames prelínajú alfou — medzi zábermi
+     vzniká plynulý prechod namiesto tvrdého preskoku (zdroj má len 8 fps). */
+  function srcFor(i) {
+    var bm = bitmaps.get(i);
+    return bm && bm.width ? bm : frames[i];
+  }
+
+  function draw(pos) {
+    var i = Math.floor(pos);
+    var f = pos - i;
+    if (!ready[i]) {
+      i = nearestReady(Math.round(pos));
+      if (i === -1) return false;
+      f = 0;
+    }
     var im = frames[i];
-    if (!im || !ready[i]) return false;
     if (canvas.width !== im.width || canvas.height !== im.height) {
       canvas.width = im.width;
       canvas.height = im.height;
     }
-    var bm = bitmaps.get(i);
-    ctx.drawImage(bm && bm.width ? bm : im, 0, 0);
+    ctx.drawImage(srcFor(i), 0, 0);
+    if (f > 0.04 && f < 0.96 && i + 1 < TOTAL && ready[i + 1]) {
+      ctx.globalAlpha = f;
+      ctx.drawImage(srcFor(i + 1), 0, 0);
+      ctx.globalAlpha = 1;
+    }
     DBG.drawn++;
     return true;
   }
@@ -150,9 +167,11 @@
   if (document.readyState === 'complete') { DBG.stage = 'coarse'; pump(); }
 
   /* ---------- render loop ----------
-     Zobrazený frame sa k cieľu približuje interpoláciou (lerp) — rýchly
-     scroll tak prejde všetkými medzisnímkami plynulo namiesto skokov. */
-  var shown = -1; /* float pozícia zobrazeného framu */
+     Zobrazená pozícia sa k cieľu približuje interpoláciou (lerp) s minimálnou
+     rýchlosťou — dobiehanie na konci „dosadne", nespomaľuje donekonečna.
+     Sub-frame pohyb kreslí draw() ako prelínanie susedných záberov. */
+  var shown = -1;      /* float pozícia zobrazeného framu */
+  var lastDrawn = -9;  /* naposledy nakreslená pozícia */
   function loop() {
     requestAnimationFrame(loop);
     var p = Math.min(Math.max(window.__journeyProgress || 0, 0), 1);
@@ -160,14 +179,18 @@
     if (shown < 0) shown = target;
     var diff = target - shown;
     if (Math.abs(diff) > 0.01) lastDir = diff > 0 ? 1 : -1;
-    /* max ~6 frames za rAF — dosť na dobehnutie, málo na trhanie */
-    shown += Math.abs(diff) < 0.05 ? diff : Math.max(-6, Math.min(6, diff * 0.22));
+    if (Math.abs(diff) < 0.02) {
+      shown = target;
+    } else {
+      /* proporčné dobiehanie so stropom 6 a minimom 0.3 framu za rAF */
+      var step = Math.max(Math.abs(diff) * 0.22, 0.3);
+      shown += lastDir * Math.min(step, Math.min(6, Math.abs(diff)));
+    }
     ensureBitmaps(Math.round(shown));
-    var idx = nearestReady(Math.round(shown));
-    if (idx === -1) return;
-    if (idx === current && !needsRender) return;
-    if (draw(idx)) {
-      current = idx;
+    if (Math.abs(shown - lastDrawn) < 0.012 && !needsRender) return;
+    if (draw(shown)) {
+      lastDrawn = shown;
+      current = Math.round(shown);
       needsRender = false;
       /* poster skryjeme po prvom nakreslenom frame */
       if (poster && !poster.dataset.hidden) {
