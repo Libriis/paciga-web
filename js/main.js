@@ -224,16 +224,20 @@
       },
       defaults: { ease: 'none' }
     });
-    /* okná textov (čas 0–5 = celá jazda; hranice klipov: 0.87 / 1.74 / 2.39 / 3.26 / 4.13) */
+    /* okná textov (čas 0–5 = celá jazda; hranice klipov: 0.87 / 1.74 / 2.39 / 3.26 / 4.13)
+       Informačný oblúk: kto sme → čo robiť + telefón → limuzína → rozsah služieb
+       → spomienkové šperky → kde sme + kontakt */
     jTl
       .to(jTexts[0], { autoAlpha: 0, duration: 0.35 }, 0.55)
       .fromTo(jTexts[1], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 1.0)
       .to(jTexts[1], { autoAlpha: 0, duration: 0.3 }, 1.6)
-      .fromTo(jTexts[2], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 1.9)
-      .to(jTexts[2], { autoAlpha: 0, duration: 0.3 }, 2.35)
-      .fromTo(jTexts[3], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 3.4)
-      .to(jTexts[3], { autoAlpha: 0, duration: 0.3 }, 4.0)
-      .fromTo(jTexts[4], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35 }, 4.4)
+      .fromTo(jTexts[2], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 1.85)
+      .to(jTexts[2], { autoAlpha: 0, duration: 0.3 }, 2.3)
+      .fromTo(jTexts[3], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 2.6)
+      .to(jTexts[3], { autoAlpha: 0, duration: 0.3 }, 3.15)
+      .fromTo(jTexts[4], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 3.45)
+      .to(jTexts[4], { autoAlpha: 0, duration: 0.3 }, 4.0)
+      .fromTo(jTexts[5], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35 }, 4.4)
       .to({}, { duration: 0.6 });
   }
 
