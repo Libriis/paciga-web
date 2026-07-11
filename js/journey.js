@@ -96,12 +96,17 @@
     inflight++;
     var im = new Image();
     im.decoding = 'async';
-    im.onload = function () {
+    function done() {
       inflight--;
       ready[i] = true;
       DBG.loaded++;
       needsRender = true;
       pump();
+    }
+    im.onload = function () {
+      /* predekódovanie — drawImage potom nezadrháva synchrónnym dekódom */
+      if (im.decode) im.decode().then(done, done);
+      else done();
     };
     im.onerror = function () {
       inflight--;
@@ -123,12 +128,19 @@
   /* keby load už prebehol (modul je defer na konci) */
   if (document.readyState === 'complete') { DBG.stage = 'coarse'; pump(); }
 
-  /* ---------- render loop: kreslí len pri zmene ---------- */
+  /* ---------- render loop ----------
+     Zobrazený frame sa k cieľu približuje interpoláciou (lerp) — rýchly
+     scroll tak prejde všetkými medzisnímkami plynulo namiesto skokov. */
+  var shown = -1; /* float pozícia zobrazeného framu */
   function loop() {
     requestAnimationFrame(loop);
     var p = Math.min(Math.max(window.__journeyProgress || 0, 0), 1);
-    var target = Math.round(p * (TOTAL - 1));
-    var idx = nearestReady(target);
+    var target = p * (TOTAL - 1);
+    if (shown < 0) shown = target;
+    var diff = target - shown;
+    /* max ~6 frames za rAF — dosť na dobehnutie, málo na trhanie */
+    shown += Math.abs(diff) < 0.05 ? diff : Math.max(-6, Math.min(6, diff * 0.22));
+    var idx = nearestReady(Math.round(shown));
     if (idx === -1) return;
     if (idx === current && !needsRender) return;
     if (draw(idx)) {

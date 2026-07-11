@@ -125,7 +125,7 @@
 
   /* ---------- Lenis smooth scroll ---------- */
   lenis = new Lenis({
-    duration: 1.15,
+    duration: 1.35,
     easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }
   });
   lenis.on('scroll', ScrollTrigger.update);
@@ -201,9 +201,10 @@
       scrollTrigger: {
         trigger: journeyPin,
         start: 'top top',
-        end: function () { return '+=' + (window.innerWidth < 701 ? 320 : 450) + '%'; },
+        /* dlhá dráha = pomalé, dôstojné tempo jazdy */
+        end: function () { return '+=' + (window.innerWidth < 701 ? 550 : 750) + '%'; },
         pin: true,
-        scrub: 0.8,
+        scrub: 1.4,
         invalidateOnRefresh: true,
         onUpdate: function (self) {
           window.__journeyProgress = self.progress;
