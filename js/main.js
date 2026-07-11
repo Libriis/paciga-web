@@ -208,6 +208,9 @@
         invalidateOnRefresh: true,
         onUpdate: function (self) {
           window.__journeyProgress = self.progress;
+          /* nevyhladený progress = skutočné miesto scrollu; journey.js na ňom
+             stavia cieľ usadenia, ktorý sa počas dobiehania nehýbe */
+          window.__journeyRawProgress = Math.min(Math.max((self.scroll() - self.start) / (self.end - self.start), 0), 1);
           gsap.set('#jh-fill', { height: (self.progress * 100) + '%' });
           var st = Math.min(4, Math.floor(self.progress * 5));
           for (var i = 0; i < jStations.length; i++) jStations[i].classList.toggle('on', i === st);

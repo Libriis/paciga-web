@@ -168,19 +168,39 @@
 
   /* ---------- render loop ----------
      Počas pohybu sa zobrazená pozícia dobieha lerpom a sub-frame pohyb kreslí
-     draw() ako prelínanie susedných záberov. Keď scroll takmer stojí (chvost
-     scrubu), jazda sa USADÍ na najbližší celý frame — inak by pomaly sa
-     meniace prelínanie pôsobilo ako chvenie obrazu. */
-  var shown = -1;      /* float pozícia zobrazeného framu */
-  var lastDrawn = -9;  /* naposledy nakreslená pozícia */
-  var prevTarget = -1; /* na meranie rýchlosti cieľa */
-  var stillCount = 0;  /* koľko rAF po sebe sa cieľ takmer nehýbe */
+     draw() ako prelínanie susedných záberov. Keď scroll takmer stojí, jazda sa
+     usadí na celý frame a ZAMKNE — cieľ usadenia sa počíta z nevyhladeného
+     progressu (skutočné miesto scrollu), takže sa počas dobiehania nehýbe,
+     a nikdy necúva proti smeru jazdy. */
+  var shown = -1;       /* float pozícia zobrazeného framu */
+  var lastDrawn = -9;   /* naposledy nakreslená pozícia */
+  var prevTarget = -1;  /* na meranie rýchlosti cieľa */
+  var stillCount = 0;   /* koľko rAF po sebe sa cieľ takmer nehýbe */
   var settleTarget = -1;
+  var settled = false;  /* zámok: v pokoji sa nekreslí a nehýbe nič */
+
+  function clamp01(x) { return Math.min(Math.max(x, 0), 1); }
+
   function loop() {
     requestAnimationFrame(loop);
-    var p = Math.min(Math.max(window.__journeyProgress || 0, 0), 1);
+    var p = clamp01(window.__journeyProgress || 0);
+    var praw = typeof window.__journeyRawProgress === 'number' ? clamp01(window.__journeyRawProgress) : p;
     var target = p * (TOTAL - 1);
+    var rawF = praw * (TOTAL - 1);
     if (shown < 0) shown = target;
+
+    /* v pokoji drž ostrý frame; zobuď sa až pri skutočnom scrolle */
+    if (settled) {
+      if (Math.abs(rawF - shown) > 0.6) {
+        settled = false;
+        stillCount = 0;
+        settleTarget = -1;
+        prevTarget = -1;
+      } else {
+        if (needsRender && draw(shown)) { lastDrawn = shown; needsRender = false; }
+        return;
+      }
+    }
 
     var v = prevTarget < 0 ? 0 : target - prevTarget;
     prevTarget = target;
@@ -190,9 +210,15 @@
 
     var goal;
     if (settling) {
-      /* hysteréza 0.6 framu — usadzovací cieľ nepreskakuje na hranici .5 */
-      if (settleTarget < 0 || Math.abs(settleTarget - target) > 0.6) settleTarget = Math.round(target);
-      goal = Math.max(0, Math.min(TOTAL - 1, settleTarget));
+      if (settleTarget < 0) {
+        /* najbližší celý frame k SKUTOČNÉMU miestu scrollu… */
+        settleTarget = Math.round(rawF);
+        /* …ale nikdy nie proti smeru jazdy */
+        if (lastDir > 0) settleTarget = Math.max(settleTarget, Math.ceil(shown - 0.02));
+        else settleTarget = Math.min(settleTarget, Math.floor(shown + 0.02));
+        settleTarget = Math.max(0, Math.min(TOTAL - 1, settleTarget));
+      }
+      goal = settleTarget;
     } else {
       settleTarget = -1;
       goal = target;
@@ -205,14 +231,18 @@
     } else {
       /* proporčné dobiehanie so stropom 6; pri usadzovaní jemnejšie minimum */
       var step = Math.max(Math.abs(diff) * 0.22, settling ? 0.12 : 0.3);
-      shown += lastDir * Math.min(step, Math.min(6, Math.abs(diff)));
+      shown += (diff > 0 ? 1 : -1) * Math.min(step, Math.min(6, Math.abs(diff)));
     }
+    if (settling && shown === goal) settled = true;
+
     ensureBitmaps(Math.round(shown));
     if (Math.abs(shown - lastDrawn) < 0.012 && !needsRender) return;
     if (draw(shown)) {
       lastDrawn = shown;
       current = Math.round(shown);
       needsRender = false;
+      DBG.shown = shown;
+      DBG.settled = settled;
       /* poster skryjeme po prvom nakreslenom frame */
       if (poster && !poster.dataset.hidden) {
         poster.dataset.hidden = '1';
