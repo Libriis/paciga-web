@@ -201,8 +201,8 @@
       scrollTrigger: {
         trigger: journeyPin,
         start: 'top top',
-        /* dlhá dráha = pomalé, dôstojné tempo jazdy */
-        end: function () { return '+=' + (window.innerWidth < 701 ? 550 : 750) + '%'; },
+        /* dlhá dráha = pomalé, dôstojné tempo jazdy (46 s materiálu) */
+        end: function () { return '+=' + (window.innerWidth < 701 ? 630 : 860) + '%'; },
         pin: true,
         scrub: 1.4,
         invalidateOnRefresh: true,
@@ -212,7 +212,10 @@
              stavia cieľ usadenia, ktorý sa počas dobiehania nehýbe */
           window.__journeyRawProgress = Math.min(Math.max((self.scroll() - self.start) / (self.end - self.start), 0), 1);
           gsap.set('#jh-fill', { height: (self.progress * 100) + '%' });
-          var st = Math.min(4, Math.floor(self.progress * 5));
+          /* hranice staníc podľa dĺžok klipov: 8+8+6+8+8+8 s */
+          var bounds = [0.174, 0.478, 0.652, 0.826];
+          var st = 0;
+          while (st < bounds.length && self.progress >= bounds[st]) st++;
           for (var i = 0; i < jStations.length; i++) jStations[i].classList.toggle('on', i === st);
           for (var t = 0; t < jTexts.length; t++) {
             jTexts[t].classList.toggle('is-on', parseFloat(gsap.getProperty(jTexts[t], 'opacity')) > 0.5);
@@ -221,17 +224,17 @@
       },
       defaults: { ease: 'none' }
     });
-    /* okná textov: každá stanica má svoje (čas 0–5 = päť klipov) */
+    /* okná textov (čas 0–5 = celá jazda; hranice klipov: 0.87 / 1.74 / 2.39 / 3.26 / 4.13) */
     jTl
       .to(jTexts[0], { autoAlpha: 0, duration: 0.35 }, 0.55)
-      .fromTo(jTexts[1], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 1.15)
-      .to(jTexts[1], { autoAlpha: 0, duration: 0.3 }, 1.8)
-      .fromTo(jTexts[2], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 2.15)
-      .to(jTexts[2], { autoAlpha: 0, duration: 0.3 }, 2.8)
-      .fromTo(jTexts[3], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 3.15)
-      .to(jTexts[3], { autoAlpha: 0, duration: 0.3 }, 3.8)
-      .fromTo(jTexts[4], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35 }, 4.35)
-      .to({}, { duration: 0.65 });
+      .fromTo(jTexts[1], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 1.0)
+      .to(jTexts[1], { autoAlpha: 0, duration: 0.3 }, 1.6)
+      .fromTo(jTexts[2], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 1.9)
+      .to(jTexts[2], { autoAlpha: 0, duration: 0.3 }, 2.35)
+      .fromTo(jTexts[3], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 3.4)
+      .to(jTexts[3], { autoAlpha: 0, duration: 0.3 }, 4.0)
+      .fromTo(jTexts[4], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35 }, 4.4)
+      .to({}, { duration: 0.6 });
   }
 
   /* sviečky v Opustili nás — zapálenie zostáva uložené v prehliadači */
