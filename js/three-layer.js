@@ -1,5 +1,4 @@
-/* Paciga — 3D storytelling vrstva: pierko + svetelné častice (Three.js)
-   Pierko letí stránkou podľa scroll progressu; častice tvoria tichý "prach v svetle".
+/* Paciga — dekoratívna vrstva svetelných častíc (Three.js) — tichý "prach v svetle".
    Vrstva je čisto dekoratívna: pointer-events none, vypína sa pri reduced-motion
    a bez WebGL — stránka funguje aj bez nej. */
 import * as THREE from 'three';
@@ -48,31 +47,6 @@ import * as THREE from 'three';
   var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 60);
   camera.position.z = 10;
 
-  /* ---------- pierko ---------- */
-  var feather = new THREE.Group();
-  var featherMat = null;
-
-  new THREE.TextureLoader().load('assets/feather.png', function (tex) {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    var geo = new THREE.PlaneGeometry(2.6, 2.6, 24, 24);
-    var pos = geo.attributes.position;
-    for (var i = 0; i < pos.count; i++) {
-      var x = pos.getX(i), y = pos.getY(i);
-      pos.setZ(i, Math.sin(x * 0.9) * 0.12 + Math.cos(y * 1.3) * 0.06);
-    }
-    featherMat = new THREE.MeshBasicMaterial({
-      map: tex,
-      transparent: true,
-      depthWrite: false,
-      side: THREE.DoubleSide,
-      opacity: 0
-    });
-    var mesh = new THREE.Mesh(geo, featherMat);
-    feather.add(mesh);
-    DBG.stage = 'texture-ok';
-  }, undefined, function (e) { DBG.stage = 'texture-fail'; DBG.err = String(e && (e.message || e.type)); });
-  scene.add(feather);
-
   /* ---------- častice (prach v lúči svetla) ---------- */
   function makeSprite() {
     var c = document.createElement('canvas');
@@ -113,43 +87,9 @@ import * as THREE from 'three';
   });
   var particles = new THREE.Points(pGeo, pMat);
   scene.add(particles);
+  DBG.stage = 'particles-ok';
 
-  /* ---------- scroll choreografia pierka ----------
-     p = celostránkový scroll progress 0..1 (vrátane pin dráh).
-     Waypointy: pozícia/rotácia/scale/opacity — medzi nimi smoothstep. */
-  var WP = [
-    { p: 0.00, x:  3.4, y:  0.6, z: 0,    rx: 0.15, ry: -0.4, rz: -0.35, s: 1.05, o: 0.95 }, // hero — vpravo od textu
-    { p: 0.06, x:  2.6, y: -0.4, z: 0.5,  rx: 0.3,  ry:  0.5, rz: -0.8,  s: 1.0,  o: 0.95 },
-    { p: 0.12, x: -2.8, y:  0.3, z: -0.5, rx: 0.1,  ry:  1.6, rz: 0.4,   s: 0.85, o: 0.9  }, // quote — preletí doľava
-    { p: 0.20, x: -3.6, y: -0.8, z: -1.5, rx: 0.4,  ry:  2.6, rz: 1.1,   s: 0.7,  o: 0.7  }, // nonstop
-    { p: 0.30, x:  0.0, y:  2.1, z: -2,   rx: 0.2,  ry:  3.6, rz: 2.4,   s: 0.55, o: 0.6  }, // služby — malé, hore nad kartami
-    { p: 0.44, x:  3.4, y:  1.6, z: -1,   rx: 0.5,  ry:  5.0, rz: 3.4,   s: 0.6,  o: 0.65 }, // koniec horizontály
-    { p: 0.52, x:  4.6, y:  0.0, z: -3,   rx: 0.2,  ry:  6.3, rz: 4.0,   s: 0.45, o: 0.0  }, // fleet reveal — uhne a zmizne
-    { p: 0.64, x: -3.9, y: -0.5, z: -1,   rx: 0.3,  ry:  7.6, rz: 4.9,   s: 0.7,  o: 0.75 }, // stats — vráti sa zľava
-    { p: 0.74, x:  3.2, y:  0.4, z: 0,    rx: 0.15, ry:  8.8, rz: 5.6,   s: 0.85, o: 0.85 }, // pobočky
-    { p: 0.86, x:  0.0, y:  0.2, z: 1.2,  rx: 0.1,  ry: 10.1, rz: 6.28,  s: 1.0,  o: 0.9  }, // opustili nás — stred, pomaly
-    { p: 0.94, x:  0.0, y: -1.6, z: 0.8,  rx: 0.35, ry: 10.8, rz: 6.6,   s: 0.9,  o: 0.7  }, // cta — znáša sa dole
-    { p: 1.00, x:  0.2, y: -3.4, z: 0,    rx: 0.5,  ry: 11.3, rz: 6.9,   s: 0.85, o: 0.0  }  // footer — dosadne a zmizne
-  ];
-
-  function smooth(t) { return t * t * (3 - 2 * t); }
-
-  function sample(p) {
-    if (p <= WP[0].p) return WP[0];
-    if (p >= WP[WP.length - 1].p) return WP[WP.length - 1];
-    var a, b, i;
-    for (i = 0; i < WP.length - 1; i++) {
-      if (p >= WP[i].p && p <= WP[i + 1].p) { a = WP[i]; b = WP[i + 1]; break; }
-    }
-    var t = smooth((p - a.p) / (b.p - a.p));
-    var out = {};
-    ['x', 'y', 'z', 'rx', 'ry', 'rz', 's', 'o'].forEach(function (k) {
-      out[k] = a[k] + (b[k] - a[k]) * t;
-    });
-    return out;
-  }
-
-  /* ---------- vstupy: scroll + myš ---------- */
+  /* ---------- vstupy: myš ---------- */
   var mouseX = 0, mouseY = 0, mx = 0, my = 0;
   window.addEventListener('mousemove', function (e) {
     mouseX = (e.clientX / window.innerWidth - 0.5);
@@ -162,11 +102,6 @@ import * as THREE from 'three';
     camera.updateProjectionMatrix();
     sizeAll();
   });
-
-  function progress() {
-    var h = document.documentElement.scrollHeight - window.innerHeight;
-    return h > 0 ? Math.min(Math.max((window.scrollY || 0) / h, 0), 1) : 0;
-  }
 
   /* ---------- render loop ---------- */
   var clock = new THREE.Clock();
@@ -182,29 +117,11 @@ import * as THREE from 'three';
     DBG.frames++;
 
     var t = clock.getElapsedTime();
-    var k = sample(progress());
 
     mx += (mouseX - mx) * 0.04;
     my += (mouseY - my) * 0.04;
 
-    var mob = isMobile ? 0.72 : 1;
-
-    // pierko: scroll keyframe + idle "padajúci list" mikropohyb + vplyv myši
-    feather.position.set(
-      k.x * mob + mx * 0.7 + Math.sin(t * 0.55) * 0.14,
-      k.y + my * -0.45 + Math.sin(t * 0.85) * 0.1,
-      k.z
-    );
-    feather.rotation.set(
-      k.rx + Math.sin(t * 0.7) * 0.1 + my * 0.25,
-      k.ry + mx * 0.35,
-      k.rz + Math.sin(t * 0.5) * 0.14
-    );
-    var s = k.s * mob;
-    feather.scale.set(s, s, s);
-    if (featherMat) featherMat.opacity += (k.o - featherMat.opacity) * 0.08;
-
-    // častice: pomalé klesanie + kolektívny drift, mierna väzba na scroll
+    // častice: pomalé klesanie + kolektívny drift, mierna väzba na myš
     var posAttr = pGeo.attributes.position;
     for (var i = 0; i < COUNT; i++) {
       var y = posAttr.getY(i) - speed[i] * 0.016;
