@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paciga — Pohrebné a kamenárske služby | NON STOP 24/7</title>
-<meta name="description" content="Pohrebné a kamenárske služby Paciga — Poprad, Spišská Belá, Liptovský Mikuláš. NON STOP prevoz zosnulých 24 hodín denne. Volajte 0903 596 364.">
-<meta property="og:title" content="Paciga — Pohrebné a kamenárske služby">
-<meta property="og:description" content="Dôstojná rozlúčka za každých okolností. NON STOP prevoz zosnulých — 0903 596 364.">
+<title>Paciga | Pohrebné a kamenárske služby | NON STOP 24/7</title>
+<meta name="description" content="Pohrebné a kamenárske služby Paciga v Poprade, Spišskej Belej a Liptovskom Mikuláši. NON STOP prevoz zosnulých 24 hodín denne. Volajte 0903 596 364.">
+<meta property="og:title" content="Paciga | Pohrebné a kamenárske služby">
+<meta property="og:description" content="Dôstojná rozlúčka za každých okolností. NON STOP prevoz zosnulých, volajte 0903 596 364.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sk_SK">
 <meta property="og:image" content="assets/asset-07.jpg">
 <meta name="theme-color" content="#0c0d0f">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230c0d0f'/%3E%3Ctext x='32' y='45' font-family='Arial' font-size='40' font-weight='700' fill='%23d8b56e' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230c0d0f'/%3E%3Ctext x='32' y='45' font-family='Arial' font-size='40' font-weight='700' fill='%23f5f5f5' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
 <link rel="preload" href="assets/asset-17.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -23,7 +23,7 @@
 <!-- fixed nav -->
 <header id="site-nav">
   <div class="container nav-inner">
-    <a href="index.html" class="nav-logo"><img src="assets/asset-02.png" alt="Paciga — pohrebné a kamenárske služby"></a>
+    <a href="index.html" class="nav-logo"><img src="assets/asset-02.png" alt="Paciga, pohrebné a kamenárske služby"></a>
     <button class="nav-burger" id="nav-burger" aria-label="Otvoriť menu" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
@@ -32,6 +32,7 @@
       <a href="o-nas.html" class="nav-link">O nás</a>
       <a href="informacie-pre-pozostalych.html" class="nav-link">Informácie pre pozostalých</a>
       <a href="pohrebne-sluzby.html" class="nav-link">Pohrebné služby</a>
+      <a href="sperky.html" class="nav-link">Šperky</a>
       <a href="opustili-nas.html" class="nav-link">Opustili nás</a>
       <a href="aktuality.html" class="nav-link">Aktuality</a>
       <a href="kontakt.html" class="nav-link">Kontakt</a>
@@ -42,49 +43,75 @@
 
 <main id="paci">
 
-  <!-- ============ HERO (pinned, video) ============ -->
-  <section class="hero" id="hero">
-    <div class="hero-media" id="hero-media">
-      <video id="hero-video" src="assets/hero.mp4" poster="assets/asset-07.jpg"
-        autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
-      <div class="hero-shade" aria-hidden="true"></div>
-    </div>
-    <div class="container hero-content" id="hero-content">
-      <div class="eyebrow" data-hero-el>Rodinná pohrebná a kamenárska služba · od 2018</div>
-      <h1 id="hero-title"><span class="line"><span>Dôstojná rozlúčka</span></span><span class="line"><span>za&nbsp;každých okolností.</span></span></h1>
-      <p class="hero-lead" data-hero-el>Pohrebné obrady, preprava a kamenárstvo. Sme pri vás nepretržite — 24 hodín denne, každý deň v roku.</p>
-      <div class="hero-actions" data-hero-el>
-        <a href="tel:0903596364" class="btn-gold">NON STOP prevoz — zavolajte</a>
-        <a href="#sluzby" class="link-underline">Naše služby →</a>
+  <!-- ============ POSLEDNÁ CESTA (scrollovaná filmová jazda — frame scrub) ============ -->
+  <section class="journey" id="hero">
+    <div class="journey-pin" id="journey-pin">
+      <img class="journey-poster" id="journey-poster" src="assets/journey-poster.jpg" alt="Flotila vozidiel Paciga v rannej hmle pod Vysokými Tatrami" fetchpriority="high" decoding="async">
+      <canvas id="journey-canvas" aria-hidden="true"
+        data-frames="370" data-path="assets/journey/f-{i}.webp"
+        data-frames-m="185" data-path-m="assets/journey-m/f-{i}.webp"></canvas>
+      <div class="journey-shade" aria-hidden="true"></div>
+
+      <!-- HUD: stanice cesty -->
+      <div class="journey-hud" aria-hidden="true">
+        <span class="jh-line"><i id="jh-fill"></i></span>
+        <span class="jh-station" data-station="0">Rozlúčka</span>
+        <span class="jh-station" data-station="1">Cesta</span>
+        <span class="jh-station" data-station="2">Starostlivosť</span>
+        <span class="jh-station" data-station="3">Spomienka</span>
+        <span class="jh-station" data-station="4">Svetlo</span>
       </div>
-      <div class="hero-branches" data-hero-el>
-        <div class="micro-label">Naše pobočky</div>
-        <div class="branch-chips">
-          <a href="#pobocky" class="chip"><span class="dot-sm"></span>Poprad</a>
-          <a href="#pobocky" class="chip"><span class="dot-sm"></span>Spišská Belá</a>
-          <a href="#pobocky" class="chip"><span class="dot-sm"></span>Liptovský Mikuláš</a>
+
+      <!-- texty staníc (pinované nad canvasom) -->
+      <div class="journey-text jt-hero" data-jt="0">
+        <div class="container">
+          <div class="eyebrow" data-hero-el>Rodinná pohrebná a kamenárska služba · od 2018</div>
+          <h1 id="hero-title"><span class="line"><span>Dôstojná rozlúčka</span></span><span class="line"><span>za&nbsp;každých okolností.</span></span></h1>
+          <p class="hero-lead" data-hero-el>Pohrebné obrady, preprava a kamenárstvo. Sme pri vás nepretržite, každý deň v roku.</p>
+          <div class="hero-actions" data-hero-el>
+            <a href="tel:0903596364" class="btn-gold">NON STOP · 0903 596 364</a>
+            <a href="#sluzby" class="link-underline">Naše služby →</a>
+          </div>
         </div>
       </div>
+      <div class="journey-text jt-mid" data-jt="1">
+        <h2>Zavolajte v&nbsp;ktorúkoľvek hodinu.</h2>
+        <p>Prevoz zosnulého, dokumenty aj celý obrad vybavíme za vás. Aj v noci, aj cez sviatky.</p>
+        <a href="tel:0903596364" class="jt-phone">0903 596 364</a>
+      </div>
+      <div class="journey-text jt-mid" data-jt="2">
+        <div class="badge-pill"><span>Ocenená ako najkrajšia na Slovensku</span></div>
+        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
+      </div>
+      <div class="journey-text jt-mid" data-jt="3">
+        <h2>Kompletná starostlivosť<br>pod jednou strechou</h2>
+        <p>Obrad a pochovanie, kremácia, kvetinová výzdoba, spomienkové predmety aj kamenárstvo.</p>
+      </div>
+      <div class="journey-text jt-mid" data-jt="4">
+        <h2>„Nikdy nezabudnem.“</h2>
+        <p>Spomienkové šperky s odtlačkom prsta. Kúsok blízkeho človeka navždy.</p>
+      </div>
+      <div class="journey-text jt-mid" data-jt="5">
+        <h2>Sme z&nbsp;tohto kraja.<br>A&nbsp;sme tu pre vás.</h2>
+        <p>Poprad, Spišská Belá a Liptovský Mikuláš</p>
+        <a href="tel:0903596364" class="btn-gold jt-cta">NON STOP · 0903 596 364</a>
+      </div>
     </div>
-    <div class="scroll-hint" id="scroll-hint" aria-hidden="true">
-      <span class="scroll-hint-text">NIŽŠIE</span>
-      <span class="scroll-hint-line"></span>
+
+    <!-- reduced-motion / no-JS: kľúčové zábery pod sebou -->
+    <div class="journey-fallback" aria-hidden="true">
+      <img src="assets/journey-poster.jpg" alt="" loading="lazy">
     </div>
   </section>
 
-  <!-- ============ NONSTOP marquee ============ -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track" id="marquee-track">
-      <span>NON STOP 24/7 · Prevoz zosnulých · 0903 596 364 · Poprad · Spišská Belá · Liptovský Mikuláš ·&nbsp;</span><span>NON STOP 24/7 · Prevoz zosnulých · 0903 596 364 · Poprad · Spišská Belá · Liptovský Mikuláš ·&nbsp;</span>
-    </div>
-  </div>
-
   <!-- ============ QUOTE (scrub word reveal) ============ -->
   <section class="quote" id="quote">
+    <div class="orb" style="top:-20%;right:-12%" aria-hidden="true"></div>
     <div class="container quote-inner">
       <div class="quote-mark" aria-hidden="true">“</div>
-      <p id="quote-text">V ťažkých chvíľach nám boli oporou, všetko vybavili spoľahlivo a s úctou. Krásna výzdoba, dôstojný priebeh rozlúčky a ochotný personál.</p>
+      <p id="quote-text">V ťažkých chvíľach nám boli oporou, všetko vybavili spoľahlivo a s úctou.</p>
       <div class="quote-author" data-reveal>Michaela Fontani · recenzia Google</div>
+      <div class="quote-badge" data-reveal><span class="stars" aria-hidden="true">★★★★★</span><span>Hodnotenie rodín na Google</span></div>
     </div>
   </section>
 
@@ -95,7 +122,7 @@
         <div class="gold-rule" data-line aria-hidden="true"></div>
         <div>
           <div class="nonstop-title" data-reveal>Potrebujete pomôcť práve teraz?</div>
-          <div class="nonstop-sub" data-reveal>NON STOP prevoz zosnulých — sme pri vás v ktorúkoľvek hodinu, aj v noci a cez víkendy.</div>
+          <div class="nonstop-sub" data-reveal>NON STOP prevoz zosnulých. Sme pri vás v ktorúkoľvek hodinu, aj v noci a cez víkendy.</div>
         </div>
       </div>
       <div class="nonstop-right" data-reveal>
@@ -106,46 +133,36 @@
     </div>
   </section>
 
-  <!-- ============ SERVICES (pinned horizontal) ============ -->
+  <!-- ============ SERVICES (pinned horizontal, 3 kapitoly) ============ -->
   <section id="sluzby" class="services">
     <div class="services-pin" id="services-pin">
+      <div class="orb" style="top:8%;left:-14%" aria-hidden="true"></div>
+      <div class="orb" style="bottom:-24%;right:-10%" aria-hidden="true"></div>
       <div class="container services-head">
         <div class="eyebrow" data-reveal>Čo pre vás zabezpečíme</div>
         <h2 data-reveal>Kompletná starostlivosť<br>pod jednou strechou</h2>
       </div>
       <div class="services-track" id="services-track">
+        <div class="svc-chapter"><span class="svc-chapter-num">Kapitola I</span><h3>Obrad a preprava</h3><p>Od prvého telefonátu po dôstojnú rozlúčku.</p></div>
         <a class="svc" href="pohrebne-sluzby.html#rakvy"><span class="svc-num">01</span><h3>Rakvy</h3><p>Široký výber elegantných rakiev z prvotriednych materiálov.</p><span class="svc-more">Viac →</span></a>
         <a class="svc has-photo" href="pohrebne-sluzby.html#limuzina"><span class="svc-photo" style="background-image:url('assets/asset-06.jpg')"></span><span class="svc-num">02</span><h3>Pohrebná limuzína</h3><p>Exkluzívna limuzína, ocenená ako najkrajšia na Slovensku.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#chladenie"><span class="svc-num">03</span><h3>Prenosné chladenie</h3><p>Špeciálna technológia chladenia priamo u vás.</p><span class="svc-more">Viac →</span></a>
         <a class="svc has-photo" href="pohrebne-sluzby.html#rozlucka"><span class="svc-photo" style="background-image:url('assets/asset-01.jpg')"></span><span class="svc-num">04</span><h3>Rozlúčka a pochovanie</h3><p>Kompletné zabezpečenie obradu aj organizácie.</p><span class="svc-more">Viac →</span></a>
         <a class="svc has-photo" href="pohrebne-sluzby.html#prevoz"><span class="svc-photo" style="background-image:url('assets/asset-04.jpg')"></span><span class="svc-num">05</span><h3>Prevoz zosnulých</h3><p>NON STOP dôstojný a rýchly prevoz z bytov a nemocníc.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="pohrebne-sluzby.html#kremacia"><span class="svc-num">06</span><h3>Kremácia</h3><p>S obradom alebo bez — s rešpektom k želaniam zosnulého aj pozostalých.</p><span class="svc-more">Viac →</span></a>
+        <a class="svc" href="pohrebne-sluzby.html#kremacia"><span class="svc-num">06</span><h3>Kremácia</h3><p>S obradom alebo bez, s rešpektom k želaniam zosnulého aj pozostalých.</p><span class="svc-more">Viac →</span></a>
         <a class="svc has-photo" href="pohrebne-sluzby.html#medzinarodny-prevoz"><span class="svc-photo" style="background-image:url('assets/asset-09.jpg')"></span><span class="svc-num">07</span><h3>Medzinárodný prevoz</h3><p>Preprava zo zahraničia vrátane vybavenia dokumentov.</p><span class="svc-more">Viac →</span></a>
+        <div class="svc-chapter"><span class="svc-chapter-num">Kapitola II</span><h3>Starostlivosť o pozostalých</h3><p>Čo pomáha niesť smútok: kvety, spomienky, podpora.</p></div>
         <a class="svc" href="pohrebne-sluzby.html#kvetinarstvo"><span class="svc-num">08</span><h3>Kvetinárstvo</h3><p>Vlastná výroba kytíc, vencov a smútočnej výzdoby.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#predpriprava"><span class="svc-num">09</span><h3>Predpríprava pohrebu</h3><p>Naplánujte rozlúčku vopred a odbremeňte blízkych.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#karty"><span class="svc-num">10</span><h3>Spomienkové karty</h3><p>Uctenie pamiatky a zdieľanie odkazu s rodinou.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#oblecenie"><span class="svc-num">11</span><h3>Oblečenie pre zosnulého</h3><p>Kompletné sady oblečenia, s rešpektom a úctou.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" id="kamenarstvo" href="pohrebne-sluzby.html#kamenarstvo"><span class="svc-num">12</span><h3>Kamenárstvo</h3><p>Hrobky, žulové pomníky, montáž a rekonštrukcie.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="pohrebne-sluzby.html#poradenstvo"><span class="svc-num">13</span><h3>Smútkové poradenstvo</h3><p>Podpora a sprevádzanie v procese smútenia.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc has-photo" href="pohrebne-sluzby.html#sperky"><span class="svc-photo" style="background-image:url('assets/asset-08.jpg')"></span><span class="svc-num">14</span><h3>Spomienkové šperky</h3><p>Náramky a retiazky s odtlačkom prsta zosnulého.</p><span class="svc-more">Viac →</span></a>
+        <a class="svc" href="pohrebne-sluzby.html#poradenstvo"><span class="svc-num">12</span><h3>Smútkové poradenstvo</h3><p>Podpora a sprevádzanie v procese smútenia.</p><span class="svc-more">Viac →</span></a>
+        <a class="svc has-photo" href="sperky.html"><span class="svc-photo" style="background-image:url('assets/asset-08.jpg')"></span><span class="svc-num">13</span><h3>Spomienkové šperky</h3><p>Náramky a retiazky s odtlačkom prsta zosnulého.</p><span class="svc-more">Viac →</span></a>
+        <div class="svc-chapter svc-chapter-stone"><span class="svc-chapter-num">Kapitola III</span><h3>Kamenárstvo</h3><p>Spomienka vytesaná do žuly.</p></div>
+        <a class="svc" id="kamenarstvo" href="pohrebne-sluzby.html#kamenarstvo"><span class="svc-num">14</span><h3>Kamenárstvo</h3><p>Hrobky, žulové pomníky, montáž a rekonštrukcie.</p><span class="svc-more">Viac →</span></a>
         <a class="svc" href="pohrebne-sluzby.html#vizualizacia"><span class="svc-num">15</span><h3>3D vizualizácia pomníka</h3><p>Uvidíte výsledok ešte pred samotnou výrobou.</p><span class="svc-more">Viac →</span></a>
       </div>
       <div class="services-progress" aria-hidden="true"><span id="services-bar"></span></div>
-    </div>
-  </section>
-
-  <!-- ============ FLEET showcase (clip reveal) ============ -->
-  <section class="fleet" id="vozidla">
-    <div class="fleet-pin" id="fleet-pin">
-      <div class="fleet-media" id="fleet-media">
-        <img src="assets/asset-04.jpg" alt="Pohrebné limuzíny Paciga pred Vysokými Tatrami">
-        <div class="fleet-shade" aria-hidden="true"></div>
-      </div>
-      <div class="fleet-content" id="fleet-content">
-        <div class="badge-pill"><span class="dot-sm"></span><span>Ocenené · najkrajšia na Slovensku</span></div>
-        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
-        <p>Posledná cesta dôstojná do posledného detailu. Naša ocenená limuzína je súčasťou úcty, ktorú si každý zaslúži.</p>
-      </div>
     </div>
   </section>
 
@@ -158,7 +175,7 @@
       </div>
       <div class="stat" data-reveal>
         <div class="stat-num"><span data-count="3">0</span></div>
-        <div class="stat-label">pobočky · Poprad · Sp. Belá · L. Mikuláš</div>
+        <div class="stat-label">pobočky: Poprad, Spišská Belá a Liptovský Mikuláš</div>
       </div>
       <div class="stat" data-reveal>
         <div class="stat-num">24/7</div>
@@ -169,15 +186,15 @@
 
   <!-- ============ POBOCKY ============ -->
   <section id="pobocky" class="branches">
+    <div class="orb" style="top:-16%;left:30%" aria-hidden="true"></div>
     <div class="container">
       <div class="section-head">
-        <div class="eyebrow" data-reveal>Kde nás nájdete</div>
         <h2 data-reveal>Tri pobočky, jedna rodina</h2>
         <div class="gold-line" data-line aria-hidden="true"></div>
       </div>
       <div class="branch-grid">
         <article class="branch-card" data-reveal>
-          <div class="branch-photo" data-parallax><span style="background-image:url('assets/asset-03.jpg')"></span></div>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="assets/town-poprad.mp4" poster="assets/asset-03.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
           <div class="branch-body">
             <h3>Poprad</h3>
             <p class="branch-addr">Francisciho 3288/35<br>058 01 Poprad</p>
@@ -187,7 +204,7 @@
           </div>
         </article>
         <article class="branch-card" data-reveal>
-          <div class="branch-photo" data-parallax><span style="background-image:url('assets/asset-10.jpg')"></span></div>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="assets/town-bela.mp4" poster="assets/asset-10.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
           <div class="branch-body">
             <h3>Spišská Belá</h3>
             <p class="branch-addr">Letná 17<br>059 01 Spišská Belá</p>
@@ -197,7 +214,7 @@
           </div>
         </article>
         <article class="branch-card" data-reveal>
-          <div class="branch-photo" data-parallax><span style="background-image:url('assets/asset-11.jpg')"></span></div>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="assets/town-lm.mp4" poster="assets/asset-11.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
           <div class="branch-body">
             <h3>Liptovský Mikuláš</h3>
             <p class="branch-addr">Ester Šimerovej Martinčekovej 4506/4<br>031 01 Liptovský Mikuláš</p>
@@ -212,10 +229,10 @@
 
   <!-- ============ OPUSTILI NAS ============ -->
   <section id="opustili" class="memoriam">
+    <div class="orb" style="bottom:-18%;left:-14%" aria-hidden="true"></div>
     <div class="container">
       <div class="memoriam-head">
         <div>
-          <div class="eyebrow" data-reveal>Spomíname</div>
           <h2 data-reveal>Opustili nás</h2>
           <div class="gold-line" data-line aria-hidden="true"></div>
         </div>
@@ -223,36 +240,60 @@
       </div>
       <div class="memoriam-grid">
         <div class="memoriam-card" data-reveal>
-          <div class="memoriam-photo" aria-hidden="true"><span>JS</span></div>
-          <h3>Jozefa Siváková</h3>
-          <div class="memoriam-date">† 28. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-photo" aria-hidden="true"><span>AK</span></div>
+          <h3>Anna Kičáková</h3>
+          <div class="memoriam-date">† 09. 07. 2026</div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="parte/anna-kicakova.html" class="soft-link">Kondolencia</a></div>
         </div>
         <div class="memoriam-card" data-reveal>
-          <div class="memoriam-photo" aria-hidden="true"><span>SB</span></div>
-          <h3>Stanislav Benko</h3>
-          <div class="memoriam-date">† 26. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-photo" aria-hidden="true"><span>AŠ</span></div>
+          <h3>Anna Šilonová</h3>
+          <div class="memoriam-date">† 08. 07. 2026</div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="parte/anna-silonova.html" class="soft-link">Kondolencia</a></div>
         </div>
         <div class="memoriam-card" data-reveal>
-          <div class="memoriam-photo" aria-hidden="true"><span>JB</span></div>
-          <h3>Jozef Biskup</h3>
-          <div class="memoriam-date">† 23. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-photo" aria-hidden="true"><span>HB</span></div>
+          <h3>Helena Badovská</h3>
+          <div class="memoriam-date">† 07. 07. 2026</div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="parte/helena-badovska.html" class="soft-link">Kondolencia</a></div>
         </div>
         <div class="memoriam-card" data-reveal>
-          <div class="memoriam-photo" aria-hidden="true"><span>MO</span></div>
-          <h3>MUDr. Mikuláš Ondo</h3>
-          <div class="memoriam-date">† 22. 06. 2026</div>
-          <div class="memoriam-links"><a href="opustili-nas.html" class="gold-link">Zapáliť sviečku</a><a href="opustili-nas.html" class="soft-link">Kondolencia</a></div>
+          <div class="memoriam-photo" aria-hidden="true"><span>OM</span></div>
+          <h3>Ondrej Mlynár</h3>
+          <div class="memoriam-date">† 06. 07. 2026</div>
+          <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button><a href="parte/ondrej-mlynar.html" class="soft-link">Kondolencia</a></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RECENZIE (svetlá sekcia) ============ -->
+  <section class="reviews" id="recenzie">
+    <div class="container">
+      <div class="reviews-head">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <h2 data-reveal>Skutočné rodiny. Skutočné slová.</h2>
+        <p data-reveal>Recenzie z profilu Google, bez úprav.</p>
+      </div>
+      <div class="reviews-grid">
+        <blockquote class="review" data-reveal>
+          <p>„Ďakujem spoločnosti a chlapcom za poslednú rozlúčku s mojím otcom. Bola krásna a slávnostná.“</p>
+          <footer>Jela Harbin</footer>
+        </blockquote>
+        <blockquote class="review" data-reveal>
+          <p>„Ďakujeme veľmi pekne za zorganizovanie poslednej cesty nášho zosnulého. Prístup váš bol nanajvýš profesionálny a zdvorilý.“</p>
+          <footer>Branislav</footer>
+        </blockquote>
+        <blockquote class="review" data-reveal>
+          <p>„Ďakujeme veľmi pekne za profesionálny a ľudský prístup. Odporúčame každému, kto hľadá spoľahlivé pohrebníctvo.“</p>
+          <footer>Mária Gardošová</footer>
+        </blockquote>
       </div>
     </div>
   </section>
 
   <!-- ============ PARTNERI (marquee) ============ -->
   <section class="partners">
-    <div class="container partners-label"><span class="micro-label" data-reveal>Naši partneri</span></div>
     <div class="partners-marquee" id="partners-marquee">
       <div class="partners-track">
         <span class="partners-set">
@@ -283,8 +324,8 @@
   <section class="cta-band" id="kontakt">
     <div class="cta-inner">
       <h2 data-reveal>Sme pri vás, keď to najviac potrebujete</h2>
-      <p data-reveal>Zavolajte kedykoľvek — poradíme, prevezmeme a s úctou zabezpečíme všetko potrebné.</p>
-      <a href="tel:0903596364" class="btn-gold btn-lg" data-reveal><span class="dot dark"></span>NON STOP · 0903 596 364</a>
+      <p data-reveal>Zavolajte kedykoľvek. Poradíme, prevezmeme a s úctou zabezpečíme všetko potrebné.</p>
+      <a href="tel:0903596364" class="btn-gold btn-lg" data-reveal>NON STOP · 0903 596 364</a>
     </div>
   </section>
 
@@ -292,8 +333,8 @@
   <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <img src="assets/asset-02.png" alt="Paciga — pohrebné a kamenárske služby">
-        <p>Pohrebné a kamenárske služby Paciga s.r.o. Rodinná firma, ktorá vás sprevádza s úctou od roku 2018.</p>
+        <img src="assets/asset-02.png" alt="Paciga, pohrebné a kamenárske služby">
+        <p>Pohrebné a kamenárske služby Paciga. Rodinná firma, ktorá vás sprevádza s úctou od roku 2018.</p>
         <div class="footer-social">
           <a href="https://www.facebook.com/pakspaciga/" target="_blank" rel="noopener">Facebook</a>
           <a href="https://www.youtube.com/@PacigaPohrebneSluzby" target="_blank" rel="noopener">YouTube</a>
@@ -323,6 +364,7 @@
           <a href="o-nas.html">O nás</a>
           <a href="informacie-pre-pozostalych.html">Informácie pre pozostalých</a>
           <a href="pohrebne-sluzby.html">Pohrebné služby</a>
+          <a href="sperky.html">Šperky</a>
           <a href="opustili-nas.html">Opustili nás</a>
           <a href="aktuality.html">Aktuality</a>
           <a href="kontakt.html">Kontakt</a>
@@ -330,7 +372,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="container">© 2026 Paciga s.r.o. · Všetky práva vyhradené</div>
+      <div class="container">© 2026 Paciga · Všetky práva vyhradené</div>
     </div>
   </footer>
 
@@ -340,5 +382,6 @@
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/lenis.min.js"></script>
 <script src="js/main.js"></script>
+<script src="js/journey.js"></script>
 </body>
 </html>

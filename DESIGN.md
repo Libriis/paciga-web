@@ -103,6 +103,16 @@ components:
     style: "centered card, 84px circular portrait with hairline ring (initials on radial-gradient #22242a→#131418 when no photo), name h3 18.5px, tracked date in ink-dim"
   quote-block:
     style: "oversized ghost quote mark (130px, accent-dim), words reveal one-by-one on scroll (opacity 0.14 → 1)"
+  situ-chips:      # help-center "task-first" pattern (informacie-pre-pozostalych)
+    style: "band under hero with micro-label question + pill chips (panel bg, hairline border) anchor-jumping to the matching step; steps carry scroll-margin-top 90px"
+  callbar:         # Apple floating-sticky-bar grafted onto Paciga tokens
+    style: "fixed bottom bar, rgba(12,13,15,0.9) + blur(12px), hairline top; micro-label left, large wide-set phone right; slides in after ~500px scroll (progressive enhancement, hidden without JS); used on informacie-pre-pozostalych and pohrebne-sluzby"
+  first-card-photo:  # .first-card.has-photo — photo variant of the service grid card
+    style: "cover photo at 0.32 opacity under dark gradient, min-height 220px, content bottom-aligned; a.first-card variants get hover lift + reveal .fc-go arrow link"
+  news-tag:
+    style: "uppercase tracked pill chip (11px, hairline border, accent-soft) categorizing news items: Rada / Novinka / Spolupráca"
+  memoriam-extras:
+    style: "month group headers (.memoriam-month, tracked uppercase dim) and funeral info line on cards (.memoriam-rozlucka, 12.5px dim); parte pages carry schema.org Event JSON-LD, an .ics calendar data-URI link and a copy-link button"
 
 motion:
   stack: "Lenis smooth scroll + GSAP ScrollTrigger; no video loops as decoration — movement comes from code over real photos/video (parallax, pins, reveals)"
@@ -117,12 +127,19 @@ motion:
   accessibility: "reduced-motion and mobile fallbacks drop backdrop-filter and heavy effects"
 
 content-rules:
-  - "Slovak, always informal 'ty/tvoj' (tykanie) — even when source material uses vykanie"
+  - "Slovak. The WEBSITE uses formal 'vy/vám' (vykanie) — dignified register for grieving families. Social content (IG captions, reels) uses informal 'ty/tvoj' (tykanie). Do not mix the two."
   - "No emoji in copy; only functional 📍 before an address is allowed"
   - "CTA phrase: 'Napíš nám. Radi ti poradíme.' — never 'bez záväzku' (client repeatedly deleted it)"
   - "No aggressive or salesy CTAs, no prices in hero — visitors are grieving"
   - "Phone numbers are first-class UI: large (22–42px, wide weight), always clickable"
   - "Real photography only (limuzína, priestory, žula) — no stock, no icon illustrations"
+
+light-mode:  # sperky.html only — Apple-gallery patterns grafted onto Paciga tokens
+  scope: "body.page-light; Archivo type and monochrome rule still apply — actions are dark ink pills (.btn-ink), never a hue"
+  canvas: "#f9f9f9 — deliberately equals the studio-photo background so product images blend seamlessly (plus a soft radial mask on .tile-media img)"
+  parchment: "#f1f0ee — warm alternate tile"
+  dark-tiles: "reuse surface-1 (#16181c) for story/CTA tiles; global nav and footer stay dark on light pages"
+  pattern: "edge-to-edge .tile sections, zero gap — the surface-color change IS the divider (Apple rhythm)"
 
 hard-rules:
   - "Monochrome only: if a design element needs emphasis, use white, size, or space — never a hue"
