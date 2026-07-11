@@ -854,6 +854,69 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   .firsts-grid { grid-template-columns: 1fr; }
 }
 
+/* ---- podstránky: typografická hlavička (Kontakt, Opustili nás, Aktuality) ---- */
+.page-head { background: var(--bg); padding: clamp(150px, 20vh, 220px) 0 clamp(50px, 7vh, 80px); }
+.page-head h1 { font-size: clamp(38px, 5.2vw, 72px); line-height: 1.05; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: -0.01em; }
+.page-head-lead { margin-top: 18px; max-width: 56ch; color: var(--muted); font-size: clamp(15px, 1.4vw, 18px); line-height: 1.7; }
+
+/* ---- podstránky: skupiny služieb ---- */
+.svcgroups { background: var(--bg); padding: clamp(80px, 11vh, 130px) 0 clamp(100px, 14vh, 170px); }
+.svcgroup + .svcgroup { margin-top: clamp(70px, 9vh, 110px); }
+.svcgroup-head { margin-bottom: 36px; }
+.svcgroup-head h2 { font-size: clamp(24px, 2.8vw, 36px); }
+.svcgroup-head .gold-line { margin-top: 18px; }
+.svcgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.svcgrid .first-card h3 { font-size: 20px; }
+
+/* ---- podstránky: sprievodca pre pozostalých ---- */
+.guide { background: var(--bg); padding: clamp(90px, 12vh, 150px) 0; }
+.guide + .guide { padding-top: 0; }
+.step { display: grid; grid-template-columns: clamp(70px, 9vw, 120px) 1fr; gap: clamp(20px, 4vw, 56px); padding: clamp(40px, 6vh, 64px) 0; border-top: 1px solid var(--line); }
+.step:last-child { border-bottom: 1px solid var(--line); }
+.step-num { font-size: clamp(40px, 5vw, 68px); font-weight: 680; font-variation-settings: var(--wide); color: var(--dim); line-height: 1; }
+.step-body h3 { font-size: clamp(22px, 2.4vw, 30px); }
+.step-body p { margin-top: 14px; color: var(--muted); font-size: 15.5px; line-height: 1.75; max-width: 66ch; }
+.step-body ul { margin-top: 14px; padding: 0; list-style: none; }
+.step-body li { position: relative; padding: 9px 0 9px 26px; color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 64ch; }
+.step-body li::before { content: ''; position: absolute; left: 2px; top: 17px; width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--gold); }
+.step-note { margin-top: 16px; color: var(--dim); font-size: 14px; font-style: italic; max-width: 62ch; }
+.step-tel { display: inline-block; margin-top: 16px; font-size: clamp(22px, 2.4vw, 30px); font-weight: 660; font-variation-settings: var(--wide); color: var(--gold); }
+.step-tel:hover { color: #ffffff; }
+
+/* ---- podstránky: kontakt ---- */
+.contact-phones { display: flex; flex-wrap: wrap; gap: clamp(30px, 6vw, 90px); margin-top: clamp(36px, 6vh, 60px); }
+.cp-label { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+.cp-num { display: block; margin-top: 10px; font-size: clamp(34px, 4.4vw, 62px); font-weight: 680; font-variation-settings: var(--wide); color: var(--gold); letter-spacing: -0.01em; transition: color 0.3s ease; }
+.cp-num:hover { color: #ffffff; }
+.contact-mail { display: inline-block; margin-top: clamp(28px, 5vh, 44px); font-size: clamp(17px, 1.8vw, 22px); color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 4px; transition: color 0.3s ease; }
+.contact-mail:hover { color: var(--gold); }
+.billing { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(70px, 9vh, 110px) 0; }
+.billing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.bill-item .label { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+.bill-item p { color: var(--muted); font-size: 15.5px; line-height: 1.7; }
+
+/* ---- podstránky: aktuality ---- */
+.news { background: var(--bg); padding: 0 0 clamp(100px, 14vh, 170px); }
+.news-item { display: grid; grid-template-columns: clamp(120px, 16vw, 200px) 1fr; gap: clamp(20px, 4vw, 56px); padding: clamp(34px, 5vh, 52px) 0; border-top: 1px solid var(--line); }
+.news-item:last-child { border-bottom: 1px solid var(--line); }
+.news-date { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); padding-top: 6px; }
+.news-body h3 { font-size: clamp(20px, 2.2vw, 28px); max-width: 26ch; }
+.news-body p { margin-top: 12px; color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 64ch; }
+
+/* ---- podstránky: opustili nás ---- */
+.memorial-note { margin-top: 44px; color: var(--dim); font-size: 14px; max-width: 62ch; }
+
+@media (max-width: 900px) {
+  .svcgrid { grid-template-columns: repeat(2, 1fr); }
+  .billing-grid { grid-template-columns: 1fr; }
+  .news-item { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (max-width: 560px) {
+  .svcgrid { grid-template-columns: 1fr; }
+  .step { grid-template-columns: 1fr; gap: 14px; }
+  .contact-phones { flex-direction: column; }
+}
+
 /* ---- reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   .partners-track, .dot, .orb, .phone-primary { animation: none !important; }
