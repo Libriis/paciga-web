@@ -198,23 +198,32 @@
       },
       defaults: { ease: 'none' }
     });
-    /* okná textov (čas 0–5 = celá jazda; hranice klipov: 0.87 / 1.74 / 2.39 / 3.26 / 4.13)
-       Informačný oblúk: kto sme → čo robiť + telefón → limuzína → rozsah služieb
-       → spomienkové šperky → kde sme + kontakt */
-    /* krátke fady (0.18), dlhé držanie — text má byť na obrazovke väčšinu
-       života svojho klipu, nie len prebliknúť */
-    jTl
-      .to(jTexts[0], { autoAlpha: 0, duration: 0.25 }, 0.62)
-      .fromTo(jTexts[1], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.18 }, 0.92)
-      .to(jTexts[1], { autoAlpha: 0, duration: 0.18 }, 1.68)
-      .fromTo(jTexts[2], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.18 }, 1.82)
-      .to(jTexts[2], { autoAlpha: 0, duration: 0.18 }, 2.36)
-      .fromTo(jTexts[3], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.18 }, 2.52)
-      .to(jTexts[3], { autoAlpha: 0, duration: 0.18 }, 3.22)
-      .fromTo(jTexts[4], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.18 }, 3.38)
-      .to(jTexts[4], { autoAlpha: 0, duration: 0.18 }, 4.08)
-      .fromTo(jTexts[5], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 }, 4.32)
-      .to({}, { duration: 0.68 });
+    /* Okná textov (čas 0–1 = celý priebeh jazdy; švy klipov pri
+       0.174 / 0.348 / 0.478 / 0.652 / 0.826 — klipy 8+8+6+8+8+8 s).
+       Informačný oblúk: kto sme → čo robiť + telefón → limuzína
+       → rozsah služieb → spomienkové šperky → kde sme + kontakt.
+       Jednotný rytmus: po šve krátky nádych len s obrazom, text nabehne
+       fadom s miernym zdvihom, drží väčšinu scény a odchádza tesne pred
+       ďalším švom. Naraz je na obrazovke vždy len jeden text. */
+    var jtFade = 0.038;
+    var jtLift = 0.046;
+    function jtIn(el, at, dur) {
+      jTl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: dur || jtFade }, at)
+         .fromTo(el.children, { y: 34 }, { y: 0, duration: jtLift, ease: 'power2.out', stagger: 0.006 }, at);
+    }
+    function jtOut(el, at, dur) {
+      jTl.to(el, { autoAlpha: 0, duration: dur || jtFade }, at)
+         .to(el.children, { y: -30, duration: jtLift, ease: 'power2.in', stagger: 0.004 }, at);
+    }
+    /* hero drží celú scénu hmly a odíde pred švom prvého klipu */
+    jTl.to(jTexts[0], { autoAlpha: 0, duration: 0.05 }, 0.112)
+       .to(jTexts[0].children, { y: -34, duration: 0.05, ease: 'power1.in' }, 0.112);
+    jtIn(jTexts[1], 0.180); jtOut(jTexts[1], 0.304);  /* sprievod */
+    jtIn(jTexts[2], 0.354); jtOut(jTexts[2], 0.444);  /* limuzína */
+    jtIn(jTexts[3], 0.494); jtOut(jTexts[3], 0.610);  /* starostlivosť */
+    jtIn(jTexts[4], 0.660); jtOut(jTexts[4], 0.784);  /* šperky */
+    jtIn(jTexts[5], 0.834, 0.052);                    /* záver: kraj + CTA, zostáva */
+    jTl.to({}, { duration: 0.114 }, 0.886);           /* dotiahnutie osi na 1.0 */
   }
 
   /* sviečky v Opustili nás — zapálenie zostáva uložené v prehliadači */
