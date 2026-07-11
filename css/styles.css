@@ -720,7 +720,6 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   font-variation-settings: var(--wide);
   color: var(--gold);
 }
-.jt-scroll { margin-top: 30px; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); }
 @media (max-width: 700px) {
   .journey-hud { display: none; }
   .jt-hero h1 { font-size: clamp(34px, 10vw, 48px); }
@@ -794,26 +793,25 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   100% { transform: scaleY(1.04) translateX(-0.4px); }
 }
 
-/* ---- recenzie (svetlá sekcia) ---- */
-.reviews { background: #f4f4f4; color: #1c1d20; padding: clamp(100px, 14vh, 170px) 0; }
+/* ---- recenzie (tmavá sekcia, Page Theme Lock: celá stránka dark) ---- */
+.reviews { background: var(--bg2); border-block: 1px solid var(--line); color: var(--text); padding: clamp(100px, 14vh, 170px) 0; }
 .reviews-head { text-align: center; margin-bottom: 56px; }
-.reviews-head .stars { color: #1c1d20; font-size: 20px; letter-spacing: 6px; }
-.reviews-head h2 { margin-top: 16px; font-size: clamp(28px, 3.6vw, 46px); color: #1c1d20; }
-.reviews-head p { margin-top: 12px; color: rgba(28, 29, 32, 0.6); font-size: 14.5px; }
+.reviews-head .stars { color: var(--text); font-size: 20px; letter-spacing: 6px; }
+.reviews-head h2 { margin-top: 16px; font-size: clamp(28px, 3.6vw, 46px); }
+.reviews-head p { margin-top: 12px; color: var(--muted); font-size: 14.5px; }
 .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .review {
   margin: 0;
-  background: #fff;
-  border: 1px solid #dcdcdc;
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: 18px;
   padding: 30px 28px;
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
-.review p { font-size: 15.5px; line-height: 1.65; color: #2a2b2f; }
-.review footer { font-size: 13px; letter-spacing: 0.08em; color: rgba(28, 29, 32, 0.55); }
-.review footer::before { content: '— '; }
+.review p { font-size: 15.5px; line-height: 1.65; color: rgba(245, 245, 245, 0.86); }
+.review footer { font-size: 13px; letter-spacing: 0.08em; color: var(--dim); }
 @media (max-width: 900px) {
   .reviews-grid { grid-template-columns: 1fr; }
 }
