@@ -1,6 +1,6 @@
 /* ============================================================
    Paciga — scrollytelling homepage
-   dark #0c0d0f · gold #d8b56e · Archivo variable (self-hosted)
+   dark #0c0d0f · akcent biela #f5f5f5 (cierno-biela schema) · Archivo variable (self-hosted)
    ============================================================ */
 
 /* ---- fonts (self-hosted, subset ranges from Google Fonts) ---- */
@@ -42,9 +42,9 @@
   --text: #f5f5f5;
   --muted: rgba(245, 245, 245, 0.55);
   --dim: rgba(245, 245, 245, 0.35);
-  --gold: #d8b56e;
-  --gold-soft: rgba(216, 181, 110, 0.55);
-  --gold-dim: rgba(216, 181, 110, 0.18);
+  --gold: #f5f5f5; /* akcent: biela (cierno-biela schema) */
+  --gold-soft: rgba(245, 245, 245, 0.55);
+  --gold-dim: rgba(245, 245, 245, 0.18);
   --font: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --wide: 'wdth' 110;
   --xwide: 'wdth' 125;
@@ -97,7 +97,7 @@ h3 { font-size: 20px; }
   width: 72px;
   height: 2px;
   margin-top: 22px;
-  background: linear-gradient(90deg, var(--gold), rgba(216, 181, 110, 0));
+  background: linear-gradient(90deg, var(--gold), rgba(245, 245, 245, 0));
   transform-origin: left center;
 }
 .gold-rule { width: 3px; align-self: stretch; background: var(--gold); transform-origin: top center; }
@@ -114,7 +114,7 @@ h3 { font-size: 20px; }
   border-radius: 999px;
   transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease, background 0.35s ease;
 }
-.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(216, 181, 110, 0.25); background: #e3c481; }
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(245, 245, 245, 0.25); background: #ffffff; }
 .btn-lg { font-size: 17px; padding: 20px 38px; }
 
 .link-underline {
@@ -127,20 +127,20 @@ h3 { font-size: 20px; }
 }
 .link-underline:hover { background-size: 100% 1px; color: var(--text); }
 .link-underline.gold { color: var(--gold); }
-.link-underline.gold:hover { color: #e3c481; }
+.link-underline.gold:hover { color: #ffffff; }
 
 /* jediná sémantická bodka na stránke: NON STOP dostupnosť v nav CTA */
 .dot {
   width: 8px; height: 8px; border-radius: 50%;
-  background: #3ddc84;
-  box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.5);
+  background: #f5f5f5;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
   animation: pulse 2.2s infinite;
   flex: 0 0 auto;
 }
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.45); }
-  70% { box-shadow: 0 0 0 9px rgba(61, 220, 132, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45); }
+  70% { box-shadow: 0 0 0 9px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
 }
 
 /* ---- scroll progress ---- */
@@ -185,7 +185,7 @@ h3 { font-size: 20px; }
   font-size: 13px;
   font-weight: 650;
   color: var(--gold);
-  border: 1px solid rgba(216, 181, 110, 0.4);
+  border: 1px solid rgba(245, 245, 245, 0.4);
   padding: 9px 16px;
   border-radius: 999px;
   transition: background 0.3s ease, border-color 0.3s ease;
@@ -236,7 +236,7 @@ h3 { font-size: 20px; }
 .nonstop-sub { color: var(--muted); margin-top: 8px; max-width: 52ch; }
 .nonstop-right { display: flex; flex-direction: column; gap: 6px; }
 .phone-primary { font-size: clamp(30px, 3.4vw, 42px); font-weight: 680; font-variation-settings: var(--wide); color: var(--gold); margin-top: 8px; transition: color 0.3s ease; }
-.phone-primary:hover { color: #e3c481; }
+.phone-primary:hover { color: #ffffff; }
 .phone-secondary { font-size: 19px; font-weight: 560; color: var(--muted); transition: color 0.3s ease; }
 .phone-secondary:hover { color: var(--text); }
 
@@ -266,7 +266,7 @@ h3 { font-size: 20px; }
   overflow: hidden;
   transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.svc:hover { border-color: rgba(216, 181, 110, 0.45); background: var(--panel2); transform: translateY(-6px); }
+.svc:hover { border-color: rgba(245, 245, 245, 0.45); background: var(--panel2); transform: translateY(-6px); }
 .svc-num { font-size: 13px; font-weight: 650; letter-spacing: 0.14em; color: var(--gold); margin-bottom: auto; }
 .svc h3 { margin-top: 84px; font-size: 21px; }
 .svc p { margin-top: 10px; font-size: 14.5px; color: var(--muted); }
@@ -325,7 +325,7 @@ h3 { font-size: 20px; }
   text-transform: uppercase;
   font-weight: 600;
   color: var(--gold);
-  border: 1px solid rgba(216, 181, 110, 0.4);
+  border: 1px solid rgba(245, 245, 245, 0.4);
   background: rgba(12, 13, 15, 0.55);
   backdrop-filter: blur(8px);
   padding: 10px 18px;
@@ -350,7 +350,7 @@ h3 { font-size: 20px; }
   overflow: hidden;
   transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.branch-card:hover { border-color: rgba(216, 181, 110, 0.4); transform: translateY(-6px); }
+.branch-card:hover { border-color: rgba(245, 245, 245, 0.4); transform: translateY(-6px); }
 .branch-photo { height: 210px; overflow: hidden; position: relative; }
 .branch-photo span {
   position: absolute; inset: -14% 0;
@@ -365,7 +365,7 @@ h3 { font-size: 20px; }
 .branch-body h3 { font-size: 24px; }
 .branch-addr { margin-top: 12px; color: var(--muted); font-size: 15px; }
 .branch-tel { display: inline-block; margin-top: 14px; font-size: 22px; font-weight: 660; font-variation-settings: var(--wide); color: var(--gold); transition: color 0.3s ease; }
-.branch-tel:hover { color: #e3c481; }
+.branch-tel:hover { color: #ffffff; }
 .branch-hours { margin-top: 6px; margin-bottom: 18px; font-size: 13px; color: var(--dim); letter-spacing: 0.04em; }
 
 /* ---- memoriam ---- */
@@ -380,12 +380,12 @@ h3 { font-size: 20px; }
   text-align: center;
   transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.memoriam-card:hover { border-color: rgba(216, 181, 110, 0.35); transform: translateY(-5px); }
+.memoriam-card:hover { border-color: rgba(245, 245, 245, 0.35); transform: translateY(-5px); }
 .memoriam-photo {
   width: 84px; height: 84px;
   margin: 0 auto 20px;
   border-radius: 50%;
-  border: 1px solid rgba(216, 181, 110, 0.35);
+  border: 1px solid rgba(245, 245, 245, 0.35);
   background: radial-gradient(circle at 35% 30%, #22242a, #131418);
   display: grid;
   place-items: center;
@@ -398,7 +398,7 @@ h3 { font-size: 20px; }
 .memoriam-date { margin-top: 8px; font-size: 13.5px; color: var(--dim); letter-spacing: 0.08em; }
 .memoriam-links { display: flex; justify-content: center; gap: 18px; margin-top: 20px; }
 .gold-link { font-size: 13.5px; font-weight: 600; color: var(--gold); transition: color 0.3s ease; }
-.gold-link:hover { color: #e3c481; }
+.gold-link:hover { color: #ffffff; }
 .soft-link { font-size: 13.5px; color: var(--muted); transition: color 0.3s ease; }
 .soft-link:hover { color: var(--text); }
 
@@ -422,7 +422,7 @@ h3 { font-size: 20px; }
 /* ---- CTA band ---- */
 .cta-band {
   background:
-    radial-gradient(90% 120% at 50% 130%, rgba(216, 181, 110, 0.14), transparent 60%),
+    radial-gradient(90% 120% at 50% 130%, rgba(245, 245, 245, 0.14), transparent 60%),
     var(--bg2);
   border-top: 1px solid var(--line);
   padding: clamp(110px, 16vh, 200px) 24px;
@@ -548,7 +548,7 @@ h3 { font-size: 20px; }
   /* bez filter: blur — radial-gradient je mäkký sám o sebe a blur(60px)
      nad celou plochou stál GPU nepretržitý výkon */
   opacity: 0.5;
-  background: radial-gradient(circle, rgba(216, 181, 110, 0.16), rgba(216, 181, 110, 0.05) 45%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 245, 245, 0.16), rgba(245, 245, 245, 0.05) 45%, transparent 70%);
   animation: orbDrift 26s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -577,7 +577,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 /* ---- shimmer na NON STOP telefóne (motív: upriamiť na kľúčovú akciu) ---- */
 .phone-primary {
-  background: linear-gradient(100deg, var(--gold) 40%, #f0dcae 50%, var(--gold) 60%);
+  background: linear-gradient(100deg, var(--gold) 40%, #ffffff 50%, var(--gold) 60%);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -740,7 +740,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   flex-direction: column;
   justify-content: flex-end;
   padding: 26px 30px 34px;
-  border-left: 1px solid rgba(216, 181, 110, 0.4);
+  border-left: 1px solid rgba(245, 245, 245, 0.4);
   overflow: hidden;
 }
 .svc-chapter-num { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
@@ -755,7 +755,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   background-position: center;
   z-index: -1;
 }
-.svc-chapter-stone { border-radius: 18px; border: 1px solid rgba(216, 181, 110, 0.25); }
+.svc-chapter-stone { border-radius: 18px; border: 1px solid rgba(245, 245, 245, 0.25); }
 @media (max-width: 900px) {
   /* mobil: vertikálny zoznam po kapitolách namiesto pásu */
   .services-track {
@@ -768,7 +768,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   .svc { width: 100%; min-height: 0; padding: 22px 22px 52px; }
   .svc h3 { margin-top: 42px; }
   .svc-more { opacity: 1; transform: none; }
-  .svc-chapter { width: 100%; min-height: 0; padding: 34px 4px 10px; border-left: none; border-top: 1px solid rgba(216, 181, 110, 0.4); }
+  .svc-chapter { width: 100%; min-height: 0; padding: 34px 4px 10px; border-left: none; border-top: 1px solid rgba(245, 245, 245, 0.4); }
   .svc-chapter-stone { padding: 34px 22px 22px; border-radius: 18px; }
 }
 
@@ -778,8 +778,8 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   display: block;
   width: 7px; height: 12px;
   border-radius: 50% 50% 44% 44%;
-  background: radial-gradient(circle at 50% 78%, #f4d9a0 0%, #ddab52 55%, rgba(221, 171, 82, 0) 100%);
-  box-shadow: 0 0 12px 3px rgba(216, 181, 110, 0.5);
+  background: radial-gradient(circle at 50% 78%, #ffffff 0%, #cfcfcf 55%, rgba(207, 207, 207, 0) 100%);
+  box-shadow: 0 0 12px 3px rgba(245, 245, 245, 0.5);
   opacity: 0;
   transform: scaleY(0.4);
   transform-origin: 50% 100%;
@@ -795,16 +795,16 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 }
 
 /* ---- recenzie (svetlá sekcia) ---- */
-.reviews { background: #f2efe9; color: #1c1d20; padding: clamp(100px, 14vh, 170px) 0; }
+.reviews { background: #f4f4f4; color: #1c1d20; padding: clamp(100px, 14vh, 170px) 0; }
 .reviews-head { text-align: center; margin-bottom: 56px; }
-.reviews-head .stars { color: #b8934d; font-size: 20px; letter-spacing: 6px; }
+.reviews-head .stars { color: #1c1d20; font-size: 20px; letter-spacing: 6px; }
 .reviews-head h2 { margin-top: 16px; font-size: clamp(28px, 3.6vw, 46px); color: #1c1d20; }
 .reviews-head p { margin-top: 12px; color: rgba(28, 29, 32, 0.6); font-size: 14.5px; }
 .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .review {
   margin: 0;
   background: #fff;
-  border: 1px solid #dcd7cc;
+  border: 1px solid #dcdcdc;
   border-radius: 18px;
   padding: 30px 28px;
   display: flex;
