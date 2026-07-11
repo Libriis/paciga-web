@@ -167,23 +167,44 @@
   if (document.readyState === 'complete') { DBG.stage = 'coarse'; pump(); }
 
   /* ---------- render loop ----------
-     Zobrazená pozícia sa k cieľu približuje interpoláciou (lerp) s minimálnou
-     rýchlosťou — dobiehanie na konci „dosadne", nespomaľuje donekonečna.
-     Sub-frame pohyb kreslí draw() ako prelínanie susedných záberov. */
+     Počas pohybu sa zobrazená pozícia dobieha lerpom a sub-frame pohyb kreslí
+     draw() ako prelínanie susedných záberov. Keď scroll takmer stojí (chvost
+     scrubu), jazda sa USADÍ na najbližší celý frame — inak by pomaly sa
+     meniace prelínanie pôsobilo ako chvenie obrazu. */
   var shown = -1;      /* float pozícia zobrazeného framu */
   var lastDrawn = -9;  /* naposledy nakreslená pozícia */
+  var prevTarget = -1; /* na meranie rýchlosti cieľa */
+  var stillCount = 0;  /* koľko rAF po sebe sa cieľ takmer nehýbe */
+  var settleTarget = -1;
   function loop() {
     requestAnimationFrame(loop);
     var p = Math.min(Math.max(window.__journeyProgress || 0, 0), 1);
     var target = p * (TOTAL - 1);
     if (shown < 0) shown = target;
-    var diff = target - shown;
+
+    var v = prevTarget < 0 ? 0 : target - prevTarget;
+    prevTarget = target;
+    if (Math.abs(v) > 0.25) stillCount = 0;
+    else if (Math.abs(v) < 0.1) stillCount++;
+    var settling = stillCount > 5;
+
+    var goal;
+    if (settling) {
+      /* hysteréza 0.6 framu — usadzovací cieľ nepreskakuje na hranici .5 */
+      if (settleTarget < 0 || Math.abs(settleTarget - target) > 0.6) settleTarget = Math.round(target);
+      goal = Math.max(0, Math.min(TOTAL - 1, settleTarget));
+    } else {
+      settleTarget = -1;
+      goal = target;
+    }
+
+    var diff = goal - shown;
     if (Math.abs(diff) > 0.01) lastDir = diff > 0 ? 1 : -1;
     if (Math.abs(diff) < 0.02) {
-      shown = target;
+      shown = goal;
     } else {
-      /* proporčné dobiehanie so stropom 6 a minimom 0.3 framu za rAF */
-      var step = Math.max(Math.abs(diff) * 0.22, 0.3);
+      /* proporčné dobiehanie so stropom 6; pri usadzovaní jemnejšie minimum */
+      var step = Math.max(Math.abs(diff) * 0.22, settling ? 0.12 : 0.3);
       shown += lastDir * Math.min(step, Math.min(6, Math.abs(diff)));
     }
     ensureBitmaps(Math.round(shown));
