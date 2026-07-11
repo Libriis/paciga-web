@@ -689,6 +689,21 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   opacity: 0;
   pointer-events: none;
 }
+/* lokálny scrim: tmavý gradient za textom kvôli čitateľnosti nad svetlými
+   zábermi — zhasína spolu s textom, film globálne nestmavuje */
+.journey-text::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.jt-mid::before {
+  background: radial-gradient(60% 55% at 50% 50%, rgba(12, 13, 15, 0.55), rgba(12, 13, 15, 0.22) 55%, transparent 78%);
+}
+.jt-hero::before {
+  background: linear-gradient(100deg, rgba(12, 13, 15, 0.6), rgba(12, 13, 15, 0.22) 48%, transparent 72%);
+}
 .journey-text.is-on { pointer-events: auto; }
 .journey-text.jt-hero { opacity: 1; /* bez JS musí byť hero text viditeľný */ }
 .jt-hero h1 {
