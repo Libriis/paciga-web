@@ -143,19 +143,6 @@ h3 { font-size: 20px; }
   100% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0); }
 }
 
-/* ---- 3D vrstva (pierko + častice) ---- */
-#gl3d {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 55;
-  pointer-events: none;
-  /* screen blend: čierna = neviditeľná — aj keby prehliadač zložil canvas
-     ako nepriehľadný, stránku nikdy nezačierni (dizajn je tmavý, pierko biele) */
-  mix-blend-mode: screen;
-}
-
 /* ---- scroll progress ---- */
 #progress {
   position: fixed;
