@@ -231,20 +231,6 @@
       .to({}, { duration: 0.65 });
   }
 
-  /* spoločná WebGL sonda pre 3D scény (limuzína, kniha) */
-  var glOK = (function () {
-    try {
-      var c = document.createElement('canvas');
-      return !!(c.getContext('webgl2') || c.getContext('webgl'));
-    } catch (e) { return false; }
-  })();
-  var bookFallback = reduced || window.innerWidth < 901 || !glOK;
-  if (bookFallback) {
-    document.documentElement.classList.add('book-fallback');
-    var bookCss = document.getElementById('book-css');
-    if (bookCss) bookCss.removeAttribute('hidden');
-  }
-
   /* sviečky v Opustili nás — zapálenie zostáva uložené v prehliadači */
   var litKey = 'paciga-candles';
   var lit = [];
@@ -355,42 +341,6 @@
           }
         }
       });
-    }
-
-    /* kniha spomienok: pin + scrub, samotné 3D kreslí book3d.js */
-    var bookPin = document.getElementById('book-pin');
-    if (bookPin && !bookFallback) {
-      window.__bookProgress = 0;
-      var caps = [
-        'Keď obrad skončí, spomienka zostáva. Listujte scrollom.',
-        'Spomienkové šperky s odtlačkom prsta — „Nikdy nezabudnem.“',
-        'Spomienkové karty — odkaz, ktorý si rodina ponechá.',
-        'Kondolencie — tichá spomienka patrí všetkým.'
-      ];
-      var capEl = document.getElementById('book-cap');
-      var capIdx = 0;
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: bookPin,
-          start: 'top top',
-          end: '+=280%',
-          pin: true,
-          scrub: 1,
-          onUpdate: function (self) {
-            window.__bookProgress = self.progress;
-            var idx = self.progress < 0.22 ? 0 : self.progress < 0.5 ? 1 : self.progress < 0.76 ? 2 : 3;
-            if (idx !== capIdx && capEl) {
-              capIdx = idx;
-              gsap.to(capEl, {
-                opacity: 0, duration: 0.18, onComplete: function () {
-                  capEl.textContent = caps[capIdx];
-                  gsap.to(capEl, { opacity: 1, duration: 0.3 });
-                }
-              });
-            }
-          }
-        }
-      }).to({}, { duration: 1 }); /* dĺžku drží scrub — kreslenie rieši modul */
     }
 
     /* 3D tilt kariet za kurzorom */

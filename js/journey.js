@@ -29,31 +29,52 @@
 
   function src(i) { return PATH.replace('{i}', String(i + 1).padStart(4, '0')); }
 
-  /* ---------- veľkosť ---------- */
-  var W = 0, H = 0, DPR = 1;
-  function size() {
-    var r = pinEl.getBoundingClientRect();
-    DPR = Math.min(window.devicePixelRatio || 1, 1.5);
-    W = Math.round(r.width * DPR);
-    H = Math.round(r.height * DPR);
-    canvas.width = W;
-    canvas.height = H;
-    needsRender = true;
-  }
-  size();
-  window.addEventListener('resize', size);
-
-  /* ---------- kreslenie (cover-fit) ---------- */
+  /* ---------- kreslenie ----------
+     Canvas beží v natívnom rozlíšení frames (1:1 blit bez škálovania);
+     na viewport ho roztiahne GPU cez CSS object-fit: cover. */
   function draw(i) {
     var im = frames[i];
     if (!im || !ready[i]) return false;
-    var ir = im.width / im.height, cr = W / H;
-    var sw = im.width, sh = im.height, sx = 0, sy = 0;
-    if (ir > cr) { sw = im.height * cr; sx = (im.width - sw) / 2; }
-    else { sh = im.width / cr; sy = (im.height - sh) / 2; }
-    ctx.drawImage(im, sx, sy, sw, sh, 0, 0, W, H);
+    if (canvas.width !== im.width || canvas.height !== im.height) {
+      canvas.width = im.width;
+      canvas.height = im.height;
+    }
+    var bm = bitmaps.get(i);
+    ctx.drawImage(bm && bm.width ? bm : im, 0, 0);
     DBG.drawn++;
     return true;
+  }
+
+  /* ---------- rolujúce okno dekódovaných bitmap ----------
+     ImageBitmap drží pixely natrvalo dekódované — okolie prehrávacej hlavy
+     sa tak kreslí okamžite a nič sa nedekóduje uprostred scrollu. */
+  var bitmaps = new Map();
+  var AHEAD = 16, BEHIND = 8, KEEP = 26;
+  var lastDir = 1;
+
+  function requestBitmap(i) {
+    if (bitmaps.has(i) || !ready[i] || !('createImageBitmap' in window)) return;
+    bitmaps.set(i, null); /* pending */
+    createImageBitmap(frames[i]).then(function (bm) {
+      if (bitmaps.has(i)) {
+        bitmaps.set(i, bm);
+        if (i === current) needsRender = true;
+      } else {
+        bm.close();
+      }
+    }, function () { bitmaps.delete(i); });
+  }
+
+  function ensureBitmaps(center) {
+    var back = lastDir > 0 ? BEHIND : AHEAD;
+    var fwd = lastDir > 0 ? AHEAD : BEHIND;
+    for (var i = Math.max(0, center - back); i <= Math.min(TOTAL - 1, center + fwd); i++) requestBitmap(i);
+    bitmaps.forEach(function (bm, k) {
+      if (Math.abs(k - center) > KEEP) {
+        if (bm && bm.close) bm.close();
+        bitmaps.delete(k);
+      }
+    });
   }
 
   /* najbližší načítaný frame k cieľu (preferuje smer dozadu — plynulejšie) */
@@ -138,8 +159,10 @@
     var target = p * (TOTAL - 1);
     if (shown < 0) shown = target;
     var diff = target - shown;
+    if (Math.abs(diff) > 0.01) lastDir = diff > 0 ? 1 : -1;
     /* max ~6 frames za rAF — dosť na dobehnutie, málo na trhanie */
     shown += Math.abs(diff) < 0.05 ? diff : Math.max(-6, Math.min(6, diff * 0.22));
+    ensureBitmaps(Math.round(shown));
     var idx = nearestReady(Math.round(shown));
     if (idx === -1) return;
     if (idx === current && !needsRender) return;
