@@ -905,6 +905,36 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 /* ---- podstránky: opustili nás ---- */
 .memorial-note { margin-top: 44px; color: var(--dim); font-size: 14px; max-width: 62ch; }
+.memoriam-link { display: block; color: inherit; }
+.memoriam-link:hover h3 { color: #ffffff; }
+
+/* ---- parte detail ---- */
+.parte-back { display: inline-block; margin-bottom: 34px; font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
+.parte-back:hover { color: var(--gold); }
+.parte-head { display: flex; align-items: center; gap: clamp(28px, 4vw, 56px); }
+.parte-avatar { flex: none; width: clamp(110px, 14vw, 160px); height: clamp(110px, 14vw, 160px); border-radius: 50%; background: var(--panel); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: clamp(34px, 4vw, 52px); font-weight: 660; font-variation-settings: var(--wide); color: var(--dim); letter-spacing: 0.04em; }
+.parte-head h1 { font-size: clamp(34px, 4.6vw, 62px); }
+.parte-dates { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px 34px; color: var(--muted); font-size: 15.5px; }
+.parte-dates .label { display: block; font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 5px; }
+.parte-info { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(70px, 9vh, 110px) 0; }
+.parte-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; max-width: 880px; }
+.parte-grid .first-card .label { font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+.parte-grid .first-card .value { font-size: clamp(19px, 2vw, 24px); font-weight: 640; font-variation-settings: var(--wide); line-height: 1.35; }
+.parte-candlesec { background: var(--bg); padding: clamp(80px, 11vh, 130px) 0; }
+.parte-candle { max-width: 420px; margin: 0 auto; }
+.parte-candlenote { margin-top: 26px; text-align: center; color: var(--dim); font-size: 14px; }
+.parte-condol { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(80px, 11vh, 130px) 0; }
+.condolence { max-width: 760px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); padding: clamp(26px, 3.4vw, 40px); }
+.condolence p { font-family: var(--serif, inherit); font-size: clamp(16px, 1.7vw, 19px); line-height: 1.7; color: var(--muted); }
+.condolence footer { margin-top: 18px; font-size: 13px; letter-spacing: 0.08em; color: var(--dim); }
+.condol-actions { margin-top: 34px; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+.condol-note { color: var(--dim); font-size: 13.5px; }
+.parte-flowers { background: var(--bg); padding: clamp(80px, 11vh, 130px) 0; }
+.parte-flowers p { color: var(--muted); font-size: 15.5px; line-height: 1.75; max-width: 58ch; margin-top: 18px; }
+@media (max-width: 700px) {
+  .parte-head { flex-direction: column; align-items: flex-start; }
+  .parte-grid { grid-template-columns: 1fr; }
+}
 
 @media (max-width: 900px) {
   .svcgrid { grid-template-columns: repeat(2, 1fr); }
