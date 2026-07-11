@@ -245,6 +245,26 @@
     });
   });
 
+  /* parte detail: veľká sviečka v memoriál-hero (zdieľa uložené zapálenia) */
+  var phero = document.querySelector('.phero');
+  if (phero) {
+    var pheroName = phero.getAttribute('data-name') || '';
+    var pheroBtn = document.getElementById('phero-light');
+    if (lit.indexOf(pheroName) !== -1) phero.classList.add('lit');
+    if (pheroBtn) {
+      pheroBtn.setAttribute('aria-pressed', phero.classList.contains('lit') ? 'true' : 'false');
+      pheroBtn.addEventListener('click', function () {
+        if (phero.classList.contains('lit')) return;
+        phero.classList.add('lit');
+        pheroBtn.setAttribute('aria-pressed', 'true');
+        if (pheroName && lit.indexOf(pheroName) === -1) {
+          lit.push(pheroName);
+          try { localStorage.setItem(litKey, JSON.stringify(lit)); } catch (e) {}
+        }
+      });
+    }
+  }
+
   /* ---------- quote: word-by-word scrub reveal ---------- */
   var quoteText = document.getElementById('quote-text');
   if (quoteText) {

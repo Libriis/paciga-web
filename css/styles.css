@@ -908,32 +908,45 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .memoriam-link { display: block; color: inherit; }
 .memoriam-link:hover h3 { color: #ffffff; }
 
-/* ---- parte detail ---- */
-.parte-back { display: inline-block; margin-bottom: 34px; font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
+/* ---- parte detail: memoriál ---- */
+.phero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; background: var(--bg); }
+.phero-glow { position: absolute; left: 50%; top: 36%; width: min(74vw, 920px); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgba(245, 245, 245, 0.11), rgba(245, 245, 245, 0.035) 42%, transparent 70%); opacity: 0.3; transition: opacity 1.4s ease; pointer-events: none; }
+.phero.lit .phero-glow { opacity: 1; animation: pheroBreath 5.5s ease-in-out infinite alternate; }
+@keyframes pheroBreath { from { transform: translate(-50%, -50%) scale(1); } to { transform: translate(-50%, -50%) scale(1.07); } }
+.phero-mark { position: absolute; right: -4%; bottom: -12%; font-size: clamp(280px, 44vw, 640px); line-height: 1; font-weight: 680; font-variation-settings: var(--wide); color: rgba(245, 245, 245, 0.028); pointer-events: none; user-select: none; }
+.phero-inner { position: relative; z-index: 1; width: 100%; text-align: center; padding: 150px 24px 90px; }
+.parte-back { position: absolute; z-index: 2; top: 104px; left: clamp(24px, 4vw, 64px); font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
 .parte-back:hover { color: var(--gold); }
-.parte-head { display: flex; align-items: center; gap: clamp(28px, 4vw, 56px); }
-.parte-avatar { flex: none; width: clamp(110px, 14vw, 160px); height: clamp(110px, 14vw, 160px); border-radius: 50%; background: var(--panel); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: clamp(34px, 4vw, 52px); font-weight: 660; font-variation-settings: var(--wide); color: var(--dim); letter-spacing: 0.04em; }
-.parte-head h1 { font-size: clamp(34px, 4.6vw, 62px); }
-.parte-dates { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px 34px; color: var(--muted); font-size: 15.5px; }
-.parte-dates .label { display: block; font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 5px; }
-.parte-info { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(70px, 9vh, 110px) 0; }
-.parte-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; max-width: 880px; }
-.parte-grid .first-card .label { font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
-.parte-grid .first-card .value { font-size: clamp(19px, 2vw, 24px); font-weight: 640; font-variation-settings: var(--wide); line-height: 1.35; }
-.parte-candlesec { background: var(--bg); padding: clamp(80px, 11vh, 130px) 0; }
-.parte-candle { max-width: 420px; margin: 0 auto; }
-.parte-candlenote { margin-top: 26px; text-align: center; color: var(--dim); font-size: 14px; }
-.parte-condol { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(80px, 11vh, 130px) 0; }
-.condolence { max-width: 760px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); padding: clamp(26px, 3.4vw, 40px); }
-.condolence p { font-family: var(--serif, inherit); font-size: clamp(16px, 1.7vw, 19px); line-height: 1.7; color: var(--muted); }
-.condolence footer { margin-top: 18px; font-size: 13px; letter-spacing: 0.08em; color: var(--dim); }
-.condol-actions { margin-top: 34px; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
-.condol-note { color: var(--dim); font-size: 13.5px; }
-.parte-flowers { background: var(--bg); padding: clamp(80px, 11vh, 130px) 0; }
-.parte-flowers p { color: var(--muted); font-size: 15.5px; line-height: 1.75; max-width: 58ch; margin-top: 18px; }
+.phero-candle { display: inline-flex; flex-direction: column; align-items: center; margin-top: 34px; background: none; border: 0; padding: 6px 14px; cursor: pointer; font-family: inherit; color: var(--dim); }
+.phero-flame { position: relative; display: block; width: 30px; height: 48px; }
+.phero-flame i { position: absolute; inset: 0; display: block; border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 50% 76%, #ffffff 0%, #e6e6e6 45%, rgba(230, 230, 230, 0) 78%); box-shadow: 0 0 34px 10px rgba(245, 245, 245, 0.35), 0 0 90px 30px rgba(245, 245, 245, 0.12); opacity: 0.13; transform: scaleY(0.34); transform-origin: 50% 96%; transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 1.3, 0.4, 1); }
+.phero.lit .phero-flame i { opacity: 1; transform: scaleY(1); animation: pheroFlick 1.9s ease-in-out infinite alternate; }
+@keyframes pheroFlick {
+  0% { transform: scaleY(1) translateX(0) skewX(0); }
+  45% { transform: scaleY(0.9) translateX(0.6px) skewX(1.4deg); }
+  100% { transform: scaleY(1.05) translateX(-0.6px) skewX(-1.2deg); }
+}
+.phero-wick { display: block; width: 2px; height: 26px; margin: -6px auto 0; border-radius: 2px; background: linear-gradient(180deg, rgba(245, 245, 245, 0.65), rgba(245, 245, 245, 0.08)); }
+.phero-label { display: block; margin-top: 16px; font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase; transition: color 0.3s ease; }
+.phero-candle:hover .phero-label { color: var(--gold); }
+.phero.lit .phero-candle { cursor: default; }
+.phero-label .on { display: none; }
+.phero.lit .phero-label .off { display: none; }
+.phero.lit .phero-label .on { display: inline; }
+.phero h1 { margin-top: 30px; font-size: clamp(44px, 8vw, 118px); line-height: 1.02; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: -0.015em; }
+.phero-dates { margin-top: clamp(30px, 5vh, 50px); display: flex; justify-content: center; gap: clamp(28px, 6vw, 90px); flex-wrap: wrap; color: var(--muted); font-size: 16px; }
+.phero-dates .label { display: block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 7px; }
+.prozl { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(100px, 14vh, 170px) 0; text-align: center; }
+.prozl h2 { font-size: clamp(20px, 2.2vw, 28px); color: var(--muted); font-weight: 560; }
+.prozl-when { margin-top: 26px; font-size: clamp(34px, 5.4vw, 80px); font-weight: 680; font-variation-settings: var(--wide); letter-spacing: -0.01em; line-height: 1.06; }
+.prozl-where { margin-top: 16px; font-size: clamp(18px, 2.2vw, 28px); color: var(--muted); }
+.prozl .link-underline { margin-top: 38px; display: inline-block; }
+.pcond-actions { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; margin-top: 44px; }
+.pcond-note { margin-top: 22px; color: var(--dim); font-size: 13.5px; max-width: 56ch; }
 @media (max-width: 700px) {
-  .parte-head { flex-direction: column; align-items: flex-start; }
-  .parte-grid { grid-template-columns: 1fr; }
+  .phero h1 { font-size: clamp(36px, 11vw, 54px); }
+  .parte-back { top: 92px; }
+  .phero-mark { right: -14%; }
 }
 
 @media (max-width: 900px) {
@@ -952,6 +965,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   .partners-track, .dot, .orb, .phone-primary { animation: none !important; }
   html { scroll-behavior: auto; }
   .memoriam-card.lit .flame { animation: none !important; }
+  .phero.lit .phero-flame i, .phero.lit .phero-glow { animation: none !important; }
   /* jazda: statický poster + hero text, HUD a canvas preč */
   #journey-canvas, .journey-hud { display: none; }
   .journey-text.jt-hero { opacity: 1 !important; pointer-events: auto; }

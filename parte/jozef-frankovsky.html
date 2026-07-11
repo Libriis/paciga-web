@@ -41,86 +41,48 @@
 
 <main>
 
-  <!-- ============ HLAVIČKA PARTE ============ -->
-  <section class="page-head">
-    <div class="container">
-      <a href="../opustili-nas.html" class="parte-back" data-reveal>← Všetky oznámenia</a>
-      <div class="parte-head">
-        <div class="parte-avatar" aria-hidden="true">JF</div>
-        <div>
-          <div class="eyebrow" data-reveal>Smútočné oznámenie</div>
-          <h1 data-reveal>Jozef Frankovský</h1>
-          <div class="parte-dates" data-reveal>
-            <div><span class="label">Narodil sa</span>11. februára 1951</div>
-            <div><span class="label">Zomrel</span>† 2. júla 2026</div>
-            <div><span class="label">Vo veku</span>75 rokov</div>
-          </div>
-        </div>
+  <!-- ============ MEMORIÁL HERO ============ -->
+  <section class="phero" data-name="Jozef Frankovský">
+    <div class="phero-glow" aria-hidden="true"></div>
+    <div class="phero-mark" aria-hidden="true">JF</div>
+    <a href="../opustili-nas.html" class="parte-back">← Všetky oznámenia</a>
+    <div class="container phero-inner">
+      <div class="eyebrow" data-reveal>Smútočné oznámenie</div>
+      <button type="button" class="phero-candle" id="phero-light" aria-pressed="false" data-reveal>
+        <span class="phero-flame" aria-hidden="true"><i></i></span>
+        <span class="phero-wick" aria-hidden="true"></span>
+        <span class="phero-label"><span class="off">Zapáliť sviečku</span><span class="on">Sviečka horí</span></span>
+      </button>
+      <h1 data-reveal>Jozef Frankovský</h1>
+      <div class="phero-dates" data-reveal>
+        <div><span class="label">Narodil sa</span>11. februára 1951</div>
+        <div><span class="label">Zomrel</span>† 2. júla 2026</div>
+        <div><span class="label">Vo veku</span>75 rokov</div>
       </div>
     </div>
   </section>
 
   <!-- ============ POSLEDNÁ ROZLÚČKA ============ -->
-  <section class="parte-info">
+  <section class="prozl">
     <div class="container">
-      <div class="section-head">
-        <h2 data-reveal>Posledná rozlúčka</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-      </div>
-      <div class="parte-grid">
-        <div class="first-card" data-reveal>
-          <div class="label">Kedy</div>
-          <div class="value">10. júla 2026 o 14:00</div>
-        </div>
-        <div class="first-card" data-reveal>
-          <div class="label">Kde</div>
-          <div class="value">Rímskokatolícky kostol vo Veľkej Frankovej</div>
-        </div>
-      </div>
-      <p class="firsts-note" data-reveal>Posledná rozlúčka s naším drahým zosnulým sa koná 10. júla 2026 o 14:00. Miesto: Rímskokatolícky kostol vo Veľkej Frankovej.</p>
-    </div>
-  </section>
-
-  <!-- ============ SVIEČKA ============ -->
-  <section class="parte-candlesec">
-    <div class="container">
-      <div class="memoriam-card parte-candle">
-        <div class="memoriam-photo" aria-hidden="true"><span>JF</span></div>
-        <h3>Jozef Frankovský</h3>
-        <div class="memoriam-date">† 02. 07. 2026</div>
-        <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku</button></div>
-      </div>
-      <p class="parte-candlenote">Plamienok zostane svietiť pri mene ako tichá spomienka.</p>
+      <h2 data-reveal>Posledná rozlúčka s naším drahým zosnulým</h2>
+      <p class="prozl-when" data-reveal>10. júla 2026 o 14:00</p>
+      <p class="prozl-where" data-reveal>Rímskokatolícky kostol vo Veľkej Frankovej</p>
+      <a class="link-underline gold" href="https://www.google.com/maps?q=R%C3%ADmskokatol%C3%ADcky%20kostol%20vo%20Ve%C4%BEkej%20Frankovej" target="_blank" rel="noopener" data-reveal>Zobraziť miesto na mape →</a>
     </div>
   </section>
 
   <!-- ============ KONDOLENCIE ============ -->
-  <section class="parte-condol">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-reveal>Kondolencie</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-      </div>
-      <blockquote class="condolence" data-reveal>
-        <p>„Rodine a blízkym vyjadrujeme úprimnú sústrasť. Je nám cťou sprevádzať vás poslednou rozlúčkou.“</p>
-        <footer>Pohrebná služba Paciga</footer>
-      </blockquote>
-      <div class="condol-actions" data-reveal>
+  <section class="quote pcond" id="quote">
+    <div class="container quote-inner">
+      <div class="quote-mark" aria-hidden="true">“</div>
+      <p id="quote-text">Rodine a blízkym vyjadrujeme úprimnú sústrasť. Je nám cťou sprevádzať vás poslednou rozlúčkou.</p>
+      <div class="quote-author" data-reveal>Pohrebná služba Paciga</div>
+      <div class="pcond-actions" data-reveal>
         <a href="mailto:paciga@paciga.sk?subject=Kondolencia%20Jozef%20Frankovsk%C3%BD" class="btn-gold">Napísať kondolenciu</a>
-        <span class="condol-note">Kondolenciu s úctou odovzdáme rodine.</span>
+        <a href="tel:0903596364" class="link-underline gold">Kvety na rozlúčku · 0903 596 364</a>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ KVETY ============ -->
-  <section class="parte-flowers">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-reveal>Kvety na rozlúčku</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-      </div>
-      <p data-reveal>Vence, kytice a kvetinovú výzdobu pripravíme za vás a doručíme priamo na obrad. Stačí zavolať.</p>
-      <a href="tel:0903596364" class="step-tel" data-reveal>0903 596 364</a>
+      <p class="pcond-note" data-reveal>Kondolenciu s úctou odovzdáme rodine. Vence a kvetinovú výzdobu doručíme priamo na obrad.</p>
     </div>
   </section>
 
