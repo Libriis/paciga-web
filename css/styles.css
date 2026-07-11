@@ -832,6 +832,49 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   .reviews-grid { grid-template-columns: 1fr; }
 }
 
+/* ============================================================
+   Podstránky — subhero, príbeh, prvenstvá, foto pás
+   ============================================================ */
+.subhero { position: relative; min-height: 72vh; display: flex; align-items: flex-end; overflow: hidden; }
+.subhero-media { position: absolute; inset: 0; }
+.subhero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+.subhero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12, 13, 15, 0.55), rgba(12, 13, 15, 0.25) 45%, rgba(12, 13, 15, 0.86) 100%); }
+.subhero-content { position: relative; z-index: 1; padding: 140px 24px 72px; }
+.subhero h1 { font-size: clamp(38px, 5.6vw, 76px); line-height: 1.05; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: -0.01em; }
+.subhero-lead { margin-top: 20px; max-width: 52ch; color: var(--muted); font-size: clamp(15px, 1.4vw, 18px); }
+
+.story { background: var(--bg); padding: clamp(100px, 14vh, 170px) 0; }
+.story-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(40px, 6vw, 90px); align-items: center; }
+.story-text h2 { font-size: clamp(28px, 3.4vw, 44px); }
+.story-text .gold-line { margin: 22px 0 26px; }
+.story-text p { color: var(--muted); font-size: 15.5px; line-height: 1.75; }
+.story-text p + p { margin-top: 16px; }
+.story-photo { margin: 0; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); }
+.story-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.firsts { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(100px, 14vh, 170px) 0; }
+.firsts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.first-card { border: 1px solid var(--line); border-radius: 18px; background: var(--panel); padding: 28px 26px; }
+.first-card h3 { font-size: 19px; }
+.first-card p { margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.firsts-note { margin-top: 40px; color: var(--dim); font-size: 14px; max-width: 60ch; }
+
+.fleetband { position: relative; min-height: 56vh; display: flex; align-items: center; overflow: hidden; }
+.fleetband-media { position: absolute; inset: 0; }
+.fleetband-media img { width: 100%; height: 100%; object-fit: cover; }
+.fleetband-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12, 13, 15, 0.78), rgba(12, 13, 15, 0.2) 65%); }
+.fleetband-content { position: relative; z-index: 1; }
+.fleetband-content h2 { font-size: clamp(28px, 3.6vw, 48px); max-width: 14ch; }
+.fleetband-content p { margin-top: 16px; color: rgba(245, 245, 245, 0.8); max-width: 46ch; font-size: 15.5px; }
+
+@media (max-width: 900px) {
+  .story-grid { grid-template-columns: 1fr; }
+  .firsts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .firsts-grid { grid-template-columns: 1fr; }
+}
+
 /* ---- reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   .partners-track, .dot, .orb, .phone-primary, #preloader img { animation: none !important; }
