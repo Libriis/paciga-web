@@ -512,29 +512,8 @@ h3 { font-size: 20px; }
 }
 
 /* ============================================================
-   MotionSites luxury layer — preloader, glow, glass, cursor
+   MotionSites luxury layer — glow, glass
    ============================================================ */
-
-/* ---- preloader (zobrazí ho až JS — bez JS neexistuje bariéra) ---- */
-#preloader {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-}
-#preloader img { width: 92px; height: auto; opacity: 0.95; animation: preFloat 2.4s ease-in-out infinite; }
-@keyframes preFloat {
-  0%, 100% { transform: translateY(0) rotate(-4deg); }
-  50% { transform: translateY(-12px) rotate(4deg); }
-}
-#preloader .pre-line { width: 180px; height: 1px; background: var(--line); overflow: hidden; }
-#preloader .pre-line span { display: block; height: 100%; width: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left center; }
-#preloader .pre-label { font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--dim); }
 
 /* ---- ambientné glow orby ---- */
 .orb {
@@ -877,8 +856,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 /* ---- reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
-  .partners-track, .dot, .orb, .phone-primary, #preloader img { animation: none !important; }
-  #preloader { display: none !important; }
+  .partners-track, .dot, .orb, .phone-primary { animation: none !important; }
   html { scroll-behavior: auto; }
   .memoriam-card.lit .flame { animation: none !important; }
   /* jazda: statický poster + hero text, HUD a canvas preč */

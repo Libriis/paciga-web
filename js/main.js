@@ -96,33 +96,6 @@
   gsap.registerPlugin(ScrollTrigger);
   document.documentElement.classList.add('js');
 
-  /* ---------- preloader ---------- */
-  var pre = document.createElement('div');
-  pre.id = 'preloader';
-  pre.innerHTML = '<img src="assets/feather.png" alt="">' +
-    '<div class="pre-line"><span></span></div>' +
-    '<div class="pre-label">S úctou od roku 2018</div>';
-  document.body.appendChild(pre);
-  gsap.to(pre.querySelector('.pre-line span'), { scaleX: 1, duration: 2.0, ease: 'power2.inOut' });
-
-  var preDone = false;
-  var preT0 = performance.now();
-  function hidePreloader() {
-    if (preDone) return;
-    /* minimálne 1,4 s — nech sa linka stihne dokresliť a nepôsobí to ako blik */
-    var left = 1400 - (performance.now() - preT0);
-    if (left > 0) { setTimeout(hidePreloader, left); return; }
-    preDone = true;
-    gsap.to(pre, {
-      opacity: 0, duration: 0.7, ease: 'power2.inOut', delay: 0.2,
-      onComplete: function () { pre.remove(); }
-    });
-    heroTl.play(0);
-    setTimeout(function () { ScrollTrigger.refresh(); }, 80);
-  }
-  window.addEventListener('load', function () { setTimeout(hidePreloader, 350); });
-  setTimeout(hidePreloader, 3000); /* failsafe — nikdy nedržať dlhšie */
-
   /* ---------- Lenis smooth scroll ---------- */
   lenis = new Lenis({
     duration: 1.35,
@@ -186,7 +159,8 @@
     });
   });
 
-  var heroTl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+  /* hero intro beží hneď — stránku nedrží žiadny preloader */
+  var heroTl = gsap.timeline({ delay: 0.15, defaults: { ease: 'power3.out' } });
   heroTl
     .from('#hero-title .ch', { yPercent: 120, duration: 1.05, stagger: 0.026 }, 0)
     .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
