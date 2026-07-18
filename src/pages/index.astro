@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getParteList, inicialky, fmtKratky } from '../lib/parte';
+import { RECENZIE, VYBER, GOOGLE_PROFIL } from '../data/recenzie';
 
 export const prerender = false;
 
@@ -82,8 +83,8 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
     <div class="orb" style="top:-20%;right:-12%" aria-hidden="true"></div>
     <div class="container quote-inner">
       <div class="quote-mark" aria-hidden="true">“</div>
-      <p id="quote-text">V ťažkých chvíľach nám boli oporou, všetko vybavili spoľahlivo a s úctou.</p>
-      <div class="quote-author" data-reveal>Michaela Fontani · recenzia Google</div>
+      <p id="quote-text">{VYBER.fontaniOpora}</p>
+      <div class="quote-author" data-reveal>{RECENZIE.fontani.meno} · recenzia Google</div>
       <div class="quote-badge" data-reveal><span class="stars" aria-hidden="true">★★★★★</span><span>Hodnotenie rodín na Google</span></div>
     </div>
   </section>
@@ -106,36 +107,61 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
     </div>
   </section>
 
-  <!-- ============ SERVICES (pinned horizontal, 3 kapitoly) ============ -->
-  <section id="sluzby" class="services">
-    <div class="services-pin" id="services-pin">
-      <div class="orb" style="top:8%;left:-14%" aria-hidden="true"></div>
-      <div class="orb" style="bottom:-24%;right:-10%" aria-hidden="true"></div>
-      <div class="container services-head">
+  <!-- ============ SERVICES (register: kapitoly zvislo, služby ako riadky) ============ -->
+  <section id="sluzby" class="register">
+    <div class="orb" style="top:4%;right:-12%" aria-hidden="true"></div>
+    <div class="container">
+      <div class="section-head">
         <div class="eyebrow" data-reveal>Čo pre vás zabezpečíme</div>
         <h2 data-reveal>Kompletná starostlivosť<br>pod jednou strechou</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
       </div>
-      <div class="services-track" id="services-track">
-        <div class="svc-chapter"><span class="svc-chapter-num">Kapitola I</span><h3>Obrad a preprava</h3><p>Od prvého telefonátu po dôstojnú rozlúčku.</p></div>
-        <a class="svc" href="/pohrebne-sluzby#rakvy"><span class="svc-num">01</span><h3>Rakvy</h3><p>Široký výber elegantných rakiev z prvotriednych materiálov.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc has-photo" href="/pohrebne-sluzby#limuzina"><span class="svc-photo" style="background-image:url('/assets/asset-06.jpg')"></span><span class="svc-num">02</span><h3>Pohrebná limuzína</h3><p>Exkluzívna limuzína, ocenená ako najkrajšia na Slovensku.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="/pohrebne-sluzby#chladenie"><span class="svc-num">03</span><h3>Prenosné chladenie</h3><p>Špeciálna technológia chladenia priamo u vás.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc has-photo" href="/pohrebne-sluzby#rozlucka"><span class="svc-photo" style="background-image:url('/assets/asset-01.jpg')"></span><span class="svc-num">04</span><h3>Rozlúčka a pochovanie</h3><p>Kompletné zabezpečenie obradu aj organizácie.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc has-photo" href="/pohrebne-sluzby#prevoz"><span class="svc-photo" style="background-image:url('/assets/asset-04.jpg')"></span><span class="svc-num">05</span><h3>Prevoz zosnulých</h3><p>NON STOP dôstojný a rýchly prevoz z bytov a nemocníc.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="/pohrebne-sluzby#kremacia"><span class="svc-num">06</span><h3>Kremácia</h3><p>S obradom alebo bez, s rešpektom k želaniam zosnulého aj pozostalých.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc has-photo" href="/pohrebne-sluzby#medzinarodny-prevoz"><span class="svc-photo" style="background-image:url('/assets/asset-09.jpg')"></span><span class="svc-num">07</span><h3>Medzinárodný prevoz</h3><p>Preprava zo zahraničia vrátane vybavenia dokumentov.</p><span class="svc-more">Viac →</span></a>
-        <div class="svc-chapter"><span class="svc-chapter-num">Kapitola II</span><h3>Starostlivosť o pozostalých</h3><p>Čo pomáha niesť smútok: kvety, spomienky, podpora.</p></div>
-        <a class="svc" href="/pohrebne-sluzby#kvetinarstvo"><span class="svc-num">08</span><h3>Kvetinárstvo</h3><p>Vlastná výroba kytíc, vencov a smútočnej výzdoby.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="/pohrebne-sluzby#predpriprava"><span class="svc-num">09</span><h3>Predpríprava pohrebu</h3><p>Naplánujte rozlúčku vopred a odbremeňte blízkych.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="/pohrebne-sluzby#karty"><span class="svc-num">10</span><h3>Spomienkové karty</h3><p>Uctenie pamiatky a zdieľanie odkazu s rodinou.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="/pohrebne-sluzby#oblecenie"><span class="svc-num">11</span><h3>Oblečenie pre zosnulého</h3><p>Kompletné sady oblečenia, s rešpektom a úctou.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="/pohrebne-sluzby#poradenstvo"><span class="svc-num">12</span><h3>Smútkové poradenstvo</h3><p>Podpora a sprevádzanie v procese smútenia.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc has-photo" href="/sperky"><span class="svc-photo" style="background-image:url('/assets/asset-08.jpg')"></span><span class="svc-num">13</span><h3>Spomienkové šperky</h3><p>Náramky a retiazky s odtlačkom prsta zosnulého.</p><span class="svc-more">Viac →</span></a>
-        <div class="svc-chapter svc-chapter-stone"><span class="svc-chapter-num">Kapitola III</span><h3>Kamenárstvo</h3><p>Spomienka vytesaná do žuly.</p></div>
-        <a class="svc" id="kamenarstvo" href="/pohrebne-sluzby#kamenarstvo"><span class="svc-num">14</span><h3>Kamenárstvo</h3><p>Hrobky, žulové pomníky, montáž a rekonštrukcie.</p><span class="svc-more">Viac →</span></a>
-        <a class="svc" href="/pohrebne-sluzby#vizualizacia"><span class="svc-num">15</span><h3>3D vizualizácia pomníka</h3><p>Uvidíte výsledok ešte pred samotnou výrobou.</p><span class="svc-more">Viac →</span></a>
+
+      <div class="reg-group" data-reveal>
+        <div class="reg-side">
+          <div class="reg-kap">Kapitola I</div>
+          <h3>Obrad a preprava</h3>
+          <p>Od prvého telefonátu po dôstojnú rozlúčku.</p>
+        </div>
+        <div class="reg-list">
+          <a class="reg-row" href="/pohrebne-sluzby#rakvy"><span class="reg-num">01</span><span class="reg-name">Rakvy</span><span class="reg-desc">Široký výber elegantných rakiev z prvotriednych materiálov.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#limuzina"><span class="reg-num">02</span><span class="reg-name">Pohrebná limuzína</span><span class="reg-desc">Exkluzívna limuzína, ocenená ako najkrajšia na Slovensku.</span><span class="reg-go" aria-hidden="true">→</span><span class="reg-thumb" style="background-image:url('/assets/asset-06.jpg')" aria-hidden="true"></span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#chladenie"><span class="reg-num">03</span><span class="reg-name">Prenosné chladenie</span><span class="reg-desc">Špeciálna technológia chladenia priamo u vás.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#rozlucka"><span class="reg-num">04</span><span class="reg-name">Rozlúčka a pochovanie</span><span class="reg-desc">Kompletné zabezpečenie obradu aj organizácie.</span><span class="reg-go" aria-hidden="true">→</span><span class="reg-thumb" style="background-image:url('/assets/asset-01.jpg')" aria-hidden="true"></span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#prevoz"><span class="reg-num">05</span><span class="reg-name">Prevoz zosnulých</span><span class="reg-desc">NON STOP dôstojný a rýchly prevoz z bytov a nemocníc.</span><span class="reg-go" aria-hidden="true">→</span><span class="reg-thumb" style="background-image:url('/assets/asset-04.jpg')" aria-hidden="true"></span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#kremacia"><span class="reg-num">06</span><span class="reg-name">Kremácia</span><span class="reg-desc">S obradom alebo bez, s rešpektom k želaniam zosnulého aj pozostalých.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#medzinarodny-prevoz"><span class="reg-num">07</span><span class="reg-name">Medzinárodný prevoz</span><span class="reg-desc">Preprava zo zahraničia vrátane vybavenia dokumentov.</span><span class="reg-go" aria-hidden="true">→</span><span class="reg-thumb" style="background-image:url('/assets/asset-09.jpg')" aria-hidden="true"></span></a>
+        </div>
       </div>
-      <div class="services-progress" aria-hidden="true"><span id="services-bar"></span></div>
+
+      <div class="reg-group" data-reveal>
+        <div class="reg-side">
+          <div class="reg-kap">Kapitola II</div>
+          <h3>Starostlivosť o pozostalých</h3>
+          <p>Čo pomáha niesť smútok: kvety, spomienky, podpora.</p>
+        </div>
+        <div class="reg-list">
+          <a class="reg-row" href="/pohrebne-sluzby#kvetinarstvo"><span class="reg-num">08</span><span class="reg-name">Kvetinárstvo</span><span class="reg-desc">Vlastná výroba kytíc, vencov a smútočnej výzdoby.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#predpriprava"><span class="reg-num">09</span><span class="reg-name">Predpríprava pohrebu</span><span class="reg-desc">Naplánujte rozlúčku vopred a odbremeňte blízkych.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#karty"><span class="reg-num">10</span><span class="reg-name">Spomienkové karty</span><span class="reg-desc">Uctenie pamiatky a zdieľanie odkazu s rodinou.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#oblecenie"><span class="reg-num">11</span><span class="reg-name">Oblečenie pre zosnulého</span><span class="reg-desc">Kompletné sady oblečenia, s rešpektom a úctou.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#poradenstvo"><span class="reg-num">12</span><span class="reg-name">Smútkové poradenstvo</span><span class="reg-desc">Podpora a sprevádzanie v procese smútenia.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/sperky"><span class="reg-num">13</span><span class="reg-name">Spomienkové šperky</span><span class="reg-desc">Náramky a retiazky s odtlačkom prsta zosnulého.</span><span class="reg-go" aria-hidden="true">→</span><span class="reg-thumb" style="background-image:url('/assets/asset-08.jpg')" aria-hidden="true"></span></a>
+        </div>
+      </div>
+
+      <div class="reg-group" id="kamenarstvo" data-reveal>
+        <div class="reg-side">
+          <div class="reg-kap">Kapitola III</div>
+          <h3>Kamenárstvo</h3>
+          <p>Spomienka vytesaná do žuly.</p>
+        </div>
+        <div class="reg-list">
+          <a class="reg-row" href="/pohrebne-sluzby#kamenarstvo"><span class="reg-num">14</span><span class="reg-name">Kamenárstvo</span><span class="reg-desc">Hrobky, žulové pomníky, montáž a rekonštrukcie.</span><span class="reg-go" aria-hidden="true">→</span></a>
+          <a class="reg-row" href="/pohrebne-sluzby#vizualizacia"><span class="reg-num">15</span><span class="reg-name">3D vizualizácia pomníka</span><span class="reg-desc">Uvidíte výsledok ešte pred samotnou výrobou.</span><span class="reg-go" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -232,22 +258,25 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
       <div class="reviews-head">
         <div class="stars" aria-hidden="true">★★★★★</div>
         <h2 data-reveal>Skutočné rodiny. Skutočné slová.</h2>
-        <p data-reveal>Recenzie z profilu Google, bez úprav.</p>
+        <p data-reveal>Recenzie z profilu Google.</p>
       </div>
       <div class="reviews-grid">
         <blockquote class="review" data-reveal>
-          <p>„Ďakujem spoločnosti a chlapcom za poslednú rozlúčku s mojím otcom. Bola krásna a slávnostná.“</p>
-          <footer>Jela Harbin</footer>
+          <p>„{VYBER.harbinRozlucka}“</p>
+          <footer>{RECENZIE.harbin.meno}</footer>
         </blockquote>
         <blockquote class="review" data-reveal>
-          <p>„Ďakujeme veľmi pekne za zorganizovanie poslednej cesty nášho zosnulého. Prístup váš bol nanajvýš profesionálny a zdvorilý.“</p>
-          <footer>Branislav</footer>
+          <p>„{VYBER.branislavKratky}“</p>
+          <footer>{RECENZIE.branislav.meno}</footer>
         </blockquote>
         <blockquote class="review" data-reveal>
-          <p>„Ďakujeme veľmi pekne za profesionálny a ľudský prístup. Odporúčame každému, kto hľadá spoľahlivé pohrebníctvo.“</p>
-          <footer>Mária Gardošová</footer>
+          <p>„{RECENZIE.gardosova.text}“</p>
+          <footer>{RECENZIE.gardosova.meno}</footer>
         </blockquote>
       </div>
+      <p class="reviews-more" data-reveal>
+        <a class="link-underline gold" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
+      </p>
     </div>
   </section>
 

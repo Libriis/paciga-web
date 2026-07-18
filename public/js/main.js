@@ -334,12 +334,12 @@
       });
     });
 
-    /* branch card photos: subtle parallax */
+    /* branch card photos + album bands (o nás): subtle parallax */
     gsap.utils.toArray('[data-parallax] > span').forEach(function (ph) {
       gsap.fromTo(ph, { yPercent: -7 }, {
         yPercent: 7,
         ease: 'none',
-        scrollTrigger: { trigger: ph.closest('.branch-card'), start: 'top bottom', end: 'bottom top', scrub: true }
+        scrollTrigger: { trigger: ph.closest('.branch-card, .album-band'), start: 'top bottom', end: 'bottom top', scrub: true }
       });
     });
 
