@@ -1,0 +1,34 @@
+---
+// Jedna recenzia klienta. Texty žijú v src/data/recenzie.ts,
+// sem sa len odkazuje ID a prípadný pomenovaný výňatok.
+// variant card  — blockquote s hairline ľavým okrajom
+// variant line  — jednoriadková vsuvka (napr. pod formulárom)
+import { RECENZIE, GOOGLE_PROFIL, type RecenziaId } from '../data/recenzie';
+
+interface Props {
+  id: RecenziaId;
+  variant?: 'card' | 'line';
+  /** výňatok z VYBER; bez neho sa použije plné znenie */
+  excerpt?: string;
+  /** pridá odkaz „Všetky recenzie na Google" */
+  google?: boolean;
+}
+
+const { id, variant = 'card', excerpt, google = false } = Astro.props;
+const r = RECENZIE[id];
+const text = excerpt ?? r.text;
+---
+{variant === 'card' ? (
+  <figure class="rev-card" data-reveal>
+    <blockquote><p>„{text}“</p></blockquote>
+    <figcaption>{r.meno} · recenzia Google</figcaption>
+    {google && (
+      <a class="link-underline gold rev-google" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
+    )}
+  </figure>
+) : (
+  <p class="rev-line" data-reveal>
+    „{text}“
+    <span class="rev-line-meta">{r.meno} · recenzia Google</span>
+  </p>
+)}

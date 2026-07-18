@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Review from '../components/Review.astro';
 
 const title = "Kontakt | Paciga, pohrebné a kamenárske služby";
 const description = "Kontakt na pohrebnú službu Paciga. NON STOP 0903 596 364 a 0948 110 109. Pobočky Poprad, Spišská Belá a Liptovský Mikuláš.";
@@ -57,6 +58,9 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
         <button type="submit" class="btn-gold">Odoslať správu</button>
         <p class="form-status" role="status" aria-live="polite"></p>
       </form>
+      <div class="rev-aside">
+        <Review id="hegli" variant="line" />
+      </div>
     </div>
   </section>
 
