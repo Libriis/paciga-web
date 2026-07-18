@@ -100,6 +100,30 @@ export function mesiacLabel(iso: string): string {
   return `${MES_NOM[m - 1]} ${y}`;
 }
 
+/* ---------- časová logika rozlúčok ---------- */
+
+const DNI = ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'];
+
+/** Dnešný dátum na Slovensku ako YYYY-MM-DD (server môže bežať v UTC). */
+export function dnesnyDatum(): string {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Bratislava' });
+}
+
+/** „Dnes" / „Zajtra" / názov dňa — návestie pre pás najbližších rozlúčok. */
+export function denLabel(iso: string, dnes: string): string {
+  const den = iso.slice(0, 10);
+  if (den === dnes) return 'Dnes';
+  const d = new Date(dnes + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() + 1);
+  if (den === d.toISOString().slice(0, 10)) return 'Zajtra';
+  return DNI[new Date(den + 'T00:00:00Z').getUTCDay()];
+}
+
+/** Rozlúčka má kompletné údaje a je dnes alebo v budúcnosti. */
+export function maNadchadzajucuRozlucku(p: Parte, dnes: string): boolean {
+  return !!(p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto && p.rozlucka_datum.slice(0, 10) >= dnes);
+}
+
 /** „AK" z „Anna Kičáková" */
 export function inicialky(meno: string): string {
   const w = meno.trim().split(/\s+/);

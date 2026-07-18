@@ -1,5 +1,43 @@
 ---
 import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import type { FaqItem } from '../components/Faq.astro';
+import Review from '../components/Review.astro';
+
+const otazky: FaqItem[] = [
+  {
+    q: 'Komu mám zavolať ako prvému?',
+    a: 'Ak úmrtie nastalo doma alebo za nejasných okolností, volajte najprv tiesňovú linku 112. Operátor vyšle lekára na obhliadku. Po obhliadke zavolajte nám na číslo 0903 596 364 a prevoz aj všetko ostatné zabezpečíme za vás. Ak úmrtie nastalo v nemocnici, kontaktuje vás poverený zamestnanec nemocnice.',
+  },
+  {
+    q: 'V akom čase vám môžem volať?',
+    a: 'Kedykoľvek. Prevoz zosnulých zabezpečujeme nepretržite, 24 hodín denne, každý deň v roku vrátane víkendov a sviatkov. Volajte 0903 596 364 alebo 0948 110 109.',
+  },
+  {
+    q: 'Musím si objednať pohreb u služby, ktorá vykonala prevoz na pitvu?',
+    a: 'Nie. Prevoz na pitvu vykonáva pohrebná služba zazmluvnená nemocnicou alebo privolaná políciou, ďalšie služby si u nej objednávať nemusíte. Pohrebnú službu si vyberáte vy, podľa vlastného uváženia. Nenechajte sa ovplyvniť vo chvíli, keď ste najzraniteľnejší.',
+  },
+  {
+    q: 'Aké doklady si mám pripraviť?',
+    a: 'Občiansky preukaz zosnulého, váš občiansky preukaz ako obstarávateľa pohrebu a kartu poistenca zosnulého. K tomu oblečenie pre zosnulého. Podrobný zoznam nájdete vyššie na tejto stránke.',
+  },
+  {
+    q: 'Čo ak niektoré doklady nemám poruke?',
+    a: 'Nič sa nedeje. Vybavovanie kvôli tomu nezastavíme a s dohľadaním chýbajúcich dokladov vám pomôžeme neskôr.',
+  },
+  {
+    q: 'Kto vypláca príspevok na pohreb a čo k nemu treba?',
+    a: 'Príspevok na pohreb vypláca Úrad práce, sociálnych vecí a rodiny na základe tlačiva Žiadosť o príspevok na pohreb. K žiadosti priložíte fotokópiu úmrtného listu, faktúru od pohrebnej služby a potvrdenie od pohrebnej služby. Faktúru aj potvrdenie od nás dostanete automaticky a s vyplnením žiadosti vám radi pomôžeme.',
+  },
+  {
+    q: 'Blízky zomrel v zahraničí. Čo mám robiť?',
+    a: 'Príbuzných na Slovensku informuje veľvyslanectvo Slovenskej republiky v danej krajine. Prepravu zosnulého zo zahraničia zabezpečíme vrátane vybavenia všetkých potrebných dokumentov. Volajte +421 903 596 364.',
+  },
+  {
+    q: 'Kde všade pôsobíte?',
+    a: 'Máme tri pobočky: Poprad, Spišská Belá a Liptovský Mikuláš. Prevoz zosnulých zabezpečujeme nepretržite a prepravu vieme zariadiť aj zo zahraničia.',
+  },
+];
 
 const title = "Informácie pre pozostalých | Paciga, pohrebné a kamenárske služby";
 const description = "Čo robiť pri úmrtí blízkeho doma, v nemocnici, za nejasných okolností alebo v zahraničí. Aké dokumenty pripraviť a ako požiadať o príspevok na pohreb. NON STOP 0903 596 364.";
@@ -80,6 +118,9 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
             <li>Nenechajte sa ovplyvniť vo chvíli, keď ste najzraniteľnejší. Rozhodnite sa slobodne.</li>
           </ul>
           <a href="tel:0948110109" class="step-tel">0948 110 109</a>
+          <div class="rev-aside">
+            <Review id="gallikova" />
+          </div>
         </div>
       </div>
 
@@ -144,6 +185,14 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
           <p class="step-note">Faktúru aj potvrdenie od nás dostanete automaticky. S vyplnením žiadosti vám radi pomôžeme.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ ČASTÉ OTÁZKY ============ -->
+  <section class="faq-section">
+    <div class="container">
+      <Faq items={otazky} eyebrow="Časté otázky" heading="Na čo sa nás pýtate najčastejšie"
+        note="Nenašli ste svoju otázku? Zavolajte nám na 0903 596 364. Poradíme vám aj v prípade, že si nás nakoniec nevyberiete." />
     </div>
   </section>
 

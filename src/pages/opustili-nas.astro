@@ -1,12 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getParteList, inicialky, fmtKratky, fmtDenMesiac, mesiacLabel } from '../lib/parte';
+import { getParteList, inicialky, fmtKratky, fmtDenMesiac, mesiacLabel, dnesnyDatum, denLabel, maNadchadzajucuRozlucku } from '../lib/parte';
 import type { Parte } from '../lib/parte';
 
 export const prerender = false;
 
 const parteList = await getParteList();
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=86400');
+
+// nadchádzajúce rozlúčky, chronologicky od najbližšej
+const dnes = dnesnyDatum();
+const nadchadzajuce = parteList
+  .filter((p) => maNadchadzajucuRozlucku(p, dnes))
+  .sort((a, b) => (a.rozlucka_datum! + a.rozlucka_cas!).localeCompare(b.rozlucka_datum! + b.rozlucka_cas!));
 
 // zoskupenie podľa mesiaca úmrtia (zoznam je už zoradený od najnovších)
 const skupiny: { label: string; items: Parte[] }[] = [];
@@ -33,22 +39,54 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
     </div>
   </section>
 
+  <!-- ============ NAJBLIŽŠIE ROZLÚČKY ============ -->
+  {nadchadzajuce.length > 0 && (
+    <section class="rozlucky" aria-label="Najbližšie rozlúčky">
+      <div class="container">
+        <span class="micro-label" data-reveal>Najbližšie rozlúčky</span>
+        <div class="rozlucky-list">
+          {nadchadzajuce.map((p) => (
+            <a class="roz-row" href={`/parte/${p.slug}`} data-reveal>
+              <span class="roz-den">{denLabel(p.rozlucka_datum!, dnes)}</span>
+              <span class="roz-kedy">{fmtDenMesiac(p.rozlucka_datum)} o {p.rozlucka_cas}</span>
+              <span class="roz-kde">{p.rozlucka_miesto}</span>
+              <span class="roz-meno">{p.meno}</span>
+              <span class="roz-go" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   <!-- ============ SPOMIENKY ============ -->
   <section class="memoriam" style="padding-top: 0;">
     <div class="container">
+
+      <!-- vyhľadávanie: bez JS ostáva skryté a zoznam je kompletný -->
+      <div class="parte-search" id="parte-search" hidden>
+        <div class="parte-search-field">
+          <input type="search" id="ps-input" aria-label="Hľadať spomienku podľa mena"
+            placeholder="Hľadať podľa mena" autocomplete="off" spellcheck="false">
+          <button type="button" class="ps-clear" aria-label="Vymazať hľadanie">×</button>
+        </div>
+        <div class="parte-count" id="parte-count" role="status" aria-live="polite"></div>
+      </div>
+
+      <div id="parte-list">
       {skupiny.map((skupina) => (
         <Fragment>
           <div class="memoriam-month" data-reveal>{skupina.label}</div>
           <div class="memoriam-grid">
             {skupina.items.map((p) => (
-              <div class="memoriam-card" data-reveal data-slug={p.slug}>
+              <div class="memoriam-card" data-reveal data-slug={p.slug} data-meno={p.meno}>
                 <a class="memoriam-link" href={`/parte/${p.slug}`}>
                   <div class="memoriam-photo" aria-hidden="true">{p.foto_url
                     ? <img src={p.foto_url} alt="" loading="lazy" decoding="async" />
                     : <span>{inicialky(p.meno)}</span>}</div>
                   <h3>{p.meno}</h3>
                   <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}</div>
-                  {p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto && (
+                  {maNadchadzajucuRozlucku(p, dnes) && (
                     <div class="memoriam-rozlucka">Rozlúčka {fmtDenMesiac(p.rozlucka_datum)} o {p.rozlucka_cas}<br>{p.rozlucka_miesto}</div>
                   )}
                 </a>
@@ -58,6 +96,13 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
           </div>
         </Fragment>
       ))}
+      </div>
+
+      <p class="parte-empty" id="parte-empty" hidden>
+        Podľa zadaného mena sme v zverejnených oznámeniach nič nenašli. Skúste zadať len priezvisko.
+        <strong>Starší archív oznámení</strong> vám radi poskytneme na ktorejkoľvek pobočke alebo na čísle 0903 596 364.
+      </p>
+
       <p class="memorial-note" data-reveal>Smútočné oznámenia zverejňujeme so súhlasom pozostalých. Podrobnosti o rozlúčkach a starší archív oznámení vám radi poskytneme na ktorejkoľvek pobočke.</p>
     </div>
   </section>
@@ -73,5 +118,6 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
 
 <Fragment slot="scripts">
 <script is:inline src="/js/candles.js"></script>
+<script is:inline src="/js/parte-search.js"></script>
 </Fragment>
 </Base>

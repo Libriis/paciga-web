@@ -1,5 +1,34 @@
 ---
 import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import type { FaqItem } from '../components/Faq.astro';
+
+const otazky: FaqItem[] = [
+  {
+    q: 'Čo sa do šperku gravíruje?',
+    a: 'Odtlačok prsta vášho blízkeho a nápis podľa vášho želania. Práve odtlačok robí zo šperku kúsok, ktorý sa nedá nahradiť.',
+  },
+  {
+    q: 'Z akých kovov si môžem vybrať?',
+    a: 'Zo zlata, striebra a ružového zlata. Prívesok nosíte na jemnej retiazke alebo na kordónovej šnúrke.',
+  },
+  {
+    q: 'Aké tvary sú v ponuke?',
+    a: 'Srdce a okrúhly medailón. Oba tvary vieme vyrobiť v ktoromkoľvek z ponúkaných kovov.',
+  },
+  {
+    q: 'Môžem si zvoliť vlastný nápis?',
+    a: 'Áno. Každý šperk gravírujeme na mieru a znenie nápisu je celkom na vás. Najčastejšie býva na šperku meno, dátum alebo krátke venovanie.',
+  },
+  {
+    q: 'Kde si šperky môžem pozrieť naživo?',
+    a: 'V showroome našej pobočky v Poprade na adrese Francisciho 3288/35. Fotografie na tejto stránke sú len ukážkou, kompletnú kolekciu vám ukážeme na mieste.',
+  },
+  {
+    q: 'Ako si šperk objednám?',
+    a: 'Zavolajte na 0903 596 364 alebo napíšte na paciga@paciga.sk. Prejdeme s vami výber tvaru, kovu aj znenie gravíru.',
+  },
+];
 
 const title = "Spomienkové šperky | Paciga, pohrebné a kamenárske služby";
 const description = "Spomienkové šperky s odtlačkom prsta vášho blízkeho. Retiazky a náramky zo zlata, striebra a ružového zlata, gravírovanie podľa želania. Showroom v Poprade.";
@@ -70,6 +99,13 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
     <p class="tile-lead" data-reveal>Jemná šnúrka a kovový prívesok s odtlačkom. Nenápadný spôsob, ako mať blízkeho pri sebe.</p>
     <div class="tile-media" data-reveal>
       <img src="/assets/sperky-naramky.jpg" alt="Tri kordónové náramky s gravírovanými príveskami na vankúšiku" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+  <!-- ============ ČASTÉ OTÁZKY ============ -->
+  <section class="tile tile-dark faq-tile">
+    <div class="container">
+      <Faq items={otazky} eyebrow="Časté otázky" heading="Čo sa najčastejšie pýtate" />
     </div>
   </section>
 

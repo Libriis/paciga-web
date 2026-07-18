@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl } from '../../lib/parte';
+import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl, dnesnyDatum } from '../../lib/parte';
 
 export const prerender = false;
 
@@ -17,8 +17,15 @@ const narodenie = zena ? 'Narodila sa' : 'Narodil sa';
 const rozluckaS = zena ? 's našou drahou zosnulou' : 's naším drahým zosnulým';
 const vekText = p.vek === 1 ? '1 rok' : p.vek && p.vek <= 4 ? `${p.vek} roky` : `${p.vek} rokov`;
 
-const rozluckaVeta = p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto
-  ? `Posledná rozlúčka ${fmtDlhy(p.rozlucka_datum)} o ${p.rozlucka_cas}, ${p.rozlucka_miesto}.`
+// rozlúčka po svojom dni prechádza do minulého času a stráca akčné odkazy
+const dnes = dnesnyDatum();
+const rozluckaKompletna = !!(p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto);
+const rozluckaPrebehla = rozluckaKompletna && p.rozlucka_datum!.slice(0, 10) < dnes;
+
+const rozluckaVeta = rozluckaKompletna
+  ? rozluckaPrebehla
+    ? `Posledná rozlúčka sa konala ${fmtDlhy(p.rozlucka_datum)}.`
+    : `Posledná rozlúčka ${fmtDlhy(p.rozlucka_datum)} o ${p.rozlucka_cas}, ${p.rozlucka_miesto}.`
   : '';
 
 const title = `${p.meno} | Opustili nás | Paciga`;
@@ -70,13 +77,22 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
   </section>
 
   <!-- ============ POSLEDNÁ ROZLÚČKA ============ -->
-  {p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto && (
+  {rozluckaKompletna && !rozluckaPrebehla && (
     <section class="prozl">
       <div class="container">
         <h2 data-reveal>Posledná rozlúčka {rozluckaS}</h2>
         <p class="prozl-when" data-reveal>{fmtDlhy(p.rozlucka_datum)} o {p.rozlucka_cas}</p>
         <p class="prozl-where" data-reveal>{p.rozlucka_miesto}</p>
-        <div class="prozl-links"><a class="link-underline gold" href={mapUrl(p.rozlucka_miesto)} target="_blank" rel="noopener" data-reveal>Zobraziť miesto na mape →</a> {ics && <a class="link-underline gold" href={ics} download={`rozlucka-${p.slug}.ics`} data-reveal>Pridať do kalendára</a>}</div>
+        <div class="prozl-links"><a class="link-underline gold" href={mapUrl(p.rozlucka_miesto!)} target="_blank" rel="noopener" data-reveal>Zobraziť miesto na mape →</a> {ics && <a class="link-underline gold" href={ics} download={`rozlucka-${p.slug}.ics`} data-reveal>Pridať do kalendára</a>}</div>
+      </div>
+    </section>
+  )}
+  {rozluckaKompletna && rozluckaPrebehla && (
+    <section class="prozl">
+      <div class="container">
+        <h2 data-reveal>Rozlúčka {rozluckaS} sa konala</h2>
+        <p class="prozl-when" data-reveal>{fmtDlhy(p.rozlucka_datum)}</p>
+        <p class="prozl-where" data-reveal>{p.rozlucka_miesto}</p>
       </div>
     </section>
   )}

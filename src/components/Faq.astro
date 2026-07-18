@@ -1,0 +1,53 @@
+---
+// Akordeón častých otázok. Natívne <details>, funguje aj bez JS.
+// Zároveň vypíše FAQPage JSON-LD, aby otázky mohli vstúpiť
+// do odpovedí vyhľadávačov a AI asistentov.
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  items: FaqItem[];
+  eyebrow?: string;
+  heading?: string;
+  note?: string;
+  /** index položky otvorenej pri načítaní, -1 = všetky zatvorené */
+  open?: number;
+}
+
+const { items, eyebrow, heading = 'Časté otázky', note, open = 0 } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((it) => ({
+    '@type': 'Question',
+    name: it.q,
+    acceptedAnswer: { '@type': 'Answer', text: it.a },
+  })),
+};
+---
+<div class="faq">
+  <div class="section-head">
+    {eyebrow && <div class="eyebrow" data-reveal>{eyebrow}</div>}
+    <h2 data-reveal>{heading}</h2>
+    <div class="gold-line" data-line aria-hidden="true"></div>
+  </div>
+
+  <div class="faq-list">
+    {items.map((it, i) => (
+      <details class="faq-item" open={i === open} data-reveal>
+        <summary>
+          <span class="faq-q">{it.q}</span>
+          <span class="faq-mark" aria-hidden="true"></span>
+        </summary>
+        <div class="faq-a"><p>{it.a}</p></div>
+      </details>
+    ))}
+  </div>
+
+  {note && <p class="faq-note" data-reveal>{note}</p>}
+</div>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
