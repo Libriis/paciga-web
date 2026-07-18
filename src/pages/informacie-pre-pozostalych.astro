@@ -1,0 +1,182 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = "Informácie pre pozostalých | Paciga, pohrebné a kamenárske služby";
+const description = "Čo robiť pri úmrtí blízkeho doma, v nemocnici, za nejasných okolností alebo v zahraničí. Aké dokumenty pripraviť a ako požiadať o príspevok na pohreb. NON STOP 0903 596 364.";
+const ogTitle = "Informácie pre pozostalých | Paciga";
+const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok za krokom.";
+---
+<Base title={title} description={description} active="informacie-pre-pozostalych" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/info-hero.jpg">
+
+
+
+  <!-- ============ SUBHERO ============ -->
+  <section class="subhero">
+    <div class="subhero-media" aria-hidden="true">
+      <img src="/assets/info-hero.jpg" alt="" fetchpriority="high" decoding="async">
+      <div class="subhero-shade"></div>
+    </div>
+    <div class="container subhero-content">
+      <div class="eyebrow" data-reveal>Informácie pre pozostalých</div>
+      <h1 data-reveal>Čo robiť, keď zomrie<br>blízky človek</h1>
+      <p class="subhero-lead" data-reveal>Pokojne a krok za krokom. Zavolajte nám v ktorúkoľvek hodinu, všetko ostatné vybavíme za vás.</p>
+    </div>
+  </section>
+
+  <!-- ============ SITUAČNÝ ROZCESTNÍK ============ -->
+  <section class="situ" aria-label="Rýchla navigácia podľa situácie">
+    <div class="container">
+      <div class="situ-label">Kde nastalo úmrtie?</div>
+      <div class="situ-row">
+        <a href="#doma" class="situ-chip">Doma</a>
+        <a href="#nemocnica" class="situ-chip">V nemocnici</a>
+        <a href="#okolnosti" class="situ-chip">Za nejasných okolností</a>
+        <a href="#zahranicie" class="situ-chip">V zahraničí</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRVÉ KROKY ============ -->
+  <section class="guide">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-reveal>Prvé kroky podľa situácie</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+
+      <div class="step" id="doma" data-reveal>
+        <div class="step-num" aria-hidden="true">01</div>
+        <div class="step-body">
+          <h3>Úmrtie doma</h3>
+          <p>Ihneď volajte tiesňovú linku 112. Operátor vyšle lekára na obhliadku. Lekár zistí príčinu, okolnosti a čas úmrtia, vypíše Potvrdenie o prehliadke mŕtveho tela a rozhodne, či je potrebná pitva.</p>
+          <ul>
+            <li>Ak lekár nariadi pitvu, prevoz na súdnolekárske pracovisko v Martine zabezpečíme my.</li>
+            <li>Ak pitva nariadená nie je, zavolajte nám. Zosnulého s úctou prevezieme do chladiaceho zariadenia.</li>
+          </ul>
+          <a href="tel:0903596364" class="step-tel">0903 596 364</a>
+        </div>
+      </div>
+
+      <div class="step" id="nemocnica" data-reveal>
+        <div class="step-num" aria-hidden="true">02</div>
+        <div class="step-body">
+          <h3>Úmrtie v nemocnici</h3>
+          <p>Poverený zamestnanec nemocnice vás bude kontaktovať a oznámi vám, či lekár nariadil pitvu. Prevoz na pitvu vykoná pohrebná služba zazmluvnená nemocnicou. Ďalšie služby si u nej objednávať nemusíte.</p>
+          <ul>
+            <li>Pohrebnú službu si vyberáte vy, podľa vlastného uváženia.</li>
+            <li>Zavolajte nám a o všetko ostatné sa postaráme. Zosnulého uložíme v chladiacom zariadení alebo využijeme prenosné chladenie.</li>
+          </ul>
+          <a href="tel:0903596364" class="step-tel">0903 596 364</a>
+        </div>
+      </div>
+
+      <div class="step" id="okolnosti" data-reveal>
+        <div class="step-num" aria-hidden="true">03</div>
+        <div class="step-body">
+          <h3>Úmrtie za nejasných okolností</h3>
+          <p>Volajte 112. Polícia alebo obhliadajúci lekár privolajú zazmluvnenú pohrebnú službu, ktorá zosnulého prevezie na patologické pracovisko v Poprade.</p>
+          <ul>
+            <li>Ani v tomto prípade nie ste povinní objednať si pohreb u služby, ktorá prevoz vykonala.</li>
+            <li>Nenechajte sa ovplyvniť vo chvíli, keď ste najzraniteľnejší. Rozhodnite sa slobodne.</li>
+          </ul>
+          <a href="tel:0948110109" class="step-tel">0948 110 109</a>
+        </div>
+      </div>
+
+      <div class="step" id="zahranicie" data-reveal>
+        <div class="step-num" aria-hidden="true">04</div>
+        <div class="step-body">
+          <h3>Úmrtie v zahraničí</h3>
+          <p>Príbuzných na Slovensku informuje veľvyslanectvo Slovenskej republiky v danej krajine. Prepravu zosnulého zo zahraničia zabezpečíme vrátane vybavenia všetkých potrebných dokumentov.</p>
+          <a href="tel:+421903596364" class="step-tel">+421 903 596 364</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ ČO SI PRIPRAVIŤ ============ -->
+  <section class="firsts">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-reveal>Čo si pripraviť na vybavenie pohrebu</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="firsts-grid">
+        <article class="first-card" data-reveal>
+          <h3>Občiansky preukaz zosnulého</h3>
+          <p>Základný doklad na vybavenie úmrtného listu a ďalších náležitostí.</p>
+        </article>
+        <article class="first-card" data-reveal>
+          <h3>Váš občiansky preukaz</h3>
+          <p>Doklad obstarávateľa pohrebu, teda osoby, ktorá rozlúčku vybavuje.</p>
+        </article>
+        <article class="first-card" data-reveal>
+          <h3>Karta poistenca zosnulého</h3>
+          <p>Preukaz zdravotnej poisťovne potrebný na odhlásenie z poistenia.</p>
+        </article>
+        <article class="first-card" data-reveal>
+          <h3>Oblečenie pre zosnulého</h3>
+          <p>Pre mužov spodná bielizeň, ponožky, topánky, košeľa, kravata a oblek. Pre ženy spodná bielizeň, pančuchy, topánky, blúzka, kostým a šatka.</p>
+        </article>
+      </div>
+      <p class="firsts-note" data-reveal>Ak niektoré doklady nenájdete, nič sa nedeje. Pomôžeme vám ich vybaviť neskôr.</p>
+    </div>
+  </section>
+
+  <!-- ============ PRÍSPEVOK NA POHREB ============ -->
+  <section class="guide">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-reveal>Príspevok na pohreb</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="step" data-reveal>
+        <div class="step-num" aria-hidden="true">€</div>
+        <div class="step-body">
+          <h3>Štátna sociálna dávka</h3>
+          <p>Príspevok na pohreb vypláca Úrad práce, sociálnych vecí a rodiny na základe tlačiva Žiadosť o príspevok na pohreb. K žiadosti priložíte:</p>
+          <ul>
+            <li>Fotokópiu úmrtného listu.</li>
+            <li>Faktúru od pohrebnej služby.</li>
+            <li>Potvrdenie od pohrebnej služby.</li>
+          </ul>
+          <p class="step-note">Faktúru aj potvrdenie od nás dostanete automaticky. S vyplnením žiadosti vám radi pomôžeme.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-band">
+    <div class="cta-inner">
+      <h2 data-reveal>Nie ste na to sami</h2>
+      <p data-reveal>Jeden telefonát stačí. Poradíme vám, čo ďalej, a všetko potrebné vybavíme za vás.</p>
+      <a href="tel:0903596364" class="btn-gold btn-lg" data-reveal>NON STOP · 0903 596 364</a>
+    </div>
+  </section>
+
+  <!-- ============ PLÁVAJÚCA NON STOP LIŠTA ============ -->
+  <div class="callbar" id="callbar" role="complementary" aria-label="NON STOP kontakt">
+    <div class="container callbar-inner">
+      <span class="callbar-label">NON STOP prevoz zosnulých</span>
+      <a href="tel:0903596364" class="callbar-tel"><span class="dot" aria-hidden="true"></span>0903 596 364</a>
+    </div>
+  </div>
+
+<Fragment slot="scripts">
+<script is:inline>
+(function () {
+  var bar = document.getElementById('callbar');
+  if (!bar) return;
+  var shown = false;
+  function check() {
+    var on = (window.scrollY || window.pageYOffset) > 500;
+    if (on !== shown) { shown = on; bar.classList.toggle('on', on); }
+  }
+  window.addEventListener('scroll', check, { passive: true });
+  check();
+})();
+</script>
+</Fragment>
+</Base>

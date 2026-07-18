@@ -1,0 +1,64 @@
+---
+// Prihlásenie do administrácie / CRM.
+---
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prihlásenie | Paciga admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0c0d0f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230c0d0f'/%3E%3Ctext x='32' y='45' font-family='Arial' font-size='40' font-weight='700' fill='%23f5f5f5' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="/assets/asset-17.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div id="login-wrap">
+  <div id="demo-banner" class="adm-demo hidden"><strong>DEMO režim.</strong> Prihlásiš sa ľubovoľným e-mailom a heslom.</div>
+  <h1 style="font-size:clamp(26px,4vw,36px);font-weight:680;margin-bottom:26px">Administrácia<br>Paciga</h1>
+  <form id="login-form" class="adm-form">
+    <label>E-mail
+      <input type="email" name="email" required autocomplete="username">
+    </label>
+    <label>Heslo
+      <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button type="submit" class="adm-btn">Prihlásiť sa</button>
+    <p class="adm-status" id="login-status"></p>
+  </form>
+</div>
+
+<script>
+import { getClient, DEMO } from '../../scripts/admin-core.js';
+
+const sb = getClient();
+const next = new URLSearchParams(location.search).get('next') || '/admin';
+if (DEMO) document.getElementById('demo-banner').classList.remove('hidden');
+
+// už prihlásený? rovno dnu
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) location.href = next;
+});
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const status = document.getElementById('login-status');
+  status.textContent = 'Prihlasujem…';
+  status.classList.remove('err');
+  const { error } = await sb.auth.signInWithPassword({
+    email: f.elements.email.value,
+    password: f.elements.password.value,
+  });
+  if (error) {
+    status.textContent = 'Nesprávny e-mail alebo heslo.';
+    status.classList.add('err');
+  } else {
+    location.href = next;
+  }
+});
+</script>
+</body>
+</html>

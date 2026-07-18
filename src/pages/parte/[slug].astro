@@ -1,0 +1,143 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl } from '../../lib/parte';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const p = slug ? await getParteBySlug(slug) : null;
+if (!p) return Astro.redirect('/opustili-nas', 302);
+
+const kondolencie = await getKondolencie(p.id);
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=3600');
+
+const zena = p.pohlavie === 'zena';
+const zomrel = zena ? 'zomrela' : 'zomrel';
+const narodenie = zena ? 'Narodila sa' : 'Narodil sa';
+const rozluckaS = zena ? 's našou drahou zosnulou' : 's naším drahým zosnulým';
+const vekText = p.vek === 1 ? '1 rok' : p.vek && p.vek <= 4 ? `${p.vek} roky` : `${p.vek} rokov`;
+
+const rozluckaVeta = p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto
+  ? `Posledná rozlúčka ${fmtDlhy(p.rozlucka_datum)} o ${p.rozlucka_cas}, ${p.rozlucka_miesto}.`
+  : '';
+
+const title = `${p.meno} | Opustili nás | Paciga`;
+const description = `Smútočné oznámenie: ${p.meno}, ${zomrel} ${fmtDlhy(p.datum_umrtia)}${p.vek ? ` vo veku ${vekText}` : ''}.${rozluckaVeta ? ' ' + rozluckaVeta : ''}`;
+const ogDescription = rozluckaVeta
+  ? `${rozluckaVeta.replace(/\.$/, '')}. S úctou, pohrebná služba Paciga.`
+  : 'S úctou, pohrebná služba Paciga.';
+
+const ics = icsDataUrl(p);
+const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: `Posledná rozlúčka: ${p.meno}`,
+  startDate: `${p.rozlucka_datum}T${p.rozlucka_cas}:00+02:00`,
+  eventStatus: 'https://schema.org/EventScheduled',
+  location: { '@type': 'Place', name: p.rozlucka_miesto },
+  organizer: { '@type': 'Organization', name: 'Paciga', url: 'https://paciga.sk' },
+}) : null;
+---
+<Base title={title} description={description} active="opustili-nas"
+  ogTitle={`${p.meno} | Smútočné oznámenie`} ogDescription={ogDescription}
+  ogImage={p.foto_url ?? undefined}>
+
+  <Fragment slot="head">
+    {jsonld && <script type="application/ld+json" set:html={jsonld}></script>}
+  </Fragment>
+
+  <!-- ============ MEMORIÁL HERO ============ -->
+  <section class="phero" data-name={p.meno} data-slug={p.slug}>
+    <div class="phero-glow" aria-hidden="true"></div>
+    <div class="phero-mark" aria-hidden="true">{inicialky(p.meno)}</div>
+    <a href="/opustili-nas" class="parte-back">← Všetky oznámenia</a>
+    <div class="container phero-inner">
+      <div class="eyebrow" data-reveal>Smútočné oznámenie</div>
+      <button type="button" class="phero-candle" id="phero-light" aria-pressed="false" data-reveal>
+        <span class="phero-flame" aria-hidden="true"><i></i></span>
+        <span class="phero-wick" aria-hidden="true"></span>
+        <span class="phero-label"><span class="off">Zapáliť sviečku</span><span class="on">Sviečka horí</span></span>
+      </button>
+      {p.foto_url && <div class="phero-photo" data-reveal><img src={p.foto_url} alt={p.meno} decoding="async"></div>}
+      <h1 data-reveal>{p.meno}</h1>
+      <div class="phero-dates" data-reveal>
+        {p.datum_narodenia && <div><span class="label">{narodenie}</span>{fmtDlhy(p.datum_narodenia)}</div>}
+        <div><span class="label">{zena ? 'Zomrela' : 'Zomrel'}</span>† {fmtDlhy(p.datum_umrtia)}</div>
+        {p.vek && <div><span class="label">Vo veku</span>{vekText}</div>}
+      </div>
+      <div class="phero-sviecky" data-reveal><span class="phero-count">{p.sviecky > 0 ? svieckyText(p.sviecky) : ''}</span></div>
+    </div>
+  </section>
+
+  <!-- ============ POSLEDNÁ ROZLÚČKA ============ -->
+  {p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto && (
+    <section class="prozl">
+      <div class="container">
+        <h2 data-reveal>Posledná rozlúčka {rozluckaS}</h2>
+        <p class="prozl-when" data-reveal>{fmtDlhy(p.rozlucka_datum)} o {p.rozlucka_cas}</p>
+        <p class="prozl-where" data-reveal>{p.rozlucka_miesto}</p>
+        <div class="prozl-links"><a class="link-underline gold" href={mapUrl(p.rozlucka_miesto)} target="_blank" rel="noopener" data-reveal>Zobraziť miesto na mape →</a> {ics && <a class="link-underline gold" href={ics} download={`rozlucka-${p.slug}.ics`} data-reveal>Pridať do kalendára</a>}</div>
+      </div>
+    </section>
+  )}
+
+  <!-- ============ ODKAZ RODINE ============ -->
+  <section class="quote pcond" id="quote">
+    <div class="container quote-inner">
+      <div class="quote-mark" aria-hidden="true">“</div>
+      <p id="quote-text">{p.odkaz_rodine ?? 'Rodine a blízkym vyjadrujeme úprimnú sústrasť. Je nám cťou sprevádzať vás poslednou rozlúčkou.'}</p>
+      <div class="quote-author" data-reveal>Pohrebná služba Paciga</div>
+      <div class="pcond-actions" data-reveal>
+        <a href="#kondolencia-form" class="btn-gold">Napísať kondolenciu</a>
+        <a href="tel:0903596364" class="link-underline gold">Kvety na rozlúčku · 0903 596 364</a>
+        <button type="button" class="link-underline copy-link">Kopírovať odkaz</button>
+      </div>
+      <p class="pcond-note" data-reveal>Kondolenciu s úctou odovzdáme rodine. Vence a kvetinovú výzdobu doručíme priamo na obrad.</p>
+    </div>
+  </section>
+
+  <!-- ============ KONDOLENCIE ============ -->
+  <section class="kond">
+    <div class="container">
+      {kondolencie.length > 0 && (
+        <div class="kond-list">
+          <h2 data-reveal>Kondolencie</h2>
+          {kondolencie.map((k) => (
+            <blockquote class="kond-item" data-reveal>
+              <p>„{k.odkaz}“</p>
+              <footer>{k.meno}<span class="kond-date"> · {fmtKratky(k.created_at)}</span></footer>
+            </blockquote>
+          ))}
+        </div>
+      )}
+      <form id="kondolencia-form" class="kond-form" data-slug={p.slug} data-reveal>
+        <h2>Napísať kondolenciu</h2>
+        <p class="kond-form-note">Odkaz s úctou odovzdáme rodine. Pri parte ho zverejníme po schválení.</p>
+        <label>Vaše meno
+          <input type="text" name="meno" maxlength="120" required autocomplete="name">
+        </label>
+        <label>Váš odkaz
+          <textarea name="odkaz" rows="5" maxlength="2000" required></textarea>
+        </label>
+        <input type="text" name="web" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="btn-gold">Odoslať kondolenciu</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+<Fragment slot="scripts">
+<script is:inline src="/js/candles.js"></script>
+<script is:inline src="/js/forms.js"></script>
+<script is:inline>
+(function () {
+  document.querySelectorAll(".copy-link").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var done = function () { btn.textContent = "Odkaz skopírovaný"; setTimeout(function () { btn.textContent = "Kopírovať odkaz"; }, 2500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(location.href).then(done); }
+    });
+  });
+})();
+</script>
+</Fragment>
+</Base>

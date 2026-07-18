@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = "Kontakt | Paciga, pohrebné a kamenárske služby";
+const description = "Kontakt na pohrebnú službu Paciga. NON STOP 0903 596 364 a 0948 110 109. Pobočky Poprad, Spišská Belá a Liptovský Mikuláš.";
+const ogTitle = "Kontakt | Paciga";
+const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobočky pod Tatrami.";
+---
+<Base title={title} description={description} active="kontakt" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/o-nas-tim.jpg">
+
+
+
+  <!-- ============ HLAVIČKA S TELEFÓNMI ============ -->
+  <section class="page-head">
+    <div class="container">
+      <div class="eyebrow" data-reveal>Kontakt</div>
+      <h1 data-reveal>Sme tu.<br>Kedykoľvek.</h1>
+      <p class="page-head-lead" data-reveal>Prevoz zosnulých zabezpečujeme NON STOP, každý deň v roku. Zavolajte a o všetko ostatné sa postaráme.</p>
+      <div class="contact-phones">
+        <div data-reveal>
+          <div class="cp-label">Marek Paciga · NON STOP</div>
+          <a class="cp-num" href="tel:0903596364">0903 596 364</a>
+        </div>
+        <div data-reveal>
+          <div class="cp-label">Služba · NON STOP</div>
+          <a class="cp-num" href="tel:0948110109">0948 110 109</a>
+        </div>
+      </div>
+      <a class="contact-mail" href="mailto:paciga@paciga.sk" data-reveal>paciga@paciga.sk</a>
+    </div>
+  </section>
+
+  <!-- ============ NAPÍŠTE NÁM ============ -->
+  <section class="contact-form-section">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-reveal>Napíšte nám</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <p class="contact-form-lead" data-reveal>Ak vám je ťažko telefonovať, napíšte nám. Ozveme sa vám čo najskôr a všetko vybavíme za vás.</p>
+      <form id="kontakt-form" class="contact-form" data-reveal>
+        <label>Vaše meno
+          <input type="text" name="meno" maxlength="120" required autocomplete="name">
+        </label>
+        <div class="contact-form-row">
+          <label>Telefón
+            <input type="tel" name="telefon" maxlength="40" autocomplete="tel">
+          </label>
+          <label>E-mail
+            <input type="email" name="email" maxlength="200" autocomplete="email">
+          </label>
+        </div>
+        <label>Vaša správa
+          <textarea name="sprava" rows="6" maxlength="4000" required></textarea>
+        </label>
+        <input type="text" name="web" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="btn-gold">Odoslať správu</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ POBOČKY ============ -->
+  <section class="branches">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-reveal>Tri pobočky, jedna rodina</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="branch-grid">
+        <article class="branch-card" data-reveal>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-poprad.mp4" poster="/assets/asset-03.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+          <div class="branch-body">
+            <h3>Poprad</h3>
+            <p class="branch-addr">Francisciho 3288/35<br>058 01 Poprad</p>
+            <a class="branch-tel" href="tel:0903596364">0903 596 364</a>
+            <p class="branch-hours">Showroom: rakvy, urny, vence, <a href="/sperky" class="gold-link">šperky</a>, kamenárstvo</p>
+            <a class="link-underline gold" href="https://www.google.com/maps?q=Francisciho%203288%2F35%2C%20058%2001%20Poprad" target="_blank" rel="noopener">Zobraziť na mape →</a>
+          </div>
+        </article>
+        <article class="branch-card" data-reveal>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-bela.mp4" poster="/assets/asset-10.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+          <div class="branch-body">
+            <h3>Spišská Belá</h3>
+            <p class="branch-addr">Letná 17<br>059 01 Spišská Belá</p>
+            <a class="branch-tel" href="tel:0948110109">0948 110 109</a>
+            <p class="branch-hours">Sídlo firmy · NON STOP prevoz 24/7</p>
+            <a class="link-underline gold" href="https://www.google.com/maps?q=Letn%C3%A1%2017%2C%20059%2001%20Spi%C5%A1sk%C3%A1%20Bel%C3%A1" target="_blank" rel="noopener">Zobraziť na mape →</a>
+          </div>
+        </article>
+        <article class="branch-card" data-reveal>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-lm.mp4" poster="/assets/asset-11.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+          <div class="branch-body">
+            <h3>Liptovský Mikuláš</h3>
+            <p class="branch-addr">Ester Šimerovej Martinčekovej 4506/4<br>031 01 Liptovský Mikuláš</p>
+            <a class="branch-tel" href="tel:0948110109">0948 110 109</a>
+            <p class="branch-hours">Kancelária: 0949 011 012 · Po až Pi 8:00 až 16:30</p>
+            <a class="link-underline gold" href="https://www.google.com/maps?q=Ester%20%C5%A0imerovej%20Martin%C4%8Dekovej%204506%2F4%2C%20031%2001%20Liptovsk%C3%BD%20Mikul%C3%A1%C5%A1" target="_blank" rel="noopener">Zobraziť na mape →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAKTURAČNÉ ÚDAJE ============ -->
+  <section class="billing">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-reveal>Fakturačné údaje</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="billing-grid">
+        <div class="bill-item" data-reveal>
+          <div class="label">Obchodné meno a sídlo</div>
+          <p>Paciga s.r.o.<br>Partizánska 1140/22<br>059 01 Spišská Belá</p>
+        </div>
+        <div class="bill-item" data-reveal>
+          <div class="label">Identifikátory</div>
+          <p>IČO: 51 736 039<br>IČ DPH: SK2120765900</p>
+        </div>
+        <div class="bill-item" data-reveal>
+          <div class="label">Elektronicky</div>
+          <p>paciga@paciga.sk<br>www.paciga.sk</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<Fragment slot="scripts">
+<script is:inline src="/js/forms.js"></script>
+</Fragment>
+</Base>

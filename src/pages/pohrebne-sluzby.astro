@@ -1,0 +1,212 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = "Pohrebné služby | Paciga, pohrebné a kamenárske služby";
+const description = "Kompletné pohrebné služby Paciga: rakvy, obrad, kremácia, prevoz zosnulých NON STOP, kvetinárstvo, kamenárstvo, spomienkové šperky. Poprad, Spišská Belá, Liptovský Mikuláš.";
+const ogTitle = "Pohrebné služby | Paciga";
+const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telefonátu po žulový pomník.";
+---
+<Base title={title} description={description} active="pohrebne-sluzby" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/sluzby-hero.jpg">
+
+
+
+  <!-- ============ SUBHERO ============ -->
+  <section class="subhero">
+    <div class="subhero-media" aria-hidden="true">
+      <img src="/assets/sluzby-hero.jpg" alt="" fetchpriority="high" decoding="async">
+      <div class="subhero-shade"></div>
+    </div>
+    <div class="container subhero-content">
+      <div class="eyebrow" data-reveal>Pohrebné služby</div>
+      <h1 data-reveal>Od prvého telefonátu<br>po poslednú rozlúčku.</h1>
+      <p class="subhero-lead" data-reveal>Pätnásť služieb pod jednou strechou. Zavoláte raz a o všetko ostatné sa postaráme my.</p>
+    </div>
+  </section>
+
+  <!-- ============ ROZCESTNÍK SKUPÍN ============ -->
+  <section class="situ" aria-label="Rýchla navigácia podľa skupiny služieb">
+    <div class="container">
+      <div class="situ-label">Čo potrebujete zariadiť?</div>
+      <div class="situ-row">
+        <a href="#skupina-obrad" class="situ-chip">Rozlúčka a obrad</a>
+        <a href="#skupina-prevoz" class="situ-chip">Prevoz a technológie</a>
+        <a href="#skupina-kamenarstvo" class="situ-chip">Kamenárstvo</a>
+        <a href="#skupina-podpora" class="situ-chip">Podpora a spomienka</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SKUPINY SLUŽIEB ============ -->
+  <section class="svcgroups">
+    <div class="container">
+
+      <div class="svcgroup" id="skupina-obrad">
+        <div class="svcgroup-head">
+          <h2 data-reveal>Rozlúčka a obrad</h2>
+          <div class="gold-line" data-line aria-hidden="true"></div>
+        </div>
+        <div class="svcgrid">
+          <article class="first-card" id="rakvy" data-reveal>
+            <h3>Rakvy</h3>
+            <p>Široký výber elegantných rakiev z prvotriednych materiálov. V showroome v Poprade si ich pozriete naživo.</p>
+          </article>
+          <article class="first-card has-photo" id="rozlucka" data-reveal>
+            <span class="fc-photo" style="background-image:url('/assets/asset-01.jpg')" aria-hidden="true"></span>
+            <h3>Rozlúčka a pochovanie na cintoríne</h3>
+            <p>Kompletné zabezpečenie obradu vrátane prípravy miesta, výzdoby a organizácie celého priebehu.</p>
+          </article>
+          <article class="first-card" id="kremacia" data-reveal>
+            <h3>Kremácia s obradom alebo bez</h3>
+            <p>Možnosť rozlúčky, ktorá rešpektuje želania zosnulého aj pozostalých. Poradíme vám s výberom.</p>
+          </article>
+          <article class="first-card" id="kvetinarstvo" data-reveal>
+            <h3>Kvetinárstvo</h3>
+            <p>Vence, kytice a kvetinová výzdoba obradu. Vyjadrujú úctu tam, kde slová nestačia.</p>
+          </article>
+          <article class="first-card" id="oblecenie" data-reveal>
+            <h3>Oblečenie pre zosnulého</h3>
+            <p>Dôstojné oblečenie a úprava zosnulého. Súčasť rozlúčky, ktorá odráža rešpekt a úctu.</p>
+          </article>
+          <article class="first-card" id="karty" data-reveal>
+            <h3>Spomienkové karty</h3>
+            <p>Jedinečný spôsob, ako si uctiť pamiatku zosnulého a zdieľať spomienku s rodinou a blízkymi.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="svcgroup" id="skupina-prevoz">
+        <div class="svcgroup-head">
+          <h2 data-reveal>Prevoz a technológie</h2>
+          <div class="gold-line" data-line aria-hidden="true"></div>
+        </div>
+        <div class="svcgrid">
+          <article class="first-card has-photo" id="prevoz" data-reveal>
+            <span class="fc-photo" style="background-image:url('/assets/asset-04.jpg')" aria-hidden="true"></span>
+            <h3>Prevoz zosnulých NON STOP</h3>
+            <p>Dôstojný a rýchly prevoz z bytov a nemocníc, 24 hodín denne. Dbáme na hygienické aj právne predpisy.</p>
+          </article>
+          <article class="first-card has-photo" id="medzinarodny-prevoz" data-reveal>
+            <span class="fc-photo" style="background-image:url('/assets/asset-09.jpg')" aria-hidden="true"></span>
+            <h3>Medzinárodný prevoz</h3>
+            <p>Preprava zosnulých zo zahraničia vrátane vybavenia všetkých dokumentov. Ako prví v regióne.</p>
+          </article>
+          <a class="first-card" href="#limuzina" data-reveal>
+            <h3>Pohrebná limuzína</h3>
+            <p>Exkluzívna limuzína ocenená ako najkrajšia na Slovensku. Elegancia, dôstojnosť a moderný dizajn.</p>
+            <span class="fc-go">Viac →</span>
+          </a>
+          <article class="first-card" id="chladenie" data-reveal>
+            <h3>Prenosné chladenie</h3>
+            <p>Vlastná technológia, ktorú sme ako prví predstavili na výstave Slovak Funeral. Umožňuje dôstojnú rozlúčku aj doma.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="svcgroup" id="skupina-kamenarstvo">
+        <div class="svcgroup-head">
+          <h2 data-reveal>Kamenárstvo</h2>
+          <div class="gold-line" data-line aria-hidden="true"></div>
+        </div>
+        <div class="svcgrid">
+          <a class="first-card" id="kamenarstvo" href="/kontakt" data-reveal>
+            <h3>Kamenárske práce</h3>
+            <p>Výroba betónových hrobiek, predaj a montáž žulových pomníkov, písmo aj doplnky. Od výkopu po hotový pomník.</p>
+            <span class="fc-go">Kontaktovať →</span>
+          </a>
+          <a class="first-card" id="vizualizacia" href="/kontakt" data-reveal>
+            <h3>3D vizualizácia pomníka</h3>
+            <p>Pomník uvidíte ešte pred výrobou. Ako prví v regióne pripravíme presnú 3D vizualizáciu.</p>
+            <span class="fc-go">Kontaktovať →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="svcgroup" id="skupina-podpora">
+        <div class="svcgroup-head">
+          <h2 data-reveal>Podpora a spomienka</h2>
+          <div class="gold-line" data-line aria-hidden="true"></div>
+        </div>
+        <div class="svcgrid">
+          <a class="first-card" id="poradenstvo" href="/kontakt" data-reveal>
+            <h3>Smútkové poradenstvo</h3>
+            <p>Strata blízkeho je jedna z najťažších skúseností. Sprevádzame vás procesom smútenia, nie ste v tom sami.</p>
+            <span class="fc-go">Kontaktovať →</span>
+          </a>
+          <article class="first-card" id="predpriprava" data-reveal>
+            <h3>Predpríprava pohrebu</h3>
+            <p>Naplánujte si poslednú rozlúčku vopred podľa vlastných predstáv a odbremeňte svojich blízkych.</p>
+          </article>
+          <a class="first-card has-photo" href="/sperky" data-reveal>
+            <span class="fc-photo" style="background-image:url('/assets/asset-08.jpg')" aria-hidden="true"></span>
+            <h3>Spomienkové šperky s odtlačkom</h3>
+            <p>Náramky a retiazky s gravírovaným odtlačkom prsta. Kúsok blízkeho človeka navždy pri vás.</p>
+            <span class="fc-go">Pozrieť kolekciu →</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ LIMUZÍNA ============ -->
+  <section class="fleetband" id="limuzina">
+    <div class="fleetband-media" aria-hidden="true">
+      <img src="/assets/o-nas-limuzina.jpg" alt="" loading="lazy" decoding="async">
+      <div class="fleetband-shade"></div>
+    </div>
+    <div class="container fleetband-content">
+      <div class="eyebrow" data-reveal>Flotila</div>
+      <h2 data-reveal>Pohrebná limuzína</h2>
+      <p data-reveal>Ocenená ako najkrajšia na Slovensku. Elegancia a dôstojnosť na poslednej ceste, za každého počasia.</p>
+    </div>
+  </section>
+
+  <!-- ============ ŠPERKY ============ -->
+  <section class="story" id="sperky">
+    <div class="container story-grid">
+      <div class="story-text">
+        <h2 data-reveal>„Nikdy nezabudnem.“</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+        <p data-reveal>Odtlačok prsta blízkeho človeka gravírujeme do striebra, zlata alebo ružového zlata. Náramky a retiazky vyrábame s nápisom podľa vášho želania.</p>
+        <p data-reveal>Šperky si pozriete v showroome v Poprade, radi vám ich ukážeme aj na ostatných pobočkách.</p>
+        <p data-reveal><a class="link-underline gold" href="/sperky">Pozrieť kolekciu →</a></p>
+      </div>
+      <figure class="story-photo" data-reveal>
+        <img src="/assets/sperky-studio.jpg" alt="Spomienkový náhrdelník s odtlačkom prsta a gravírovaným nápisom Láska pretrvá" loading="lazy" decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-band">
+    <div class="cta-inner">
+      <h2 data-reveal>Nemusíte vybavovať nič sami</h2>
+      <p data-reveal>Zavolajte kedykoľvek. Poradíme, prevezmeme a s úctou zabezpečíme všetko potrebné.</p>
+      <a href="tel:0903596364" class="btn-gold btn-lg" data-reveal>NON STOP · 0903 596 364</a>
+    </div>
+  </section>
+
+  <!-- ============ PLÁVAJÚCA NON STOP LIŠTA ============ -->
+  <div class="callbar" id="callbar" role="complementary" aria-label="NON STOP kontakt">
+    <div class="container callbar-inner">
+      <span class="callbar-label">NON STOP prevoz zosnulých</span>
+      <a href="tel:0903596364" class="callbar-tel"><span class="dot" aria-hidden="true"></span>0903 596 364</a>
+    </div>
+  </div>
+
+<Fragment slot="scripts">
+<script is:inline>
+(function () {
+  var bar = document.getElementById('callbar');
+  if (!bar) return;
+  var shown = false;
+  function check() {
+    var on = (window.scrollY || window.pageYOffset) > 500;
+    if (on !== shown) { shown = on; bar.classList.toggle('on', on); }
+  }
+  window.addEventListener('scroll', check, { passive: true });
+  check();
+})();
+</script>
+</Fragment>
+</Base>

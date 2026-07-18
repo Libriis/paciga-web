@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import { getParteList, inicialky, fmtKratky, fmtDenMesiac, mesiacLabel } from '../lib/parte';
+import type { Parte } from '../lib/parte';
+
+export const prerender = false;
+
+const parteList = await getParteList();
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=86400');
+
+// zoskupenie podľa mesiaca úmrtia (zoznam je už zoradený od najnovších)
+const skupiny: { label: string; items: Parte[] }[] = [];
+for (const p of parteList) {
+  const label = mesiacLabel(p.datum_umrtia);
+  const last = skupiny[skupiny.length - 1];
+  if (last && last.label === label) last.items.push(p);
+  else skupiny.push({ label, items: [p] });
+}
+
+const title = 'Opustili nás | Paciga, pohrebné a kamenárske služby';
+const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomienkou a úctou na tých, ktorých sme vyprevadili na poslednej ceste.';
+---
+<Base title={title} description={description} active="opustili-nas"
+  ogTitle="Opustili nás | Paciga"
+  ogDescription="So spomienkou a úctou. Zapáľte sviečku tým, ktorí nás opustili.">
+
+  <!-- ============ HLAVIČKA ============ -->
+  <section class="page-head">
+    <div class="container">
+      <div class="eyebrow" data-reveal>Opustili nás</div>
+      <h1 data-reveal>So spomienkou<br>a úctou.</h1>
+      <p class="page-head-lead" data-reveal>Spomíname na tých, ktorých sme vyprevadili na poslednej ceste. Zapáľte im sviečku, plamienok zostane svietiť pri ich mene.</p>
+    </div>
+  </section>
+
+  <!-- ============ SPOMIENKY ============ -->
+  <section class="memoriam" style="padding-top: 0;">
+    <div class="container">
+      {skupiny.map((skupina) => (
+        <Fragment>
+          <div class="memoriam-month" data-reveal>{skupina.label}</div>
+          <div class="memoriam-grid">
+            {skupina.items.map((p) => (
+              <div class="memoriam-card" data-reveal data-slug={p.slug}>
+                <a class="memoriam-link" href={`/parte/${p.slug}`}>
+                  <div class="memoriam-photo" aria-hidden="true">{p.foto_url
+                    ? <img src={p.foto_url} alt="" loading="lazy" decoding="async" />
+                    : <span>{inicialky(p.meno)}</span>}</div>
+                  <h3>{p.meno}</h3>
+                  <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}</div>
+                  {p.rozlucka_datum && p.rozlucka_cas && p.rozlucka_miesto && (
+                    <div class="memoriam-rozlucka">Rozlúčka {fmtDenMesiac(p.rozlucka_datum)} o {p.rozlucka_cas}<br>{p.rozlucka_miesto}</div>
+                  )}
+                </a>
+                <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku<span class="candle-count">{p.sviecky > 0 ? ` · ${p.sviecky}` : ''}</span></button><a href={`/parte/${p.slug}`} class="soft-link">Zobraziť parte</a></div>
+              </div>
+            ))}
+          </div>
+        </Fragment>
+      ))}
+      <p class="memorial-note" data-reveal>Smútočné oznámenia zverejňujeme so súhlasom pozostalých. Podrobnosti o rozlúčkach a starší archív oznámení vám radi poskytneme na ktorejkoľvek pobočke.</p>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-band">
+    <div class="cta-inner">
+      <h2 data-reveal>Sme pri vás, keď to najviac potrebujete</h2>
+      <p data-reveal>Ak potrebujete čokoľvek zariadiť alebo sa len poradiť, sme vám k dispozícii v ktorúkoľvek hodinu.</p>
+      <a href="tel:0903596364" class="btn-gold btn-lg" data-reveal>NON STOP · 0903 596 364</a>
+    </div>
+  </section>
+
+<Fragment slot="scripts">
+<script is:inline src="/js/candles.js"></script>
+</Fragment>
+</Base>

@@ -1,0 +1,114 @@
+/* ============================================================
+   Paciga — štýly dynamických prvkov (backend v2)
+   Sviečky, kondolencie, kontaktný formulár, fotky na parte.
+   Dopĺňa styles.css, používa jeho tokeny.
+   ============================================================ */
+
+/* ---- počet sviečok ---- */
+.candle-count { color: var(--dim); font-weight: 500; white-space: pre; }
+.memoriam-card.lit .candle-count { color: var(--gold-soft); }
+
+.phero-sviecky { margin-top: 14px; min-height: 20px; }
+.phero-count { font-size: 13.5px; color: var(--dim); letter-spacing: 0.08em; }
+.phero.lit .phero-count { color: var(--gold-soft); }
+
+/* ---- fotka zosnulého ---- */
+.memoriam-photo { overflow: hidden; }
+.memoriam-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+
+.phero-photo {
+  width: 132px; height: 132px;
+  margin: 26px auto 0;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 245, 245, 0.35);
+  overflow: hidden;
+}
+.phero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---- kondolencie na parte ---- */
+.kond { background: var(--bg); padding: 90px 0 110px; border-top: 1px solid var(--line); }
+.kond .container { max-width: 760px; }
+.kond h2 {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 650;
+  font-variation-settings: var(--wide);
+  margin-bottom: 28px;
+}
+.kond-list { margin-bottom: 70px; }
+.kond-item {
+  border-left: 1px solid var(--gold-dim);
+  padding: 4px 0 4px 26px;
+  margin: 0 0 34px;
+}
+.kond-item p { font-size: 16.5px; line-height: 1.75; color: var(--text); }
+.kond-item footer { margin-top: 12px; font-size: 13.5px; color: var(--muted); font-weight: 600; }
+.kond-item .kond-date { color: var(--dim); font-weight: 400; }
+
+/* ---- formuláre ---- */
+.kond-form label,
+.contact-form label {
+  display: block;
+  margin-bottom: 22px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.kond-form input[type="text"],
+.kond-form textarea,
+.contact-form input[type="text"],
+.contact-form input[type="tel"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px 16px;
+  font: inherit;
+  font-size: 16px;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+.kond-form input:focus,
+.kond-form textarea:focus,
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--gold-soft);
+}
+.kond-form textarea,
+.contact-form textarea { resize: vertical; min-height: 130px; }
+
+.kond-form-note { font-size: 14.5px; color: var(--muted); margin: -14px 0 30px; line-height: 1.6; }
+
+.kond-form .btn-gold,
+.contact-form .btn-gold { border: 0; cursor: pointer; font: inherit; font-weight: 650; }
+.kond-form .btn-gold:disabled,
+.contact-form .btn-gold:disabled { opacity: 0.55; cursor: wait; }
+
+/* honeypot — mimo obrazovky, boti ho vyplnia, ľudia nie */
+.hp-field { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+.form-status { margin-top: 18px; font-size: 14.5px; color: var(--muted); min-height: 20px; }
+.form-status.err { color: #e8a0a0; }
+.form-success {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--text);
+  border-left: 1px solid var(--gold-soft);
+  padding-left: 26px;
+}
+
+/* ---- kontaktný formulár (stránka Kontakt) ---- */
+.contact-form-section { background: var(--bg2); padding: 90px 0 100px; border-top: 1px solid var(--line); }
+.contact-form-section .container { max-width: 760px; }
+.contact-form-section .section-head { margin-bottom: 40px; }
+.contact-form-lead { color: var(--muted); font-size: 16px; line-height: 1.7; margin: -20px 0 40px; }
+.contact-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+@media (max-width: 700px) { .contact-form-row { grid-template-columns: 1fr; } }

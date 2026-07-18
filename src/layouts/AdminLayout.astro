@@ -1,0 +1,54 @@
+---
+// Spoločný obal admin/CRM stránok: sidebar navigácia + user box + demo banner.
+// Autentifikáciu rieši skript každej stránky cez requireAuth() z admin-core.
+interface Props {
+  title: string;
+  active?: string;
+}
+const { title, active = '' } = Astro.props;
+
+const NAV = [
+  { key: 'dashboard', href: '/admin', label: 'Dashboard' },
+  { key: 'zakazky', href: '/admin/zakazky', label: 'Zákazky' },
+  { key: 'kontakty', href: '/admin/kontakty', label: 'Kontakty' },
+  { key: 'statistiky', href: '/admin/statistiky', label: 'Štatistiky' },
+  { key: 'web', href: '/admin/web', label: 'Web a parte' },
+];
+---
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} | Paciga admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0c0d0f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230c0d0f'/%3E%3Ctext x='32' y='45' font-family='Arial' font-size='40' font-weight='700' fill='%23f5f5f5' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="/assets/asset-17.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="adm-shell">
+  <aside class="adm-side">
+    <a class="logo" href="/admin"><img src="/assets/asset-02.png" alt="Paciga"></a>
+    <a class="adm-cta" href="/admin/zakazky?nova=1">+ Nová zákazka</a>
+    <nav class="adm-nav">
+      {NAV.map((item) => (
+        <a href={item.href} class:list={[{ on: item.key === active }]}>{item.label}<span class="badge" id={`nav-badge-${item.key}`}></span></a>
+      ))}
+    </nav>
+    <div class="spacer"></div>
+    <a class="adm-weblink" href="/" target="_blank" rel="noopener">Zobraziť web →</a>
+    <div class="adm-userbox">
+      <span id="adm-user"></span>
+      <button type="button" id="adm-logout" class="adm-btn ghost sm">Odhlásiť</button>
+    </div>
+  </aside>
+  <main class="adm-main">
+    <div id="demo-banner" class="adm-demo hidden"><strong>DEMO režim.</strong> Supabase zatiaľ nie je pripojené — všetko si môžeš preklikať, zmeny sa ukladajú len v tomto prehliadači. Po nastavení Supabase (README-BACKEND.md) sa systém prepne na ostré dáta sám.</div>
+    <slot />
+  </main>
+</div>
+</body>
+</html>

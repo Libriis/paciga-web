@@ -1,0 +1,174 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+<AdminLayout title="Dashboard" active="dashboard">
+
+  <div class="adm-head">
+    <h1 id="pozdrav" style="margin:0">Dashboard</h1>
+    <a class="adm-btn ghost sm" href="/admin/statistiky">Štatistiky a vyhodnotenia →</a>
+  </div>
+
+  <div class="chips" id="pobocka-chips"></div>
+
+  <div class="dash-grid" style="grid-template-columns:repeat(3,1fr)">
+    <a class="dash-card" href="/admin/zakazky">
+      <div class="dash-num" id="d-aktivne">–</div>
+      <div class="dash-label">aktívne zákazky</div>
+    </a>
+    <div class="dash-card">
+      <div class="dash-num" id="d-udalosti">–</div>
+      <div class="dash-label">udalosti dnes a zajtra</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-num" id="d-mesiac">–</div>
+      <div class="dash-label">pohreby tento mesiac</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-num" id="d-trzby">–</div>
+      <div class="dash-label">tržby tento mesiac</div>
+    </div>
+    <a class="dash-card" href="/admin/web#dopyty">
+      <div class="dash-num" id="d-dopyty">–</div>
+      <div class="dash-label">nevybavené dopyty z webu</div>
+    </a>
+    <a class="dash-card" href="/admin/web#kondolencie">
+      <div class="dash-num" id="d-kondolencie">–</div>
+      <div class="dash-label">kondolencie na schválenie</div>
+    </a>
+  </div>
+
+  <div class="dash-cols" style="margin-top:14px">
+    <div class="adm-card" style="margin:0">
+      <h2 style="margin:0 0 8px">Najbližšie udalosti</h2>
+      <div id="udalosti-list"><p class="adm-empty">Načítavam…</p></div>
+    </div>
+    <div>
+      <div class="adm-card" style="margin-bottom:14px">
+        <h2 style="margin:0 0 8px">Zákazky podľa stavu</h2>
+        <div id="stavy-list"></div>
+      </div>
+      <div class="adm-card" style="margin:0">
+        <h2 style="margin:0 0 4px">Pohreby po mesiacoch</h2>
+        <div class="legend" id="mesiace-legend"></div>
+        <div class="bars" id="mesiace-bars" style="height:120px"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+import { getClient, requireAuth, esc, fmtD, fmtEUR, STAVY, AKTIVNE_STAVY, POBOCKY, POBOCKY_FARBY, MESIACE_KRATKE, pobockaChips } from '../../scripts/admin-core.js';
+
+const sb = getClient();
+const $ = (sel) => document.querySelector(sel);
+
+await requireAuth();
+
+const [zRes, dRes, kRes] = await Promise.all([
+  sb.from('zakazky').select('*'),
+  sb.from('dopyty').select('*'),
+  sb.from('kondolencie').select('*'),
+]);
+const vsetkyZakazky = zRes.data || [];
+const dopyty = dRes.data || [];
+const kondolencie = kRes.data || [];
+
+const TYP_LABEL = {
+  termin_vyzdvihnutie: 'Vyzdvihnutie zosnulého',
+  termin_rakva: 'Dovoz rakvy',
+  termin_rozlucka: 'Posledná rozlúčka',
+};
+const dnes = new Date();
+const dnesStr = dnes.toISOString().slice(0, 10);
+const zajtraStr = new Date(dnes.getTime() + 864e5).toISOString().slice(0, 10);
+const tentoMesiac = dnesStr.slice(0, 7);
+
+const aktualnaPobocka = pobockaChips($('#pobocka-chips'), render);
+render();
+
+function render() {
+  const p = aktualnaPobocka();
+  const zakazky = p ? vsetkyZakazky.filter((z) => z.pobocka === p) : vsetkyZakazky;
+
+  /* udalosti z termínov aktívnych zákaziek */
+  const udalosti = [];
+  for (const z of zakazky) {
+    if (!AKTIVNE_STAVY.includes(z.stav)) continue;
+    for (const typ of Object.keys(TYP_LABEL)) {
+      const t = z[typ];
+      if (t && t.slice(0, 10) >= dnesStr) udalosti.push({ t, typ, z });
+    }
+  }
+  udalosti.sort((a, b) => (a.t < b.t ? -1 : 1));
+
+  const kedy = (t) => {
+    const [d, cas] = t.split('T');
+    const den = d === dnesStr ? 'Dnes' : d === zajtraStr ? 'Zajtra' : fmtD(d);
+    return cas ? `${den} o ${cas}` : den;
+  };
+
+  /* KPI karty */
+  const mesacne = zakazky.filter((z) => (z.datum_umrtia || '').startsWith(tentoMesiac));
+  $('#d-aktivne').textContent = zakazky.filter((z) => AKTIVNE_STAVY.includes(z.stav)).length;
+  $('#d-udalosti').textContent = udalosti.filter((u) => u.t.slice(0, 10) <= zajtraStr).length;
+  $('#d-mesiac').textContent = mesacne.length;
+  $('#d-trzby').textContent = fmtEUR(mesacne.reduce((s, z) => s + (Number(z.suma) || 0), 0));
+  $('#d-dopyty').textContent = dopyty.filter((d) => !d.precitane).length;
+  $('#d-kondolencie').textContent = kondolencie.filter((k) => !k.schvalene).length;
+
+  const badge = document.getElementById('nav-badge-web');
+  if (badge) {
+    const n = kondolencie.filter((k) => !k.schvalene).length + dopyty.filter((d) => !d.precitane).length;
+    badge.textContent = n || '';
+  }
+
+  /* zoznam udalostí — najbližších 7 dní, max 8 */
+  const doTyzdna = new Date(dnes.getTime() + 7 * 864e5).toISOString().slice(0, 10);
+  const zobraz = udalosti.filter((u) => u.t.slice(0, 10) <= doTyzdna).slice(0, 8);
+  $('#udalosti-list').innerHTML = zobraz.length
+    ? zobraz.map((u) => `
+      <div class="udalost">
+        <span class="kedy">${esc(kedy(u.t))}</span>
+        <span class="co">
+          <a href="/admin/zakazka?id=${esc(u.z.id)}" style="color:var(--text);font-weight:600">${esc(u.z.zosnuly_meno || u.z.cislo || 'zákazka')}</a>
+          <span class="typ">${TYP_LABEL[u.typ]}${u.typ === 'termin_rozlucka' && u.z.miesto_rozlucky ? ' · ' + esc(u.z.miesto_rozlucky) : ''}${u.z.pobocka ? ' · ' + esc(u.z.pobocka) : ''}</span>
+        </span>
+      </div>`).join('')
+    : '<p class="adm-empty">Najbližších 7 dní bez naplánovaných udalostí.</p>';
+
+  /* zákazky podľa stavu */
+  $('#stavy-list').innerHTML = STAVY.map((s) => {
+    const n = zakazky.filter((z) => z.stav === s.key).length;
+    return `<div class="stav-riadok"><span class="stav-badge stav-${s.key}">${s.label}</span><b>${n}</b></div>`;
+  }).join('');
+
+  /* pohreby po mesiacoch — posledných 6, stacked podľa pobočiek */
+  const mesiace = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(dnes.getFullYear(), dnes.getMonth() - i, 1);
+    const klic = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    mesiace.push({ klic, label: MESIACE_KRATKE[d.getMonth()], celkom: 0, podla: Object.fromEntries(POBOCKY.map((x) => [x, 0])) });
+  }
+  zakazky.forEach((z) => {
+    const m = mesiace.find((x) => (z.datum_umrtia || '').startsWith(x.klic));
+    if (m) { m.celkom++; if (m.podla[z.pobocka] !== undefined) m.podla[z.pobocka]++; }
+  });
+  const max = Math.max(1, ...mesiace.map((m) => m.celkom));
+
+  $('#mesiace-legend').innerHTML = p
+    ? `<span><span class="dot-p" style="background:${POBOCKY_FARBY[p]}"></span>${esc(p)}</span>`
+    : POBOCKY.map((x) => `<span><span class="dot-p" style="background:${POBOCKY_FARBY[x]}"></span>${esc(x)}</span>`).join('');
+
+  $('#mesiace-bars').innerHTML = mesiace.map((m) => {
+    const segmenty = p
+      ? `<i style="height:${Math.round((m.celkom / max) * 100)}%;background:${POBOCKY_FARBY[p]};border-radius:4px 4px 0 0"></i>`
+      : POBOCKY.map((x, xi) => m.podla[x]
+          ? `<i title="${esc(x)}: ${m.podla[x]}" style="height:${Math.max(3, Math.round((m.podla[x] / max) * 100))}%;background:${POBOCKY_FARBY[x]};margin-top:2px;${xi === 0 || m.podla[POBOCKY[0]] === 0 ? 'border-radius:4px 4px 0 0;' : ''}"></i>`
+          : '').join('');
+    return `<div class="bar"><div style="display:flex;flex-direction:column;justify-content:flex-end;height:100%">${segmenty}</div><span>${m.label}${m.celkom ? ` · ${m.celkom}` : ''}</span></div>`;
+  }).join('');
+}
+
+const hod = new Date().getHours();
+$('#pozdrav').textContent = hod < 10 ? 'Dobré ráno' : hod < 18 ? 'Dobrý deň' : 'Dobrý večer';
+</script>
+</AdminLayout>

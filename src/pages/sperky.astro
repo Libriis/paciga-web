@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = "Spomienkové šperky | Paciga, pohrebné a kamenárske služby";
+const description = "Spomienkové šperky s odtlačkom prsta vášho blízkeho. Retiazky a náramky zo zlata, striebra a ružového zlata, gravírovanie podľa želania. Showroom v Poprade.";
+const ogTitle = "Spomienkové šperky | Paciga";
+const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blízkeho, gravírované podľa vášho želania.";
+---
+<Base title={title} description={description} active="sperky" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/sperky-hero.jpg">
+
+
+
+  <!-- ============ HERO ============ -->
+  <section class="tile tile-light" style="padding-top: clamp(150px, 20vh, 220px);">
+    <div class="tile-eyebrow" data-reveal>Spomienkové šperky</div>
+    <h1 data-reveal>Nikdy nezabudnem.</h1>
+    <p class="tile-lead" data-reveal>Šperk s odtlačkom prsta vášho blízkeho. Kúsok, ktorý zostáva s vami každý deň.</p>
+    <div class="tile-actions" data-reveal>
+      <a href="mailto:paciga@paciga.sk" class="btn-ink">Napíšte nám</a>
+      <a href="/kontakt" class="link-underline">Navštívte showroom v Poprade</a>
+    </div>
+    <div class="tile-media" data-reveal>
+      <img src="/assets/sperky-hero.jpg" alt="Kolekcia spomienkových šperkov Paciga: retiazky a náramky so srdcami a medailónmi" fetchpriority="high" decoding="async">
+    </div>
+  </section>
+
+  <!-- ============ ODTLAČOK ============ -->
+  <section class="tile tile-dark">
+    <div class="tile-eyebrow" data-reveal>Ako šperk vzniká</div>
+    <h2 data-reveal>Odtlačok, ktorý zostáva.</h2>
+    <p class="tile-lead" data-reveal>Do šperku vygravírujeme odtlačok prsta vášho blízkeho a nápis podľa vášho želania. Vyberiete si zlato, striebro alebo ružové zlato.</p>
+  </section>
+
+  <!-- ============ RETIAZKY ============ -->
+  <section class="tile tile-light">
+    <h2 data-reveal>Retiazky so srdcom.</h2>
+    <p class="tile-lead" data-reveal>Srdce alebo okrúhly medailón s odtlačkom a venovaním, na jemnej retiazke alebo šnúrke.</p>
+    <div class="tile-media narrow" data-reveal>
+      <img src="/assets/sperky-retiazka.jpg" alt="Zlatá retiazka so srdcom, gravírovaný odtlačok prsta a nápis Nikdy nezabudnem" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+  <!-- ============ VÝBER ============ -->
+  <section class="tile tile-parchment">
+    <h2 data-reveal>Vyberte si tvar aj kov.</h2>
+    <p class="tile-lead" data-reveal>Každý šperk gravírujeme na mieru. Nápis je podľa vášho želania.</p>
+    <div class="sperky-grid">
+      <article class="sperky-card" data-reveal>
+        <img src="/assets/sperky-p1.jpg" alt="Zlaté srdce s odtlačkom prsta na retiazke" loading="lazy" decoding="async">
+        <h3>Zlaté srdce</h3>
+        <p>s odtlačkom a venovaním</p>
+      </article>
+      <article class="sperky-card" data-reveal>
+        <img src="/assets/sperky-p2.jpg" alt="Strieborný okrúhly medailón s odtlačkom prsta" loading="lazy" decoding="async">
+        <h3>Strieborný medailón</h3>
+        <p>s odtlačkom a venovaním</p>
+      </article>
+      <article class="sperky-card" data-reveal>
+        <img src="/assets/sperky-p3.jpg" alt="Srdce z ružového zlata na čiernej šnúrke" loading="lazy" decoding="async">
+        <h3>Ružové zlato</h3>
+        <p>na čiernej šnúrke</p>
+      </article>
+    </div>
+    <p class="sperky-note" data-reveal>Ukážky z ponuky. Kompletnú kolekciu vám ukážeme v showroome v Poprade.</p>
+  </section>
+
+  <!-- ============ NÁRAMKY ============ -->
+  <section class="tile tile-light">
+    <h2 data-reveal>Kordónové náramky.</h2>
+    <p class="tile-lead" data-reveal>Jemná šnúrka a kovový prívesok s odtlačkom. Nenápadný spôsob, ako mať blízkeho pri sebe.</p>
+    <div class="tile-media" data-reveal>
+      <img src="/assets/sperky-naramky.jpg" alt="Tri kordónové náramky s gravírovanými príveskami na vankúšiku" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="tile tile-dark">
+    <h2 data-reveal>Napíšte nám. Radi vám poradíme.</h2>
+    <p class="tile-lead" data-reveal>Šperky si môžete pozrieť v showroome našej pobočky v Poprade.</p>
+    <div class="tile-contact" data-reveal>
+      <a href="tel:0903596364" class="phone-big">0903 596 364</a>
+      <div class="addr">📍 Francisciho 3288/35, 058 01 Poprad</div>
+    </div>
+    <div class="tile-actions" data-reveal>
+      <a href="mailto:paciga@paciga.sk" class="btn-gold">Napíšte nám</a>
+    </div>
+  </section>
+
+</Base>

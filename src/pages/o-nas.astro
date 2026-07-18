@@ -1,0 +1,183 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = "O nás | Paciga, pohrebné a kamenárske služby";
+const description = "Rodinná pohrebná a kamenárska služba Paciga. Od roku 2018 sprevádzame rodiny v Poprade, Spišskej Belej a Liptovskom Mikuláši. Viac než 3 000 vybavených pohrebov.";
+const ogTitle = "O nás | Paciga";
+const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rodiny s ľudskosťou, dôstojnosťou a empatiou.";
+---
+<Base title={title} description={description} active="o-nas" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/o-nas-tim.jpg">
+
+
+
+  <!-- ============ SUBHERO ============ -->
+  <section class="subhero">
+    <div class="subhero-media" aria-hidden="true">
+      <img src="/assets/o-nas-tim.jpg" alt="" fetchpriority="high" decoding="async">
+      <div class="subhero-shade"></div>
+    </div>
+    <div class="container subhero-content">
+      <div class="eyebrow" data-reveal>O nás</div>
+      <h1 data-reveal>Rodinná firma<br>spod Tatier.</h1>
+      <p class="subhero-lead" data-reveal>Pohrebné a kamenárske služby Paciga. Od roku 2018 sprevádzame rodiny v Poprade, Spišskej Belej a Liptovskom Mikuláši.</p>
+    </div>
+  </section>
+
+  <!-- ============ PRÍBEH ============ -->
+  <section class="story">
+    <div class="container story-grid">
+      <div class="story-text">
+        <h2 data-reveal>Náš príbeh</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+        <p data-reveal>Spoločnosť Paciga vznikla 24. mája 2018 v Spišskej Belej ako priamy nástupca spoločnosti Archa Belá. Sme rodinná firma a od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
+        <p data-reveal>Odvtedy sme sprevádzali viac než tri tisíc rodín. Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
+        <p data-reveal>Naším poslaním od prvého dňa je konať čestne a na vysokej profesionálnej úrovni.</p>
+      </div>
+      <figure class="story-photo" data-reveal>
+        <img src="/assets/o-nas-limuzina.jpg" alt="Pohrebná limuzína Paciga pred Vysokými Tatrami" loading="lazy" decoding="async">
+      </figure>
+    </div>
+    <div class="container milestones">
+      <div class="mile" data-reveal>
+        <div class="mile-year">2016</div>
+        <div class="mile-body">
+          <h3>Vlastné prenosné chladenie</h3>
+          <p>Na výstave Slovak Funeral sme predstavili vlastnú technológiu prenosného chladenia. Ako prví v regióne.</p>
+        </div>
+      </div>
+      <div class="mile" data-reveal>
+        <div class="mile-year">2018</div>
+        <div class="mile-body">
+          <h3>Vznik spoločnosti Paciga</h3>
+          <p>24. mája 2018 sme v Spišskej Belej nadviazali na spoločnosť Archa Belá a začali písať vlastný príbeh.</p>
+        </div>
+      </div>
+      <div class="mile" data-reveal>
+        <div class="mile-year">Dnes</div>
+        <div class="mile-body">
+          <h3>Tri mestá pod Tatrami</h3>
+          <p>Poprad, Spišská Belá a Liptovský Mikuláš. Sme pri vás každý deň, v ktorúkoľvek hodinu.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ĽUDIA ============ -->
+  <!-- TODO: doplniť skutočné mená, roly a fotky (do .team-photo vložiť <img src="..." alt="meno">) -->
+  <section class="team" id="ludia">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow" data-reveal>Ľudia</div>
+        <h2 data-reveal>Kto sa o vás postará</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="team-grid">
+        <article class="team-card" data-reveal>
+          <div class="team-photo" aria-hidden="true">P</div>
+          <h3>[Meno Priezvisko]</h3>
+          <div class="team-role">[rola, doplniť]</div>
+        </article>
+        <article class="team-card" data-reveal>
+          <div class="team-photo" aria-hidden="true">P</div>
+          <h3>[Meno Priezvisko]</h3>
+          <div class="team-role">[rola, doplniť]</div>
+        </article>
+        <article class="team-card" data-reveal>
+          <div class="team-photo" aria-hidden="true">P</div>
+          <h3>[Meno Priezvisko]</h3>
+          <div class="team-role">[rola, doplniť]</div>
+        </article>
+      </div>
+      <p class="team-note" data-reveal>Sme rodina a kolegovia, ktorí svoju prácu berú ako poslanie. Za každou rozlúčkou stojí konkrétny človek, ktorý je pri vás od prvého telefonátu až po poslednú bodku.</p>
+    </div>
+  </section>
+
+  <!-- ============ ČÍSLA ============ -->
+  <section class="stats">
+    <div class="container stats-grid">
+      <div class="stat" data-reveal>
+        <div class="stat-num"><span data-count="3000">0</span>+</div>
+        <div class="stat-label">vybavených pohrebov od roku 2018</div>
+      </div>
+      <div class="stat" data-reveal>
+        <div class="stat-num"><span data-count="3">0</span></div>
+        <div class="stat-label">pobočky: Poprad, Spišská Belá a Liptovský Mikuláš</div>
+      </div>
+      <div class="stat" data-reveal>
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">NON STOP prevoz zosnulých</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ POVEDALI O NÁS ============ -->
+  <section class="quote" id="quote">
+    <div class="container quote-inner">
+      <div class="eyebrow" data-reveal>Povedali o nás</div>
+      <div class="quote-mark" aria-hidden="true">“</div>
+      <p id="quote-text">Rozumejú svojej práci a majú vlastnú filozofiu toho, ako aj smutné chvíle urobiť krásne.</p>
+      <div class="quote-author" data-reveal>Jela Harbin, recenzia</div>
+    </div>
+    <div class="container reviews-grid">
+      <article class="review-card" data-reveal>
+        <p>„Veľká vďaka pohrebníctvu Paciga za ich citlivý, profesionálny a ľudský prístup.“</p>
+        <div class="review-name">Michaela Fontani</div>
+      </article>
+      <article class="review-card" data-reveal>
+        <p>„Maximálna profesionálna úroveň. V tento ťažký emocionálny moment sme vôbec nevedeli, koho si vybrať.“</p>
+        <div class="review-name">Adriana Gallikova</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ PRVENSTVÁ ============ -->
+  <section class="firsts">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-reveal>Ako prví v regióne</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="firsts-grid">
+        <article class="first-card" data-reveal>
+          <h3>Prenosné chladenie</h3>
+          <p>Vlastnú technológiu sme prvýkrát predstavili na výstave Slovak Funeral v roku 2016.</p>
+        </article>
+        <article class="first-card" data-reveal>
+          <h3>3D vizualizácia pomníka</h3>
+          <p>Pomník uvidíte skôr, než ho začneme vyrábať.</p>
+        </article>
+        <article class="first-card" data-reveal>
+          <h3>Smútkové poradenstvo</h3>
+          <p>Podpora a sprevádzanie v procese smútenia.</p>
+        </article>
+        <article class="first-card" data-reveal>
+          <h3>Medzinárodný prevoz</h3>
+          <p>Preprava zosnulých zo zahraničia vrátane všetkých dokumentov.</p>
+        </article>
+      </div>
+      <p class="firsts-note" data-reveal>V podtatranskom regióne sme jediným členom Asociácie pohrebných služieb na Slovensku.</p>
+    </div>
+  </section>
+
+  <!-- ============ FLOTILA ============ -->
+  <section class="fleetband">
+    <div class="fleetband-media" aria-hidden="true">
+      <img src="/assets/journey-poster.jpg" alt="" loading="lazy" decoding="async">
+      <div class="fleetband-shade"></div>
+    </div>
+    <div class="container fleetband-content">
+      <h2 data-reveal>Flotila, ktorá vzdáva úctu</h2>
+      <p data-reveal>Vozidlá Mercedes-Benz s chladením, automatickou prevodovkou a pohonom 4×4. Dôstojne a spoľahlivo za každého počasia. Súčasťou flotily je pohrebná limuzína ocenená ako najkrajšia na Slovensku.</p>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-band">
+    <div class="cta-inner">
+      <h2 data-reveal>Sme pri vás, keď to najviac potrebujete</h2>
+      <p data-reveal>Zavolajte kedykoľvek. Poradíme, prevezmeme a s úctou zabezpečíme všetko potrebné.</p>
+      <a href="tel:0903596364" class="btn-gold btn-lg" data-reveal>NON STOP · 0903 596 364</a>
+    </div>
+  </section>
+
+</Base>
