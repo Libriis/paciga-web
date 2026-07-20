@@ -26,8 +26,6 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
 ---
 <Base title={title} description={description} active="domov" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/asset-07.jpg" mainId="paci" journey>
 
-
-
   <!-- ============ POSLEDNÁ CESTA (scrollovaná filmová jazda — frame scrub) ============ -->
   <section class="journey" id="hero">
     <div class="journey-pin" id="journey-pin">
@@ -127,14 +125,31 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
     </div>
   </section>
 
-  <!-- ============ QUOTE (scrub word reveal) ============ -->
-  <section class="quote" id="quote">
-    <div class="orb" style="top:-20%;right:-12%" aria-hidden="true"></div>
-    <div class="container quote-inner">
-      <div class="quote-mark" aria-hidden="true">“</div>
-      <p id="quote-text">{VYBER.fontaniOpora}</p>
-      <div class="quote-author" data-reveal>{RECENZIE.fontani.meno} · recenzia Google</div>
-      <div class="quote-badge" data-reveal><span class="stars" aria-hidden="true">★★★★★</span><span>Hodnotenie rodín na Google</span></div>
+  <!-- ============ RECENZIE (svetlá sekcia) ============ -->
+  <section class="reviews" id="recenzie">
+    <div class="container">
+      <div class="reviews-head">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <h2 data-textreveal>Skutočné rodiny. Skutočné slová.</h2>
+        <p data-textreveal>Recenzie z profilu Google.</p>
+      </div>
+      <div class="reviews-rail" data-reveal>
+        <div class="reviews-rail-track">
+          {[0, 1].map((dup) => (
+            <div class="reviews-set" aria-hidden={dup === 1 ? 'true' : undefined}>
+              {RECENZIE_RAIL.map((r) => (
+                <blockquote class="review rail-card">
+                  <p>„{r.t}“</p>
+                  <footer>{r.m}</footer>
+                </blockquote>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <p class="reviews-more" data-reveal>
+        <a class="link-underline gold" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
+      </p>
     </div>
   </section>
 
@@ -223,24 +238,6 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
     </div>
   </section>
 
-  <!-- ============ STATS ============ -->
-  <section class="stats">
-    <div class="container stats-grid">
-      <div class="stat" data-reveal>
-        <div class="stat-num"><span data-count="8">0</span></div>
-        <div class="stat-label">rokov pri rodinách · s vami od roku 2018</div>
-      </div>
-      <div class="stat" data-reveal>
-        <div class="stat-num"><span data-count="3">0</span></div>
-        <div class="stat-label">pobočky: Poprad, Spišská Belá a Liptovský Mikuláš</div>
-      </div>
-      <div class="stat" data-reveal>
-        <div class="stat-num">24/7</div>
-        <div class="stat-label">NON STOP prevoz zosnulých</div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ POBOCKY ============ -->
   <section id="pobocky" class="branches">
     <div class="orb" style="top:-16%;left:30%" aria-hidden="true"></div>
@@ -307,34 +304,6 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
           </div>
         ))}
       </div>
-    </div>
-  </section>
-
-  <!-- ============ RECENZIE (svetlá sekcia) ============ -->
-  <section class="reviews" id="recenzie">
-    <div class="container">
-      <div class="reviews-head">
-        <div class="stars" aria-hidden="true">★★★★★</div>
-        <h2 data-textreveal>Skutočné rodiny. Skutočné slová.</h2>
-        <p data-textreveal>Recenzie z profilu Google.</p>
-      </div>
-      <div class="reviews-rail" data-reveal>
-        <div class="reviews-rail-track">
-          {[0, 1].map((dup) => (
-            <div class="reviews-set" aria-hidden={dup === 1 ? 'true' : undefined}>
-              {RECENZIE_RAIL.map((r) => (
-                <blockquote class="review rail-card">
-                  <p>„{r.t}“</p>
-                  <footer>{r.m}</footer>
-                </blockquote>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-      <p class="reviews-more" data-reveal>
-        <a class="link-underline gold" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
-      </p>
     </div>
   </section>
 
