@@ -1,5 +1,8 @@
 ---
 // Spoločný layout: hlavička, navigácia, pätička a skripty pre všetky stránky.
+// tw.css = globálny Tailwind v4 (utility + Paciga tokeny) — nové veci píšeme
+// utility-first, legacy classy v public/css/styles.css ostávajú v platnosti.
+import '../styles/tw.css';
 import { GOOGLE_PROFIL } from '../data/recenzie';
 
 interface Props {
@@ -31,6 +34,7 @@ const NAV = [
   { key: 'o-nas', href: '/o-nas', label: 'O nás' },
   { key: 'informacie-pre-pozostalych', href: '/informacie-pre-pozostalych', label: 'Informácie pre pozostalých' },
   { key: 'pohrebne-sluzby', href: '/pohrebne-sluzby', label: 'Pohrebné služby' },
+  { key: 'kamenarstvo', href: '/kamenarstvo', label: 'Kamenárstvo' },
   { key: 'sperky', href: '/sperky', label: 'Šperky' },
   { key: 'opustili-nas', href: '/opustili-nas', label: 'Opustili nás' },
   { key: 'aktuality', href: '/aktuality', label: 'Aktuality' },
@@ -76,6 +80,11 @@ const NAV = [
     </nav>
   </div>
 </header>
+
+<!-- trvalé click-to-call: viditeľné, keď nav (a s ním telefón) nie je poruke -->
+<a href="tel:0903596364" class="callpill" id="callpill" aria-label="Zavolať NON STOP linku 0903 596 364">
+  <span class="dot" aria-hidden="true"></span>NON STOP · 0903 596 364
+</a>
 
 <main id={mainId}>
 

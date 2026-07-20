@@ -1,0 +1,18 @@
+---
+/*
+  Wrapper pre komponenty z 21st.dev / shadcn.
+  Import ui21.css (Tailwind utility + Paciga tokeny) + data-ui21 scope
+  pre mini-preflight. Použitie:
+
+    <Ui21>
+      <MojReactKomponent client:visible />
+    </Ui21>
+
+  Wrapper je len div — layout rieši rodičovská sekcia webu.
+*/
+import '../styles/tw.css';
+---
+
+<div data-ui21>
+  <slot />
+</div>

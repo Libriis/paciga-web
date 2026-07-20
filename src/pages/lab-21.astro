@@ -1,0 +1,28 @@
+---
+/*
+  Interné laboratórium pre komponenty z 21st.dev — nie je v navigácii.
+  Každý nový komponent z katalógu najprv osaď sem, dolaď na brand,
+  až potom presuň do produkčnej stránky.
+*/
+import Base from '../layouts/Base.astro';
+import Ui21 from '../components/Ui21.astro';
+import Lab21Demo from '../components/Lab21Demo.tsx';
+
+const title = 'UI Lab 21 | Paciga (interné)';
+---
+<Base title={title} description="Interná stránka na testovanie komponentov." active="">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+  <section class="page-head">
+    <div class="container">
+      <h1>UI Lab · 21st.dev</h1>
+      <p class="page-head-lead">Interné ihrisko. Komponenty z katalógu tu ladíme na brand, kým idú do produkcie.</p>
+    </div>
+  </section>
+  <section style="padding: 0 0 clamp(120px, 16vh, 200px);">
+    <div class="container">
+      <Ui21>
+        <Lab21Demo client:load />
+      </Ui21>
+    </div>
+  </section>
+</Base>

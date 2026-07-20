@@ -119,6 +119,8 @@
 
   /* ---------- nav: solid + hide on scroll down ---------- */
   var lastY = 0;
+  var callPill = document.getElementById('callpill');
+  var mqMobile = window.matchMedia('(max-width: 700px)');
   ScrollTrigger.create({
     start: 0,
     end: 'max',
@@ -129,6 +131,12 @@
         else nav.removeAttribute('data-solid');
         if (y > 500 && y > lastY + 4 && !nav.classList.contains('nav-open')) nav.classList.add('nav-hidden');
         else if (y < lastY - 4 || y <= 500) nav.classList.remove('nav-hidden');
+      }
+      /* telefón vždy poruke: na mobile po hero (v nav je za burgerom),
+         na desktope keď sa nav schová */
+      if (callPill && nav) {
+        var pillOn = mqMobile.matches ? y > 500 : nav.classList.contains('nav-hidden');
+        callPill.classList.toggle('on', pillOn);
       }
       lastY = y;
     }
@@ -171,6 +179,7 @@
     window.__journeyProgress = 0;
     var jStations = gsap.utils.toArray('.jh-station');
     var jTexts = gsap.utils.toArray('.journey-text');
+    var jSkip = document.getElementById('journey-skip');
     var jTl = gsap.timeline({
       scrollTrigger: {
         trigger: journeyPin,
@@ -178,13 +187,19 @@
         /* dlhá dráha = pomalé, dôstojné tempo jazdy (46 s materiálu) */
         end: function () { return '+=' + (window.innerWidth < 701 ? 630 : 860) + '%'; },
         pin: true,
-        scrub: 1.4,
+        /* scrub krátky: dlhší (1.4) robil po zastavení scrollu ~1.5 s chvost,
+           počas ktorého jazda ešte viditeľne „dochádzala" frame po frame */
+        scrub: 0.7,
         invalidateOnRefresh: true,
         onUpdate: function (self) {
           window.__journeyProgress = self.progress;
           /* nevyhladený progress = skutočné miesto scrollu; journey.js na ňom
              stavia cieľ usadenia, ktorý sa počas dobiehania nehýbe */
           window.__journeyRawProgress = Math.min(Math.max((self.scroll() - self.start) / (self.end - self.start), 0), 1);
+          /* cieľ Lenis animácie = kde scroll naozaj SKONČÍ; dojazd jazdy mieri
+             rovno tam a pristane jedným pohybom, nie naháňaním dobiehajúceho scrollu */
+          var destPx = (lenis && typeof lenis.targetScroll === 'number') ? lenis.targetScroll : self.scroll();
+          window.__journeyDestProgress = Math.min(Math.max((destPx - self.start) / (self.end - self.start), 0), 1);
           gsap.set('#jh-fill', { height: (self.progress * 100) + '%' });
           /* hranice staníc podľa dĺžok klipov: 8+8+6+8+8+8 s */
           var bounds = [0.174, 0.478, 0.652, 0.826];
@@ -194,6 +209,7 @@
           for (var t = 0; t < jTexts.length; t++) {
             jTexts[t].classList.toggle('is-on', parseFloat(gsap.getProperty(jTexts[t], 'opacity')) > 0.5);
           }
+          if (jSkip) jSkip.classList.toggle('on', self.progress > 0.01 && self.progress < 0.985);
         }
       },
       defaults: { ease: 'none' }
@@ -224,6 +240,24 @@
     jtIn(jTexts[4], 0.660); jtOut(jTexts[4], 0.784);  /* šperky */
     jtIn(jTexts[5], 0.834, 0.052);                    /* záver: kraj + CTA, zostáva */
     jTl.to({}, { duration: 0.114 }, 0.886);           /* dotiahnutie osi na 1.0 */
+
+    /* klikateľné stanice: prelet jazdy na začiatok kapitoly */
+    var stationProg = [0.02, 0.20, 0.50, 0.68, 0.85];
+    jStations.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var st = jTl.scrollTrigger;
+        if (!st) return;
+        var i = parseInt(b.getAttribute('data-station'), 10) || 0;
+        lenis.scrollTo(st.start + stationProg[i] * (st.end - st.start), { duration: 1.6 });
+      });
+    });
+    if (jSkip) {
+      jSkip.addEventListener('click', function () {
+        var st = jTl.scrollTrigger;
+        if (!st) return;
+        lenis.scrollTo(st.end + 4, { duration: 1.4 });
+      });
+    }
   }
 
   /* sviečky (karty aj parte hero) rieši js/candles.js — počíta ich server */
