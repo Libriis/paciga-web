@@ -35,16 +35,29 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         data-frames-m="555" data-path-m="assets/journey-m/f-&#123;i&#125;.webp"></canvas>
       <div class="journey-shade" aria-hidden="true"></div>
 
-      <!-- HUD: stanice cesty (klikateľné kapitoly) -->
-      <div class="journey-hud">
-        <span class="jh-line" aria-hidden="true"><i id="jh-fill"></i></span>
-        <button type="button" class="jh-station" data-station="0" aria-label="Prejsť na kapitolu Rozlúčka">Rozlúčka</button>
-        <button type="button" class="jh-station" data-station="1" aria-label="Prejsť na kapitolu Cesta">Cesta</button>
-        <button type="button" class="jh-station" data-station="2" aria-label="Prejsť na kapitolu Starostlivosť">Starostlivosť</button>
-        <button type="button" class="jh-station" data-station="3" aria-label="Prejsť na kapitolu Spomienka">Spomienka</button>
-        <button type="button" class="jh-station" data-station="4" aria-label="Prejsť na kapitolu Svetlo">Svetlo</button>
+      <!-- HUD V1 „Rivian dráha": spodný pás — počítadlo + skip, ruler
+           z tickov s markerom, klikateľné stanice na štartoch kapitol -->
+      <div class="jhud">
+        <div class="jhud-top">
+          <span class="jhud-count"><b id="jhud-now">01</b> / 05</span>
+          <button type="button" class="jhud-skip" id="journey-skip">Preskočiť<span class="jhud-skip-tail">&nbsp;príbeh</span></button>
+        </div>
+        <div class="jhud-ruler" aria-hidden="true">
+          <i class="jhud-fill" id="jhud-fill"></i>
+          <span class="jhud-bound" style="left:17.4%"></span>
+          <span class="jhud-bound" style="left:47.8%"></span>
+          <span class="jhud-bound" style="left:65.2%"></span>
+          <span class="jhud-bound" style="left:82.6%"></span>
+          <i class="jhud-marker" id="jhud-marker"></i>
+        </div>
+        <div class="jhud-stations">
+          <button type="button" class="jhs" data-station="0" style="left:0%" aria-label="Prejsť na kapitolu Rozlúčka"><span class="jhs-num">01</span><span>Rozlúčka</span></button>
+          <button type="button" class="jhs" data-station="1" style="left:17.4%" aria-label="Prejsť na kapitolu Cesta"><span class="jhs-num">02</span><span>Cesta</span></button>
+          <button type="button" class="jhs" data-station="2" style="left:47.8%" aria-label="Prejsť na kapitolu Starostlivosť"><span class="jhs-num">03</span><span>Starostlivosť</span></button>
+          <button type="button" class="jhs" data-station="3" style="left:65.2%" aria-label="Prejsť na kapitolu Spomienka"><span class="jhs-num">04</span><span>Spomienka</span></button>
+          <button type="button" class="jhs" data-station="4" style="left:82.6%" aria-label="Prejsť na kapitolu Svetlo"><span class="jhs-num">05</span><span>Svetlo</span></button>
+        </div>
       </div>
-      <button type="button" class="journey-skip" id="journey-skip">Preskočiť príbeh</button>
 
       <!-- texty staníc (pinované nad canvasom) -->
       <div class="journey-text jt-hero" data-jt="0">

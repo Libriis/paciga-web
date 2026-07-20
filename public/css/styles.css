@@ -722,82 +722,108 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 }
 .journey-fallback { display: none; }
 
-/* HUD — stanice cesty */
-.journey-hud {
-  position: absolute;
-  right: clamp(18px, 3vw, 46px);
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 18px;
-}
-.jh-line {
-  position: absolute;
-  top: -6px;
-  bottom: -6px;
-  right: 3px;
-  width: 1px;
-  background: rgba(245, 245, 245, 0.18);
-  overflow: hidden;
-}
-#jh-fill { display: block; width: 100%; height: 0%; background: var(--gold); }
-.jh-station {
-  position: relative;
-  padding: 0 18px 0 0;
-  font-size: 10.5px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--dim);
-  transition: color 0.35s ease;
-  background: none;
-  border: 0;
-  font-family: inherit;
-  text-align: right;
-  cursor: pointer;
-}
-.jh-station:hover { color: var(--muted); }
-.jh-station:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
-.jh-station::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  margin-top: -3.5px;
-  border-radius: 50%;
-  background: var(--bg2);
-  border: 1px solid rgba(245, 245, 245, 0.3);
-  transition: background 0.35s ease, border-color 0.35s ease;
-}
-.jh-station.on { color: var(--gold); }
-.jh-station.on::after { background: var(--gold); border-color: var(--gold); }
-
-/* Preskočiť príbeh — decentný únik z jazdy, viditeľný len počas pinu */
-.journey-skip {
+/* HUD — V1 „Rivian dráha": všetko dole. Spodný pás cez celú šírku:
+   počítadlo kapitol + skip, ruler z jemných tickov s bielym markerom
+   (ref. 21st.dev scroll-bars) a klikateľné stanice na štartoch kapitol.
+   Čisto čierno-biela, žiadny farebný akcent. */
+.jhud {
   position: absolute;
   left: clamp(18px, 3vw, 46px);
-  bottom: 30px;
+  right: clamp(18px, 3vw, 46px);
+  bottom: 26px;
   z-index: 4;
-  background: none;
-  border: 0;
-  font-family: inherit;
+}
+.jhud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+.jhud-count {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+.jhud-count b { color: var(--text); font-weight: 640; }
+/* Preskočiť príbeh — decentný únik z jazdy, viditeľný len počas pinu */
+.jhud-skip {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--dim);
-  cursor: pointer;
-  padding: 8px 0;
+  padding: 6px 0;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease, color 0.3s ease;
 }
-.journey-skip.on { opacity: 1; pointer-events: auto; }
-.journey-skip:hover { color: var(--text); }
-.journey-skip:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
+.jhud-skip.on { opacity: 1; pointer-events: auto; }
+.jhud-skip:hover { color: var(--text); }
+.jhud-skip:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
+/* ruler: ticky po celej šírke, prejdené zosvetlia, marker kĺže s progresom */
+.jhud-ruler {
+  position: relative;
+  height: 12px;
+  background: repeating-linear-gradient(90deg, rgba(245, 245, 245, 0.16) 0 1px, transparent 1px 8px);
+}
+.jhud-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: repeating-linear-gradient(90deg, rgba(245, 245, 245, 0.85) 0 1px, transparent 1px 8px);
+  will-change: width;
+}
+.jhud-marker {
+  position: absolute;
+  left: 0%;
+  top: -5px;
+  bottom: -5px;
+  width: 1px;
+  background: var(--text);
+  box-shadow: 0 0 10px rgba(245, 245, 245, 0.5);
+  transform: translateX(-0.5px);
+  will-change: left;
+}
+/* hranice kapitol (švy klipov) — vyššie ticky */
+.jhud-bound {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 1px;
+  background: rgba(245, 245, 245, 0.38);
+}
+/* stanice: štarty kapitol pod rulerom, klikateľné */
+.jhud-stations { position: relative; height: 20px; margin-top: 12px; }
+.jhs {
+  position: absolute;
+  top: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  white-space: nowrap;
+  transition: color 0.35s ease;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.jhs-num {
+  font-size: 9.5px;
+  color: rgba(245, 245, 245, 0.28);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.35s ease;
+}
+.jhs:hover { color: var(--muted); }
+.jhs:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
+.jhs.done { color: var(--muted); }
+.jhs.done .jhs-num { color: rgba(245, 245, 245, 0.45); }
+.jhs.on { color: var(--text); }
+.jhs.on .jhs-num { color: var(--text); }
 
 /* texty staníc */
 .journey-text {
@@ -858,7 +884,13 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 }
 .jt-cta { margin-top: 30px; }
 @media (max-width: 700px) {
-  .journey-hud { display: none; }
+  /* mobil: dráha ostáva (ruler + skrátený skip vľavo), stanice a počítadlo
+     preč — vpravo dole sedí široký callpill s telefónom, progres ukazuje fill */
+  .jhud { bottom: 16px; }
+  .jhud-top { justify-content: flex-start; margin-bottom: 10px; }
+  .jhud-count { display: none; }
+  .jhud-skip-tail { display: none; }
+  .jhud-stations { display: none; }
   .jt-hero h1 { font-size: clamp(31.3px, 9.2vw, 44.2px); }
 }
 
@@ -1801,7 +1833,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .memoriam-candle .spark { animation: none !important; opacity: 0 !important; }
   .phero.lit .phero-flame i, .phero.lit .phero-glow { animation: none !important; }
   /* jazda: statický poster + hero text, HUD a canvas preč */
-  #journey-canvas, .journey-hud { display: none; }
+  #journey-canvas, .jhud { display: none; }
   .journey-text.jt-hero { opacity: 1 !important; pointer-events: auto; }
 }
 

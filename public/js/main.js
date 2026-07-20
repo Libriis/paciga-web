@@ -139,6 +139,9 @@
          na desktope keď sa nav schová */
       if (callPill && nav) {
         var pillOn = mqMobile.matches ? y > 500 : nav.classList.contains('nav-hidden');
+        /* V1 spodná dráha: na desktope počas pinovanej jazdy pill nezobrazuj
+           (prekrýval by stanice vpravo dole; telefón je v hero CTA aj kapitolách) */
+        if (!mqMobile.matches && window.__journeyOn) pillOn = false;
         callPill.classList.toggle('on', pillOn);
       }
       lastY = y;
@@ -180,9 +183,12 @@
   var journeyPin = document.getElementById('journey-pin');
   if (journeyPin) {
     window.__journeyProgress = 0;
-    var jStations = gsap.utils.toArray('.jh-station');
+    var jStations = gsap.utils.toArray('.jhs');
     var jTexts = gsap.utils.toArray('.journey-text');
     var jSkip = document.getElementById('journey-skip');
+    var jhudFill = document.getElementById('jhud-fill');
+    var jhudMarker = document.getElementById('jhud-marker');
+    var jhudNow = document.getElementById('jhud-now');
     var jTl = gsap.timeline({
       scrollTrigger: {
         trigger: journeyPin,
@@ -195,6 +201,7 @@
         scrub: 0.7,
         invalidateOnRefresh: true,
         onUpdate: function (self) {
+          window.__journeyOn = self.isActive;
           window.__journeyProgress = self.progress;
           /* nevyhladený progress = skutočné miesto scrollu; journey.js na ňom
              stavia cieľ usadenia, ktorý sa počas dobiehania nehýbe */
@@ -203,12 +210,19 @@
              rovno tam a pristane jedným pohybom, nie naháňaním dobiehajúceho scrollu */
           var destPx = (lenis && typeof lenis.targetScroll === 'number') ? lenis.targetScroll : self.scroll();
           window.__journeyDestProgress = Math.min(Math.max((destPx - self.start) / (self.end - self.start), 0), 1);
-          gsap.set('#jh-fill', { height: (self.progress * 100) + '%' });
+          /* V1 HUD (Rivian dráha): fill + marker po spodnej dráhe */
+          var hudPct = (self.progress * 100) + '%';
+          if (jhudFill) jhudFill.style.width = hudPct;
+          if (jhudMarker) jhudMarker.style.left = hudPct;
           /* hranice staníc podľa dĺžok klipov: 8+8+6+8+8+8 s */
           var bounds = [0.174, 0.478, 0.652, 0.826];
           var st = 0;
           while (st < bounds.length && self.progress >= bounds[st]) st++;
-          for (var i = 0; i < jStations.length; i++) jStations[i].classList.toggle('on', i === st);
+          for (var i = 0; i < jStations.length; i++) {
+            jStations[i].classList.toggle('on', i === st);
+            jStations[i].classList.toggle('done', i < st);
+          }
+          if (jhudNow) jhudNow.textContent = '0' + (st + 1);
           for (var t = 0; t < jTexts.length; t++) {
             jTexts[t].classList.toggle('is-on', parseFloat(gsap.getProperty(jTexts[t], 'opacity')) > 0.5);
           }
