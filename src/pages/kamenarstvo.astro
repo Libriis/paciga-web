@@ -1,0 +1,278 @@
+---
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import type { FaqItem } from '../components/Faq.astro';
+
+const otazky: FaqItem[] = [
+  {
+    q: 'Ako dlho trvá výroba pomníka?',
+    a: 'Závisí od zvolenej žuly a rozsahu prác. Presný termín vám povieme pri odsúhlasení 3D návrhu a dohodnutý termín dodržíme.',
+  },
+  {
+    q: 'Čo je 3D vizualizácia pomníka?',
+    a: 'Presný náhľad pomníka na obrazovke ešte pred výrobou. Vidíte tvar, žulu aj písmo a všetko môžete zmeniť skôr, než sa kameň začne rezať.',
+  },
+  {
+    q: 'Viete dopísať meno na existujúci pomník?',
+    a: 'Áno. Písmo dopisujeme priamo na cintoríne alebo v dielni, v rovnakom štýle ako pôvodný nápis. Robíme aj striebrenie a zlátenie písma.',
+  },
+  {
+    q: 'Staráte sa aj o staršie pomníky?',
+    a: 'Áno. Staršie pomníky vyrovnávame, brúsime, impregnujeme a čistíme. Väčšinu z nich vieme obnoviť bez výmeny kameňa.',
+  },
+  {
+    q: 'Kde si môžem pozrieť vzorky žuly?',
+    a: 'V showroome v Poprade na adrese Francisciho 3288/35. Poradíme vám, ktorá žula sa hodí k písmu aj okoliu hrobového miesta.',
+  },
+];
+
+const title = "Kamenárstvo | Paciga, pohrebné a kamenárske služby";
+const description = "Žulové pomníky, urnové miesta, sekanie a dopisovanie písma, rekonštrukcie. Ako prví v regióne s 3D vizualizáciou pomníka pred výrobou. Poprad, Spišská Belá, Liptovský Mikuláš.";
+const ogTitle = "Kamenárstvo | Paciga";
+const ogDescription = "Vytesané navždy. Pomník uvidíte v 3D skôr, ako sa kameňa dotkne dláto.";
+---
+<Base title={title} description={description} active="kamenarstvo" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/cintorin.jpg">
+
+
+
+  <!-- ============ SUBHERO ============ -->
+  <section class="subhero">
+    <div class="subhero-media" aria-hidden="true">
+      <img src="/assets/cintorin.jpg" alt="" fetchpriority="high" decoding="async">
+      <div class="subhero-shade"></div>
+    </div>
+    <div class="container subhero-content">
+      <div class="eyebrow" data-reveal>Kamenárstvo</div>
+      <h1 data-reveal>Vytesané navždy.</h1>
+      <p class="subhero-lead" data-reveal>Pomník je posledný dar. Navrhneme ho s vami, ukážeme vám ho v 3D a osadíme ho presne tak, ako ste ho videli.</p>
+    </div>
+  </section>
+
+  <!-- ============ ROZCESTNÍK ============ -->
+  <section class="situ" aria-label="Rýchla navigácia po stránke">
+    <div class="container">
+      <div class="situ-label">Čo potrebujete zariadiť?</div>
+      <div class="situ-row">
+        <a href="#prace" class="situ-chip">Nový pomník</a>
+        <a href="#navrh" class="situ-chip">3D návrh</a>
+        <a href="#pismo" class="situ-chip">Písmo a dopisovanie</a>
+        <a href="#obnova" class="situ-chip">Obnova a čistenie</a>
+        <a href="#zula" class="situ-chip">Výber žuly</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ČO VYRÁBAME ============ -->
+  <section class="svcgroups" id="prace">
+    <div class="container">
+      <div class="svcgroup">
+        <div class="svcgroup-head">
+          <h2 data-reveal>Od nového pomníka po obnovu písma.</h2>
+          <div class="gold-line" data-line aria-hidden="true"></div>
+        </div>
+        <div class="svcgrid">
+          <article class="first-card" data-reveal>
+            <h3>Jednohroby a dvojhroby</h3>
+            <p>Kompletný pomník zo žuly vrátane betónovej hrobky a základov. Návrh, výroba, doprava a osadenie.</p>
+          </article>
+          <article class="first-card" data-reveal>
+            <h3>Urnové miesta</h3>
+            <p>Menšie pomníky a urnové schránky. Dôstojné riešenie aj na malej ploche.</p>
+          </article>
+          <article class="first-card" id="pismo" data-reveal>
+            <h3>Sekanie a dopisovanie písma</h3>
+            <p>Nové nápisy aj dopísanie mena na existujúci pomník. Striebrenie a zlátenie písma.</p>
+          </article>
+          <article class="first-card" id="obnova" data-reveal>
+            <h3>Rekonštrukcie pomníkov</h3>
+            <p>Vyrovnanie, prebrúsenie a impregnácia staršieho pomníka. Vrátime kameňu pôvodný vzhľad.</p>
+          </article>
+          <article class="first-card" data-reveal>
+            <h3>Lampáše, vázy a doplnky</h3>
+            <p>Doplnky zo žuly a nerezu, zladené s pomníkom. Vyberiete si v showroome v Poprade.</p>
+          </article>
+          <article class="first-card" data-reveal>
+            <h3>Čistenie hrobových miest</h3>
+            <p>Šetrné čistenie kameňa a okolia hrobu. Jednorazovo alebo pravidelne počas roka.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3D NÁVRH + STÉLA ============ -->
+  <section class="branches" id="navrh">
+    <div class="container kam-viz">
+      <div class="kam-viz-copy">
+        <div class="eyebrow" data-reveal>3D návrh</div>
+        <h2 data-reveal>Pomník uvidíte skôr, ako sa kameňa dotkne dláto.</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+        <p class="kam-viz-lead" data-reveal>Ako prví v podtatranskom regióne sme začali pomníky navrhovať v 3D. Tvar, žulu aj písmo si pozriete vopred a všetko môžete zmeniť, kým je návrh len na obrazovke.</p>
+        <div data-reveal>
+          <div class="kam-fact">
+            <span class="kam-fact-k">Návrh</span>
+            <span class="kam-fact-v"><strong>3D vizualizácia pomníka</strong> pred výrobou. Vidíte presne to, čo bude stáť na hrobe.</span>
+          </div>
+          <div class="kam-fact">
+            <span class="kam-fact-k">Úpravy</span>
+            <span class="kam-fact-v">Tvar, rozmery, žulu aj text upravíme podľa vás. Až po odsúhlasení ide návrh do výroby.</span>
+          </div>
+          <div class="kam-fact">
+            <span class="kam-fact-k">Výsledok</span>
+            <span class="kam-fact-v">Žiadne prekvapenie na cintoríne. Osadený pomník zodpovedá schválenému návrhu.</span>
+          </div>
+        </div>
+      </div>
+      <div data-reveal>
+        <div class="kam-stage" id="kam-stage">
+          <div class="kam-stele-wrap" id="kam-stele">
+            <div class="kam-stele">
+              <div class="kam-carved kam-carved-main" id="kam-carved-text">S láskou spomíname</div>
+              <div class="kam-carved-rule" aria-hidden="true"></div>
+              <div class="kam-carved-sub">Paciga</div>
+            </div>
+            <div class="kam-plinth" aria-hidden="true"></div>
+          </div>
+        </div>
+        <p class="kam-stele-note">Náhľad je ilustračný. Váš návrh pripravíme z reálnych rozmerov hrobového miesta.</p>
+        <div class="kam-inscribe">
+          <label for="kam-inscribe-input">Skúste si vlastný nápis</label>
+          <input id="kam-inscribe-input" type="text" maxlength="28" placeholder="S láskou spomíname" autocomplete="off">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ŽULA ============ -->
+  <section class="story" id="zula">
+    <div class="container">
+      <div class="svcgroup-head">
+        <div class="eyebrow" data-reveal>Materiál</div>
+        <h2 data-reveal>Žula, ktorá vydrží generácie.</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="kam-stones">
+        <div class="kam-stone" data-reveal>
+          <div class="kam-stone-chip kam-chip-1" aria-hidden="true"></div>
+          <div class="kam-stone-body"><h3>Gabro</h3><p>Hlboká čierna</p></div>
+        </div>
+        <div class="kam-stone" data-reveal>
+          <div class="kam-stone-chip kam-chip-2" aria-hidden="true"></div>
+          <div class="kam-stone-body"><h3>Impala</h3><p>Tmavosivá</p></div>
+        </div>
+        <div class="kam-stone" data-reveal>
+          <div class="kam-stone-chip kam-chip-3" aria-hidden="true"></div>
+          <div class="kam-stone-body"><h3>Tarn</h3><p>Sivá so zrnom</p></div>
+        </div>
+        <div class="kam-stone" data-reveal>
+          <div class="kam-stone-chip kam-chip-4" aria-hidden="true"></div>
+          <div class="kam-stone-body"><h3>Steel Grey</h3><p>Striebristosivá</p></div>
+        </div>
+      </div>
+      <p class="kam-stones-note" data-reveal>Odtiene sú ilustračné. Vzorky žuly si pozriete naživo v showroome v Poprade, poradíme vám, ktorá sa hodí k písmu a okoliu hrobu.</p>
+    </div>
+  </section>
+
+  <!-- ============ POSTUP ============ -->
+  <section class="svcgroups" id="postup">
+    <div class="container">
+      <div class="svcgroup-head">
+        <div class="eyebrow" data-reveal>Postup</div>
+        <h2 data-reveal>Štyri kroky k hotovému pomníku.</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="kam-steps">
+        <div class="kam-step" data-reveal>
+          <span class="kam-step-n" aria-hidden="true">1</span>
+          <h3>Konzultácia</h3>
+          <p>Stretneme sa v pobočke alebo pri hrobe. Zameriame miesto a vypočujeme si vaše predstavy.</p>
+        </div>
+        <div class="kam-step" data-reveal>
+          <span class="kam-step-n" aria-hidden="true">2</span>
+          <h3>3D návrh</h3>
+          <p>Pripravíme vizualizáciu pomníka. Upravujeme ju, kým nie ste spokojní.</p>
+        </div>
+        <div class="kam-step" data-reveal>
+          <span class="kam-step-n" aria-hidden="true">3</span>
+          <h3>Výroba</h3>
+          <p>Kameň režeme, brúsime a sekáme písmo podľa schváleného návrhu.</p>
+        </div>
+        <div class="kam-step" data-reveal>
+          <span class="kam-step-n" aria-hidden="true">4</span>
+          <h3>Osadenie</h3>
+          <p>Pomník osadíme na pripravené základy a miesto odovzdáme upravené.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq-section">
+    <div class="container">
+      <Faq items={otazky} eyebrow="Časté otázky" heading="Na čo sa nás pýtate"
+        note="Nenašli ste svoju otázku? Zavolajte na 0903 596 364 alebo sa zastavte v showroome v Poprade." />
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-band">
+    <div class="cta-inner">
+      <h2 data-reveal>Napíšte nám. Radi vám poradíme.</h2>
+      <p data-reveal>Pošlite nám fotku hrobového miesta a predstavu o pomníku. Ozveme sa vám s návrhom ďalšieho kroku.</p>
+      <a href="mailto:paciga@paciga.sk" class="btn-gold btn-lg" data-reveal>paciga@paciga.sk</a>
+    </div>
+  </section>
+
+  <!-- ============ PLÁVAJÚCA NON STOP LIŠTA ============ -->
+  <div class="callbar" id="callbar" role="complementary" aria-label="NON STOP kontakt">
+    <div class="container callbar-inner">
+      <span class="callbar-label">Kamenárstvo · showroom Poprad</span>
+      <a href="tel:0903596364" class="callbar-tel"><span class="dot" aria-hidden="true"></span>0903 596 364</a>
+    </div>
+  </div>
+
+<Fragment slot="scripts">
+<script is:inline>
+(function () {
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* plávajúca lišta po 500 px scrollu */
+  var bar = document.getElementById('callbar');
+  if (bar) {
+    var shown = false;
+    var check = function () {
+      var on = (window.scrollY || window.pageYOffset) > 500;
+      if (on !== shown) { shown = on; bar.classList.toggle('on', on); }
+    };
+    window.addEventListener('scroll', check, { passive: true });
+    check();
+  }
+
+  /* stéla: náklon za kurzorom */
+  var stele = document.getElementById('kam-stele');
+  var stage = document.getElementById('kam-stage');
+  if (stage && stele && !reduced && window.matchMedia('(pointer: fine)').matches) {
+    stage.addEventListener('pointermove', function (ev) {
+      var r = stage.getBoundingClientRect();
+      var x = (ev.clientX - r.left) / r.width - 0.5;
+      var y = (ev.clientY - r.top) / r.height - 0.5;
+      stele.style.transform = 'rotateY(' + (x * 10) + 'deg) rotateX(' + (y * -8) + 'deg)';
+    });
+    stage.addEventListener('pointerleave', function () {
+      stele.style.transform = '';
+    });
+  }
+
+  /* vlastný nápis na stéle */
+  var input = document.getElementById('kam-inscribe-input');
+  var carved = document.getElementById('kam-carved-text');
+  if (input && carved) {
+    input.addEventListener('input', function () {
+      var v = input.value.trim();
+      carved.textContent = v.length ? v : 'S láskou spomíname';
+    });
+  }
+})();
+</script>
+</Fragment>
+</Base>
