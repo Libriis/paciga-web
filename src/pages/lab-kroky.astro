@@ -1,0 +1,296 @@
+---
+/*
+  Interné porovnanie: 5 variantov sekcie „Čo spraviť ako prvé".
+  Vzory z 21st.dev (Aceternity Timeline, Process Timeline, Tracing Beam,
+  Feature Section, Card Spotlight) implementované natívne v brand stacku
+  (GSAP + tokeny), bez React hydratácie. Nie je v navigácii, noindex.
+*/
+import Base from '../layouts/Base.astro';
+
+const KROKY = [
+  { n: '01', t: 'Zavolajte nám', p: 'Kedykoľvek, aj v noci a cez sviatky. Sme na linke nepretržite.', tel: '0903 596 364' },
+  { n: '02', t: 'My prídeme k vám', p: 'Zabezpečíme dôstojný prevoz zosnulého. Doma, v nemocnici aj v zariadení.' },
+  { n: '03', t: 'Ostatné vybavíme spolu', p: 'Dokumenty, obrad, kvety aj oznámenia. Prevedieme vás krok za krokom.' },
+];
+const FOTKY = ['/assets/o-nas-tim.jpg', '/assets/journey-poster.jpg', '/assets/sluzby-hero.jpg'];
+
+const title = 'Lab: Čo spraviť ako prvé, 5 variantov (interné)';
+---
+<Base title={title} description="Interné porovnanie variantov sekcie." active="">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <section class="page-head">
+    <div class="container">
+      <h1 data-textreveal>Čo spraviť ako prvé<br>päť variantov</h1>
+      <p class="page-head-lead">Interné porovnanie. Scrolluj a vyber víťaza; vzory z 21st.dev v brand tokenoch.</p>
+    </div>
+  </section>
+
+  <!-- ============ V1: vertikálna timeline s plniacou linkou ============ -->
+  <section class="bg-ink2 border-y border-solid border-line py-[clamp(120px,16vh,200px)]">
+    <div class="container">
+      <div class="lk-label">V1 · Vertikálna timeline s plniacou linkou</div>
+      <h2 class="text-[clamp(28px,3.6vw,46px)]" data-textreveal>Čo spraviť ako prvé</h2>
+      <p class="mt-3 text-soft text-[18.6px]" data-textreveal>Tri kroky. O všetko ostatné sa postaráme my.</p>
+      <div class="v1-wrap relative mt-[clamp(48px,7vh,80px)] max-w-[720px]">
+        <div class="v1-rail" aria-hidden="true"><i id="v1-fill"></i></div>
+        {KROKY.map((k) => (
+          <div class="v1-step">
+            <span class="v1-dot" aria-hidden="true"></span>
+            <span class="text-[13px] font-[650] tracking-[0.14em] text-gold">{k.n}</span>
+            <h3 class="mt-[10px] text-[24px]">{k.t}</h3>
+            <p class="mt-[10px] text-soft text-[17.4px] leading-[1.65] max-w-[52ch]">{k.p}</p>
+            {k.tel && <a class="inline-block mt-[14px] text-[clamp(24px,2.4vw,32px)] font-[680] text-gold [font-variation-settings:var(--wide)] transition-colors duration-300 hover:text-soft" href="tel:0903596364">{k.tel}</a>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V2: scroll-aktivované kroky (sticky focus) ============ -->
+  <div class="v2-outer">
+    <section class="v2-sticky bg-ink border-b border-solid border-line">
+      <div class="container">
+        <div class="lk-label">V2 · Scroll-aktivované kroky</div>
+        <h2 class="text-[clamp(28px,3.6vw,46px)]">Čo spraviť ako prvé</h2>
+        <p class="mt-3 text-soft text-[18.6px]">Tri kroky. O všetko ostatné sa postaráme my.</p>
+        <ol class="v2-grid list-none grid grid-cols-1 gap-[30px] min-[861px]:grid-cols-3 min-[861px]:gap-[clamp(28px,3vw,48px)] mt-[clamp(40px,6vh,64px)]">
+          {KROKY.map((k) => (
+            <li class="v2-item border-t border-solid border-line pt-[22px]">
+              <span class="v2-num text-[13px] font-[650] tracking-[0.14em] text-gold">{k.n}</span>
+              <h3 class="mt-[14px] text-[21px]">{k.t}</h3>
+              <p class="mt-[10px] text-soft text-[17.4px] leading-[1.65]">{k.p}</p>
+              {k.tel && <a class="inline-block mt-[14px] text-[clamp(22px,2.2vw,28px)] font-[680] text-gold [font-variation-settings:var(--wide)]" href="tel:0903596364">{k.tel}</a>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ V3: tracing beam nad mriežkou ============ -->
+  <section class="bg-ink2 border-y border-solid border-line py-[clamp(120px,16vh,200px)]">
+    <div class="container">
+      <div class="lk-label">V3 · Tracing beam nad mriežkou</div>
+      <h2 class="text-[clamp(28px,3.6vw,46px)]" data-textreveal>Čo spraviť ako prvé</h2>
+      <p class="mt-3 text-soft text-[18.6px]" data-textreveal>Tri kroky. O všetko ostatné sa postaráme my.</p>
+      <div class="v3-beamrow" aria-hidden="true">
+        <i id="v3-fill"></i>
+        <span class="v3-dot" style="left:0%"></span>
+        <span class="v3-dot" style="left:33.75%"></span>
+        <span class="v3-dot" style="left:67.5%"></span>
+      </div>
+      <ol class="v3-grid list-none grid grid-cols-1 gap-[30px] min-[861px]:grid-cols-3 min-[861px]:gap-[clamp(28px,3vw,48px)]">
+        {KROKY.map((k) => (
+          <li class="pt-[22px]">
+            <span class="text-[13px] font-[650] tracking-[0.14em] text-gold">{k.n}</span>
+            <h3 class="mt-[14px] text-[21px]">{k.t}</h3>
+            <p class="mt-[10px] text-soft text-[17.4px] leading-[1.65]">{k.p}</p>
+            {k.tel && <a class="inline-block mt-[14px] text-[clamp(22px,2.2vw,28px)] font-[680] text-gold [font-variation-settings:var(--wide)]" href="tel:0903596364">{k.tel}</a>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ V4: živé kroky s fotkami ============ -->
+  <section class="bg-ink border-b border-solid border-line py-[clamp(120px,16vh,200px)]">
+    <div class="container">
+      <div class="lk-label">V4 · Živé kroky s fotkami</div>
+      <h2 class="text-[clamp(28px,3.6vw,46px)]" data-textreveal>Čo spraviť ako prvé</h2>
+      <p class="mt-3 text-soft text-[18.6px]" data-textreveal>Tri kroky. O všetko ostatné sa postaráme my.</p>
+      <div class="grid grid-cols-1 min-[861px]:grid-cols-[1fr_1.1fr] gap-[clamp(32px,4vw,64px)] mt-[clamp(40px,6vh,64px)] items-center">
+        <ol class="list-none">
+          {KROKY.map((k, i) => (
+            <li class={`v4-step border-t border-solid border-line py-[20px] cursor-pointer ${i === 0 ? 'on' : ''}`} data-i={i}>
+              <div class="flex items-baseline gap-4">
+                <span class="text-[13px] font-[650] tracking-[0.14em] text-gold">{k.n}</span>
+                <h3 class="text-[21px]">{k.t}</h3>
+              </div>
+              <div class="v4-body">
+                <p class="mt-[10px] text-soft text-[17.4px] leading-[1.65]">{k.p}</p>
+                {k.tel && <a class="inline-block mt-[12px] text-[clamp(22px,2.2vw,28px)] font-[680] text-gold [font-variation-settings:var(--wide)]" href="tel:0903596364">{k.tel}</a>}
+              </div>
+              <span class="v4-bar" aria-hidden="true"><i></i></span>
+            </li>
+          ))}
+        </ol>
+        <div class="v4-media relative overflow-hidden">
+          {FOTKY.map((f, i) => (
+            <img class={`v4-img ${i === 0 ? 'on' : ''}`} src={f} alt="" loading="lazy" decoding="async" />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V5: spotlight karty + dôraz na telefón ============ -->
+  <section class="bg-ink2 border-y border-solid border-line py-[clamp(120px,16vh,200px)]">
+    <div class="container">
+      <div class="lk-label">V5 · Spotlight karty, dôraz na telefón</div>
+      <h2 class="text-[clamp(28px,3.6vw,46px)]" data-textreveal>Čo spraviť ako prvé</h2>
+      <p class="mt-3 text-soft text-[18.6px]" data-textreveal>Tri kroky. O všetko ostatné sa postaráme my.</p>
+      <ol class="list-none grid grid-cols-1 gap-[24px] min-[861px]:grid-cols-3 min-[861px]:gap-[clamp(20px,2.4vw,36px)] mt-[clamp(40px,6vh,64px)]">
+        {KROKY.map((k, i) => (
+          <li class={`v5-card relative overflow-hidden border border-solid border-line bg-panel p-[clamp(24px,2.6vw,36px)] ${i === 0 ? 'v5-hot' : ''}`}>
+            <span class="text-[13px] font-[650] tracking-[0.14em] text-gold">{k.n}</span>
+            <h3 class="mt-[14px] text-[21px]">{k.t}</h3>
+            <p class="mt-[10px] text-soft text-[17.4px] leading-[1.65]">{k.p}</p>
+            {k.tel && <a class="inline-block mt-[16px] text-[clamp(24px,2.4vw,30px)] font-[680] text-gold [font-variation-settings:var(--wide)]" href="tel:0903596364">{k.tel}</a>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+</Base>
+
+<style is:global>
+.lk-label { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 26px; }
+
+/* V1 */
+.v1-rail { position: absolute; left: 3px; top: 8px; bottom: 8px; width: 1px; background: var(--line); }
+.v1-rail i { display: block; width: 100%; height: 0%; background: var(--gold); }
+.v1-step { position: relative; padding: 0 0 clamp(40px, 6vh, 64px) 40px; opacity: 0.35; transition: opacity 0.5s ease; }
+.v1-step:last-child { padding-bottom: 0; }
+.v1-dot { position: absolute; left: 0; top: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--bg2); border: 1px solid rgba(245, 245, 245, 0.3); transition: background 0.35s ease, border-color 0.35s ease; }
+.v1-step.on { opacity: 1; }
+.v1-step.on .v1-dot { background: var(--gold); border-color: var(--gold); }
+
+/* V2 */
+.v2-outer { height: 260vh; }
+.v2-sticky { position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; }
+.v2-item { opacity: 0.3; transition: opacity 0.45s ease; }
+.v2-item .v2-num { color: var(--dim); transition: color 0.45s ease; }
+.v2-item.on { opacity: 1; }
+.v2-item.on .v2-num { color: var(--gold); }
+
+/* V3 */
+.v3-beamrow { position: relative; height: 1px; background: var(--line); margin: clamp(48px, 7vh, 72px) 0 clamp(28px, 4vh, 40px); }
+.v3-beamrow i { position: absolute; left: 0; top: 0; height: 1px; width: 0%; background: linear-gradient(90deg, rgba(245,245,245,0.25), var(--gold)); box-shadow: 0 0 12px rgba(245, 245, 245, 0.35); }
+.v3-dot { position: absolute; top: -3.5px; width: 8px; height: 8px; border-radius: 50%; background: var(--bg2); border: 1px solid rgba(245, 245, 245, 0.3); transition: background 0.3s ease, border-color 0.3s ease; }
+.v3-dot.on { background: var(--gold); border-color: var(--gold); }
+
+/* V4 */
+.v4-step .v4-body { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.6s ease, opacity 0.5s ease; }
+.v4-step.on .v4-body { max-height: 220px; opacity: 1; }
+.v4-step h3 { color: var(--muted); transition: color 0.4s ease; }
+.v4-step.on h3 { color: var(--text); }
+.v4-bar { display: block; height: 1px; background: transparent; margin-top: 18px; position: relative; overflow: hidden; }
+.v4-step.on .v4-bar { background: var(--line); }
+.v4-step.on .v4-bar i { position: absolute; inset: 0; width: 0%; background: var(--gold); animation: v4bar 6s linear forwards; }
+@media (prefers-reduced-motion: reduce) { .v4-step.on .v4-bar i { animation: none; width: 100%; } }
+@keyframes v4bar { to { width: 100%; } }
+.v4-media { aspect-ratio: 4 / 3; }
+.v4-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: grayscale(0.2); transition: opacity 0.8s ease; }
+.v4-img.on { opacity: 1; }
+
+/* V5 */
+.v5-card::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.35s ease; background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgba(245, 245, 245, 0.07), transparent 65%); }
+.v5-card:hover::before { opacity: 1; }
+.v5-hot { border-color: rgba(245, 245, 245, 0.22); box-shadow: inset 0 0 80px rgba(245, 245, 245, 0.035); }
+</style>
+
+<script is:inline slot="scripts">
+(function () {
+  'use strict';
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  /* V1: plniaca linka + rozsvecovanie krokov */
+  if (hasGsap && !reduced) {
+    var v1steps = Array.prototype.slice.call(document.querySelectorAll('.v1-step'));
+    gsap.to('#v1-fill', {
+      height: '100%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.v1-wrap',
+        start: 'top 72%',
+        end: 'bottom 45%',
+        scrub: 0.4,
+        onUpdate: function (self) {
+          v1steps.forEach(function (el, i) {
+            el.classList.toggle('on', self.progress >= (i + 0.35) / v1steps.length);
+          });
+        }
+      }
+    });
+  } else {
+    document.querySelectorAll('.v1-step').forEach(function (el) { el.classList.add('on'); });
+    var f1 = document.getElementById('v1-fill'); if (f1) f1.style.height = '100%';
+  }
+
+  /* V2: sticky focus podla scrollu */
+  if (hasGsap && !reduced) {
+    var v2items = Array.prototype.slice.call(document.querySelectorAll('.v2-item'));
+    v2items[0] && v2items[0].classList.add('on');
+    ScrollTrigger.create({
+      trigger: '.v2-outer',
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: function (self) {
+        var idx = Math.min(v2items.length - 1, Math.floor(self.progress * v2items.length));
+        v2items.forEach(function (el, i) { el.classList.toggle('on', i === idx); });
+      }
+    });
+  } else {
+    document.querySelectorAll('.v2-item').forEach(function (el) { el.classList.add('on'); });
+  }
+
+  /* V3: beam sa kresli so scrollom, bodky sa rozsvecuju */
+  if (hasGsap && !reduced) {
+    var v3dots = Array.prototype.slice.call(document.querySelectorAll('.v3-dot'));
+    gsap.to('#v3-fill', {
+      width: '100%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.v3-grid',
+        start: 'top 85%',
+        end: 'top 35%',
+        scrub: 0.4,
+        onUpdate: function (self) {
+          v3dots.forEach(function (d) {
+            d.classList.toggle('on', self.progress * 100 >= parseFloat(d.style.left));
+          });
+        }
+      }
+    });
+  } else {
+    var f3 = document.getElementById('v3-fill'); if (f3) f3.style.width = '100%';
+    document.querySelectorAll('.v3-dot').forEach(function (d) { d.classList.add('on'); });
+  }
+
+  /* V4: auto-advance s progress barom, klik prepina */
+  (function () {
+    var steps = Array.prototype.slice.call(document.querySelectorAll('.v4-step'));
+    var imgs = Array.prototype.slice.call(document.querySelectorAll('.v4-img'));
+    if (!steps.length) return;
+    var idx = 0, timer = null;
+    function show(i) {
+      idx = i;
+      steps.forEach(function (el, j) {
+        el.classList.remove('on');
+        if (j === i) { void el.offsetWidth; el.classList.add('on'); } /* reštart progress baru */
+      });
+      imgs.forEach(function (el, j) { el.classList.toggle('on', j === i); });
+    }
+    function next() { show((idx + 1) % steps.length); }
+    steps.forEach(function (el, i) {
+      el.addEventListener('click', function () {
+        show(i);
+        if (timer) { clearInterval(timer); timer = setInterval(next, 6000); }
+      });
+    });
+    if (!reduced) timer = setInterval(next, 6000);
+  })();
+
+  /* V5: spotlight sleduje kurzor */
+  document.querySelectorAll('.v5-card').forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+})();
+</script>

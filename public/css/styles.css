@@ -92,12 +92,26 @@ body {
   font-size: 19.8px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* clip namiesto hidden: hidden robí z body scroll container a rozbíja
+     position: sticky potomkov; clip len orezáva bez scrollportu */
+  overflow-x: clip;
 }
 
 .container { width: min(1240px, calc(100% - 48px)); margin-inline: auto; }
 
 ::selection { background: var(--gold); color: #0c0d0f; }
+
+/* text reveal po slovách (data-textreveal, main.js) */
+.tr-w { display: inline-block; }
+
+/* tracing beam v sekcii Čo spraviť ako prvé (kreslí ho main.js pri scrolle) */
+.fs-beam { position: relative; height: 1px; background: var(--line); margin: clamp(48px, 7vh, 72px) 0 clamp(28px, 4vh, 40px); }
+.fs-beam i { position: absolute; left: 0; top: 0; height: 1px; width: 0%; background: linear-gradient(90deg, rgba(245, 245, 245, 0.25), var(--gold)); box-shadow: 0 0 12px rgba(245, 245, 245, 0.35); }
+.fs-beam-dot { position: absolute; top: -3.5px; width: 8px; height: 8px; border-radius: 50%; background: var(--bg2); border: 1px solid rgba(245, 245, 245, 0.3); transition: background 0.3s ease, border-color 0.3s ease; }
+.fs-beam-dot.on { background: var(--gold); border-color: var(--gold); }
+@media (max-width: 860px) {
+  .fs-beam { display: none; } /* vertikálny stack, horizontálna linka stráca zmysel */
+}
 
 /* ---- shared atoms ---- */
 .eyebrow {

@@ -90,6 +90,9 @@
     });
     var qt = document.getElementById('quote-text');
     if (qt) qt.style.opacity = '1';
+    var fsFillStatic = document.getElementById('fs-beam-fill');
+    if (fsFillStatic) fsFillStatic.style.width = '100%';
+    document.querySelectorAll('.fs-beam-dot').forEach(function (d) { d.classList.add('on'); });
     return;
   }
 
@@ -272,6 +275,70 @@
       stagger: 0.35,
       ease: 'none',
       scrollTrigger: { trigger: '#quote', start: 'top 72%', end: 'center 38%', scrub: 0.4 }
+    });
+  }
+
+  /* ---------- text reveal: hlavné nadpisy a leady po slovách ----------
+     Štýl 21st.dev cnippet text-reveal (preset fade-in-blur, per word):
+     slová nabiehajú so zdvihom, rozostrením a staggerom 50 ms.
+     React verzia komponentu žije v src/components/ui/text-reveal.tsx
+     (pre ostrovy); tu beží ekvivalent cez GSAP bez hydratácie. */
+  function splitRevealWords(el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    var spans = [];
+    nodes.forEach(function (node) {
+      if (!/\S/.test(node.nodeValue)) return;
+      var frag = document.createDocumentFragment();
+      /* nbsp ( ) nerozdeľuje — nezalomiteľné dvojice ostávajú v jednom slove */
+      node.nodeValue.split(/([^\S\u00A0]+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^[^\S\u00A0]+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+        var s = document.createElement('span');
+        s.className = 'tr-w';
+        s.textContent = part;
+        frag.appendChild(s);
+        spans.push(s);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+    return spans;
+  }
+
+  gsap.utils.toArray('[data-textreveal]').forEach(function (el) {
+    var words = splitRevealWords(el);
+    if (!words.length) return;
+    gsap.from(words, {
+      opacity: 0,
+      y: 18,
+      filter: 'blur(12px)',
+      duration: 0.4,
+      ease: 'power2.out',
+      stagger: 0.05,
+      clearProps: 'filter,transform,opacity',
+      scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+    });
+  });
+
+  /* ---------- tracing beam: Čo spraviť ako prvé ---------- */
+  var fsFill = document.getElementById('fs-beam-fill');
+  if (fsFill) {
+    var fsDots = gsap.utils.toArray('.fs-beam-dot');
+    gsap.to(fsFill, {
+      width: '100%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.firststeps ol',
+        start: 'top 85%',
+        end: 'top 35%',
+        scrub: 0.4,
+        onUpdate: function (self) {
+          fsDots.forEach(function (d) {
+            d.classList.toggle('on', self.progress * 100 >= parseFloat(d.style.left));
+          });
+        }
+      }
     });
   }
 

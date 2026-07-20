@@ -16,5 +16,9 @@ export default defineConfig({
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      // motion/react si inak vie potiahnut vlastnu instanciu Reactu (useContext null)
+      dedupe: ['react', 'react-dom'],
+    },
   },
 });
