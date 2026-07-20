@@ -79,7 +79,7 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
           <div class="memoriam-month" data-reveal>{skupina.label}</div>
           <div class="memoriam-grid">
             {skupina.items.map((p) => (
-              <div class="memoriam-card" data-reveal data-slug={p.slug} data-meno={p.meno}>
+              <div class={`memoriam-card${p.sviecky > 0 ? " warm" : ""}${p.sviecky >= 10 ? " heat3" : p.sviecky >= 3 ? " heat2" : ""}`} data-reveal data-slug={p.slug} data-meno={p.meno}>
                 <a class="memoriam-link" href={`/parte/${p.slug}`}>
                   <div class="memoriam-photo" aria-hidden="true">{p.foto_url
                     ? <img src={p.foto_url} alt="" loading="lazy" decoding="async" />
@@ -90,7 +90,7 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
                     <div class="memoriam-rozlucka">Rozlúčka {fmtDenMesiac(p.rozlucka_datum)} o {p.rozlucka_cas}<br>{p.rozlucka_miesto}</div>
                   )}
                 </a>
-                <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku<span class="candle-count">{p.sviecky > 0 ? ` · ${p.sviecky}` : ''}</span></button><a href={`/parte/${p.slug}`} class="soft-link">Zobraziť parte</a></div>
+                <div class="memoriam-candle" aria-hidden="true"><span class="spark"></span><span class="spark"></span><span class="spark"></span><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku<span class="candle-count">{p.sviecky > 0 ? ` · ${p.sviecky}` : ''}</span></button><a href={`/parte/${p.slug}`} class="soft-link">Zobraziť parte</a></div>
               </div>
             ))}
           </div>

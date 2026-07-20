@@ -39,6 +39,10 @@
       light(slug, function (n) {
         var cnt = card.querySelector('.candle-count');
         if (cnt) cnt.textContent = ' · ' + n;
+        /* V2 svetlo sviečky: kartu zahrej podľa nového počtu */
+        card.classList.add('warm');
+        card.classList.toggle('heat2', n >= 3 && n < 10);
+        card.classList.toggle('heat3', n >= 10);
       });
     });
   });

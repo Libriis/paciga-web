@@ -886,8 +886,49 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   .svc-chapter-stone { padding: 34px 22px 22px; border-radius: 18px; }
 }
 
-/* ---- opustili nás: sviečka ---- */
-.memoriam-candle { height: 26px; display: grid; place-items: center; margin-top: 14px; }
+/* ---- opustili nás: sviečka ----
+   V2 „Svetlo sviečky" (výber z 21st variantov 20.7.2026): plamienok dýcha
+   halo svetlom a púšťa iskierky tepla. Horí na kartách, kde sviečku zapálil
+   ktokoľvek (.warm zo servera podľa počtu) alebo návštevník sám (.lit).
+   Intenzita: heat2 = 3+ sviečok, heat3 = 10+. */
+.memoriam-candle { height: 26px; display: grid; place-items: center; margin-top: 14px; position: relative; }
+.memoriam-candle::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 44px; height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 240, 225, 0.22), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.memoriam-card.lit .memoriam-candle::before,
+.memoriam-card.warm .memoriam-candle::before { opacity: 1; animation: candleBreathe 4.4s ease-in-out infinite; }
+.memoriam-card.heat2 .memoriam-candle::before { background: radial-gradient(circle, rgba(245, 240, 225, 0.34), transparent 70%); }
+.memoriam-card.heat3 .memoriam-candle::before { background: radial-gradient(circle, rgba(245, 240, 225, 0.5), transparent 72%); width: 54px; height: 54px; margin: -27px 0 0 -27px; }
+@keyframes candleBreathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+.memoriam-candle .spark {
+  position: absolute;
+  left: 50%; bottom: 6px;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: rgba(245, 240, 225, 0.7);
+  opacity: 0;
+}
+.memoriam-card.lit .memoriam-candle .spark,
+.memoriam-card.warm .memoriam-candle .spark { animation: sparkRise 5.2s linear infinite; }
+.memoriam-candle .spark:nth-child(2) { animation-delay: 1.7s; margin-left: -3px; }
+.memoriam-candle .spark:nth-child(3) { animation-delay: 3.4s; margin-left: 3px; }
+@keyframes sparkRise {
+  0% { transform: translateY(0); opacity: 0; }
+  12% { opacity: 0.8; }
+  70% { opacity: 0.25; }
+  100% { transform: translateY(-26px); opacity: 0; }
+}
 .memoriam-candle .flame {
   display: block;
   width: 7px; height: 12px;
@@ -899,7 +940,8 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   transform-origin: 50% 100%;
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
-.memoriam-card.lit .flame { opacity: 1; transform: scaleY(1); animation: flameFlicker 1.6s ease-in-out infinite alternate; }
+.memoriam-card.lit .flame,
+.memoriam-card.warm .flame { opacity: 1; transform: scaleY(1); animation: flameFlicker 1.6s ease-in-out infinite alternate; }
 .candle-btn { background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
 .memoriam-card.lit .candle-btn { color: var(--dim); cursor: default; }
 @keyframes flameFlicker {
@@ -915,6 +957,22 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .reviews-head h2 { margin-top: 16px; font-size: clamp(28px, 3.6vw, 46px); }
 .reviews-head p { margin-top: 12px; color: var(--muted); font-size: 18px; }
 .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+/* nekonečný rail recenzií (štýl 21st.dev infinite-moving-cards, CSS marquee).
+   Track = 2 identické sety, posun -50% je presne šírka jedného setu. */
+.reviews-rail { position: relative; overflow: hidden; margin-inline: calc(50% - 50vw); }
+.reviews-rail-track { display: flex; width: max-content; animation: marquee var(--rev-dur, 70s) linear infinite; }
+.reviews-rail:hover .reviews-rail-track { animation-play-state: paused; }
+.reviews-set { display: flex; gap: 24px; padding-right: 24px; }
+.rail-card { width: min(420px, 82vw); flex-shrink: 0; }
+.reviews-rail::before,
+.reviews-rail::after { content: ''; position: absolute; top: 0; bottom: 0; width: clamp(48px, 9vw, 140px); z-index: 2; pointer-events: none; }
+.reviews-rail::before { left: 0; background: linear-gradient(90deg, var(--bg2), rgba(17, 18, 20, 0)); }
+.reviews-rail::after { right: 0; background: linear-gradient(270deg, var(--bg2), rgba(17, 18, 20, 0)); }
+@media (prefers-reduced-motion: reduce) {
+  .reviews-rail { overflow-x: auto; }
+  .reviews-rail-track { animation: none; }
+}
 .review {
   margin: 0;
   background: var(--panel);
@@ -1624,6 +1682,22 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   margin-bottom: 14px;
 }
 .reg-side h3 { font-size: clamp(23px, 2.4vw, 32px); }
+/* placeholder na fotografiu kapitoly — nahradí sa reálnym záberom */
+.reg-photo {
+  margin-top: clamp(24px, 3.5vh, 40px);
+  max-width: 360px;
+  aspect-ratio: 4 / 3;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+}
+.reg-photo span {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
 .reg-side p { margin-top: 10px; color: var(--muted); font-size: 18.6px; line-height: 1.6; max-width: 28ch; }
 
 .reg-list { border-top: 1px solid var(--line); }
@@ -1700,7 +1774,9 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .faq-mark::before, .faq-mark::after { transition: none !important; }
   .partners-track, .dot, .orb, .phone-primary, .kron-now::before { animation: none !important; }
   html { scroll-behavior: auto; }
-  .memoriam-card.lit .flame { animation: none !important; }
+  .memoriam-card.lit .flame, .memoriam-card.warm .flame { animation: none !important; }
+  .memoriam-card .memoriam-candle::before { animation: none !important; }
+  .memoriam-candle .spark { animation: none !important; opacity: 0 !important; }
   .phero.lit .phero-flame i, .phero.lit .phero-glow { animation: none !important; }
   /* jazda: statický poster + hero text, HUD a canvas preč */
   #journey-canvas, .journey-hud { display: none; }

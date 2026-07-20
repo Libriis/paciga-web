@@ -6,6 +6,17 @@ import { RECENZIE, VYBER, GOOGLE_PROFIL } from '../data/recenzie';
 export const prerender = false;
 
 const parteList = (await getParteList()).slice(0, 4);
+
+/* rail recenzií — nekonečná slučka (štýl 21st.dev infinite-moving-cards);
+   výňatky podľa pravidiel v data/recenzie.ts, nič vymyslené */
+const RECENZIE_RAIL = [
+  { t: VYBER.harbinRozlucka, m: RECENZIE.harbin.meno },
+  { t: VYBER.branislavKratky, m: RECENZIE.branislav.meno },
+  { t: RECENZIE.gardosova.text, m: RECENZIE.gardosova.meno },
+  { t: VYBER.fontaniVdaka, m: RECENZIE.fontani.meno },
+  { t: VYBER.gallikovaUroven, m: RECENZIE.gallikova.meno },
+  { t: RECENZIE.hegli.text, m: RECENZIE.hegli.meno },
+];
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
 
 const title = "Paciga | Pohrebné a kamenárske služby | NON STOP 24/7";
@@ -160,6 +171,9 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
           <div class="reg-kap">Kapitola I</div>
           <h3>Obrad a preprava</h3>
           <p>Od prvého telefonátu po dôstojnú rozlúčku.</p>
+          <div class="reg-photo" data-photo-slot>
+            <span>Miesto pre fotografiu</span>
+          </div>
         </div>
         <div class="reg-list">
           <a class="reg-row" href="/pohrebne-sluzby#rakvy"><span class="reg-num">01</span><span class="reg-name">Rakvy</span><span class="reg-desc">Široký výber elegantných rakiev z prvotriednych materiálov.</span><span class="reg-go" aria-hidden="true">→</span></a>
@@ -177,6 +191,9 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
           <div class="reg-kap">Kapitola II</div>
           <h3>Starostlivosť o pozostalých</h3>
           <p>Čo pomáha niesť smútok: kvety, spomienky, podpora.</p>
+          <div class="reg-photo" data-photo-slot>
+            <span>Miesto pre fotografiu</span>
+          </div>
         </div>
         <div class="reg-list">
           <a class="reg-row" href="/pohrebne-sluzby#kvetinarstvo"><span class="reg-num">08</span><span class="reg-name">Kvetinárstvo</span><span class="reg-desc">Vlastná výroba kytíc, vencov a smútočnej výzdoby.</span><span class="reg-go" aria-hidden="true">→</span></a>
@@ -193,6 +210,9 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
           <div class="reg-kap">Kapitola III</div>
           <h3>Kamenárstvo</h3>
           <p>Spomienka vytesaná do žuly.</p>
+          <div class="reg-photo" data-photo-slot>
+            <span>Miesto pre fotografiu</span>
+          </div>
         </div>
         <div class="reg-list">
           <a class="reg-row" href="/pohrebne-sluzby#kamenarstvo"><span class="reg-num">14</span><span class="reg-name">Kamenárstvo</span><span class="reg-desc">Hrobky, žulové pomníky, montáž a rekonštrukcie.</span><span class="reg-go" aria-hidden="true">→</span></a>
@@ -277,13 +297,13 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
       </div>
       <div class="memoriam-grid">
         {parteList.map((p) => (
-          <div class="memoriam-card" data-reveal data-slug={p.slug}>
+          <div class={`memoriam-card${p.sviecky > 0 ? " warm" : ""}${p.sviecky >= 10 ? " heat3" : p.sviecky >= 3 ? " heat2" : ""}`} data-reveal data-slug={p.slug}>
             <div class="memoriam-photo" aria-hidden="true">{p.foto_url
               ? <img src={p.foto_url} alt="" loading="lazy" decoding="async" />
               : <span>{inicialky(p.meno)}</span>}</div>
             <h3>{p.meno}</h3>
             <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}</div>
-            <div class="memoriam-candle" aria-hidden="true"><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku<span class="candle-count">{p.sviecky > 0 ? ` · ${p.sviecky}` : ''}</span></button><a href={`/parte/${p.slug}`} class="soft-link">Kondolencia</a></div>
+            <div class="memoriam-candle" aria-hidden="true"><span class="spark"></span><span class="spark"></span><span class="spark"></span><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku<span class="candle-count">{p.sviecky > 0 ? ` · ${p.sviecky}` : ''}</span></button><a href={`/parte/${p.slug}`} class="soft-link">Kondolencia</a></div>
           </div>
         ))}
       </div>
@@ -298,19 +318,19 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         <h2 data-textreveal>Skutočné rodiny. Skutočné slová.</h2>
         <p data-textreveal>Recenzie z profilu Google.</p>
       </div>
-      <div class="reviews-grid">
-        <blockquote class="review" data-reveal>
-          <p>„{VYBER.harbinRozlucka}“</p>
-          <footer>{RECENZIE.harbin.meno}</footer>
-        </blockquote>
-        <blockquote class="review" data-reveal>
-          <p>„{VYBER.branislavKratky}“</p>
-          <footer>{RECENZIE.branislav.meno}</footer>
-        </blockquote>
-        <blockquote class="review" data-reveal>
-          <p>„{RECENZIE.gardosova.text}“</p>
-          <footer>{RECENZIE.gardosova.meno}</footer>
-        </blockquote>
+      <div class="reviews-rail" data-reveal>
+        <div class="reviews-rail-track">
+          {[0, 1].map((dup) => (
+            <div class="reviews-set" aria-hidden={dup === 1 ? 'true' : undefined}>
+              {RECENZIE_RAIL.map((r) => (
+                <blockquote class="review rail-card">
+                  <p>„{r.t}“</p>
+                  <footer>{r.m}</footer>
+                </blockquote>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
       <p class="reviews-more" data-reveal>
         <a class="link-underline gold" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>

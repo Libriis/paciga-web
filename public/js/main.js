@@ -448,8 +448,19 @@
   });
 
 
+  /* ---------- rail recenzií: konštantná rýchlosť ~26 px/s ---------- */
+  function tuneReviewsRail() {
+    var track = document.querySelector('.reviews-rail-track');
+    if (!track) return;
+    var set = track.querySelector('.reviews-set');
+    var w = set ? set.getBoundingClientRect().width : 0;
+    if (w > 0) track.style.setProperty('--rev-dur', Math.round(w / 26) + 's');
+  }
+  tuneReviewsRail();
+
   /* ---------- refresh after everything (fonts, video poster) settles ---------- */
   window.addEventListener('load', function () {
     ScrollTrigger.refresh();
+    tuneReviewsRail();
   });
 })();
