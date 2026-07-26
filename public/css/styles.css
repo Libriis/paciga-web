@@ -194,6 +194,45 @@
   color: var(--text);
 }
 
+/* ---- prechod z fotopásu do sekcie pod ním ----
+   DEFAULT pre celý web. Skladá sa z dvoch polovíc, jedna bez druhej nestačí.
+
+   1. Fotopás doznieva do PLNÉHO scrimu. Robia to shade vrstvy nižšie
+      (.subhero-shade, .album-shade, .fleetband-shade). Kým končili na 0.86
+      alebo 0.9, spodný pás fotky zostal svetlejší než sekcia pod ním a hrana
+      nebola prechod dvoch odtieňov, ale skok.
+   2. Sekcia pod pásom nesie data-seam a scrim prevedie do svojho pozadia.
+      V nočnej téme sú obe farby #0c0d0f, takže pás nevidno a hranu vyriešil
+      už bod 1. Vo dni je sekcia svetlá, takže bez tohto pásu by plný scrim
+      vyrobil novú, tvrdšiu hranu.
+
+   Prečo fade tu a nie vo fotopáse: v páse stojí biely text (nadpis, popiska).
+   Svetlý spodok by ho v dennej téme zabil, takže scrim tam musí ostať tmavý
+   až po hranu.
+
+   Výška pásu sa rovná hornému paddingu sekcie, aby závoj nikdy nepadol na
+   obsah. Sekcia s iným paddingom si ju prepíše cez --seam.
+
+   Selektor je section[data-seam] a nie [data-seam] zámerne: potrebuje prebiť
+   border-top v .situ, .kronika a .cta-band bez ohľadu na poradie v súbore.
+   Hairline presne na hrane by prechod zabila, tam už delí fotka. */
+section[data-seam] {
+  position: relative;
+  border-top: 0;
+}
+section[data-seam]::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: var(--seam, clamp(56px, 8vh, 96px));
+  background: linear-gradient(180deg, rgb(var(--scrim-rgb)), rgb(var(--scrim-rgb) / 0));
+  pointer-events: none;
+}
+/* pozicovaný ::before by inak kreslil nad statickým obsahom sekcie */
+section[data-seam] > .container,
+section[data-seam] > .cta-inner { position: relative; z-index: 1; }
+
 /* ---- svetlo v pozadí sekcií ----
    Jednolitá plocha sa nerozbíja textúrou, ale svetlom. Každá sekcia je
    nasvietená z horného rohu a v protiľahlom dolnom rohu tmavne, takže má
@@ -618,25 +657,8 @@ body {
    v troch stĺpcoch a všetok pohyb nesú linky: vodorovná sa kreslí zľava,
    zvislé delidlá rastú zhora. Ich škálu drží --divh na kontejneri, aby sa
    dala animovať jedným tweenom (na ::before z GSAP nedosiahneš). */
-.stats { position: relative; background: var(--bg); padding: clamp(56px, 8vh, 96px) 0; }
-/* Druhá polovica prechodu z fotky. Subhero nad sekciou doznieva do plného
-   scrimu, tento pás scrim prevedie do pozadia sekcie. V noci sú obe farby
-   #0c0d0f, takže pás nevidno. Vo dni prevedie tmavú do lomenej bielej bez
-   hrany; fade riešim tu a nie v subhero, lebo tam by svetlý spodok zabil
-   biely nadpis nad fotkou. */
-.stats::before {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  /* rovnaká hodnota ako horný padding sekcie: pás tak presne vyplní priestor
-     nad obsahom a nikdy nekreslí tmavý závoj cez čísla v dennej téme */
-  height: clamp(56px, 8vh, 96px);
-  background: linear-gradient(180deg, rgb(var(--scrim-rgb)), rgb(var(--scrim-rgb) / 0));
-  pointer-events: none;
-}
-/* pozicovaný ::before by inak kreslil nad statickým obsahom sekcie */
-.stats > .container { position: relative; z-index: 1; }
+/* padding sa rovná default výške seam pásu, viď section[data-seam] */
+.stats { background: var(--bg); padding: clamp(56px, 8vh, 96px) 0; }
 .stat-strip {
   --stat-gap: clamp(24px, 4vw, 64px);
   --divh: 1;
@@ -1421,7 +1443,21 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* rezerva na parallax, rovnako ako album pásy vyššie na stránke */
 .fleetband-media > span { position: absolute; inset: -9% 0; display: block; }
 .fleetband-media img { width: 100%; height: 100%; object-fit: cover; }
-.fleetband-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12, 13, 15, 0.78), rgba(12, 13, 15, 0.2) 65%); }
+/* Scrim bol len vodorovný, takže spodná hrana ukazovala fotku na 0.2 až 0.78
+   a narážala do sekcie pod ňou. Zvislá vrstva navrchu ju dovedie do plného
+   scrimu. Obsah je vertikálne centrovaný (align-items: center), takže rampa
+   od 64 % mu nesiaha do textu. */
+.fleetband-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgb(var(--scrim-rgb) / 0) 64%,
+      rgb(var(--scrim-rgb) / 0.5) 85%,
+      rgb(var(--scrim-rgb) / 0.85) 95%,
+      rgb(var(--scrim-rgb)) 100%),
+    linear-gradient(90deg, rgb(var(--scrim-rgb) / 0.78), rgb(var(--scrim-rgb) / 0.2) 65%);
+}
 .fleetband-content { position: relative; z-index: 1; }
 .fleetband-content h2 { font-size: clamp(28px, 3.6vw, 48px); max-width: 14ch; }
 .fleetband-content p { margin-top: 16px; color: rgb(var(--fg-rgb) / 0.8); max-width: 46ch; font-size: 19.2px; }
@@ -1597,6 +1633,10 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 
 /* ---- Informácie pre pozostalých: situačný rozcestník + NON STOP lišta ---- */
 .situ { background: var(--bg2); border-block: 1px solid var(--line); padding: 45px 0 51px; }
+/* Priamo pod subhero fotkou je 45 px na rampu málo: v dennej téme by čierna
+   prechádzala do parchmentu na 45 pixloch a čítalo by sa to ako tmavý pás,
+   nie ako prechod. Pod fotkou teda dostane priestor, inde ostáva 45 px. */
+.subhero + .situ { padding-top: clamp(64px, 8vh, 96px); }
 .situ-label { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 600; margin-bottom: 16px; }
 .situ-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .situ-chip {
@@ -1988,9 +2028,18 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 /* variant: ohnisko vpravo — na úzkom displeji nechá v zábere ľudí, nie kapotu */
 .album-band-right img { object-position: 68% center; }
+/* Spodok doznieva do plného scrimu, nie do 0.9, aby pás nadviazal na sekciu
+   pod ním bez seku. Popiska sedí 38 až 68 px od spodku, čiže v pásme kde je
+   scrim už takmer plný; na čiernom je čitateľnejšia než predtým. */
 .album-shade {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(12, 13, 15, 0.4), rgba(12, 13, 15, 0) 32%, rgba(12, 13, 15, 0) 52%, rgba(12, 13, 15, 0.9) 100%);
+  background: linear-gradient(180deg,
+    rgb(var(--scrim-rgb) / 0.4),
+    rgb(var(--scrim-rgb) / 0) 32%,
+    rgb(var(--scrim-rgb) / 0) 52%,
+    rgb(var(--scrim-rgb) / 0.66) 82%,
+    rgb(var(--scrim-rgb) / 0.92) 93%,
+    rgb(var(--scrim-rgb)) 100%);
 }
 .album-caption {
   position: absolute; inset-inline: 0;
