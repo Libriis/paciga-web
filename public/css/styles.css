@@ -157,7 +157,18 @@
   --fg-strong: #ffffff;
   --on-accent: #0c0d0f;
   --gold: #f5f5f5;
+  /* Odvodené tokeny sa tu MUSIA deklarovať znova. var() vnútri deklarácie
+     vlastnej vlastnosti sa dosadí na elemente, kde deklarácia stojí, teda
+     na :root — nie tam, kde sa token použije. Prepis --fg-rgb v tomto bloku
+     preto hodnoty z :root neprepočíta; zdedí sa už hotové rgb(12,13,15,X).
+     Overené: bez týchto štyroch riadkov mal .subhero-lead v dennej téme
+     rgba(12,13,15,0.55) na tmavej fotke, spolu 15 miest na piatich stránkach.
+     Pravidlo: každý nový odvodený token v :root pridaj aj sem. */
   --line: rgb(var(--fg-rgb) / 0.08);
+  --muted: rgb(var(--fg-rgb) / 0.55);
+  --dim: rgb(var(--fg-rgb) / 0.35);
+  --gold-soft: rgb(var(--fg-rgb) / 0.55);
+  --gold-dim: rgb(var(--fg-rgb) / 0.18);
   /* prepis tokenu nestačí: color sa dedí z body, kde je už prepočítaný.
      Tu ho treba nastaviť znova, inak by text nad fotkou v dennej téme
      zdedil tmavú farbu a zmizol. */
