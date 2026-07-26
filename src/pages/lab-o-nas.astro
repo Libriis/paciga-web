@@ -1,0 +1,277 @@
+---
+/*
+  Interné porovnanie: tri varianty, ako do stránky O nás dostať viac
+  reálnych fotiek. Všetky fotky sú zatiaľ placeholdery — každý nesie
+  popis, ČO na ňom má byť, takže stránka slúži zároveň ako shot list
+  pre fotenie. Nie je v navigácii, noindex.
+*/
+import Base from '../layouts/Base.astro';
+
+/* V1 — kronika s archívnym záberom ku každému milníku */
+const KRON = [
+  {
+    rok: '2016',
+    t: 'Vlastné prenosné chladenie',
+    p: 'Na výstave Slovak Funeral sme predstavili vlastnú technológiu prenosného chladenia. Ako prví v regióne.',
+    foto: 'Archív: stánok na výstave Slovak Funeral 2016',
+  },
+  {
+    rok: '2018',
+    t: 'Vznik spoločnosti Paciga',
+    p: '24. mája 2018 sme v Spišskej Belej nadviazali na spoločnosť Archa Belá a začali písať vlastný príbeh.',
+    foto: 'Archív: prvá prevádzka v Spišskej Belej',
+  },
+  {
+    rok: 'Dnes',
+    t: 'Tri mestá pod Tatrami',
+    p: 'Poprad, Spišská Belá a Liptovský Mikuláš. Sme pri vás každý deň, v ktorúkoľvek hodinu.',
+    foto: 'Tím pred pobočkou v Poprade, dnes',
+  },
+];
+
+/* V1 — portréty ľudí; role sú zástupné, doplní klient */
+const TIM = [
+  'Portrét, meno a rola',
+  'Portrét, meno a rola',
+  'Portrét, meno a rola',
+  'Portrét, meno a rola',
+  'Portrét, meno a rola',
+];
+
+/* V2 — každé prvenstvo dostane vizuálny dôkaz */
+const PRVENSTVA = [
+  {
+    n: '01',
+    t: 'Prenosné chladenie',
+    p: 'Vlastnú technológiu sme prvýkrát predstavili na výstave Slovak Funeral v roku 2016.',
+    foto: 'Prenosné chladenie v prevádzke, detail zariadenia',
+  },
+  {
+    n: '02',
+    t: '3D vizualizácia pomníka',
+    p: 'Pomník uvidíte skôr, než ho začneme vyrábať.',
+    foto: 'Vizualizácia pomníka na obrazovke, vedľa vzorky žuly',
+  },
+  {
+    n: '03',
+    t: 'Smútkové poradenstvo',
+    p: 'Podpora a sprevádzanie v procese smútenia.',
+    foto: 'Miesto na rozhovor s rodinou: dva kresly, stôl, svetlo. Bez ľudí',
+  },
+  {
+    n: '04',
+    t: 'Medzinárodný prevoz',
+    p: 'Preprava zosnulých zo zahraničia vrátane všetkých dokumentov.',
+    foto: 'Vozidlo pripravené na cestu, dokumenty na sedadle',
+  },
+];
+
+/* V3 — mozaika remesla; žiadni pozostalí, len práca a detaily */
+const REMESLO = [
+  { foto: 'Ruky pri viazaní venca v kvetinárstve', span: 'big' },
+  { foto: 'Gravírovanie písma do žuly, detail dláta', span: 'tall' },
+  { foto: 'Dielňa kamenárstva, prach a nástroje' },
+  { foto: 'Detail rakvy: kovanie a povrch' },
+  { foto: 'Umývanie limuzíny pred obradom' },
+  { foto: 'Sviece a smútočná výzdoba, príprava' },
+  { foto: 'Rovnošata na vešiaku a kľúče od vozidla' },
+];
+
+/* V3 — čísla podložené záberom */
+const CISLA = [
+  { num: '3 000+', label: 'vybavených pohrebov od roku 2018', foto: 'Archív dokumentácie, police' },
+  { num: '3', label: 'pobočky: Poprad, Spišská Belá a Liptovský Mikuláš', foto: 'Exteriér pobočky, tabuľa s logom' },
+  { num: '24/7', label: 'NON STOP prevoz zosnulých', foto: 'Vozidlo v noci, rozsvietená garáž' },
+];
+
+const title = 'Lab: O nás s fotkami, tri varianty (interné)';
+---
+<Base title={title} description="Interné porovnanie variantov." active="">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <section class="page-head">
+    <div class="container">
+      <h1 data-textreveal>O nás s fotkami<br>tri varianty</h1>
+      <p class="page-head-lead">Interné porovnanie. Fotky sú placeholdery a každý hovorí, čo na ňom má byť, takže stránka je zároveň shot list. Dnes má O nás štyri fotky, každý variant pridáva ďalšie.</p>
+    </div>
+  </section>
+
+  <!-- ============ V1 ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V1 · Kronika ako fotoarchív + tvár tímu</div>
+      <p class="lab-note">Fotky slúžia príbehu v čase. Ku každému milníku archívny záber, sekcia Ľudia sa mení z jednej krajinky na mriežku portrétov. Pridáva 8 fotiek.</p>
+
+      <div class="v1-kron">
+        {KRON.map((k) => (
+          <div class="v1-row">
+            <div class="v1-year">{k.rok}</div>
+            <div class="v1-body">
+              <h3>{k.t}</h3>
+              <p>{k.p}</p>
+            </div>
+            <div class="ph ph-32"><span>Miesto pre fotografiu</span><em>{k.foto}</em></div>
+          </div>
+        ))}
+      </div>
+
+      <div class="v1-people">
+        <span class="micro-label">Ľudia</span>
+        <h3>Kto sa o vás postará</h3>
+        <p class="v1-people-lead">Za každou rozlúčkou stojí konkrétny človek, ktorý je pri vás od prvého telefonátu až po poslednú bodku.</p>
+        <div class="v1-grid">
+          {TIM.map((t) => (
+            <div class="v1-person">
+              <div class="ph ph-34"><span>Portrét</span><em>{t}</em></div>
+              <div class="v1-name">Meno Priezvisko</div>
+              <div class="v1-role">rola v tíme</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V2 ============ -->
+  <section class="lab-sec lab-alt">
+    <div class="container">
+      <div class="lk-label">V2 · Editoriálne dvojice, každé tvrdenie s dôkazom</div>
+      <p class="lab-note">Text a fotka vedľa seba, strany sa striedajú. Príbeh dostane dva zábery, každé zo štyroch prvenstiev svoj vlastný. Dnes sú prvenstvá štyri riadky textu bez jediného dôkazu. Pridáva 6 fotiek.</p>
+
+      <div class="v2-pair">
+        <div class="v2-text">
+          <span class="micro-label">Náš príbeh</span>
+          <h3>Rodinná firma od roku 2018</h3>
+          <p>Spoločnosť Paciga vznikla 24. mája 2018 v Spišskej Belej ako priamy nástupca spoločnosti Archa Belá. Od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
+        </div>
+        <div class="ph ph-43"><span>Miesto pre fotografiu</span><em>Interiér pobočky, kde prijímate rodiny</em></div>
+      </div>
+
+      <div class="v2-pair v2-flip">
+        <div class="v2-text">
+          <h3>Všetko pod jednou strechou</h3>
+          <p>Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
+        </div>
+        <div class="ph ph-43"><span>Miesto pre fotografiu</span><em>Kvetinárstvo, výroba vencov</em></div>
+      </div>
+
+      <div class="v2-head">
+        <h3>Ako prví v regióne</h3>
+        <div class="gold-line" aria-hidden="true"></div>
+      </div>
+      {PRVENSTVA.map((p, i) => (
+        <div class:list={['v2-pair', 'v2-tight', { 'v2-flip': i % 2 === 1 }]}>
+          <div class="v2-text">
+            <span class="v2-num">{p.n}</span>
+            <h3>{p.t}</h3>
+            <p>{p.p}</p>
+          </div>
+          <div class="ph ph-32"><span>Miesto pre fotografiu</span><em>{p.foto}</em></div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ V3 ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V3 · Mozaika remesla + čísla so záberom</div>
+      <p class="lab-note">Jedna hustá mozaika práce a remesla, plus záber ku každému číslu. Žiadni pozostalí, len ruky, nástroje a detaily. Celé sa dá odfotiť za jeden deň v dielni a garáži. Pridáva 10 fotiek.</p>
+
+      <span class="micro-label">Remeslo</span>
+      <h3 class="v3-title">Čo je za každou rozlúčkou</h3>
+      <div class="v3-mos">
+        {REMESLO.map((r) => (
+          <div class:list={['ph', 'v3-cell', r.span ? 'v3-' + r.span : null]}><span>Miesto pre fotografiu</span><em>{r.foto}</em></div>
+        ))}
+      </div>
+
+      <div class="v3-stats">
+        {CISLA.map((c) => (
+          <div class="v3-stat">
+            <div class="ph ph-169"><span>Miesto pre fotografiu</span><em>{c.foto}</em></div>
+            <div class="v3-num">{c.num}</div>
+            <div class="v3-label">{c.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="lab-sec lab-alt">
+    <div class="container">
+      <div class="lk-label">Ako ďalej</div>
+      <p class="lab-note">Vyber variant. Placeholdery ostanú v stránke, kým nedodáš fotky; každý nesie popis záberu, takže sa dá fotiť podľa nich. Varianty sa dajú aj kombinovať, mozaika z V3 sa neháda s dvojicami z V2.</p>
+    </div>
+  </section>
+
+</Base>
+
+<style is:global>
+.lk-label { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 18px; }
+.lab-sec { padding: clamp(90px, 13vh, 150px) 0; border-top: 1px solid var(--line); }
+.lab-alt { background: var(--bg2); }
+.lab-note { max-width: 62ch; color: var(--muted); font-size: 17.4px; line-height: 1.65; margin-bottom: clamp(44px, 6vh, 70px); }
+
+/* placeholder fotky: rám + popis, čo na zábere má byť */
+.ph {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 20px;
+}
+.ph span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+.ph em { font-style: normal; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 32ch; }
+.ph-43 { aspect-ratio: 4 / 3; }
+.ph-32 { aspect-ratio: 3 / 2; }
+.ph-34 { aspect-ratio: 3 / 4; }
+.ph-169 { aspect-ratio: 16 / 9; }
+
+/* ---- V1 ---- */
+.v1-row { display: grid; grid-template-columns: minmax(96px, 130px) 1fr minmax(260px, 400px); gap: clamp(22px, 3.2vw, 48px); align-items: start; padding: clamp(30px, 4vh, 46px) 0; border-top: 1px solid var(--line); }
+.v1-kron { border-bottom: 1px solid var(--line); }
+.v1-year { font-size: clamp(24px, 2.4vw, 34px); font-weight: 680; font-variation-settings: var(--wide); color: var(--gold); }
+.v1-body h3 { font-size: clamp(21px, 2.2vw, 28px); }
+.v1-body p { margin-top: 12px; color: var(--muted); font-size: 18.6px; line-height: 1.65; max-width: 52ch; }
+.v1-people { margin-top: clamp(70px, 10vh, 120px); }
+.v1-people h3 { font-size: clamp(26px, 3.2vw, 40px); margin-top: 12px; }
+.v1-people-lead { margin-top: 14px; color: var(--muted); font-size: 18.6px; line-height: 1.65; max-width: 56ch; }
+.v1-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(14px, 1.8vw, 26px); margin-top: clamp(38px, 5vh, 58px); }
+.v1-name { margin-top: 14px; font-size: 16px; font-weight: 640; }
+.v1-role { margin-top: 4px; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+
+/* ---- V2 ---- */
+.v2-pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 4.5vw, 70px); align-items: center; padding: clamp(34px, 5vh, 60px) 0; }
+.v2-pair .ph { width: 100%; }
+.v2-flip .v2-text { order: 2; }
+.v2-tight { padding: clamp(24px, 3.2vh, 38px) 0; border-top: 1px solid var(--line); }
+.v2-text h3 { font-size: clamp(22px, 2.6vw, 32px); margin-top: 12px; }
+.v2-text p { margin-top: 12px; color: var(--muted); font-size: 18.6px; line-height: 1.65; max-width: 46ch; }
+.v2-num { font-size: 13px; font-weight: 650; letter-spacing: 0.14em; color: var(--gold); }
+.v2-head { margin-top: clamp(60px, 9vh, 110px); }
+.v2-head h3 { font-size: clamp(26px, 3.2vw, 40px); }
+
+/* ---- V3 ---- */
+.v3-title { font-size: clamp(26px, 3.2vw, 40px); margin-top: 12px; }
+.v3-mos { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 190px; gap: clamp(10px, 1.4vw, 18px); margin-top: clamp(38px, 5vh, 58px); }
+.v3-cell { grid-column: span 1; grid-row: span 1; }
+.v3-big { grid-column: span 2; grid-row: span 2; }
+.v3-tall { grid-row: span 2; }
+.v3-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(22px, 3vw, 44px); margin-top: clamp(70px, 10vh, 120px); }
+.v3-num { margin-top: 20px; font-size: clamp(34px, 4.4vw, 58px); font-weight: 680; font-variation-settings: var(--wide); color: var(--gold); }
+.v3-label { margin-top: 8px; color: var(--muted); font-size: 16.5px; line-height: 1.55; }
+
+@media (max-width: 900px) {
+  .v1-row { grid-template-columns: 1fr; gap: 18px; }
+  .v1-grid { grid-template-columns: repeat(2, 1fr); }
+  .v2-pair { grid-template-columns: 1fr; gap: 24px; }
+  .v2-flip .v2-text { order: 0; }
+  .v3-mos { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 160px; }
+  .v3-big { grid-column: span 2; grid-row: span 2; }
+  .v3-stats { grid-template-columns: 1fr; }
+}
+</style>
