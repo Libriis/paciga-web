@@ -618,7 +618,25 @@ body {
    v troch stĺpcoch a všetok pohyb nesú linky: vodorovná sa kreslí zľava,
    zvislé delidlá rastú zhora. Ich škálu drží --divh na kontejneri, aby sa
    dala animovať jedným tweenom (na ::before z GSAP nedosiahneš). */
-.stats { background: var(--bg); padding: clamp(56px, 8vh, 96px) 0; }
+.stats { position: relative; background: var(--bg); padding: clamp(56px, 8vh, 96px) 0; }
+/* Druhá polovica prechodu z fotky. Subhero nad sekciou doznieva do plného
+   scrimu, tento pás scrim prevedie do pozadia sekcie. V noci sú obe farby
+   #0c0d0f, takže pás nevidno. Vo dni prevedie tmavú do lomenej bielej bez
+   hrany; fade riešim tu a nie v subhero, lebo tam by svetlý spodok zabil
+   biely nadpis nad fotkou. */
+.stats::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  /* rovnaká hodnota ako horný padding sekcie: pás tak presne vyplní priestor
+     nad obsahom a nikdy nekreslí tmavý závoj cez čísla v dennej téme */
+  height: clamp(56px, 8vh, 96px);
+  background: linear-gradient(180deg, rgb(var(--scrim-rgb)), rgb(var(--scrim-rgb) / 0));
+  pointer-events: none;
+}
+/* pozicovaný ::before by inak kreslil nad statickým obsahom sekcie */
+.stats > .container { position: relative; z-index: 1; }
 .stat-strip {
   --stat-gap: clamp(24px, 4vw, 64px);
   --divh: 1;
@@ -1365,7 +1383,19 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .subhero { position: relative; min-height: 72vh; display: flex; align-items: flex-end; overflow: hidden; }
 .subhero-media { position: absolute; inset: 0; }
 .subhero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
-.subhero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12, 13, 15, 0.55), rgba(12, 13, 15, 0.25) 45%, rgba(12, 13, 15, 0.86) 100%); }
+/* Fotka doznieva do PLNÉHO scrimu, nie do 0.86. Pri 0.86 zostal spodný pás
+   fotky svetlejší než sekcia pod ňou a na hrane bol ostrý sek. Stopy medzi
+   42 % a koncom sú tri, nie jedna: jeden lineárny úsek na tej dĺžke pásikuje. */
+.subhero-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgb(var(--scrim-rgb) / 0.55),
+    rgb(var(--scrim-rgb) / 0.25) 42%,
+    rgb(var(--scrim-rgb) / 0.62) 74%,
+    rgb(var(--scrim-rgb) / 0.9) 90%,
+    rgb(var(--scrim-rgb)) 100%);
+}
 .subhero-content { position: relative; z-index: 1; padding: 140px 24px 72px; }
 .subhero h1 { font-size: clamp(35px, 5.15vw, 69.9px); line-height: 1.05; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: 0.018em; }
 .subhero-lead { margin-top: 20px; max-width: 52ch; color: var(--muted); font-size: clamp(18.6px, 1.74vw, 22.3px); }
