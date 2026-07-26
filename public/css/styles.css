@@ -303,7 +303,7 @@ body {
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* ---- quote ---- */
-.quote { padding: clamp(165px, 24vh, 285px) 0; background: var(--bg); }
+.quote { padding: clamp(96px, 13vh, 165px) 0; background: var(--bg); }
 .quote-inner { max-width: 880px; position: relative; }
 /* V1 editoriálny serif (Playfair) — pull-quote kontrast k Archivo */
 .quote-mark { font-family: 'Playfair Display', Georgia, serif; font-size: 150px; line-height: 0.55; color: var(--gold-dim); font-weight: 500; margin-bottom: 30px; }
@@ -450,7 +450,7 @@ body {
 .stat-note { color: var(--dim); font-size: 15.5px; line-height: 1.6; }
 
 /* ---- branches ---- */
-.branches { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; }
+.branches { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
 .section-head { margin-bottom: 60px; }
 .branch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .branch-card {
@@ -479,7 +479,7 @@ body {
 .branch-hours { margin-top: 6px; margin-bottom: 18px; font-size: 16.1px; color: var(--dim); letter-spacing: 0.04em; }
 
 /* ---- memoriam ---- */
-.memoriam { background: var(--bg); padding: clamp(150px, 21vh, 255px) 0; }
+.memoriam { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; }
 .memoriam-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; margin-bottom: 60px; flex-wrap: wrap; }
 .memoriam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .memoriam-card {
@@ -535,7 +535,7 @@ body {
     radial-gradient(90% 120% at 50% 130%, rgba(245, 245, 245, 0.14), transparent 60%),
     var(--bg2);
   border-top: 1px solid var(--line);
-  padding: clamp(165px, 24vh, 300px) 36px;
+  padding: clamp(96px, 13vh, 175px) 36px;
   text-align: center;
 }
 .cta-inner h2 { font-size: clamp(32px, 4.6vw, 58px); max-width: 20ch; margin-inline: auto; }
@@ -1032,7 +1032,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 }
 
 /* ---- recenzie (tmavá sekcia, Page Theme Lock: celá stránka dark) ---- */
-.reviews { background: var(--bg2); border-block: 1px solid var(--line); color: var(--text); padding: clamp(150px, 21vh, 255px) 0; }
+.reviews { background: var(--bg2); border-block: 1px solid var(--line); color: var(--text); padding: clamp(84px, 11vh, 150px) 0; }
 .reviews-head { text-align: center; margin-bottom: 56px; }
 .reviews-head .stars { color: var(--text); font-size: 20px; letter-spacing: 6px; }
 .reviews-head h2 { margin-top: 16px; font-size: clamp(28px, 3.6vw, 46px); }
@@ -1081,7 +1081,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .subhero h1 { font-size: clamp(35px, 5.15vw, 69.9px); line-height: 1.05; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: 0.018em; }
 .subhero-lead { margin-top: 20px; max-width: 52ch; color: var(--muted); font-size: clamp(18.6px, 1.74vw, 22.3px); }
 
-.story { background: var(--bg); padding: clamp(150px, 21vh, 255px) 0; }
+.story { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; }
 .story-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(40px, 6vw, 90px); align-items: center; }
 .story-text h2 { font-size: clamp(28px, 3.4vw, 44px); }
 .story-text .gold-line { margin: 22px 0 26px; }
@@ -1090,7 +1090,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .story-photo { margin: 0; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); }
 .story-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.firsts { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; }
+.firsts { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
 .firsts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .first-card { border: 1px solid var(--line); border-radius: 18px; background: var(--panel); padding: 28px 26px; }
 .first-card h3 { font-size: 19px; }
@@ -1121,7 +1121,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .page-head-lead { margin-top: 18px; max-width: 56ch; color: var(--muted); font-size: clamp(18.6px, 1.74vw, 22.3px); line-height: 1.7; }
 
 /* ---- podstránky: skupiny služieb ---- */
-.svcgroups { background: var(--bg); padding: clamp(120px, 16.5vh, 195px) 0 clamp(150px, 21vh, 255px); }
+.svcgroups { background: var(--bg); padding: clamp(68px, 9vh, 115px) 0 clamp(84px, 11vh, 150px); }
 .svcgroup + .svcgroup { margin-top: clamp(70px, 9vh, 110px); }
 .svcgroup-head { margin-bottom: 36px; }
 .svcgroup-head h2 { font-size: clamp(24px, 2.8vw, 36px); }
@@ -1157,7 +1157,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .bill-item p { color: var(--muted); font-size: 19.2px; line-height: 1.7; }
 
 /* ---- podstránky: aktuality ---- */
-.news { background: var(--bg); padding: 0 0 clamp(150px, 21vh, 255px); }
+.news { background: var(--bg); padding: 0 0 clamp(84px, 11vh, 150px); }
 .news-item { display: grid; grid-template-columns: clamp(120px, 16vw, 200px) 1fr; gap: clamp(20px, 4vw, 56px); padding: clamp(34px, 5vh, 52px) 0; border-top: 1px solid var(--line); }
 .news-item:last-child { border-bottom: 1px solid var(--line); }
 .news-date { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); padding-top: 6px; }
@@ -1197,7 +1197,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .phero h1 { margin-top: 30px; font-size: clamp(40.5px, 7.36vw, 108.6px); line-height: 1.02; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: 0.013em; }
 .phero-dates { margin-top: clamp(30px, 5vh, 50px); display: flex; justify-content: center; gap: clamp(28px, 6vw, 90px); flex-wrap: wrap; color: var(--muted); font-size: 16px; }
 .phero-dates .label { display: block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 7px; }
-.prozl { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; text-align: center; }
+.prozl { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; text-align: center; }
 .prozl h2 { font-size: clamp(20px, 2.2vw, 28px); color: var(--muted); font-weight: 560; }
 .prozl-when { margin-top: 26px; font-size: clamp(42.2px, 6.7vw, 99.2px); font-weight: 680; font-variation-settings: var(--wide); letter-spacing: -0.01em; line-height: 1.06; }
 .prozl-where { margin-top: 16px; font-size: clamp(22.3px, 2.73vw, 34.7px); color: var(--muted); }
@@ -1461,7 +1461,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    ============================================================ */
 .faq-section {
   background: var(--bg2);
-  padding: clamp(135px, 18vh, 210px) 0;
+  padding: clamp(76px, 10vh, 125px) 0;
   border-top: 1px solid var(--line);
 }
 .faq { max-width: 820px; margin-inline: auto; text-align: left; }
@@ -1650,7 +1650,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    kronika rokov na zvislej osi, prvenstvá ako hairline zoznam.
    Parallax pásov ide cez data-parallax v main.js.
    ============================================================ */
-.about-intro { background: var(--bg); padding: clamp(135px, 18vh, 225px) 0; }
+.about-intro { background: var(--bg); padding: clamp(76px, 10vh, 135px) 0; }
 /* dvojice text + fotografia idú cez celú šírku, obmedzený je len text */
 .about-intro .section-head { max-width: 780px; margin-bottom: clamp(18px, 2.6vh, 30px); }
 .about-intro .gold-line { margin: 18px 0 0; }
@@ -1685,7 +1685,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 /* ---- kronika: striedavé dvojice okolo zvislej osi (vzor Slash) ----
    Os sa plní so scrollom rovnako ako tracing beam v „Čo spraviť ako prvé"
    a dráha jazdy; uzly sa rozsvietia, keď ich plniaca sa os prejde. */
-.kronika { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; }
+.kronika { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
 .kron { position: relative; }
 .kron-rail {
   position: absolute;
@@ -1744,7 +1744,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .kron-body p { color: var(--muted); line-height: 1.7; max-width: 44ch; }
 
 /* ---- prvenstvá: hairline zoznam namiesto kariet ---- */
-.prvenstva { background: var(--bg); border-top: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; }
+.prvenstva { background: var(--bg); border-top: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
 .pl-list { border-top: 1px solid var(--line); }
 /* prvý riadok berie linku od .pl-list, nedvojí ju */
 .pl-list > .ed-pair:first-child { border-top: 0; }
@@ -1815,7 +1815,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    hairline riadky. Nahrádza pinovaný horizontálny pás.
    Hover na riadku s fotkou odkryje náhľad pri pravom okraji.
    ============================================================ */
-.register { background: var(--bg); padding: clamp(150px, 21vh, 255px) 0; position: relative; overflow: hidden; }
+.register { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; position: relative; overflow: hidden; }
 .register .section-head { margin-bottom: clamp(40px, 6vh, 64px); }
 
 .reg-group {
