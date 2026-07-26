@@ -1,0 +1,220 @@
+---
+/*
+  Interné porovnanie: tri varianty sekcie služieb na homepage, kde sa
+  namiesto pätnástich riadkov s popismi ukážu len tri kapitoly a pod nimi
+  tlačidlo na celý prehľad. Nie je v navigácii, noindex.
+
+  Referencie: Mobbin (Phantom Studios, Grok) a 21st.dev (Hover Reveal
+  Cards), preložené do brand tokenov.
+*/
+import Base from '../layouts/Base.astro';
+
+const KAPITOLY = [
+  {
+    rim: 'Kapitola I',
+    n: '01',
+    t: 'Obrad a preprava',
+    p: 'Od prvého telefonátu po dôstojnú rozlúčku.',
+    pocet: 7,
+    href: '/pohrebne-sluzby',
+    foto: 'Sprievod pred obradom, vozidlá a personál',
+  },
+  {
+    rim: 'Kapitola II',
+    n: '02',
+    t: 'Starostlivosť o pozostalých',
+    p: 'Čo pomáha niesť smútok: kvety, spomienky, podpora.',
+    pocet: 6,
+    href: '/pohrebne-sluzby#kvetinarstvo',
+    foto: 'Kvetinárstvo, viazanie vencov',
+  },
+  {
+    rim: 'Kapitola III',
+    n: '03',
+    t: 'Kamenárstvo',
+    p: 'Spomienka vytesaná do žuly.',
+    pocet: 2,
+    href: '/pohrebne-sluzby#kamenarstvo',
+    foto: 'Dielňa kamenárstva, gravírovanie do žuly',
+  },
+];
+
+const CTA = 'Prezrieť si všetky naše služby';
+
+const title = 'Lab: služby ako tri kapitoly, tri varianty (interné)';
+---
+<Base title={title} description="Interné porovnanie variantov." active="">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <section class="page-head">
+    <div class="container">
+      <h1 data-textreveal>Služby ako tri kapitoly<br>tri varianty</h1>
+      <p class="page-head-lead">Interné porovnanie. Dnes má sekcia služieb na homepage 2341 px a pätnásť riadkov s popismi. Každý variant ukáže len tri kapitoly a pod nimi tlačidlo na celý prehľad. Fotky sú placeholdery s popisom záberu.</p>
+    </div>
+  </section>
+
+  <!-- ============ V1: kapitolové riadky (Phantom Studios) ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V1 · Kapitolové riadky</div>
+      <p class="lab-note">Tri riadky cez celú šírku, hairline medzi nimi. Veľký názov kapitoly, jedna veta, fotka vpravo, decentný odkaz. Pokračuje tou istou rečou ako čísla na O nás a editoriálne dvojice, čiže nepridáva na web nový cudzí tvar.</p>
+
+      <div class="section-head">
+        <div class="eyebrow">Čo všetko vybavíme za vás</div>
+        <h2>Pätnásť služieb<br>v troch kapitolách</h2>
+        <div class="gold-line" aria-hidden="true"></div>
+      </div>
+
+      <div class="v1-rows">
+        {KAPITOLY.map((k) => (
+          <a class="v1-row" href={k.href}>
+            <div class="v1-txt">
+              <span class="v1-kap">{k.rim}</span>
+              <h3>{k.t}</h3>
+              <p>{k.p}</p>
+              <span class="v1-go">{k.pocet} služieb <i aria-hidden="true">→</i></span>
+            </div>
+            <div class="photo-slot ps-32" data-photo-slot>
+              <span>Miesto pre fotografiu</span><em>{k.foto}</em>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <a class="btn-gold lab-cta" href="/pohrebne-sluzby">{CTA}</a>
+    </div>
+  </section>
+
+  <!-- ============ V2: trojica stĺpcov (Grok) ============ -->
+  <section class="lab-sec lab-alt">
+    <div class="container">
+      <div class="lk-label">V2 · Trojica stĺpcov</div>
+      <p class="lab-note">Tri stĺpce vedľa seba, oddelené zvislou hairline. Najkratšie zo všetkých, celá sekcia sa zmestí na jednu obrazovku. Bez fotiek, len typografia a počet služieb.</p>
+
+      <div class="section-head">
+        <div class="eyebrow">Čo všetko vybavíme za vás</div>
+        <h2>Pätnásť služieb<br>v troch kapitolách</h2>
+        <div class="gold-line" aria-hidden="true"></div>
+      </div>
+
+      <div class="v2-cols">
+        {KAPITOLY.map((k) => (
+          <a class="v2-col" href={k.href}>
+            <span class="v2-num">{k.n}</span>
+            <h3>{k.t}</h3>
+            <p>{k.p}</p>
+            <span class="v2-go">{k.pocet} služieb <i aria-hidden="true">→</i></span>
+          </a>
+        ))}
+      </div>
+
+      <a class="btn-gold lab-cta" href="/pohrebne-sluzby">{CTA}</a>
+    </div>
+  </section>
+
+  <!-- ============ V3: karty s tlmením (21st Hover Reveal Cards) ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V3 · Karty s tlmením</div>
+      <p class="lab-note">Tri karty s fotkou na pozadí. Keď na jednu ukážeš myšou alebo na ňu prejdeš klávesnicou, ostatné dve stlmia a mierne rozostria. Funguje aj na dotyk, tam sú karty proste tri rovnocenné dlaždice.</p>
+
+      <div class="section-head">
+        <div class="eyebrow">Čo všetko vybavíme za vás</div>
+        <h2>Pätnásť služieb<br>v troch kapitolách</h2>
+        <div class="gold-line" aria-hidden="true"></div>
+      </div>
+
+      <div class="v3-cards">
+        {KAPITOLY.map((k) => (
+          <a class="v3-card" href={k.href}>
+            <div class="v3-media photo-slot" data-photo-slot>
+              <span>Miesto pre fotografiu</span><em>{k.foto}</em>
+            </div>
+            <div class="v3-body">
+              <span class="v3-kap">{k.rim}</span>
+              <h3>{k.t}</h3>
+              <p>{k.p}</p>
+              <span class="v3-go">{k.pocet} služieb <i aria-hidden="true">→</i></span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <a class="btn-gold lab-cta" href="/pohrebne-sluzby">{CTA}</a>
+    </div>
+  </section>
+
+</Base>
+
+<style is:global>
+.lk-label { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 18px; }
+.lab-sec { padding: clamp(70px, 10vh, 120px) 0; border-top: 1px solid var(--line); }
+.lab-alt { background: var(--bg2); }
+.lab-note { max-width: 64ch; color: var(--muted); font-size: 17.4px; line-height: 1.65; margin-bottom: clamp(40px, 6vh, 64px); }
+.lab-sec .section-head { margin-bottom: clamp(30px, 4.5vh, 48px); }
+.lab-cta { display: inline-block; margin-top: clamp(34px, 5vh, 54px); }
+
+/* ---- V1: kapitolové riadky ---- */
+.v1-rows { border-top: 1px solid var(--line); }
+.v1-row {
+  display: grid;
+  grid-template-columns: 1fr minmax(240px, 400px);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: center;
+  padding: clamp(26px, 3.6vh, 44px) 0;
+  border-bottom: 1px solid var(--line);
+}
+.v1-kap { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+.v1-row h3 { font-size: clamp(26px, 3.4vw, 44px); margin-top: 12px; transition: color 0.3s ease; }
+.v1-row p { margin-top: 10px; color: var(--muted); font-size: 18.6px; line-height: 1.6; max-width: 40ch; }
+.v1-go { display: inline-block; margin-top: 18px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); transition: color 0.3s ease; }
+.v1-go i { display: inline-block; font-style: normal; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.v1-row:hover h3 { color: #ffffff; }
+.v1-row:hover .v1-go { color: var(--gold); }
+.v1-row:hover .v1-go i { transform: translateX(5px); }
+
+/* ---- V2: trojica stĺpcov ---- */
+.v2-cols { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+.v2-col { padding: clamp(30px, 4vh, 48px) clamp(20px, 2.4vw, 38px) clamp(30px, 4vh, 48px) 0; border-right: 1px solid var(--line); }
+.v2-col:first-child { padding-left: 0; }
+.v2-col:last-child { border-right: 0; }
+.v2-num { font-size: 12.5px; letter-spacing: 0.2em; font-weight: 600; color: var(--dim); }
+.v2-col h3 { font-size: clamp(21px, 2.2vw, 28px); margin-top: 14px; transition: color 0.3s ease; }
+.v2-col p { margin-top: 12px; color: var(--muted); font-size: 17.4px; line-height: 1.6; }
+.v2-go { display: inline-block; margin-top: 22px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); transition: color 0.3s ease; }
+.v2-go i { display: inline-block; font-style: normal; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.v2-col:hover h3 { color: #ffffff; }
+.v2-col:hover .v2-go { color: var(--gold); }
+.v2-col:hover .v2-go i { transform: translateX(5px); }
+
+/* ---- V3: karty s tlmením ---- */
+.v3-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 1.8vw, 26px); }
+.v3-card {
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  transition: opacity 0.4s ease, filter 0.4s ease, border-color 0.4s ease;
+}
+/* tlmenie súrodencov: hover aj klávesnica */
+.v3-cards:hover .v3-card:not(:hover),
+.v3-cards:focus-within .v3-card:not(:focus-visible):not(:hover) { opacity: 0.42; filter: blur(1.5px); }
+.v3-card:hover, .v3-card:focus-visible { border-color: rgba(245, 245, 245, 0.28); }
+.v3-media { aspect-ratio: 4 / 3; border: 0; border-bottom: 1px solid var(--line); }
+.v3-body { padding: clamp(20px, 2.4vw, 30px); }
+.v3-kap { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+.v3-card h3 { font-size: clamp(20px, 2.1vw, 26px); margin-top: 12px; }
+.v3-card p { margin-top: 10px; color: var(--muted); font-size: 16.5px; line-height: 1.6; }
+.v3-go { display: inline-block; margin-top: 18px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); transition: color 0.3s ease; }
+.v3-go i { display: inline-block; font-style: normal; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.v3-card:hover .v3-go { color: var(--gold); }
+.v3-card:hover .v3-go i { transform: translateX(5px); }
+
+@media (max-width: 860px) {
+  .v1-row { grid-template-columns: 1fr; gap: 20px; }
+  .v2-cols { grid-template-columns: 1fr; }
+  .v2-col { padding: clamp(24px, 3.4vh, 34px) 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .v2-col:last-child { border-bottom: 0; }
+  .v3-cards { grid-template-columns: 1fr; }
+  /* na dotyk sa nič netlmí, karty sú rovnocenné */
+  .v3-cards:hover .v3-card:not(:hover) { opacity: 1; filter: none; }
+}
+</style>
