@@ -24,6 +24,27 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
     </div>
   </section>
 
+  <!-- ============ ČÍSLA ============
+       Zámerne hneď pod hero: subhero má min-height 72vh, takže prvý riadok
+       vykúka nad ohybom a počítadlo sa rozbehne pri prvom pohybe scrollu.
+       Monumentálne riadky namiesto troch stĺpčekov (vzor: Instrument). -->
+  <section class="stats">
+    <div class="container">
+      <div class="stat-row" data-reveal>
+        <div class="stat-head"><span class="stat-num"><span data-count="3000">0</span>+</span> <span class="stat-word">pohrebov</span></div>
+        <p class="stat-note">Vybavených od vzniku firmy v máji 2018.</p>
+      </div>
+      <div class="stat-row" data-reveal>
+        <div class="stat-head"><span class="stat-num"><span data-count="3">0</span></span> <span class="stat-word">pobočky</span></div>
+        <p class="stat-note">Poprad, Spišská Belá a Liptovský Mikuláš.</p>
+      </div>
+      <div class="stat-row" data-reveal>
+        <div class="stat-head"><span class="stat-num">24/7</span> <span class="stat-word">nonstop</span></div>
+        <p class="stat-note">Prevoz zosnulých v ktorúkoľvek hodinu, aj v noci a cez sviatky.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ PRÍBEH (editoriálne dvojice: text + fotografia) ============
        Fotky sú zatiaľ placeholdery. Popis v <em> hovorí, čo na zábere má byť,
        takže sa dá fotiť priamo podľa nich. Všetky sloty: [data-photo-slot]. -->
@@ -109,24 +130,6 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
       <p data-reveal>Sme rodina a kolegovia, ktorí svoju prácu berú ako poslanie. Za každou rozlúčkou stojí konkrétny človek, ktorý je pri vás od prvého telefonátu až po poslednú bodku.</p>
     </div>
   </div>
-
-  <!-- ============ ČÍSLA ============ -->
-  <section class="stats">
-    <div class="container stats-grid">
-      <div class="stat" data-reveal>
-        <div class="stat-num"><span data-count="3000">0</span>+</div>
-        <div class="stat-label">vybavených pohrebov od roku 2018</div>
-      </div>
-      <div class="stat" data-reveal>
-        <div class="stat-num"><span data-count="3">0</span></div>
-        <div class="stat-label">pobočky: Poprad, Spišská Belá a Liptovský Mikuláš</div>
-      </div>
-      <div class="stat" data-reveal>
-        <div class="stat-num">24/7</div>
-        <div class="stat-label">NON STOP prevoz zosnulých</div>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ POVEDALI O NÁS ============ -->
   <section class="quote" id="quote">

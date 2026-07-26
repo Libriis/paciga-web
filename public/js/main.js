@@ -438,18 +438,30 @@
     });
   });
 
-  /* ---------- counters ---------- */
+  /* ---------- counters ----------
+     Tisíce oddelené pevnou medzerou (3 000, slovenská norma). Číslo pri
+     dobiehaní doznieva z rozostrenia — pôsobí to ako pohybová stopa, nie
+     ako preblikávanie číslic. Štart skôr (top 95%), aby sa počítadlo
+     rozbehlo hneď, ako riadok vojde do obrazu. */
+  function fmtCount(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
   gsap.utils.toArray('[data-count]').forEach(function (el) {
     var to = parseInt(el.getAttribute('data-count'), 10) || 0;
     var obj = { v: 0 };
+    var trigger = { trigger: el, start: 'top 95%', once: true };
     gsap.to(obj, {
       v: to,
       duration: 1.6,
       ease: 'power2.out',
       snap: { v: 1 },
-      onUpdate: function () { el.textContent = obj.v; },
-      scrollTrigger: { trigger: el, start: 'top 86%', once: true }
+      onUpdate: function () { el.textContent = fmtCount(obj.v); },
+      scrollTrigger: trigger
     });
+    gsap.fromTo(el,
+      { filter: 'blur(7px)', opacity: 0.55 },
+      { filter: 'blur(0px)', opacity: 1, duration: 1.5, ease: 'power2.out', scrollTrigger: trigger }
+    );
   });
 
   /* ---------- magnetické tlačidlá ---------- */
