@@ -1811,100 +1811,48 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 
 /* ============================================================
-   Register služieb (homepage) — kapitoly zvislo, služby ako
-   hairline riadky. Nahrádza pinovaný horizontálny pás.
-   Hover na riadku s fotkou odkryje náhľad pri pravom okraji.
+   Služby (homepage) — tri kapitoly ako karty, celý zoznam je až na
+   podstránke. Karta pod kurzorom alebo fokusom ostane ostrá a ostatné
+   sa stlmia; vzor 21st.dev Hover Reveal Cards, spravené v CSS.
+   Na dotykových zariadeniach sa netlmí nič.
    ============================================================ */
 .register { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; position: relative; overflow: hidden; }
-.register .section-head { margin-bottom: clamp(40px, 6vh, 64px); }
+.register .section-head { margin-bottom: clamp(34px, 5vh, 52px); }
 
-.reg-group {
-  display: grid;
-  grid-template-columns: minmax(230px, 320px) 1fr;
-  gap: 28px 72px;
-  padding: clamp(44px, 6.5vh, 72px) 0;
-}
-.reg-group + .reg-group { border-top: 1px solid var(--line); }
-.reg-side { position: sticky; top: 110px; align-self: start; }
-.reg-kap {
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: var(--gold-soft);
-  margin-bottom: 14px;
-}
-.reg-side h3 { font-size: clamp(23px, 2.4vw, 32px); }
-/* placeholder na fotografiu kapitoly — nahradí sa reálnym záberom */
-.reg-photo {
-  margin-top: clamp(24px, 3.5vh, 40px);
-  max-width: 360px;
-  aspect-ratio: 4 / 3;
-  background: var(--panel);
+.svc-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 1.8vw, 26px); }
+.svc-card {
   border: 1px solid var(--line);
-  display: grid;
-  place-items: center;
+  background: var(--bg2);
+  transition: opacity 0.4s ease, filter 0.4s ease, border-color 0.4s ease;
 }
-.reg-photo span {
-  font-size: 11px;
-  letter-spacing: 0.2em;
+.svc-cards:hover .svc-card:not(:hover),
+.svc-cards:focus-within .svc-card:not(:focus-visible):not(:hover) { opacity: 0.42; filter: blur(1.5px); }
+.svc-card:hover, .svc-card:focus-visible { border-color: rgba(245, 245, 245, 0.28); }
+/* médium karty je zároveň placeholder, kým nepríde reálny záber */
+.svc-media { aspect-ratio: 4 / 3; border: 0; border-bottom: 1px solid var(--line); }
+.svc-media img { width: 100%; height: 100%; object-fit: cover; }
+.svc-body { padding: clamp(20px, 2.4vw, 30px); }
+.svc-kap { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+.svc-card h3 { font-size: clamp(20px, 2.1vw, 26px); margin-top: 12px; }
+.svc-card p { margin-top: 10px; color: var(--muted); font-size: 16.5px; line-height: 1.6; }
+.svc-go {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--dim);
-}
-.reg-side p { margin-top: 10px; color: var(--muted); font-size: 18.6px; line-height: 1.6; max-width: 28ch; }
-
-.reg-list { border-top: 1px solid var(--line); }
-.reg-row {
-  position: relative;
-  display: grid;
-  grid-template-columns: 40px minmax(190px, 265px) 1fr 26px;
-  gap: 8px 22px;
-  align-items: baseline;
-  padding: 19px 2px;
-  border-bottom: 1px solid var(--line);
-}
-.reg-num { font-size: 12px; letter-spacing: 0.18em; font-weight: 600; color: var(--dim); }
-.reg-name {
-  font-size: clamp(17.5px, 1.6vw, 21px);
-  font-weight: 640;
-  font-variation-settings: var(--wide);
-  color: var(--text);
   transition: color 0.3s ease;
 }
-.reg-desc { color: var(--muted); font-size: 14.5px; line-height: 1.6; }
-.reg-go { color: var(--dim); justify-self: end; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.3s ease; }
-.reg-row:hover .reg-name { color: #ffffff; }
-.reg-row:hover .reg-go { transform: translateX(5px); color: var(--gold); }
-
-/* náhľad fotky — len na zariadeniach s hoverom */
-.reg-thumb {
-  position: absolute;
-  right: 52px;
-  top: 50%;
-  width: 200px;
-  aspect-ratio: 3 / 2;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background-size: cover;
-  background-position: center;
-  filter: saturate(0.5) brightness(0.85);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
-  opacity: 0;
-  transform: translateY(-50%) scale(0.96) rotate(-1.5deg);
-  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-  pointer-events: none;
-  z-index: 2;
-}
-@media (hover: hover) {
-  .reg-row:hover .reg-thumb { opacity: 1; transform: translateY(-50%) scale(1) rotate(0deg); }
-}
+.svc-go i { display: inline-block; font-style: normal; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.svc-card:hover .svc-go { color: var(--gold); }
+.svc-card:hover .svc-go i { transform: translateX(5px); }
+.svc-all { display: inline-block; margin-top: clamp(34px, 5vh, 54px); }
 
 @media (max-width: 900px) {
-  .reg-group { grid-template-columns: 1fr; gap: 22px; }
-  .reg-side { position: static; }
-  .reg-row { grid-template-columns: 40px 1fr 26px; }
-  .reg-desc { grid-column: 2; }
-  .reg-thumb { display: none; }
+  .svc-cards { grid-template-columns: 1fr; }
+  /* na dotyk sú karty rovnocenné, nič sa netlmí */
+  .svc-cards:hover .svc-card:not(:hover) { opacity: 1; filter: none; }
 }
 
 /* ============================================================
