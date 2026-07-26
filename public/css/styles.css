@@ -1622,8 +1622,9 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    Parallax pásov ide cez data-parallax v main.js.
    ============================================================ */
 .about-intro { background: var(--bg); padding: clamp(135px, 18vh, 225px) 0; }
-.about-intro .container { max-width: 780px; }
-.about-intro .gold-line { margin: 18px 0 36px; }
+/* dvojice text + fotografia idú cez celú šírku, obmedzený je len text */
+.about-intro .section-head { max-width: 780px; margin-bottom: clamp(18px, 2.6vh, 30px); }
+.about-intro .gold-line { margin: 18px 0 0; }
 .about-intro p { color: var(--muted); font-size: clamp(19.8px, 1.74vw, 22.9px); line-height: 1.75; max-width: 62ch; }
 .about-intro p + p { margin-top: 20px; }
 
@@ -1690,25 +1691,55 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 /* ---- prvenstvá: hairline zoznam namiesto kariet ---- */
 .prvenstva { background: var(--bg); border-top: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; }
 .pl-list { border-top: 1px solid var(--line); }
-.pl-row {
-  display: grid;
-  grid-template-columns: 64px minmax(220px, 300px) 1fr;
-  gap: 16px 28px;
-  align-items: baseline;
-  padding: 26px 2px;
-  border-bottom: 1px solid var(--line);
-}
+/* prvý riadok berie linku od .pl-list, nedvojí ju */
+.pl-list > .ed-pair:first-child { border-top: 0; }
 .pl-num { font-size: 12.5px; letter-spacing: 0.2em; font-weight: 600; color: var(--dim); }
-.pl-row h3 { font-size: 19px; }
-.pl-row p { color: var(--muted); line-height: 1.65; }
 .pl-note { margin-top: 34px; font-size: 17.4px; color: var(--dim); max-width: 62ch; line-height: 1.7; }
+
+/* ---- editoriálne dvojice: text a fotografia vedľa seba, strany sa striedajú ----
+   Použité v O nás (príbeh + prvenstvá): tvrdenie a jeho vizuálny dôkaz
+   v jednom riadku, aby text nestál sám. */
+.ed-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(30px, 4.5vw, 70px);
+  align-items: center;
+  padding: clamp(34px, 5vh, 60px) 0;
+}
+.ed-flip .ed-text { order: 2; }
+.ed-tight { padding: clamp(24px, 3.4vh, 42px) 0; border-top: 1px solid var(--line); }
+.ed-text h3 { font-size: clamp(21px, 2.4vw, 30px); margin-top: 12px; }
+.ed-text p { color: var(--muted); line-height: 1.65; }
+.ed-text h3 + p { margin-top: 12px; }
+
+/* ---- placeholder fotografie ----
+   Rám s popisom, ČO na zábere má byť; slúži aj ako shot list pri fotení.
+   Nájdeš ich všetky cez [data-photo-slot]. */
+.photo-slot {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 20px;
+}
+.photo-slot span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+.photo-slot em { font-style: normal; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 32ch; }
+.ps-43 { aspect-ratio: 4 / 3; }
+.ps-32 { aspect-ratio: 3 / 2; }
+
+@media (max-width: 860px) {
+  /* dvojice sa skladajú pod seba; text vždy prvý, aj v prehodených riadkoch */
+  .ed-pair { grid-template-columns: 1fr; gap: 22px; padding: clamp(26px, 4vh, 40px) 0; }
+  .ed-flip .ed-text { order: 0; }
+}
 
 @media (max-width: 760px) {
   .kron { --rail: clamp(22px, 6vw, 32px); }
   .kron-item { grid-template-columns: 1fr; gap: 10px; }
   .album-band { height: clamp(400px, 64vh, 560px); }
-  .pl-row { grid-template-columns: 1fr; gap: 6px; }
-  .pl-num { order: -1; }
 }
 
 /* ============================================================

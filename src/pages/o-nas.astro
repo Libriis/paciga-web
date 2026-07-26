@@ -24,14 +24,34 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
     </div>
   </section>
 
-  <!-- ============ PRÍBEH (úvodný text) ============ -->
+  <!-- ============ PRÍBEH (editoriálne dvojice: text + fotografia) ============
+       Fotky sú zatiaľ placeholdery. Popis v <em> hovorí, čo na zábere má byť,
+       takže sa dá fotiť priamo podľa nich. Všetky sloty: [data-photo-slot]. -->
   <section class="about-intro">
     <div class="container">
-      <h2 data-textreveal>Náš príbeh</h2>
-      <div class="gold-line" data-line aria-hidden="true"></div>
-      <p data-reveal>Spoločnosť Paciga vznikla 24. mája 2018 v Spišskej Belej ako priamy nástupca spoločnosti Archa Belá. Sme rodinná firma a od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
-      <p data-reveal>Odvtedy sme sprevádzali viac než tri tisíc rodín. Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
-      <p data-reveal>Naším poslaním od prvého dňa je konať čestne a na vysokej profesionálnej úrovni.</p>
+      <div class="section-head">
+        <h2 data-textreveal>Náš príbeh</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+
+      <div class="ed-pair">
+        <div class="ed-text">
+          <p data-reveal>Spoločnosť Paciga vznikla 24. mája 2018 v Spišskej Belej ako priamy nástupca spoločnosti Archa Belá. Sme rodinná firma a od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
+        </div>
+        <div class="photo-slot ps-43" data-photo-slot data-reveal>
+          <span>Miesto pre fotografiu</span><em>Interiér pobočky, kde prijímate rodiny</em>
+        </div>
+      </div>
+
+      <div class="ed-pair ed-flip">
+        <div class="ed-text">
+          <p data-reveal>Odvtedy sme sprevádzali viac než tri tisíc rodín. Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
+          <p data-reveal>Naším poslaním od prvého dňa je konať čestne a na vysokej profesionálnej úrovni.</p>
+        </div>
+        <div class="photo-slot ps-43" data-photo-slot data-reveal>
+          <span>Miesto pre fotografiu</span><em>Kvetinárstvo, výroba vencov a smútočnej výzdoby</em>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -138,26 +158,48 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
         <h2 data-textreveal>Ako prví v regióne</h2>
         <div class="gold-line" data-line aria-hidden="true"></div>
       </div>
+      <!-- Každé prvenstvo dostane vizuálny dôkaz. Poradenstvo sa zámerne fotí
+           ako miesto bez ľudí; inscenovaná konzultácia by sekcii uškodila. -->
       <div class="pl-list">
-        <div class="pl-row" data-reveal>
-          <span class="pl-num">01</span>
-          <h3>Prenosné chladenie</h3>
-          <p>Vlastnú technológiu sme prvýkrát predstavili na výstave Slovak Funeral v roku 2016.</p>
+        <div class="ed-pair ed-tight" data-reveal>
+          <div class="ed-text">
+            <span class="pl-num">01</span>
+            <h3>Prenosné chladenie</h3>
+            <p>Vlastnú technológiu sme prvýkrát predstavili na výstave Slovak Funeral v roku 2016.</p>
+          </div>
+          <div class="photo-slot ps-32" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Prenosné chladenie v prevádzke, detail zariadenia</em>
+          </div>
         </div>
-        <div class="pl-row" data-reveal>
-          <span class="pl-num">02</span>
-          <h3>3D vizualizácia pomníka</h3>
-          <p>Pomník uvidíte skôr, než ho začneme vyrábať.</p>
+        <div class="ed-pair ed-tight ed-flip" data-reveal>
+          <div class="ed-text">
+            <span class="pl-num">02</span>
+            <h3>3D vizualizácia pomníka</h3>
+            <p>Pomník uvidíte skôr, než ho začneme vyrábať.</p>
+          </div>
+          <div class="photo-slot ps-32" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Vizualizácia pomníka na obrazovke, vedľa vzorky žuly</em>
+          </div>
         </div>
-        <div class="pl-row" data-reveal>
-          <span class="pl-num">03</span>
-          <h3>Smútkové poradenstvo</h3>
-          <p>Podpora a sprevádzanie v procese smútenia.</p>
+        <div class="ed-pair ed-tight" data-reveal>
+          <div class="ed-text">
+            <span class="pl-num">03</span>
+            <h3>Smútkové poradenstvo</h3>
+            <p>Podpora a sprevádzanie v procese smútenia.</p>
+          </div>
+          <div class="photo-slot ps-32" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Miesto na rozhovor s rodinou: dve kreslá, stôl, mäkké svetlo. Bez ľudí</em>
+          </div>
         </div>
-        <div class="pl-row" data-reveal>
-          <span class="pl-num">04</span>
-          <h3>Medzinárodný prevoz</h3>
-          <p>Preprava zosnulých zo zahraničia vrátane všetkých dokumentov.</p>
+        <div class="ed-pair ed-tight ed-flip" data-reveal>
+          <div class="ed-text">
+            <span class="pl-num">04</span>
+            <h3>Medzinárodný prevoz</h3>
+            <p>Preprava zosnulých zo zahraničia vrátane všetkých dokumentov.</p>
+          </div>
+          <div class="photo-slot ps-32" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Vozidlo pripravené na cestu, dokumenty na sedadle</em>
+          </div>
         </div>
       </div>
       <p class="pl-note" data-reveal>V podtatranskom regióne sme jediným členom Asociácie pohrebných služieb na Slovensku.</p>
