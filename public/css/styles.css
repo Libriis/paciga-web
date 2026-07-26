@@ -1934,9 +1934,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   /* jazda: statický poster + hero text, HUD a canvas preč */
   .journey-canvas, .jhud { display: none; }
   .journey-text.jt-hero { opacity: 1 !important; pointer-events: auto; }
-  /* úsek B je čistá filmová jazda; bez JS by z neho ostal prázdny záber
-     bez textu, tak ho vynecháme — informácie sú v ostatných sekciách */
-  #cesta { display: none; }
 }
 
 

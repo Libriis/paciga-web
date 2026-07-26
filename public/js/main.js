@@ -204,16 +204,14 @@
     .from('#hero-title .ch', { yPercent: 120, duration: 1.05, stagger: 0.026 }, 0)
     .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
 
-  /* ---------- posledná cesta: dva pinované úseky (frame scrub kreslí journey.js) ----------
-     Jazda je rozrezaná na úsek A (hero „Rozlúčka", frames 1-194) a úsek B
-     (Cesta → Svetlo, frames 194-1110). Medzi nimi je „Čo spraviť ako prvé",
-     aby pozostalý dostal krízovú dráhu hneď po hero.
+  /* ---------- posledná cesta: pinovaná jazda (frame scrub kreslí journey.js) ----------
+     ČASY NIŽŠIE SÚ NA OSI celej 46 s jazdy (0..1), kde švy klipov ležia na
+     0.174 / 0.348 / 0.478 / 0.652 / 0.826 (klipy 8+8+6+8+8+8 s).
 
-     VŠETKY ČASY NIŽŠIE SÚ NA PÔVODNEJ OSI celej 46 s jazdy (0..1), kde švy
-     klipov ležia na 0.174 / 0.348 / 0.478 / 0.652 / 0.826 (klipy 8+8+6+8+8+8 s).
-     Každý úsek si ich funkciou at() prepočíta na svoju os a dĺžky fadov delí
-     svojím rozsahom, takže absolútna rýchlosť pohybu aj poloha kapitol
-     zostávajú identické s nerozdelenou jazdou. */
+     setupJourney je zámerne písaný na viac úsekov: cez from/to sa dá jazda
+     rozrezať na samostatné pinované sekcie a funkcia at() časy prepočíta na
+     os úseku, takže rýchlosť fadov aj poloha kapitol ostanú rovnaké.
+     Teraz beží ako jeden úsek (from 0, to 1). */
   window.__journeyState = {};
 
   function setupJourney(cfg) {
@@ -316,29 +314,23 @@
     }
   }
 
-  /* úsek A — hero „Rozlúčka": jediný text, drží scénu hmly a odíde pred švom */
+  /* Jazda vcelku: 5 kapitol, 6 textov. Informačný oblúk: kto sme
+     → čo robiť + telefón → limuzína → rozsah služieb → spomienkové šperky
+     → kde sme + kontakt. Pri from 0 / to 1 je at() aj dur() identita,
+     takže časy nižšie sú priamo na osi jazdy. */
   setupJourney({
-    key: 'a', pin: 'journey-pin-a', from: 0, to: 0.174,
-    bounds: [], stationProg: [],
+    key: 'a', pin: 'journey-pin', from: 0, to: 1,
+    bounds: [0.174, 0.478, 0.652, 0.826],
+    stationProg: [0.02, 0.20, 0.50, 0.68, 0.85],
     build: function (tl, texts, jtIn, jtOut, at, dur) {
+      /* hero drží celú scénu hmly a odíde pred švom prvého klipu */
       tl.to(texts[0], { autoAlpha: 0, duration: dur(0.05) }, at(0.112))
         .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.112));
-    }
-  });
-
-  /* úsek B — Cesta → Svetlo: 4 kapitoly, 5 textov.
-     Informačný oblúk: čo robiť + telefón → limuzína → rozsah služieb
-     → spomienkové šperky → kde sme + kontakt. */
-  setupJourney({
-    key: 'b', pin: 'journey-pin-b', from: 0.174, to: 1,
-    bounds: [0.478, 0.652, 0.826],
-    stationProg: [0.20, 0.50, 0.68, 0.85],
-    build: function (tl, texts, jtIn, jtOut) {
-      jtIn(texts[0], 0.180); jtOut(texts[0], 0.304);  /* sprievod */
-      jtIn(texts[1], 0.354); jtOut(texts[1], 0.444);  /* limuzína */
-      jtIn(texts[2], 0.494); jtOut(texts[2], 0.610);  /* starostlivosť */
-      jtIn(texts[3], 0.660); jtOut(texts[3], 0.784);  /* šperky */
-      jtIn(texts[4], 0.834, 0.052);                   /* záver: kraj + CTA, zostáva */
+      jtIn(texts[1], 0.180); jtOut(texts[1], 0.304);  /* sprievod */
+      jtIn(texts[2], 0.354); jtOut(texts[2], 0.444);  /* limuzína */
+      jtIn(texts[3], 0.494); jtOut(texts[3], 0.610);  /* starostlivosť */
+      jtIn(texts[4], 0.660); jtOut(texts[4], 0.784);  /* šperky */
+      jtIn(texts[5], 0.834, 0.052);                   /* záver: kraj + CTA, zostáva */
     }
   });
 
