@@ -487,6 +487,71 @@
     );
   });
 
+  /* ---------- svetelný oblúk na kartách (21st.dev glowing-effect) ----------
+     Mechanika predlohy: uhol od stredu karty ku kurzoru sa animuje do
+     --glow-start easingom, --glow-active svieti len keď je kurzor pri
+     okrajoch karty a v jej okolí. Farebný gradient nahradený bielym.
+
+     Zámerne NIE na kartách v Opustili nás. Svetelný prstenec sledujúci
+     kurzor po parte konkrétneho zosnulého je nevhodný; tie karty majú
+     vlastnú rec — sviečku, ktorá sa rozhorí. */
+  var glowCards = gsap.utils.toArray('.svc-card, .branch-card');
+  if (glowCards.length && window.matchMedia('(hover: hover)').matches) {
+    var GLOW_INACTIVE = 0.55;  /* podiel polomeru karty, kde oblúk nesvieti */
+    var GLOW_PROX = 64;        /* px okolo karty, kde sa už aktivuje */
+    var glows = glowCards.map(function (el) {
+      el.classList.add('has-glow');
+      var ring = document.createElement('i');
+      ring.className = 'glow-ring';
+      ring.setAttribute('aria-hidden', 'true');
+      el.appendChild(ring);
+      return { el: el, angle: 0, active: -1, tw: null };
+    });
+    var glowX = -9999, glowY = -9999, glowQueued = false;
+
+    function glowApply() {
+      glowQueued = false;
+      glows.forEach(function (g) {
+        var r = g.el.getBoundingClientRect();
+        var cx = r.left + r.width / 2;
+        var cy = r.top + r.height / 2;
+        var near = glowX > r.left - GLOW_PROX && glowX < r.right + GLOW_PROX
+                && glowY > r.top - GLOW_PROX && glowY < r.bottom + GLOW_PROX;
+        var dead = 0.5 * Math.min(r.width, r.height) * GLOW_INACTIVE;
+        var on = (near && Math.hypot(glowX - cx, glowY - cy) >= dead) ? 1 : 0;
+        if (on !== g.active) {
+          g.active = on;
+          g.el.style.setProperty('--glow-active', String(on));
+        }
+        if (!on) return;
+        /* najkratšia cesta k cieľovému uhlu, aby oblúk nepreskočil cez 360 */
+        var target = 180 * Math.atan2(glowY - cy, glowX - cx) / Math.PI + 90;
+        var diff = ((((target - g.angle) % 360) + 540) % 360) - 180;
+        if (g.tw) g.tw.kill();
+        g.tw = gsap.to(g, {
+          angle: g.angle + diff,
+          duration: 1.1,
+          ease: 'expo.out',
+          onUpdate: function () { g.el.style.setProperty('--glow-start', g.angle.toFixed(1)); }
+        });
+      });
+    }
+
+    function glowSchedule() {
+      if (glowQueued) return;
+      glowQueued = true;
+      requestAnimationFrame(glowApply);
+    }
+
+    window.addEventListener('pointermove', function (e) {
+      glowX = e.clientX;
+      glowY = e.clientY;
+      glowSchedule();
+    }, { passive: true });
+    /* pri scrolle sa karty hýbu pod nehybným kurzorom — prepočítaj */
+    window.addEventListener('scroll', glowSchedule, { passive: true });
+  }
+
   /* ---------- magnetické tlačidlá ---------- */
   document.querySelectorAll('.btn-gold, .nav-cta').forEach(function (btn) {
     btn.addEventListener('mousemove', function (e) {

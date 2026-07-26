@@ -1969,6 +1969,46 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 
 /* ============================================================
+   Svetelný oblúk na okraji karty — 21st.dev aceternity/glowing-effect
+   Prevzatá mechanika: uhol od stredu karty ku kurzoru sa animuje do
+   --glow-start, --glow-active rozsvieti oblúk len keď je kurzor pri
+   okrajoch karty (inactiveZone) a v jej okolí (proximity).
+   Štvorfarebný gradient predlohy (ružová, zlatá, zelená, modrá) je
+   nahradený bielym — brand nemá farebné akcenty.
+   Prstenec kreslíme DOVNÚTRA hrany, nie von ako predloha: karty majú
+   overflow: hidden a vonkajší prstenec by sa odstrihol.
+   Element pridáva main.js a len na zariadeniach s kurzorom.
+   ============================================================ */
+.has-glow { position: relative; }
+.glow-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  pointer-events: none;
+  padding: 2px;
+  background: conic-gradient(
+    from calc((var(--glow-start, 0) - var(--glow-spread, 34)) * 1deg),
+    transparent 0deg,
+    rgba(245, 245, 245, 1) calc(var(--glow-spread, 34) * 1deg),
+    transparent calc(var(--glow-spread, 34) * 2deg)
+  );
+  opacity: var(--glow-active, 0);
+  transition: opacity 0.35s ease;
+  /* prstenec = celá plocha mínus vnútro */
+  -webkit-mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
+  mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  /* bloom: drop-shadow sa počíta z už maskovaných pixelov, takže žiara
+     kopíruje tvar oblúka. Predloha to rieši blur propom. */
+  filter: drop-shadow(0 0 5px rgba(245, 245, 245, 0.6)) drop-shadow(0 0 14px rgba(245, 245, 245, 0.3));
+}
+@media (prefers-reduced-motion: reduce) {
+  .glow-ring { display: none; }
+}
+
+/* ============================================================
    Recenzie — jednotný komponent (Review.astro)
    card: blockquote s hairline ľavým okrajom (štýl kondolencií)
    line: jednoriadková vsuvka pod formulárom
