@@ -93,33 +93,33 @@
   --gold: #f5f5f5; /* akcent: biela (cierno-biela schema) */
   --gold-soft: rgb(var(--fg-rgb) / 0.55);
   --gold-dim: rgb(var(--fg-rgb) / 0.18);
-  --grain: 0.055;
+  /* Svetlo v pozadí sekcií, viď blok pod témami. V noci LEN svetlo, žiadne
+     tmavnenie rohov: #0c0d0f má nad čiernou celých dvanásť úrovní, takže sa
+     tam nedá stmavovať bez toho, aby gradient pásoval. Objem nesie svetlo. */
+  --lit-a:
+    radial-gradient(96% 74% at 4% -16%,
+      rgb(245 245 245 / 0.062) 0%, rgb(245 245 245 / 0.048) 17%,
+      rgb(245 245 245 / 0.034) 34%, rgb(245 245 245 / 0.022) 51%,
+      rgb(245 245 245 / 0.011) 68%, rgb(245 245 245 / 0.003) 84%,
+      rgb(245 245 245 / 0) 96%),
+    radial-gradient(72% 128% at 38% -6%,
+      rgb(245 245 245 / 0.034) 0%, rgb(245 245 245 / 0.016) 22%,
+      rgb(245 245 245 / 0.010) 44%, rgb(245 245 245 / 0.004) 66%,
+      rgb(245 245 245 / 0) 86%);
+  --lit-b:
+    radial-gradient(96% 74% at 96% -16%,
+      rgb(245 245 245 / 0.062) 0%, rgb(245 245 245 / 0.048) 17%,
+      rgb(245 245 245 / 0.034) 34%, rgb(245 245 245 / 0.022) 51%,
+      rgb(245 245 245 / 0.011) 68%, rgb(245 245 245 / 0.003) 84%,
+      rgb(245 245 245 / 0) 96%),
+    radial-gradient(72% 128% at 62% -6%,
+      rgb(245 245 245 / 0.034) 0%, rgb(245 245 245 / 0.016) 22%,
+      rgb(245 245 245 / 0.010) 44%, rgb(245 245 245 / 0.004) 66%,
+      rgb(245 245 245 / 0) 86%);
   --font: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --wide: 'wdth' 110;
   --xwide: 'wdth' 125;
 }
-
-/* ---- filmové zrno na pozadí ----
-   Web stojí na filme: 1110 WebP frameov vytrhaných z videa, ktoré vlastné
-   zrno má. Rovnaká textúra na pozadí zviaže rozhranie s materiálom, ktorý
-   web ukazuje, namiesto toho aby pridala ozdobný vzor.
-   Textúra je hotový raster grain.png (96×96, monochromatický, kvantovaný
-   na 16 úrovní = 9,7 kB). Zvolený namiesto SVG feTurbulence zámerne: je
-   deterministický naprieč prehliadačmi a nestojí filter pri každom paint.
-   Stredný šedý šum funguje v oboch témach bez blend módu: na čiernom
-   nadzdvihne, na bielom stlmí.
-   position: fixed je PODMIENKA, scrollovaná vrstva zrna mihoce.
-   z-index 60 = nad obsahom sekcií, pod callpillom (90) a navigáciou (100). */
-.grain {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: var(--grain);
-  background-image: url('../assets/grain.png');
-  background-size: 96px 96px;
-}
-@media print { .grain { display: none; } }
 
 /* ---- svetlá téma (deň) ---- */
 :root[data-theme='light'] {
@@ -131,8 +131,27 @@
   --bg2: #f1f0ee;
   --panel: #ffffff;
   --panel2: #fafafa;
-  /* na svetlom je šum viditeľnejší, treba ho stlmiť */
-  --grain: 0.038;
+  /* Vo dni je svetlo čistá biela a tieň teplý, nie čierny. Čierny tieň na
+     lomenej bielej vyzerá špinavo, teplý ju posunie k parchmentu #f1f0ee,
+     ktorý paleta už má. */
+  --lit-a:
+    radial-gradient(122% 96% at 8% -12%,
+      rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.60) 20%,
+      rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
+      rgb(255 255 255 / 0) 79%),
+    radial-gradient(104% 82% at 100% 110%,
+      rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
+      rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
+      rgb(58 48 32 / 0) 84%);
+  --lit-b:
+    radial-gradient(122% 96% at 92% -12%,
+      rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.60) 20%,
+      rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
+      rgb(255 255 255 / 0) 79%),
+    radial-gradient(104% 82% at 0% 110%,
+      rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
+      rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
+      rgb(58 48 32 / 0) 84%);
   --text: #0c0d0f;
   --fg-strong: #000000;
   --on-accent: #ffffff;
@@ -173,6 +192,34 @@
      Tu ho treba nastaviť znova, inak by text nad fotkou v dennej téme
      zdedil tmavú farbu a zmizol. */
   color: var(--text);
+}
+
+/* ---- svetlo v pozadí sekcií ----
+   Jednolitá plocha sa nerozbíja textúrou, ale svetlom. Každá sekcia je
+   nasvietená z horného rohu a v protiľahlom dolnom rohu tmavne, takže má
+   objem. Rohy sa striedajú, zľava a zprava, čiže scrollovanie dostane
+   rytmus, akoby svetlo padalo z iných strán.
+
+   Leží to v NÁTERE pozadia sekcie, nie ako vrstva nad obsahom. Fotografie,
+   karty a text sa kreslia až nad tým, takže sa ich to nedotkne. Presne to
+   bola chyba filmového zrna, ktoré sedelo ako fixná vrstva na z-index 60
+   a znehodnocovalo všetko pod sebou.
+
+   Prechody majú päť zastavení s klesajúcim krokom, nie dva. Dva by na
+   tmavej palete pásovali: rozdiel je 8-bitový, takže mierny gradient drží
+   jednu hodnotu cez stovky pixelov a hrany plôšok sa dajú vidieť.
+   Zahustené zastavenia plôšky skrátia.
+
+   Hodnoty sú v gradientoch napísané literálom, nie cez var(--fg-rgb).
+   Odvodený token by sa dosadil na :root a v dennej téme by sa obrátil.
+
+   Vynechané: .journey a .subhero (ležia na fotografii), .cta-band (má
+   vlastnú žiaru zdola), .album-band a .fleetband (nie sú section). */
+main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band) {
+  background-image: var(--lit-a);
+}
+main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band):nth-of-type(even) {
+  background-image: var(--lit-b);
 }
 
 /* Element resety a defaulty žijú v @layer base: Tailwind utility
