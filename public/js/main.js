@@ -124,6 +124,36 @@
   var lastY = 0;
   var callPill = document.getElementById('callpill');
   var mqMobile = window.matchMedia('(max-width: 700px)');
+  /* Drží niektorý úsek jazdy obrazovku? Meria sa geometricky, nie stavom
+     ScrollTriggera: na presnom vstupe do pinu aj na jeho konci hlásil trigger
+     neaktívny stav, kým jazda ešte plnila obrazovku. Test na stred viewportu
+     je pravdivý len keď pin obrazovku naozaj dominuje, takže medzi úsekmi
+     (sekcia „Čo spraviť ako prvé") sa callpill normálne vráti. */
+  var journeyPins = null;
+  function journeyOnScreen() {
+    if (!journeyPins) journeyPins = document.querySelectorAll('.journey-pin');
+    var mid = (window.innerHeight || 800) / 2;
+    for (var i = 0; i < journeyPins.length; i++) {
+      var r = journeyPins[i].getBoundingClientRect();
+      if (r.top <= mid && r.bottom >= mid) return true;
+    }
+    return false;
+  }
+  /* telefón vždy poruke: na mobile po hero (v nav je za burgerom),
+     na desktope keď sa nav schová. Volá to aj onToggle jazdy — poradie
+     callbackov medzi triggermi nie je zaručené, takže prepočet len v scroll
+     handleri nechával pill svietiť nad stanicami na vstupe do úseku. */
+  function syncCallPill() {
+    if (!callPill || !nav) return;
+    var pillOn = mqMobile.matches ? lastY > 500 : nav.classList.contains('nav-hidden');
+    /* Počas jazdy pill na desktope nezobrazuj: prekrýval by stanice v spodnej
+       dráhe a v hero by stál druhý raz vedľa rovnakého CTA. Telefón je tam aj
+       tak v hero CTA, v kapitole Cesta a v závere. Na mobile pill zostáva —
+       tam je v nav schovaný za burgerom a stanice sú vypnuté. */
+    if (pillOn && !mqMobile.matches && journeyOnScreen()) pillOn = false;
+    callPill.classList.toggle('on', pillOn);
+  }
+
   ScrollTrigger.create({
     start: 0,
     end: 'max',
@@ -135,16 +165,8 @@
         if (y > 500 && y > lastY + 4 && !nav.classList.contains('nav-open')) nav.classList.add('nav-hidden');
         else if (y < lastY - 4 || y <= 500) nav.classList.remove('nav-hidden');
       }
-      /* telefón vždy poruke: na mobile po hero (v nav je za burgerom),
-         na desktope keď sa nav schová */
-      if (callPill && nav) {
-        var pillOn = mqMobile.matches ? y > 500 : nav.classList.contains('nav-hidden');
-        /* V1 spodná dráha: na desktope počas pinovanej jazdy pill nezobrazuj
-           (prekrýval by stanice vpravo dole; telefón je v hero CTA aj kapitolách) */
-        if (!mqMobile.matches && window.__journeyOn) pillOn = false;
-        callPill.classList.toggle('on', pillOn);
-      }
       lastY = y;
+      syncCallPill();
     }
   });
 
@@ -179,50 +201,71 @@
     .from('#hero-title .ch', { yPercent: 120, duration: 1.05, stagger: 0.026 }, 0)
     .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
 
-  /* ---------- posledná cesta: pinovaná jazda (frame scrub kreslí journey.js) ---------- */
-  var journeyPin = document.getElementById('journey-pin');
-  if (journeyPin) {
-    window.__journeyProgress = 0;
-    var jStations = gsap.utils.toArray('.jhs');
-    var jTexts = gsap.utils.toArray('.journey-text');
-    var jSkip = document.getElementById('journey-skip');
-    var jhudFill = document.getElementById('jhud-fill');
-    var jhudMarker = document.getElementById('jhud-marker');
-    var jhudNow = document.getElementById('jhud-now');
+  /* ---------- posledná cesta: dva pinované úseky (frame scrub kreslí journey.js) ----------
+     Jazda je rozrezaná na úsek A (hero „Rozlúčka", frames 1-194) a úsek B
+     (Cesta → Svetlo, frames 194-1110). Medzi nimi je „Čo spraviť ako prvé",
+     aby pozostalý dostal krízovú dráhu hneď po hero.
+
+     VŠETKY ČASY NIŽŠIE SÚ NA PÔVODNEJ OSI celej 46 s jazdy (0..1), kde švy
+     klipov ležia na 0.174 / 0.348 / 0.478 / 0.652 / 0.826 (klipy 8+8+6+8+8+8 s).
+     Každý úsek si ich funkciou at() prepočíta na svoju os a dĺžky fadov delí
+     svojím rozsahom, takže absolútna rýchlosť pohybu aj poloha kapitol
+     zostávajú identické s nerozdelenou jazdou. */
+  window.__journeyState = {};
+
+  function setupJourney(cfg) {
+    var pinEl = document.getElementById(cfg.pin);
+    if (!pinEl) return;
+    var state = window.__journeyState[cfg.key] = { p: 0, raw: 0, dest: 0 };
+    var jStations = gsap.utils.toArray(pinEl.querySelectorAll('.jhs'));
+    var jTexts = gsap.utils.toArray(pinEl.querySelectorAll('.journey-text'));
+    var jSkip = pinEl.querySelector('.jhud-skip');
+    var jhudFill = pinEl.querySelector('.jhud-fill');
+    var jhudMarker = pinEl.querySelector('.jhud-marker');
+    var jhudNow = pinEl.querySelector('.jhud-count b');
+
+    var SPAN = cfg.to - cfg.from;
+    function at(t) { return (t - cfg.from) / SPAN; }
+    function dur(d) { return d / SPAN; }
+    var bounds = cfg.bounds.map(at);
+
+    /* HUD úseku: fill, marker a stav kapitol. Voláme aj raz pred prvým
+       scrollom, inak by pri vstupe do úseku nesvietila žiadna stanica. */
+    function syncHud(p) {
+      var pct = (p * 100) + '%';
+      if (jhudFill) jhudFill.style.width = pct;
+      if (jhudMarker) jhudMarker.style.left = pct;
+      var st = 0;
+      while (st < bounds.length && p >= bounds[st]) st++;
+      for (var i = 0; i < jStations.length; i++) {
+        jStations[i].classList.toggle('on', i === st);
+        jStations[i].classList.toggle('done', i < st);
+      }
+      if (jhudNow) jhudNow.textContent = '0' + (st + 1);
+    }
+
     var jTl = gsap.timeline({
       scrollTrigger: {
-        trigger: journeyPin,
+        trigger: pinEl,
         start: 'top top',
-        /* dlhá dráha = pomalé, dôstojné tempo jazdy (46 s materiálu) */
-        end: function () { return '+=' + (window.innerWidth < 701 ? 630 : 860) + '%'; },
+        /* dlhá dráha = pomalé, dôstojné tempo jazdy; úsek dostane svoj podiel */
+        end: function () { return '+=' + Math.round((window.innerWidth < 701 ? 630 : 860) * SPAN) + '%'; },
         pin: true,
         /* scrub krátky: dlhší (1.4) robil po zastavení scrollu ~1.5 s chvost,
            počas ktorého jazda ešte viditeľne „dochádzala" frame po frame */
         scrub: 0.7,
         invalidateOnRefresh: true,
+        onToggle: function () { syncCallPill(); },
         onUpdate: function (self) {
-          window.__journeyOn = self.isActive;
-          window.__journeyProgress = self.progress;
+          state.p = self.progress;
           /* nevyhladený progress = skutočné miesto scrollu; journey.js na ňom
              stavia cieľ usadenia, ktorý sa počas dobiehania nehýbe */
-          window.__journeyRawProgress = Math.min(Math.max((self.scroll() - self.start) / (self.end - self.start), 0), 1);
+          state.raw = Math.min(Math.max((self.scroll() - self.start) / (self.end - self.start), 0), 1);
           /* cieľ Lenis animácie = kde scroll naozaj SKONČÍ; dojazd jazdy mieri
              rovno tam a pristane jedným pohybom, nie naháňaním dobiehajúceho scrollu */
           var destPx = (lenis && typeof lenis.targetScroll === 'number') ? lenis.targetScroll : self.scroll();
-          window.__journeyDestProgress = Math.min(Math.max((destPx - self.start) / (self.end - self.start), 0), 1);
-          /* V1 HUD (Rivian dráha): fill + marker po spodnej dráhe */
-          var hudPct = (self.progress * 100) + '%';
-          if (jhudFill) jhudFill.style.width = hudPct;
-          if (jhudMarker) jhudMarker.style.left = hudPct;
-          /* hranice staníc podľa dĺžok klipov: 8+8+6+8+8+8 s */
-          var bounds = [0.174, 0.478, 0.652, 0.826];
-          var st = 0;
-          while (st < bounds.length && self.progress >= bounds[st]) st++;
-          for (var i = 0; i < jStations.length; i++) {
-            jStations[i].classList.toggle('on', i === st);
-            jStations[i].classList.toggle('done', i < st);
-          }
-          if (jhudNow) jhudNow.textContent = '0' + (st + 1);
+          state.dest = Math.min(Math.max((destPx - self.start) / (self.end - self.start), 0), 1);
+          syncHud(self.progress);
           for (var t = 0; t < jTexts.length; t++) {
             jTexts[t].classList.toggle('is-on', parseFloat(gsap.getProperty(jTexts[t], 'opacity')) > 0.5);
           }
@@ -231,41 +274,34 @@
       },
       defaults: { ease: 'none' }
     });
-    /* Okná textov (čas 0–1 = celý priebeh jazdy; švy klipov pri
-       0.174 / 0.348 / 0.478 / 0.652 / 0.826 — klipy 8+8+6+8+8+8 s).
-       Informačný oblúk: kto sme → čo robiť + telefón → limuzína
-       → rozsah služieb → spomienkové šperky → kde sme + kontakt.
-       Jednotný rytmus: po šve krátky nádych len s obrazom, text nabehne
-       fadom s miernym zdvihom, drží väčšinu scény a odchádza tesne pred
-       ďalším švom. Naraz je na obrazovke vždy len jeden text. */
-    var jtFade = 0.038;
-    var jtLift = 0.046;
-    function jtIn(el, at, dur) {
-      jTl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: dur || jtFade }, at)
-         .fromTo(el.children, { y: 34 }, { y: 0, duration: jtLift, ease: 'power2.out', stagger: 0.006 }, at);
+
+    /* Jednotný rytmus: po šve krátky nádych len s obrazom, text nabehne fadom
+       s miernym zdvihom, drží väčšinu scény a odchádza tesne pred ďalším švom.
+       Naraz je na obrazovke vždy len jeden text. */
+    var jtFade = dur(0.038);
+    var jtLift = dur(0.046);
+    function jtIn(el, t, d) {
+      jTl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: d ? dur(d) : jtFade }, at(t))
+         .fromTo(el.children, { y: 34 }, { y: 0, duration: jtLift, ease: 'power2.out', stagger: 0.006 }, at(t));
     }
-    function jtOut(el, at, dur) {
-      jTl.to(el, { autoAlpha: 0, duration: dur || jtFade }, at)
-         .to(el.children, { y: -30, duration: jtLift, ease: 'power2.in', stagger: 0.004 }, at);
+    function jtOut(el, t, d) {
+      jTl.to(el, { autoAlpha: 0, duration: d ? dur(d) : jtFade }, at(t))
+         .to(el.children, { y: -30, duration: jtLift, ease: 'power2.in', stagger: 0.004 }, at(t));
     }
-    /* hero drží celú scénu hmly a odíde pred švom prvého klipu */
-    jTl.to(jTexts[0], { autoAlpha: 0, duration: 0.05 }, 0.112)
-       .to(jTexts[0].children, { y: -34, duration: 0.05, ease: 'power1.in' }, 0.112);
-    jtIn(jTexts[1], 0.180); jtOut(jTexts[1], 0.304);  /* sprievod */
-    jtIn(jTexts[2], 0.354); jtOut(jTexts[2], 0.444);  /* limuzína */
-    jtIn(jTexts[3], 0.494); jtOut(jTexts[3], 0.610);  /* starostlivosť */
-    jtIn(jTexts[4], 0.660); jtOut(jTexts[4], 0.784);  /* šperky */
-    jtIn(jTexts[5], 0.834, 0.052);                    /* záver: kraj + CTA, zostáva */
-    jTl.to({}, { duration: 0.114 }, 0.886);           /* dotiahnutie osi na 1.0 */
+    cfg.build(jTl, jTexts, jtIn, jtOut, at, dur);
+
+    /* os timeline musí byť presne 1.0, aby čas == podiel scrollu úseku */
+    var d0 = jTl.duration();
+    if (d0 < 1) jTl.to({}, { duration: 1 - d0 }, d0);
+    syncHud(0);
 
     /* klikateľné stanice: prelet jazdy na začiatok kapitoly */
-    var stationProg = [0.02, 0.20, 0.50, 0.68, 0.85];
     jStations.forEach(function (b) {
       b.addEventListener('click', function () {
         var st = jTl.scrollTrigger;
         if (!st) return;
         var i = parseInt(b.getAttribute('data-station'), 10) || 0;
-        lenis.scrollTo(st.start + stationProg[i] * (st.end - st.start), { duration: 1.6 });
+        lenis.scrollTo(st.start + at(cfg.stationProg[i]) * (st.end - st.start), { duration: 1.6 });
       });
     });
     if (jSkip) {
@@ -276,6 +312,32 @@
       });
     }
   }
+
+  /* úsek A — hero „Rozlúčka": jediný text, drží scénu hmly a odíde pred švom */
+  setupJourney({
+    key: 'a', pin: 'journey-pin-a', from: 0, to: 0.174,
+    bounds: [], stationProg: [],
+    build: function (tl, texts, jtIn, jtOut, at, dur) {
+      tl.to(texts[0], { autoAlpha: 0, duration: dur(0.05) }, at(0.112))
+        .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.112));
+    }
+  });
+
+  /* úsek B — Cesta → Svetlo: 4 kapitoly, 5 textov.
+     Informačný oblúk: čo robiť + telefón → limuzína → rozsah služieb
+     → spomienkové šperky → kde sme + kontakt. */
+  setupJourney({
+    key: 'b', pin: 'journey-pin-b', from: 0.174, to: 1,
+    bounds: [0.478, 0.652, 0.826],
+    stationProg: [0.20, 0.50, 0.68, 0.85],
+    build: function (tl, texts, jtIn, jtOut) {
+      jtIn(texts[0], 0.180); jtOut(texts[0], 0.304);  /* sprievod */
+      jtIn(texts[1], 0.354); jtOut(texts[1], 0.444);  /* limuzína */
+      jtIn(texts[2], 0.494); jtOut(texts[2], 0.610);  /* starostlivosť */
+      jtIn(texts[3], 0.660); jtOut(texts[3], 0.784);  /* šperky */
+      jtIn(texts[4], 0.834, 0.052);                   /* záver: kraj + CTA, zostáva */
+    }
+  });
 
   /* sviečky (karty aj parte hero) rieši js/candles.js — počíta ich server */
 

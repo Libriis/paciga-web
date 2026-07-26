@@ -703,7 +703,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .journey { position: relative; background: var(--bg); }
 .journey-pin { position: relative; height: 100vh; overflow: hidden; }
 .journey-poster,
-#journey-canvas {
+.journey-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -712,7 +712,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   object-fit: cover;
 }
 .journey-poster { transition: opacity 0.6s ease; z-index: 0; }
-#journey-canvas { z-index: 1; }
+.journey-canvas { z-index: 1; }
 .journey-shade {
   position: absolute;
   inset: 0;
@@ -1833,8 +1833,11 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .memoriam-candle .spark { animation: none !important; opacity: 0 !important; }
   .phero.lit .phero-flame i, .phero.lit .phero-glow { animation: none !important; }
   /* jazda: statický poster + hero text, HUD a canvas preč */
-  #journey-canvas, .jhud { display: none; }
+  .journey-canvas, .jhud { display: none; }
   .journey-text.jt-hero { opacity: 1 !important; pointer-events: auto; }
+  /* úsek B je čistá filmová jazda; bez JS by z neho ostal prázdny záber
+     bez textu, tak ho vynecháme — informácie sú v ostatných sekciách */
+  #cesta { display: none; }
 }
 
 

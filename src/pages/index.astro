@@ -26,38 +26,19 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
 ---
 <Base title={title} description={description} active="domov" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/asset-07.jpg" mainId="paci" journey>
 
-  <!-- ============ POSLEDNÁ CESTA (scrollovaná filmová jazda — frame scrub) ============ -->
+  <!-- ============ POSLEDNÁ CESTA — ÚSEK A: hero „Rozlúčka" ============
+       Jazda je rozrezaná na dva pinované úseky. Rez padol na šev klipu
+       na 17.4 % pôvodnej osi, teda presne na hranicu kapitol Rozlúčka |
+       Cesta. Úsek A drží frames 1-194, úsek B pokračuje od 194.
+       Medzi ne ide „Čo spraviť ako prvé", aby sa pozostalý dostal ku
+       krízovej dráhe hneď po hero a nemusel prescrollovať celý film. -->
   <section class="journey" id="hero">
-    <div class="journey-pin" id="journey-pin">
+    <div class="journey-pin" id="journey-pin-a">
       <img class="journey-poster" id="journey-poster" src="/assets/journey-poster.jpg" alt="Flotila vozidiel Paciga v rannej hmle pod Vysokými Tatrami" fetchpriority="high" decoding="async">
-      <canvas id="journey-canvas" aria-hidden="true"
-        data-frames="1110" data-path="assets/journey/f-&#123;i&#125;.webp"
-        data-frames-m="555" data-path-m="assets/journey-m/f-&#123;i&#125;.webp"></canvas>
+      <canvas class="journey-canvas" id="journey-canvas" aria-hidden="true" data-journey="a"
+        data-frames="194" data-path="assets/journey/f-&#123;i&#125;.webp" data-frame-offset="0"
+        data-frames-m="97" data-path-m="assets/journey-m/f-&#123;i&#125;.webp" data-frame-offset-m="0"></canvas>
       <div class="journey-shade" aria-hidden="true"></div>
-
-      <!-- HUD V1 „Rivian dráha": spodný pás — počítadlo + skip, ruler
-           z tickov s markerom, klikateľné stanice na štartoch kapitol -->
-      <div class="jhud">
-        <div class="jhud-top">
-          <span class="jhud-count"><b id="jhud-now">01</b> / 05</span>
-          <button type="button" class="jhud-skip" id="journey-skip">Preskočiť<span class="jhud-skip-tail">&nbsp;príbeh</span></button>
-        </div>
-        <div class="jhud-ruler" aria-hidden="true">
-          <i class="jhud-fill" id="jhud-fill"></i>
-          <span class="jhud-bound" style="left:17.4%"></span>
-          <span class="jhud-bound" style="left:47.8%"></span>
-          <span class="jhud-bound" style="left:65.2%"></span>
-          <span class="jhud-bound" style="left:82.6%"></span>
-          <i class="jhud-marker" id="jhud-marker"></i>
-        </div>
-        <div class="jhud-stations">
-          <button type="button" class="jhs" data-station="0" style="left:0%" aria-label="Prejsť na kapitolu Rozlúčka"><span class="jhs-num">01</span><span>Rozlúčka</span></button>
-          <button type="button" class="jhs" data-station="1" style="left:17.4%" aria-label="Prejsť na kapitolu Cesta"><span class="jhs-num">02</span><span>Cesta</span></button>
-          <button type="button" class="jhs" data-station="2" style="left:47.8%" aria-label="Prejsť na kapitolu Starostlivosť"><span class="jhs-num">03</span><span>Starostlivosť</span></button>
-          <button type="button" class="jhs" data-station="3" style="left:65.2%" aria-label="Prejsť na kapitolu Spomienka"><span class="jhs-num">04</span><span>Spomienka</span></button>
-          <button type="button" class="jhs" data-station="4" style="left:82.6%" aria-label="Prejsť na kapitolu Svetlo"><span class="jhs-num">05</span><span>Svetlo</span></button>
-        </div>
-      </div>
 
       <!-- texty staníc (pinované nad canvasom) -->
       <div class="journey-text jt-hero" data-jt="0">
@@ -70,28 +51,6 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
             <a href="#sluzby" class="link-underline">Naše služby →</a>
           </div>
         </div>
-      </div>
-      <div class="journey-text jt-mid" data-jt="1">
-        <h2>Zavolajte v&nbsp;ktorúkoľvek hodinu.</h2>
-        <p>Prevoz zosnulého, dokumenty aj celý obrad vybavíme za vás. Aj v noci, aj cez sviatky.</p>
-        <a href="tel:0903596364" class="jt-phone">0903 596 364</a>
-      </div>
-      <div class="journey-text jt-mid" data-jt="2">
-        <div class="badge-pill"><span>Ocenená ako najkrajšia na Slovensku</span></div>
-        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
-      </div>
-      <div class="journey-text jt-mid" data-jt="3">
-        <h2>Kompletná starostlivosť<br>pod jednou strechou</h2>
-        <p>Obrad a pochovanie, kremácia, kvetinová výzdoba, spomienkové predmety aj kamenárstvo.</p>
-      </div>
-      <div class="journey-text jt-mid" data-jt="4">
-        <h2>„Nikdy nezabudnem.“</h2>
-        <p>Spomienkové šperky s odtlačkom prsta. Kúsok blízkeho človeka navždy.</p>
-      </div>
-      <div class="journey-text jt-mid" data-jt="5">
-        <h2>Spod Tatier<br>Aj vo&nbsp;vašom meste</h2>
-        <p>Poprad, Spišská Belá a Liptovský Mikuláš</p>
-        <a href="tel:0903596364" class="btn-gold jt-cta">NON STOP · 0903 596 364</a>
       </div>
     </div>
 
@@ -135,6 +94,65 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         </li>
       </ol>
       <a class="inline-block mt-[clamp(36px,5vh,54px)] text-[17.4px] text-soft border-b border-solid border-line pb-[3px] transition-colors duration-300 hover:text-snow" href="/informacie-pre-pozostalych" data-reveal>Podrobný sprievodca pre pozostalých →</a>
+    </div>
+  </section>
+
+  <!-- ============ POSLEDNÁ CESTA — ÚSEK B: Cesta → Svetlo ============
+       Pokračovanie jazdy od frameu 194. Vlastný canvas, vlastný worker,
+       vlastný HUD so 4 kapitolami. Poster je prvý frame úseku, aby pri
+       vstupe nebliklo čierno, kým sa dekóduje sekvencia. -->
+  <section class="journey" id="cesta">
+    <div class="journey-pin" id="journey-pin-b">
+      <img class="journey-poster" src="/assets/journey/f-0194.webp" alt="" loading="lazy" decoding="async">
+      <canvas class="journey-canvas" aria-hidden="true" data-journey="b" data-defer
+        data-frames="917" data-path="assets/journey/f-&#123;i&#125;.webp" data-frame-offset="193"
+        data-frames-m="459" data-path-m="assets/journey-m/f-&#123;i&#125;.webp" data-frame-offset-m="96"></canvas>
+      <div class="journey-shade" aria-hidden="true"></div>
+
+      <!-- HUD V1 „Rivian dráha": spodný pás — počítadlo + skip, ruler
+           z tickov s markerom, klikateľné stanice na štartoch kapitol -->
+      <div class="jhud">
+        <div class="jhud-top">
+          <span class="jhud-count"><b id="jhud-now">01</b> / 04</span>
+          <button type="button" class="jhud-skip" id="journey-skip">Preskočiť<span class="jhud-skip-tail">&nbsp;príbeh</span></button>
+        </div>
+        <div class="jhud-ruler" aria-hidden="true">
+          <i class="jhud-fill" id="jhud-fill"></i>
+          <span class="jhud-bound" style="left:36.8%"></span>
+          <span class="jhud-bound" style="left:57.9%"></span>
+          <span class="jhud-bound" style="left:78.9%"></span>
+          <i class="jhud-marker" id="jhud-marker"></i>
+        </div>
+        <div class="jhud-stations">
+          <button type="button" class="jhs" data-station="0" style="left:0%" aria-label="Prejsť na kapitolu Cesta"><span class="jhs-num">01</span><span>Cesta</span></button>
+          <button type="button" class="jhs" data-station="1" style="left:36.8%" aria-label="Prejsť na kapitolu Starostlivosť"><span class="jhs-num">02</span><span>Starostlivosť</span></button>
+          <button type="button" class="jhs" data-station="2" style="left:57.9%" aria-label="Prejsť na kapitolu Spomienka"><span class="jhs-num">03</span><span>Spomienka</span></button>
+          <button type="button" class="jhs" data-station="3" style="left:78.9%" aria-label="Prejsť na kapitolu Svetlo"><span class="jhs-num">04</span><span>Svetlo</span></button>
+        </div>
+      </div>
+
+      <div class="journey-text jt-mid" data-jt="1">
+        <h2>Zavolajte v&nbsp;ktorúkoľvek hodinu.</h2>
+        <p>Prevoz zosnulého, dokumenty aj celý obrad vybavíme za vás. Aj v noci, aj cez sviatky.</p>
+        <a href="tel:0903596364" class="jt-phone">0903 596 364</a>
+      </div>
+      <div class="journey-text jt-mid" data-jt="2">
+        <div class="badge-pill"><span>Ocenená ako najkrajšia na Slovensku</span></div>
+        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
+      </div>
+      <div class="journey-text jt-mid" data-jt="3">
+        <h2>Kompletná starostlivosť<br>pod jednou strechou</h2>
+        <p>Obrad a pochovanie, kremácia, kvetinová výzdoba, spomienkové predmety aj kamenárstvo.</p>
+      </div>
+      <div class="journey-text jt-mid" data-jt="4">
+        <h2>„Nikdy nezabudnem.“</h2>
+        <p>Spomienkové šperky s odtlačkom prsta. Kúsok blízkeho človeka navždy.</p>
+      </div>
+      <div class="journey-text jt-mid" data-jt="5">
+        <h2>Spod Tatier<br>Aj vo&nbsp;vašom meste</h2>
+        <p>Poprad, Spišská Belá a Liptovský Mikuláš</p>
+        <a href="tel:0903596364" class="btn-gold jt-cta">NON STOP · 0903 596 364</a>
+      </div>
     </div>
   </section>
 

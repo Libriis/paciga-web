@@ -1,7 +1,7 @@
 /* Paciga — „Posledná cesta": scrollovaná filmová jazda.
    Reťaz Seedance klipov je rozbitá na frame sekvenciu (WebP) a scroll ňou
    listuje na canvase — video nehrá samo, pohyb ovláda návštevník.
-   main.js zapisuje window.__journeyProgress (0..1); tento modul len kreslí.
+   main.js zapisuje window.__journeyState[key] (0..1); tento modul len kreslí.
 
    Architektúra: celé dekódovanie aj kreslenie beží vo WORKERI nad
    OffscreenCanvas — hlavné vlákno len posiela progress. Scroll stránky tak
@@ -20,20 +20,16 @@
 (function () {
   'use strict';
 
-  var DBG = window.__journey = { stage: 'start', drawn: 0, loaded: 0, err: null };
-
-  var canvas = document.getElementById('journey-canvas');
-  var pinEl = document.getElementById('journey-pin');
-  var poster = document.getElementById('journey-poster');
-  if (!canvas || !pinEl) { DBG.stage = 'no-dom'; return; }
+  /* VIAC ÚSEKOV: jazda môže byť rozrezaná na niekoľko pinovaných sekcií
+     (homepage: hero „Rozlúčka", potom „Čo spraviť ako prvé", potom
+     pokračovanie „Cesta"). Každý canvas je samostatná instancia s vlastným
+     workerom a vlastným výsekom frame sekvencie — data-frame-offset udáva,
+     ktorým súborom výsek začína. main.js zapisuje progres úseku do
+     window.__journeyState[key], diagnostika je vo window.__journey[key]. */
+  var DIAG = window.__journey = {};
 
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced) { DBG.stage = 'reduced-motion'; return; /* CSS fallback ukáže statické zábery */ }
-
   var isMobile = window.innerWidth < 701;
-  var TOTAL = parseInt(canvas.getAttribute(isMobile ? 'data-frames-m' : 'data-frames'), 10) || 0;
-  var PATH = canvas.getAttribute(isMobile ? 'data-path-m' : 'data-path') || '';
-  if (!TOTAL || !PATH) { DBG.stage = 'no-config'; return; }
 
   function viewportMsg() {
     return {
@@ -42,6 +38,33 @@
       vh: window.innerHeight || 0,
       dpr: Math.min(window.devicePixelRatio || 1, 2)
     };
+  }
+
+  /* ============================================================
+     JEDEN ÚSEK JAZDY (canvas + worker + vlastný výsek frameov)
+     Telo je zámerne neodsadené o úroveň nižšie — reindent celého súboru
+     by z diffu urobil neprečítateľnú kašu. Funkcia končí značkou
+     „koniec initJourney" na konci súboru.
+     ============================================================ */
+  function initJourney(canvas) {
+
+  var key = canvas.getAttribute('data-journey') || 'a';
+  var DBG = DIAG[key] = { stage: 'start', drawn: 0, loaded: 0, err: null };
+
+  var pinEl = canvas.parentNode;
+  var poster = pinEl && pinEl.querySelector('.journey-poster');
+  if (!pinEl) { DBG.stage = 'no-dom'; return; }
+
+  var TOTAL = parseInt(canvas.getAttribute(isMobile ? 'data-frames-m' : 'data-frames'), 10) || 0;
+  var PATH = canvas.getAttribute(isMobile ? 'data-path-m' : 'data-path') || '';
+  /* posun v sekvencii: úsek B začína frameom 194 (desktop) / 97 (mobil) */
+  var OFFSET = parseInt(canvas.getAttribute(isMobile ? 'data-frame-offset-m' : 'data-frame-offset'), 10) || 0;
+  if (!TOTAL || !PATH) { DBG.stage = 'no-config'; return; }
+
+  /* progres tohto úseku; main.js ho prepisuje pri scrolle */
+  function prog() {
+    var s = window.__journeyState && window.__journeyState[key];
+    return s || { p: 0, raw: 0, dest: 0 };
   }
 
   /* ============================================================
@@ -64,7 +87,7 @@
       : function (cb) { return setTimeout(function () { cb(performance.now()); }, 16); };
 
     var cv = null, ctx = null;
-    var TOTAL = 0, PATH = '', BASE = '';
+    var TOTAL = 0, PATH = '', BASE = '', OFFSET = 0;
     var NAT_W = 0, NAT_H = 0;      /* natívny rozmer framov (z prvého dekódu) */
     var BACK_W = 0, BACK_H = 0;    /* backing rozmer canvasu (display-size) */
     var vp = { vw: 0, vh: 0, dpr: 1 };
@@ -77,7 +100,7 @@
     var needsRender = true;
 
     function src(i) {
-      var n = String(i + 1);
+      var n = String(i + 1 + OFFSET);
       while (n.length < 4) n = '0' + n;
       /* šablónu nahraď PRED new URL — tá by '{i}' percentovo zakódovala */
       return new URL(PATH.replace('{i}', n), BASE).href;
@@ -326,7 +349,14 @@
           settleTarget = -1;
           prevTarget = -1;
         } else {
-          if (needsRender && draw(shown)) { lastDrawnPos = shown; needsRender = false; }
+          /* Aj v usadenom stave si vyžiadaj bitmapu, kým je kresba nedokončená.
+             Úsek, ktorý sa usadil skôr než dekódoval prvý frame (odložené
+             sťahovanie), by inak ostal navždy na posteri — usadená vetva
+             preskakovala ensureBitmaps, takže nemal čo kresliť. */
+          if (needsRender) {
+            ensureBitmaps(Math.round(shown));
+            if (draw(shown)) { lastDrawnPos = shown; needsRender = false; }
+          }
           return;
         }
       }
@@ -460,6 +490,7 @@
         TOTAL = m.total;
         PATH = m.path;
         BASE = m.base;
+        OFFSET = m.offset || 0;
         vp = { vw: m.vw, vh: m.vh, dpr: m.dpr };
         blobs = new Array(TOTAL);
         ready = new Array(TOTAL);
@@ -495,13 +526,19 @@
       DBG.stage = 'worker';
       var off = canvas.transferControlToOffscreen();
       var vm = viewportMsg();
-      var eco = !!(navigator.connection && navigator.connection.saveData);
-      worker.postMessage({ t: 'init', canvas: off, total: TOTAL, path: PATH, base: window.location.href, vw: vm.vw, vh: vm.vh, dpr: vm.dpr, eco: eco }, [off]);
+      /* data-defer: úsek pod ohybom nesmie hneď súťažiť o šírku pásma s hero
+         úsekom. eco vypne aj coarse pass, kým nepríde 'go' (viď sendGo). */
+      var defer = canvas.hasAttribute('data-defer');
+      var eco = defer || !!(navigator.connection && navigator.connection.saveData);
+      worker.postMessage({ t: 'init', canvas: off, total: TOTAL, path: PATH, offset: OFFSET, base: window.location.href, vw: vm.vw, vh: vm.vh, dpr: vm.dpr, eco: eco }, [off]);
 
-      /* intent: prvé gesto odomkne plné sťahovanie frameov */
+      /* intent: prvé gesto odomkne plné sťahovanie frameov. Odložený úsek
+         čaká navyše, kým sa jeho pin nepriblíži na 2.5 obrazovky — listener
+         ostáva pripojený, takže sa test opakuje pri každom scrolle. */
       var goSent = false;
       function sendGo() {
         if (goSent) return;
+        if (defer && pinEl.getBoundingClientRect().top > (window.innerHeight || 800) * 2.5) return;
         goSent = true;
         worker.postMessage({ t: 'go' });
         ['wheel', 'touchstart', 'pointerdown', 'keydown', 'scroll'].forEach(function (ev) {
@@ -541,9 +578,10 @@
       var lastP = -1, lastRaw = -1, lastDest = -1;
       (function fwd() {
         requestAnimationFrame(fwd);
-        var p = window.__journeyProgress || 0;
-        var praw = typeof window.__journeyRawProgress === 'number' ? window.__journeyRawProgress : p;
-        var dest = typeof window.__journeyDestProgress === 'number' ? window.__journeyDestProgress : praw;
+        var s = prog();
+        var p = s.p || 0;
+        var praw = typeof s.raw === 'number' ? s.raw : p;
+        var dest = typeof s.dest === 'number' ? s.dest : praw;
         if (p !== lastP || praw !== lastRaw || dest !== lastDest) {
           lastP = p; lastRaw = praw; lastDest = dest;
           worker.postMessage({ t: 'p', p: p, praw: praw, dest: dest });
@@ -570,7 +608,7 @@
   var current = -1;
   var needsRender = true;
 
-  function src(i) { return PATH.replace('{i}', String(i + 1).padStart(4, '0')); }
+  function src(i) { return PATH.replace('{i}', String(i + 1 + OFFSET).padStart(4, '0')); }
 
   function srcFor(i) {
     var bm = bitmaps.get(i);
@@ -781,8 +819,9 @@
     requestAnimationFrame(loop);
     rafN++;
     reapBoneyard();
-    var p = clamp01(window.__journeyProgress || 0);
-    var praw = typeof window.__journeyRawProgress === 'number' ? clamp01(window.__journeyRawProgress) : p;
+    var sp = prog();
+    var p = clamp01(sp.p || 0);
+    var praw = typeof sp.raw === 'number' ? clamp01(sp.raw) : p;
     var target = p * (TOTAL - 1);
     var rawF = praw * (TOTAL - 1);
     if (shown < 0) shown = target;
@@ -795,7 +834,11 @@
         settleTarget = -1;
         prevTarget = -1;
       } else {
-        if (needsRender && draw(shown)) { lastDrawn = shown; needsRender = false; }
+        /* viď worker vetvu: bez ensureBitmaps by usadený úsek nemal čo kresliť */
+        if (needsRender) {
+          ensureBitmaps(Math.round(shown), false);
+          if (draw(shown)) { lastDrawn = shown; needsRender = false; }
+        }
         return;
       }
     }
@@ -806,7 +849,7 @@
     else if (Math.abs(v) < 0.3) stillCount++;
     var settling = stillCount > 5;
 
-    var destP = typeof window.__journeyDestProgress === 'number' ? clamp01(window.__journeyDestProgress) : praw;
+    var destP = typeof sp.dest === 'number' ? clamp01(sp.dest) : praw;
     var destF = destP * (TOTAL - 1);
 
     /* časovo ohraničený dojazd s anticipáciou — viď worker vetva */
@@ -909,4 +952,10 @@
     }
   }
   loop();
+
+  } /* koniec initJourney */
+
+  if (reduced) return; /* CSS fallback ukáže statické zábery */
+  var sections = document.querySelectorAll('canvas[data-journey]');
+  for (var ci = 0; ci < sections.length; ci++) initJourney(sections[ci]);
 })();
