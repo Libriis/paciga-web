@@ -29,6 +29,21 @@
     });
   }
 
+  /* ---------- prepínač deň/noc ----------
+     Tému nastavuje inline skript v <head> ešte pred prvým vykreslením, tu už
+     len prepíname a ukladáme voľbu. Zámerne PRED GSAP guardom, aby prepínanie
+     fungovalo aj pri prefers-reduced-motion a bez animačnej knižnice. */
+  var themeBtn = document.getElementById('theme-toggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('paciga-theme', next); } catch (e) {}
+      var meta = document.getElementById('theme-color');
+      if (meta) meta.setAttribute('content', next === 'light' ? '#ffffff' : '#0c0d0f');
+    });
+  }
+
   /* ---------- scene videá ----------
      Hrajú len vo viewporte (perf). Ak prehliadač blokuje autoplay
      (Firefox nastavenie), označia sa a spustia pri prvom geste užívateľa. */

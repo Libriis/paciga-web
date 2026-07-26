@@ -67,22 +67,73 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ---- tokens & reset ---- */
+/* ---- tokens & reset ----
+   DVE TÉMY. Všetky priehľadné odtiene textu a liniek sa derivujú z jedného
+   kanála --fg-rgb, takže prepnutie témy je otázka pár riadkov nižšie a nie
+   stovky hodnôt po súbore.
+   --scrim-rgb ostáva tmavý v oboch témach: zatmavuje fotografie, nad ktorými
+   je text vždy biely. --on-accent je farba textu na vyplnenom akcente
+   (tlačidlá, pilulky, ::selection). --fg-strong je hover, silnejší než --text.
+   Tému drží atribút data-theme na <html>, nastavuje ho inline skript
+   v Base.astro ešte pred prvým vykreslením. */
 :root {
+  --fg-rgb: 245 245 245;
+  --scrim-rgb: 12 13 15;
   --bg: #0c0d0f;
   --bg2: #111214;
   --panel: #16181c;
   --panel2: #191b1e;
-  --line: rgba(255, 255, 255, 0.08);
+  --line: rgb(var(--fg-rgb) / 0.08);
   --text: #f5f5f5;
-  --muted: rgba(245, 245, 245, 0.55);
-  --dim: rgba(245, 245, 245, 0.35);
+  --fg-strong: #ffffff;
+  --on-accent: #0c0d0f;
+  --nav-bg: rgb(var(--scrim-rgb) / 0.82);
+  --muted: rgb(var(--fg-rgb) / 0.55);
+  --dim: rgb(var(--fg-rgb) / 0.35);
   --gold: #f5f5f5; /* akcent: biela (cierno-biela schema) */
-  --gold-soft: rgba(245, 245, 245, 0.55);
-  --gold-dim: rgba(245, 245, 245, 0.18);
+  --gold-soft: rgb(var(--fg-rgb) / 0.55);
+  --gold-dim: rgb(var(--fg-rgb) / 0.18);
   --font: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --wide: 'wdth' 110;
   --xwide: 'wdth' 125;
+}
+
+/* ---- svetlá téma (deň) ---- */
+:root[data-theme='light'] {
+  --fg-rgb: 12 13 15;
+  --bg: #ffffff;
+  --bg2: #f4f4f5;
+  --panel: #ffffff;
+  --panel2: #fafafa;
+  --text: #0c0d0f;
+  --fg-strong: #000000;
+  --on-accent: #ffffff;
+  --nav-bg: rgb(255 255 255 / 0.86);
+  --gold: #0c0d0f;
+  /* linka potrebuje na bielom o kúsok viac kontrastu než 0.08 na čiernom */
+  --line: rgb(var(--fg-rgb) / 0.13);
+}
+
+/* Sekcie ležiace na fotografii držia tmavú tému v oboch režimoch. Text nad
+   filmovou jazdou, subhero a album pásmi je vždy biely a scrim pod ním tmavý,
+   takže prepnutie na deň by ich urobilo nečitateľnými. */
+.journey,
+.subhero,
+.album-band,
+.fleetband {
+  --fg-rgb: 245 245 245;
+  --bg: #0c0d0f;
+  --bg2: #111214;
+  --panel: #16181c;
+  --text: #f5f5f5;
+  --fg-strong: #ffffff;
+  --on-accent: #0c0d0f;
+  --gold: #f5f5f5;
+  --line: rgb(var(--fg-rgb) / 0.08);
+  /* prepis tokenu nestačí: color sa dedí z body, kde je už prepočítaný.
+     Tu ho treba nastaviť znova, inak by text nad fotkou v dennej téme
+     zdedil tmavú farbu a zmizol. */
+  color: var(--text);
 }
 
 /* Element resety a defaulty žijú v @layer base: Tailwind utility
@@ -120,15 +171,15 @@ body {
 
 .container { width: min(1240px, calc(100% - 48px)); margin-inline: auto; }
 
-::selection { background: var(--gold); color: #0c0d0f; }
+::selection { background: var(--gold); color: var(--on-accent); }
 
 /* text reveal po slovách (data-textreveal, main.js) */
 .tr-w { display: inline-block; }
 
 /* tracing beam v sekcii Čo spraviť ako prvé (kreslí ho main.js pri scrolle) */
 .fs-beam { position: relative; height: 1px; background: var(--line); margin: clamp(48px, 7vh, 72px) 0 clamp(28px, 4vh, 40px); }
-.fs-beam i { position: absolute; left: 0; top: 0; height: 1px; width: 0%; background: linear-gradient(90deg, rgba(245, 245, 245, 0.25), var(--gold)); box-shadow: 0 0 12px rgba(245, 245, 245, 0.35); }
-.fs-beam-dot { position: absolute; top: -3.5px; width: 8px; height: 8px; border-radius: 50%; background: var(--bg2); border: 1px solid rgba(245, 245, 245, 0.3); transition: background 0.3s ease, border-color 0.3s ease; }
+.fs-beam i { position: absolute; left: 0; top: 0; height: 1px; width: 0%; background: linear-gradient(90deg, rgb(var(--fg-rgb) / 0.25), var(--gold)); box-shadow: 0 0 12px rgb(var(--fg-rgb) / 0.35); }
+.fs-beam-dot { position: absolute; top: -3.5px; width: 8px; height: 8px; border-radius: 50%; background: var(--bg2); border: 1px solid rgb(var(--fg-rgb) / 0.3); transition: background 0.3s ease, border-color 0.3s ease; }
 .fs-beam-dot.on { background: var(--gold); border-color: var(--gold); }
 @media (max-width: 860px) {
   .fs-beam { display: none; } /* vertikálny stack, horizontálna linka stráca zmysel */
@@ -154,7 +205,7 @@ body {
   width: 72px;
   height: 2px;
   margin-top: 22px;
-  background: linear-gradient(90deg, var(--gold), rgba(245, 245, 245, 0));
+  background: linear-gradient(90deg, var(--gold), rgb(var(--fg-rgb) / 0));
   transform-origin: left center;
 }
 .gold-rule { width: 3px; align-self: stretch; background: var(--gold); transform-origin: top center; }
@@ -164,14 +215,14 @@ body {
   align-items: center;
   gap: 12px;
   background: var(--gold);
-  color: #0d0b07;
+  color: var(--on-accent);
   font-weight: 650;
   font-size: 15px;
   padding: 16px 30px;
   border-radius: 999px;
   transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease, background 0.35s ease;
 }
-.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(245, 245, 245, 0.25); background: #ffffff; }
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgb(var(--fg-rgb) / 0.25); background: var(--fg-strong); }
 .btn-lg { font-size: 17px; padding: 20px 38px; }
 
 .link-underline {
@@ -184,20 +235,20 @@ body {
 }
 .link-underline:hover { background-size: 100% 1px; color: var(--text); }
 .link-underline.gold { color: var(--gold); }
-.link-underline.gold:hover { color: #ffffff; }
+.link-underline.gold:hover { color: var(--fg-strong); }
 
 /* jediná sémantická bodka na stránke: NON STOP dostupnosť v nav CTA */
 .dot {
   width: 8px; height: 8px; border-radius: 50%;
   background: #f5f5f5;
-  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 0 rgb(var(--fg-rgb) / 0.5);
   animation: pulse 2.2s infinite;
   flex: 0 0 auto;
 }
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45); }
-  70% { box-shadow: 0 0 0 9px rgba(255, 255, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  0% { box-shadow: 0 0 0 0 rgb(var(--fg-rgb) / 0.45); }
+  70% { box-shadow: 0 0 0 9px rgb(var(--fg-rgb) / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(var(--fg-rgb) / 0); }
 }
 
 /* ---- scroll progress ---- */
@@ -220,11 +271,69 @@ body {
   z-index: 100;
   transition: background 0.45s ease, box-shadow 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-#site-nav[data-solid] { background: rgba(12, 13, 15, 0.82); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
+#site-nav[data-solid] { background: var(--nav-bg); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
 #site-nav.nav-hidden { transform: translateY(-100%); }
 .nav-inner { display: flex; align-items: center; gap: 28px; padding: 18px 0; }
 .nav-logo img { height: 40px; width: auto; }
-.nav-links { display: flex; align-items: center; gap: 22px; margin-left: auto; flex-wrap: wrap; }
+/* logo je monochromatická biela kresba — v dennej téme ho stačí invertovať */
+:root[data-theme='light'] .nav-logo img,
+:root[data-theme='light'] .footer-brand img { filter: invert(1); }
+
+/* ---- prepínač deň/noc (21st.dev ayushmxxn/theme-toggle) ----
+   Prevzaté z predlohy: pilulka 64×32 s vnútrom 4 px, dva kruhy 24 px,
+   ktoré si vymenia miesto posunom o 32 px. Aktívny kruh má výplň,
+   neaktívny je priehľadný. Stav drží data-theme na <html>. */
+.theme-toggle {
+  display: inline-flex;
+  width: 64px;
+  height: 32px;
+  margin-left: 16px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.theme-toggle:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
+.theme-toggle > span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.theme-toggle i {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+.theme-toggle svg { width: 16px; height: 16px; stroke-width: 1.5; }
+/* noc: vyplnený mesiac vľavo, tlmené slnko vpravo */
+.tt-moon { background: rgb(var(--fg-rgb) / 0.12); color: var(--text); }
+.tt-sun { background: transparent; color: var(--dim); }
+/* deň: kruhy si vymenia strany */
+:root[data-theme='light'] .tt-moon { transform: translateX(32px); background: transparent; color: var(--text); }
+:root[data-theme='light'] .tt-sun { transform: translateX(-32px); background: rgb(var(--fg-rgb) / 0.1); color: var(--text); }
+@media (max-width: 900px) {
+  /* burger má margin-left: auto, takže prepínač za ním sedí pri pravom okraji */
+  .theme-toggle { margin-left: 12px; }
+}
+/* Lišta má vlastnú, širšiu mieru než zvyšok obsahu: deväť odkazov, NON STOP
+   CTA a prepínač deň/noc sa do 1240 px nezmestia (potrebujú 1253) a menu sa
+   láme na druhý riadok. Rozostup 18 px drží rezervu aj pri 1280 px. */
+.nav-inner { width: min(1400px, calc(100% - 40px)); }
+.nav-links { display: flex; align-items: center; gap: 18px; margin-left: auto; flex-wrap: wrap; }
+/* Pásmo medzi burgerom (900 px) a 1365 px je na lištu tesné už bez prepínača:
+   pri 1200 px a menej sa menu lámalo aj predtým. Tu rozostupy pritiahneme,
+   čím sa zmestí aj 1280 aj 1200. */
+@media (max-width: 1365px) {
+  .nav-links { gap: 12px; }
+  .theme-toggle { margin-left: 10px; }
+}
 .nav-link {
   font-size: 13.5px;
   font-weight: 550;
@@ -242,7 +351,7 @@ body {
   font-size: 13px;
   font-weight: 650;
   color: var(--gold);
-  border: 1px solid rgba(245, 245, 245, 0.4);
+  border: 1px solid rgb(var(--fg-rgb) / 0.4);
   padding: 9px 16px;
   border-radius: 999px;
   transition: background 0.3s ease, border-color 0.3s ease;
@@ -261,7 +370,7 @@ body {
   align-items: center;
   gap: 9px;
   background: var(--gold);
-  color: #0c0d0f;
+  color: var(--on-accent);
   font-size: 13.5px;
   font-weight: 680;
   letter-spacing: 0.02em;
@@ -273,7 +382,7 @@ body {
   pointer-events: none;
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
-.callpill .dot { width: 7px; height: 7px; border-radius: 50%; background: #0c0d0f; animation: pulse 2.2s ease-in-out infinite; }
+.callpill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--on-accent); animation: pulse 2.2s ease-in-out infinite; }
 .callpill.on { opacity: 1; transform: none; pointer-events: auto; }
 .nav-burger { display: none; flex-direction: column; gap: 5px; padding: 8px; margin-left: auto; }
 .nav-burger span { width: 24px; height: 2px; background: var(--text); transition: transform 0.3s ease, opacity 0.3s ease; }
@@ -320,7 +429,7 @@ body {
 .nonstop-sub { color: var(--muted); margin-top: 8px; max-width: 52ch; }
 .nonstop-right { display: flex; flex-direction: column; gap: 6px; }
 .phone-primary { font-size: clamp(30px, 3.4vw, 42px); font-weight: 680; font-variation-settings: var(--wide); color: var(--gold); margin-top: 8px; transition: color 0.3s ease; }
-.phone-primary:hover { color: #ffffff; }
+.phone-primary:hover { color: var(--fg-strong); }
 .phone-secondary { font-size: 19px; font-weight: 560; color: var(--muted); transition: color 0.3s ease; }
 .phone-secondary:hover { color: var(--text); }
 
@@ -350,7 +459,7 @@ body {
   overflow: hidden;
   transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.svc:hover { border-color: rgba(245, 245, 245, 0.45); background: var(--panel2); transform: translateY(-6px); }
+.svc:hover { border-color: rgb(var(--fg-rgb) / 0.45); background: var(--panel2); transform: translateY(-6px); }
 .svc-num { font-size: 13px; font-weight: 650; letter-spacing: 0.14em; color: var(--gold); margin-bottom: auto; }
 .svc h3 { margin-top: 84px; font-size: 21px; }
 .svc p { margin-top: 10px; font-size: 18px; color: var(--muted); }
@@ -399,7 +508,7 @@ body {
 .fleet-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12, 13, 15, 0.2), rgba(12, 13, 15, 0.72) 85%); }
 .fleet-content { position: relative; z-index: 2; text-align: center; padding: 0 24px; max-width: 780px; }
 .fleet-content h2 { font-size: clamp(32px, 5vw, 62px); margin-top: 22px; }
-.fleet-content p { margin-top: 18px; color: rgba(245, 245, 245, 0.75); font-size: clamp(18.6px, 1.74vw, 22.3px); max-width: 54ch; margin-inline: auto; }
+.fleet-content p { margin-top: 18px; color: rgb(var(--fg-rgb) / 0.75); font-size: clamp(18.6px, 1.74vw, 22.3px); max-width: 54ch; margin-inline: auto; }
 .badge-pill {
   display: inline-flex;
   align-items: center;
@@ -409,7 +518,7 @@ body {
   text-transform: uppercase;
   font-weight: 600;
   color: var(--gold);
-  border: 1px solid rgba(245, 245, 245, 0.4);
+  border: 1px solid rgb(var(--fg-rgb) / 0.4);
   background: rgba(12, 13, 15, 0.55);
   backdrop-filter: blur(8px);
   padding: 10px 18px;
@@ -460,7 +569,7 @@ body {
   overflow: hidden;
   transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.branch-card:hover { border-color: rgba(245, 245, 245, 0.4); transform: translateY(-6px); }
+.branch-card:hover { border-color: rgb(var(--fg-rgb) / 0.4); transform: translateY(-6px); }
 .branch-photo { height: 210px; overflow: hidden; position: relative; }
 .branch-photo span {
   position: absolute; inset: -14% 0;
@@ -475,7 +584,7 @@ body {
 .branch-body h3 { font-size: 24px; }
 .branch-addr { margin-top: 12px; color: var(--muted); font-size: 18.6px; }
 .branch-tel { display: inline-block; margin-top: 14px; font-size: 22px; font-weight: 660; font-variation-settings: var(--wide); color: var(--gold); transition: color 0.3s ease; }
-.branch-tel:hover { color: #ffffff; }
+.branch-tel:hover { color: var(--fg-strong); }
 .branch-hours { margin-top: 6px; margin-bottom: 18px; font-size: 16.1px; color: var(--dim); letter-spacing: 0.04em; }
 
 /* ---- memoriam ---- */
@@ -490,12 +599,12 @@ body {
   text-align: center;
   transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.memoriam-card:hover { border-color: rgba(245, 245, 245, 0.35); transform: translateY(-5px); }
+.memoriam-card:hover { border-color: rgb(var(--fg-rgb) / 0.35); transform: translateY(-5px); }
 .memoriam-photo {
   width: 84px; height: 84px;
   margin: 0 auto 20px;
   border-radius: 50%;
-  border: 1px solid rgba(245, 245, 245, 0.35);
+  border: 1px solid rgb(var(--fg-rgb) / 0.35);
   background: radial-gradient(circle at 35% 30%, #22242a, #131418);
   display: grid;
   place-items: center;
@@ -508,7 +617,7 @@ body {
 .memoriam-date { margin-top: 8px; font-size: 13.5px; color: var(--dim); letter-spacing: 0.08em; }
 .memoriam-links { display: flex; justify-content: center; gap: 18px; margin-top: 20px; }
 .gold-link { font-size: 13.5px; font-weight: 600; color: var(--gold); transition: color 0.3s ease; }
-.gold-link:hover { color: #ffffff; }
+.gold-link:hover { color: var(--fg-strong); }
 .soft-link { font-size: 13.5px; color: var(--muted); transition: color 0.3s ease; }
 .soft-link:hover { color: var(--text); }
 
@@ -532,7 +641,7 @@ body {
 /* ---- CTA band ---- */
 .cta-band {
   background:
-    radial-gradient(90% 120% at 50% 130%, rgba(245, 245, 245, 0.14), transparent 60%),
+    radial-gradient(90% 120% at 50% 130%, rgb(var(--fg-rgb) / 0.14), transparent 60%),
     var(--bg2);
   border-top: 1px solid var(--line);
   padding: clamp(96px, 13vh, 175px) 36px;
@@ -560,7 +669,7 @@ body {
 .footer-col a { color: var(--muted); font-size: 14.5px; transition: color 0.3s ease; width: fit-content; }
 .footer-col a:hover { color: var(--text); }
 .footer-phone { font-size: 21px !important; font-weight: 660; font-variation-settings: var(--wide); color: var(--text) !important; }
-.footer-phone:hover { color: #ffffff !important; }
+.footer-phone:hover { color: var(--fg-strong) !important; }
 .footer-dim { color: var(--dim); font-size: 13px; }
 .footer-map { font-size: 13px !important; color: var(--dim) !important; }
 .footer-map:hover { color: var(--gold) !important; }
@@ -589,7 +698,7 @@ body {
   letter-spacing: 0.05em;
   line-height: 1;
   white-space: nowrap;
-  color: rgba(245, 245, 245, 0.06);
+  color: rgb(var(--fg-rgb) / 0.06);
   user-select: none;
   transform: translateY(4%);
 }
@@ -604,7 +713,7 @@ body {
   .nav-links {
     position: fixed;
     inset: 0;
-    background: rgba(12, 13, 15, 0.97);
+    background: var(--bg);
     backdrop-filter: blur(18px);
     flex-direction: column;
     justify-content: center;
@@ -666,7 +775,7 @@ body {
   /* bez filter: blur — radial-gradient je mäkký sám o sebe a blur(60px)
      nad celou plochou stál GPU nepretržitý výkon */
   opacity: 0.5;
-  background: radial-gradient(circle, rgba(245, 245, 245, 0.16), rgba(245, 245, 245, 0.05) 45%, transparent 70%);
+  background: radial-gradient(circle, rgb(var(--fg-rgb) / 0.16), rgb(var(--fg-rgb) / 0.05) 45%, transparent 70%);
   animation: orbDrift 26s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -681,21 +790,21 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 /* ---- glassmorphism karty (prekrýva základné panely) ---- */
 .svc, .branch-card, .memoriam-card {
-  background: rgba(255, 255, 255, 0.035);
+  background: rgb(var(--fg-rgb) / 0.035);
   /* nižší blur = o polovicu lacnejší backdrop-filter pri horizontálnom pine */
   backdrop-filter: blur(8px) saturate(1.12);
   -webkit-backdrop-filter: blur(8px) saturate(1.12);
-  border-color: rgba(255, 255, 255, 0.09);
+  border-color: rgb(var(--fg-rgb) / 0.09);
 }
 .svc:hover, .branch-card:hover, .memoriam-card:hover {
-  background: rgba(255, 255, 255, 0.055);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: rgb(var(--fg-rgb) / 0.055);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgb(var(--fg-rgb) / 0.08);
 }
 .nonstop-inner, .quote-inner { position: relative; z-index: 1; }
 
 /* ---- shimmer na NON STOP telefóne (motív: upriamiť na kľúčovú akciu) ---- */
 .phone-primary {
-  background: linear-gradient(100deg, var(--gold) 40%, #ffffff 50%, var(--gold) 60%);
+  background: linear-gradient(100deg, var(--gold) 40%, var(--fg-strong) 50%, var(--gold) 60%);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -791,13 +900,13 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .jhud-ruler {
   position: relative;
   height: 12px;
-  background: repeating-linear-gradient(90deg, rgba(245, 245, 245, 0.16) 0 1px, transparent 1px 8px);
+  background: repeating-linear-gradient(90deg, rgb(var(--fg-rgb) / 0.16) 0 1px, transparent 1px 8px);
 }
 .jhud-fill {
   position: absolute;
   inset: 0 auto 0 0;
   width: 0%;
-  background: repeating-linear-gradient(90deg, rgba(245, 245, 245, 0.85) 0 1px, transparent 1px 8px);
+  background: repeating-linear-gradient(90deg, rgb(var(--fg-rgb) / 0.85) 0 1px, transparent 1px 8px);
   will-change: width;
 }
 .jhud-marker {
@@ -807,7 +916,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   bottom: -5px;
   width: 1px;
   background: var(--text);
-  box-shadow: 0 0 10px rgba(245, 245, 245, 0.5);
+  box-shadow: 0 0 10px rgb(var(--fg-rgb) / 0.5);
   transform: translateX(-0.5px);
   will-change: left;
 }
@@ -817,7 +926,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   top: -4px;
   bottom: -4px;
   width: 1px;
-  background: rgba(245, 245, 245, 0.38);
+  background: rgb(var(--fg-rgb) / 0.38);
 }
 /* stanice: štarty kapitol pod rulerom, klikateľné */
 .jhud-stations { position: relative; height: 20px; margin-top: 12px; }
@@ -841,14 +950,14 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 }
 .jhs-num {
   font-size: 9.5px;
-  color: rgba(245, 245, 245, 0.28);
+  color: rgb(var(--fg-rgb) / 0.28);
   font-variant-numeric: tabular-nums;
   transition: color 0.35s ease;
 }
 .jhs:hover { color: var(--muted); }
 .jhs:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
 .jhs.done { color: var(--muted); }
-.jhs.done .jhs-num { color: rgba(245, 245, 245, 0.45); }
+.jhs.done .jhs-num { color: rgb(var(--fg-rgb) / 0.45); }
 .jhs.on { color: var(--text); }
 .jhs.on .jhs-num { color: var(--text); }
 
@@ -900,7 +1009,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
   max-width: 22ch;
 }
-.jt-mid p { margin-top: 16px; color: rgba(245, 245, 245, 0.82); font-size: clamp(18.6px, 1.74vw, 22.3px); max-width: 52ch; text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5); }
+.jt-mid p { margin-top: 16px; color: rgb(var(--fg-rgb) / 0.82); font-size: clamp(18.6px, 1.74vw, 22.3px); max-width: 52ch; text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5); }
 .jt-mid .badge-pill { margin-bottom: 20px; }
 .jt-phone {
   margin-top: 22px;
@@ -935,7 +1044,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   flex-direction: column;
   justify-content: flex-end;
   padding: 26px 30px 34px;
-  border-left: 1px solid rgba(245, 245, 245, 0.4);
+  border-left: 1px solid rgb(var(--fg-rgb) / 0.4);
   overflow: hidden;
 }
 .svc-chapter-num { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
@@ -950,7 +1059,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   background-position: center;
   z-index: -1;
 }
-.svc-chapter-stone { border-radius: 18px; border: 1px solid rgba(245, 245, 245, 0.25); }
+.svc-chapter-stone { border-radius: 18px; border: 1px solid rgb(var(--fg-rgb) / 0.25); }
 @media (max-width: 900px) {
   /* mobil: vertikálny zoznam po kapitolách namiesto pásu */
   .services-track {
@@ -963,7 +1072,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   .svc { width: 100%; min-height: 0; padding: 22px 22px 52px; }
   .svc h3 { margin-top: 42px; }
   .svc-more { opacity: 1; transform: none; }
-  .svc-chapter { width: 100%; min-height: 0; padding: 34px 4px 10px; border-left: none; border-top: 1px solid rgba(245, 245, 245, 0.4); }
+  .svc-chapter { width: 100%; min-height: 0; padding: 34px 4px 10px; border-left: none; border-top: 1px solid rgb(var(--fg-rgb) / 0.4); }
   .svc-chapter-stone { padding: 34px 22px 22px; border-radius: 18px; }
 }
 
@@ -1014,8 +1123,8 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   display: block;
   width: 7px; height: 12px;
   border-radius: 50% 50% 44% 44%;
-  background: radial-gradient(circle at 50% 78%, #ffffff 0%, #cfcfcf 55%, rgba(207, 207, 207, 0) 100%);
-  box-shadow: 0 0 12px 3px rgba(245, 245, 245, 0.5);
+  background: radial-gradient(circle at 50% 78%, var(--fg-strong) 0%, #cfcfcf 55%, rgba(207, 207, 207, 0) 100%);
+  box-shadow: 0 0 12px 3px rgb(var(--fg-rgb) / 0.5);
   opacity: 0;
   transform: scaleY(0.4);
   transform-origin: 50% 100%;
@@ -1119,7 +1228,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   flex-direction: column;
   gap: 18px;
 }
-.review p { font-size: 19.2px; line-height: 1.65; color: rgba(245, 245, 245, 0.86); }
+.review p { font-size: 19.2px; line-height: 1.65; color: rgb(var(--fg-rgb) / 0.86); }
 .review footer { font-size: 13px; letter-spacing: 0.08em; color: var(--dim); }
 @media (max-width: 900px) {
   .reviews-grid { grid-template-columns: 1fr; }
@@ -1160,7 +1269,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .fleetband-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12, 13, 15, 0.78), rgba(12, 13, 15, 0.2) 65%); }
 .fleetband-content { position: relative; z-index: 1; }
 .fleetband-content h2 { font-size: clamp(28px, 3.6vw, 48px); max-width: 14ch; }
-.fleetband-content p { margin-top: 16px; color: rgba(245, 245, 245, 0.8); max-width: 46ch; font-size: 19.2px; }
+.fleetband-content p { margin-top: 16px; color: rgb(var(--fg-rgb) / 0.8); max-width: 46ch; font-size: 19.2px; }
 
 @media (max-width: 900px) {
   .story-grid { grid-template-columns: 1fr; }
@@ -1197,13 +1306,13 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .step-body li::before { content: ''; position: absolute; left: 2px; top: 17px; width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--gold); }
 .step-note { margin-top: 16px; color: var(--dim); font-size: 17.4px; font-style: italic; max-width: 62ch; }
 .step-tel { display: inline-block; margin-top: 16px; font-size: clamp(22px, 2.4vw, 30px); font-weight: 660; font-variation-settings: var(--wide); color: var(--gold); }
-.step-tel:hover { color: #ffffff; }
+.step-tel:hover { color: var(--fg-strong); }
 
 /* ---- podstránky: kontakt ---- */
 .contact-phones { display: flex; flex-wrap: wrap; gap: clamp(30px, 6vw, 90px); margin-top: clamp(36px, 6vh, 60px); }
 .cp-label { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
 .cp-num { display: block; margin-top: 10px; font-size: clamp(34px, 4.4vw, 62px); font-weight: 680; font-variation-settings: var(--wide); color: var(--gold); letter-spacing: -0.01em; transition: color 0.3s ease; }
-.cp-num:hover { color: #ffffff; }
+.cp-num:hover { color: var(--fg-strong); }
 .contact-mail { display: inline-block; margin-top: clamp(28px, 5vh, 44px); font-size: clamp(17px, 1.8vw, 22px); color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 4px; transition: color 0.3s ease; }
 .contact-mail:hover { color: var(--gold); }
 .billing { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(105px, 13.5vh, 165px) 0; }
@@ -1222,27 +1331,27 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* ---- podstránky: opustili nás ---- */
 .memorial-note { margin-top: 44px; color: var(--dim); font-size: 17.4px; max-width: 62ch; }
 .memoriam-link { display: block; color: inherit; }
-.memoriam-link:hover h3 { color: #ffffff; }
+.memoriam-link:hover h3 { color: var(--fg-strong); }
 
 /* ---- parte detail: memoriál ---- */
 .phero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; background: var(--bg); }
-.phero-glow { position: absolute; left: 50%; top: 36%; width: min(74vw, 920px); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgba(245, 245, 245, 0.11), rgba(245, 245, 245, 0.035) 42%, transparent 70%); opacity: 0.3; transition: opacity 1.4s ease; pointer-events: none; }
+.phero-glow { position: absolute; left: 50%; top: 36%; width: min(74vw, 920px); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgb(var(--fg-rgb) / 0.11), rgb(var(--fg-rgb) / 0.035) 42%, transparent 70%); opacity: 0.3; transition: opacity 1.4s ease; pointer-events: none; }
 .phero.lit .phero-glow { opacity: 1; animation: pheroBreath 5.5s ease-in-out infinite alternate; }
 @keyframes pheroBreath { from { transform: translate(-50%, -50%) scale(1); } to { transform: translate(-50%, -50%) scale(1.07); } }
-.phero-mark { position: absolute; right: -4%; bottom: -12%; font-size: clamp(280px, 44vw, 640px); line-height: 1; font-weight: 680; font-variation-settings: var(--wide); color: rgba(245, 245, 245, 0.028); pointer-events: none; user-select: none; }
+.phero-mark { position: absolute; right: -4%; bottom: -12%; font-size: clamp(280px, 44vw, 640px); line-height: 1; font-weight: 680; font-variation-settings: var(--wide); color: rgb(var(--fg-rgb) / 0.028); pointer-events: none; user-select: none; }
 .phero-inner { position: relative; z-index: 1; width: 100%; text-align: center; padding: 150px 24px 90px; }
 .parte-back { position: absolute; z-index: 2; top: 104px; left: clamp(24px, 4vw, 64px); font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
 .parte-back:hover { color: var(--gold); }
 .phero-candle { display: inline-flex; flex-direction: column; align-items: center; margin-top: 34px; background: none; border: 0; padding: 6px 14px; cursor: pointer; font-family: inherit; color: var(--dim); }
 .phero-flame { position: relative; display: block; width: 30px; height: 48px; }
-.phero-flame i { position: absolute; inset: 0; display: block; border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 50% 76%, #ffffff 0%, #e6e6e6 45%, rgba(230, 230, 230, 0) 78%); box-shadow: 0 0 34px 10px rgba(245, 245, 245, 0.35), 0 0 90px 30px rgba(245, 245, 245, 0.12); opacity: 0.13; transform: scaleY(0.34); transform-origin: 50% 96%; transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 1.3, 0.4, 1); }
+.phero-flame i { position: absolute; inset: 0; display: block; border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 50% 76%, var(--fg-strong) 0%, #e6e6e6 45%, rgba(230, 230, 230, 0) 78%); box-shadow: 0 0 34px 10px rgb(var(--fg-rgb) / 0.35), 0 0 90px 30px rgb(var(--fg-rgb) / 0.12); opacity: 0.13; transform: scaleY(0.34); transform-origin: 50% 96%; transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 1.3, 0.4, 1); }
 .phero.lit .phero-flame i { opacity: 1; transform: scaleY(1); animation: pheroFlick 1.9s ease-in-out infinite alternate; }
 @keyframes pheroFlick {
   0% { transform: scaleY(1) translateX(0) skewX(0); }
   45% { transform: scaleY(0.9) translateX(0.6px) skewX(1.4deg); }
   100% { transform: scaleY(1.05) translateX(-0.6px) skewX(-1.2deg); }
 }
-.phero-wick { display: block; width: 2px; height: 26px; margin: -6px auto 0; border-radius: 2px; background: linear-gradient(180deg, rgba(245, 245, 245, 0.65), rgba(245, 245, 245, 0.08)); }
+.phero-wick { display: block; width: 2px; height: 26px; margin: -6px auto 0; border-radius: 2px; background: linear-gradient(180deg, rgb(var(--fg-rgb) / 0.65), rgb(var(--fg-rgb) / 0.08)); }
 .phero-label { display: block; margin-top: 16px; font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase; transition: color 0.3s ease; }
 .phero-candle:hover .phero-label { color: var(--gold); }
 .phero.lit .phero-candle { cursor: default; }
@@ -1279,7 +1388,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* ---- Pohrebné služby: foto karty, odkazové karty, kotvy ---- */
 .svcgroup, .first-card { scroll-margin-top: 90px; }
 a.first-card { display: block; transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
-a.first-card:hover { border-color: rgba(245, 245, 245, 0.4); transform: translateY(-5px); }
+a.first-card:hover { border-color: rgb(var(--fg-rgb) / 0.4); transform: translateY(-5px); }
 .fc-go {
   display: inline-block;
   margin-top: 14px;
@@ -1326,7 +1435,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   padding: 5px 12px;
 }
 .news-go { display: inline-block; margin-top: 14px; font-size: 13.5px; font-weight: 600; color: var(--gold); transition: color 0.3s ease; }
-.news-go:hover { color: #ffffff; }
+.news-go:hover { color: var(--fg-strong); }
 
 /* ---- Parte: odkazy pod rozlúčkou ---- */
 .prozl-links { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
@@ -1347,7 +1456,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   color: var(--muted);
   transition: border-color 0.3s ease, color 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.situ-chip:hover { border-color: rgba(245, 245, 245, 0.45); color: var(--text); transform: translateY(-2px); }
+.situ-chip:hover { border-color: rgb(var(--fg-rgb) / 0.45); color: var(--text); transform: translateY(-2px); }
 
 .callbar {
   position: fixed;
@@ -1365,7 +1474,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .callbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 12px 0; }
 .callbar-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
 .callbar-tel { display: inline-flex; align-items: center; gap: 10px; font-size: clamp(18px, 2vw, 22px); font-weight: 680; font-variation-settings: var(--wide); color: var(--gold); transition: color 0.3s ease; }
-.callbar-tel:hover { color: #ffffff; }
+.callbar-tel:hover { color: var(--fg-strong); }
 @media (max-width: 560px) {
   .callbar-label { display: none; }
   .callbar-inner { justify-content: center; }
@@ -1389,12 +1498,12 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   text-align: center;
   transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.team-card:hover { border-color: rgba(245, 245, 245, 0.35); transform: translateY(-5px); }
+.team-card:hover { border-color: rgb(var(--fg-rgb) / 0.35); transform: translateY(-5px); }
 .team-photo {
   width: 96px; height: 96px;
   margin: 0 auto 20px;
   border-radius: 50%;
-  border: 1px solid rgba(245, 245, 245, 0.35);
+  border: 1px solid rgb(var(--fg-rgb) / 0.35);
   background: radial-gradient(circle at 35% 30%, #22242a, #131418);
   display: grid;
   place-items: center;
@@ -1432,6 +1541,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .page-light {
   --lc: #f9f9f9;               /* svetlý canvas = pozadie produktových fotiek */
   --lc2: #f1f0ee;              /* teplý parchment na striedanie dlaždíc */
+  /* .page-light je vlastný svetlý kontext (šperky), nezávislý od data-theme,
+     preto tu ostáva literál a nie --on-accent */
   --link-ink: #0c0d0f;
   --lmuted: rgba(12, 13, 15, 0.6);
   --ldim: rgba(12, 13, 15, 0.38);
@@ -1502,7 +1613,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 
 .tile-contact { margin-top: 30px; }
 .tile-contact .phone-big { display: inline-block; font-size: clamp(28px, 3.2vw, 40px); font-weight: 680; font-variation-settings: var(--wide); color: var(--text); transition: color 0.3s ease; }
-.tile-contact .phone-big:hover { color: #ffffff; }
+.tile-contact .phone-big:hover { color: var(--fg-strong); }
 .tile-contact .addr { margin-top: 14px; font-size: 14px; color: var(--dim); letter-spacing: 0.04em; }
 
 @media (max-width: 900px) {
@@ -1546,7 +1657,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   color: var(--text);
   transition: color 0.3s ease;
 }
-.faq-item > summary:hover .faq-q { color: #ffffff; }
+.faq-item > summary:hover .faq-q { color: var(--fg-strong); }
 
 /* znamienko: vodorovná čiara zostáva, zvislá pri otvorení zmizne */
 .faq-mark { position: relative; flex: 0 0 16px; height: 16px; margin-top: 5px; }
@@ -1611,7 +1722,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .roz-kde { color: var(--muted); font-size: 14.5px; line-height: 1.5; }
 .roz-meno { color: var(--text); font-weight: 620; justify-self: end; text-align: right; }
 .roz-go { color: var(--dim); justify-self: end; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.3s ease; }
-.roz-row:hover .roz-kedy { color: #ffffff; }
+.roz-row:hover .roz-kedy { color: var(--fg-strong); }
 .roz-row:hover .roz-go { transform: translateX(5px); color: var(--gold); }
 
 /* riadok rozlúčky na karte sa už zobrazuje len pre nadchádzajúce — jemné zvýraznenie */
@@ -1734,7 +1845,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 .album-caption h2 { font-size: clamp(26px, 3.4vw, 44px); max-width: 16ch; }
 .album-line { font-size: clamp(26px, 3.22vw, 39.7px); font-weight: 640; font-variation-settings: var(--wide); line-height: 1.2; max-width: 20ch; }
-.album-caption p:not(.album-line) { margin-top: 14px; color: rgba(245, 245, 245, 0.85); max-width: 54ch; font-size: 19.2px; line-height: 1.65; }
+.album-caption p:not(.album-line) { margin-top: 14px; color: rgb(var(--fg-rgb) / 0.85); max-width: 54ch; font-size: 19.2px; line-height: 1.65; }
 .album-caption .micro-label { display: block; margin-bottom: 14px; color: var(--gold-soft); }
 
 /* ---- kronika: striedavé dvojice okolo zvislej osi (vzor Slash) ----
@@ -1756,8 +1867,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   display: block;
   width: 100%;
   height: 0%;
-  background: linear-gradient(180deg, rgba(245, 245, 245, 0.25), var(--gold));
-  box-shadow: 0 0 12px rgba(245, 245, 245, 0.3);
+  background: linear-gradient(180deg, rgb(var(--fg-rgb) / 0.25), var(--gold));
+  box-shadow: 0 0 12px rgb(var(--fg-rgb) / 0.3);
 }
 .kron-item {
   position: relative;
@@ -1781,7 +1892,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   height: 9px;
   border-radius: 50%;
   background: var(--bg2);
-  border: 1px solid rgba(245, 245, 245, 0.3);
+  border: 1px solid rgb(var(--fg-rgb) / 0.3);
   transition: background 0.4s ease, border-color 0.4s ease;
 }
 .kron-dot.on { background: var(--gold); border-color: var(--gold); }
@@ -1906,7 +2017,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 /* dvojtónový nadpis ako v predlohe, len bez farby: biela do polopriehľadnej */
 .svc-title-grad {
-  background: linear-gradient(90deg, var(--text), rgba(245, 245, 245, 0.62));
+  background: linear-gradient(90deg, var(--text), rgb(var(--fg-rgb) / 0.62));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1941,7 +2052,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   border-radius: 24px;
   transition: border-color 0.4s ease, background 0.4s ease;
 }
-.svc-card:hover, .svc-card:focus-visible { border-color: rgba(245, 245, 245, 0.28); }
+.svc-card:hover, .svc-card:focus-visible { border-color: rgb(var(--fg-rgb) / 0.28); }
 .svc-card-title {
   position: relative;
   z-index: 1;
@@ -2045,7 +2156,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   background: conic-gradient(
     from calc((var(--glow-start, 0) - var(--glow-spread, 34)) * 1deg),
     transparent 0deg,
-    rgba(245, 245, 245, 1) calc(var(--glow-spread, 34) * 1deg),
+    rgb(var(--fg-rgb) / 1) calc(var(--glow-spread, 34) * 1deg),
     transparent calc(var(--glow-spread, 34) * 2deg)
   );
   opacity: var(--glow-active, 0);
@@ -2057,7 +2168,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   mask-composite: exclude;
   /* bloom: drop-shadow sa počíta z už maskovaných pixelov, takže žiara
      kopíruje tvar oblúka. Predloha to rieši blur propom. */
-  filter: drop-shadow(0 0 5px rgba(245, 245, 245, 0.6)) drop-shadow(0 0 14px rgba(245, 245, 245, 0.3));
+  filter: drop-shadow(0 0 5px rgb(var(--fg-rgb) / 0.6)) drop-shadow(0 0 14px rgb(var(--fg-rgb) / 0.3));
 }
 @media (prefers-reduced-motion: reduce) {
   .glow-ring { display: none; }
@@ -2123,7 +2234,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   position: relative;
   background-color: #131417;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='11'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.10 0 0 0 0 0.104 0 0 0 0 0.112 1 1 1 0 -1.35'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)' opacity='0.9'/%3E%3C/svg%3E");
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgb(var(--fg-rgb) / 0.07);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 22px; padding: 40px 28px;
 }
@@ -2132,7 +2243,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   border-radius: 8px; border: 1px solid var(--line);
   background-color: #101114;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='4'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.085 0 0 0 0 0.088 0 0 0 0 0.095 1 1 1 0 -1.38'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)' opacity='0.9'/%3E%3C/svg%3E");
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgb(var(--fg-rgb) / 0.06);
 }
 /* striebrené písmo v kameni: svetlá výplň + tmavý horný tieň (gravír) */
 .kam-carved {
@@ -2156,13 +2267,13 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   transition: border-color 0.3s ease;
 }
 .kam-inscribe input::placeholder { color: var(--dim); }
-.kam-inscribe input:hover { border-color: rgba(245, 245, 245, 0.2); }
-.kam-inscribe input:focus { outline: none; border-color: rgba(245, 245, 245, 0.4); }
+.kam-inscribe input:hover { border-color: rgb(var(--fg-rgb) / 0.2); }
+.kam-inscribe input:focus { outline: none; border-color: rgb(var(--fg-rgb) / 0.4); }
 
 /* ---- vzorník žuly ---- */
 .kam-stones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .kam-stone { border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--panel); transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.35s ease; }
-.kam-stone:hover { transform: translateY(-5px); border-color: rgba(245, 245, 245, 0.35); }
+.kam-stone:hover { transform: translateY(-5px); border-color: rgb(var(--fg-rgb) / 0.35); }
 .kam-stone-chip { height: 150px; border-bottom: 1px solid var(--line); }
 .kam-stone-body { padding: 20px 22px; }
 .kam-stone-body h3 { font-size: 17.5px; font-weight: 640; font-variation-settings: var(--wide); }
