@@ -25,22 +25,29 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
   </section>
 
   <!-- ============ ČÍSLA ============
-       Zámerne hneď pod hero: subhero má min-height 72vh, takže prvý riadok
-       vykúka nad ohybom a počítadlo sa rozbehne pri prvom pohybe scrollu.
-       Monumentálne riadky namiesto troch stĺpčekov (vzor: Instrument). -->
+       Zámerne hneď pod hero: subhero má min-height 72vh, takže pás vykúka nad
+       ohybom a počítadlo sa rozbehne pri prvom pohybe scrollu.
+       Tichý pás v troch stĺpcoch, nie monumentálne riadky. Čísla nesú váhu
+       obsahu, nie plochy. -->
   <section class="stats">
     <div class="container">
-      <div class="stat-row" data-reveal>
-        <div class="stat-head"><span class="stat-num"><span data-count="3000">0</span>+</span> <span class="stat-word">pohrebov</span></div>
-        <p class="stat-note">Vybavených od vzniku firmy v máji 2018.</p>
-      </div>
-      <div class="stat-row" data-reveal>
-        <div class="stat-head"><span class="stat-num"><span data-count="3">0</span></span> <span class="stat-word">pobočky</span></div>
-        <p class="stat-note">Poprad, Spišská Belá a Liptovský Mikuláš.</p>
-      </div>
-      <div class="stat-row" data-reveal>
-        <div class="stat-head"><span class="stat-num">24/7</span> <span class="stat-word">nonstop</span></div>
-        <p class="stat-note">Prevoz zosnulých v ktorúkoľvek hodinu, aj v noci a cez sviatky.</p>
+      <div class="stat-strip" data-statstrip>
+        <i class="stat-rule" aria-hidden="true"></i>
+        <div class="stat">
+          <span class="stat-num"><span data-count="3000">0</span>+</span>
+          <span class="stat-word">pohrebov</span>
+          <p class="stat-note">Vybavených od vzniku firmy v máji 2018.</p>
+        </div>
+        <div class="stat">
+          <span class="stat-num"><span data-count="3">0</span></span>
+          <span class="stat-word">pobočky</span>
+          <p class="stat-note">Poprad, Spišská Belá a Liptovský Mikuláš.</p>
+        </div>
+        <div class="stat">
+          <span class="stat-num">24/7</span>
+          <span class="stat-word">nonstop</span>
+          <p class="stat-note">Prevoz zosnulých v ktorúkoľvek hodinu, aj v noci a cez sviatky.</p>
+        </div>
       </div>
     </div>
   </section>

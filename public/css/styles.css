@@ -565,37 +565,71 @@ body {
 }
 
 /* ---- stats ---- */
-/* ---- čísla: monumentálne riadky (vzor Instrument) ----
-   Sedia hneď pod hero, takže prvý riadok vykúka nad ohybom. Číslo a slovo
-   na jednom riadku, vpravo vysvetlivka, medzi riadkami hairline. */
-.stats { background: var(--bg); padding: clamp(70px, 10vh, 120px) 0; border-top: 1px solid var(--line); }
-.stat-row {
+/* ---- čísla: tichý pás v hairline mriežke ----
+   Predtým tu boli tri monumentálne riadky s číslami do 104 px. Prevalcovali
+   hero nad sebou aj Náš príbeh pod sebou. Teraz sú čísla v pokornej veľkosti
+   v troch stĺpcoch a všetok pohyb nesú linky: vodorovná sa kreslí zľava,
+   zvislé delidlá rastú zhora. Ich škálu drží --divh na kontejneri, aby sa
+   dala animovať jedným tweenom (na ::before z GSAP nedosiahneš). */
+.stats { background: var(--bg); padding: clamp(56px, 8vh, 96px) 0; }
+.stat-strip {
+  --stat-gap: clamp(24px, 4vw, 64px);
+  --divh: 1;
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr minmax(200px, 340px);
-  gap: clamp(20px, 3vw, 56px);
-  align-items: baseline;
-  padding: clamp(22px, 3.2vh, 38px) 0;
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--stat-gap);
+  padding-top: clamp(26px, 3.4vh, 40px);
 }
-.stat-row:first-child { border-top: 1px solid var(--line); }
-.stat-head { display: flex; align-items: baseline; gap: clamp(12px, 1.6vw, 26px); flex-wrap: wrap; }
+.stat-rule {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--line);
+  transform-origin: left center;
+}
+.stat { position: relative; }
+.stat + .stat::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--stat-gap) / -2);
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--line);
+  transform: scaleY(var(--divh));
+  transform-origin: top center;
+}
 .stat-num {
-  font-size: clamp(48px, 7.4vw, 104px);
-  font-weight: 680;
-  font-variation-settings: var(--xwide);
-  line-height: 0.95;
+  display: block;
+  font-size: clamp(28px, 3.2vw, 42px);
+  font-weight: 600;
+  font-variation-settings: var(--wide);
+  line-height: 1;
   color: var(--text);
   font-variant-numeric: tabular-nums;
   /* počítadlo dobieha s doznievajúcim rozostrením — pohyb, nie preblik */
   will-change: filter;
 }
 .stat-word {
-  font-size: clamp(20px, 2.4vw, 34px);
-  font-weight: 640;
-  font-variation-settings: var(--wide);
+  display: block;
+  margin-top: 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   color: var(--muted);
 }
-.stat-note { color: var(--dim); font-size: 15.5px; line-height: 1.6; }
+.stat-note {
+  margin-top: 14px;
+  max-width: 30ch;
+  /* --muted, nie --dim: pri 14,5 px by 0.35 alfa spadla pod čitateľný kontrast */
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
 
 /* ---- branches ---- */
 .branches { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
@@ -770,8 +804,13 @@ body {
   #site-nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
   .branch-grid { grid-template-columns: 1fr; }
-  /* čísla na mobile: vysvetlivka pod číslo, nie vedľa */
-  .stat-row { grid-template-columns: 1fr; gap: 10px; align-items: start; }
+  /* čísla na mobile: pod sebou, riadky delí hairline namiesto zvislých liniek */
+  .stat-strip { grid-template-columns: 1fr; gap: 0; padding-top: 0; }
+  .stat-rule { display: none; }
+  .stat { padding: 18px 0; border-top: 1px solid var(--line); }
+  .stat + .stat::before { display: none; }
+  .stat-num { font-size: 34px; }
+  .stat-note { max-width: none; }
   .scroll-hint { right: 22px; }
 
   /* services: no pin on mobile — native horizontal swipe */

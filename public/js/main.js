@@ -101,7 +101,9 @@
     if (nav) navSolidFallback();
     // show everything, count nothing
     document.querySelectorAll('[data-count]').forEach(function (el) {
-      el.textContent = el.getAttribute('data-count');
+      /* fmtCount je deklarácia funkcie nižšie v tom istom IIFE, hoisting ju
+         sprístupní aj tu — bez toho by tisíce ostali bez medzery (3000). */
+      el.textContent = fmtCount(parseInt(el.getAttribute('data-count'), 10) || 0);
     });
     var qt = document.getElementById('quote-text');
     if (qt) qt.style.opacity = '1';
@@ -490,17 +492,35 @@
     var trigger = { trigger: el, start: 'top 95%', once: true };
     gsap.to(obj, {
       v: to,
-      duration: 1.6,
+      duration: 1.25,
       ease: 'power2.out',
       snap: { v: 1 },
       onUpdate: function () { el.textContent = fmtCount(obj.v); },
       scrollTrigger: trigger
     });
     gsap.fromTo(el,
-      { filter: 'blur(7px)', opacity: 0.55 },
-      { filter: 'blur(0px)', opacity: 1, duration: 1.5, ease: 'power2.out', scrollTrigger: trigger }
+      { filter: 'blur(5px)', opacity: 0.6 },
+      { filter: 'blur(0px)', opacity: 1, duration: 1.2, ease: 'power2.out', scrollTrigger: trigger }
     );
   });
+
+  /* ---------- čísla: tichý pás ----------
+     Vodorovná linka sa kreslí zľava, zvislé delidlá rastú zhora (škáluje ich
+     --divh na kontejneri, ::before sa z GSAP osloviť nedá) a stĺpce dobiehajú
+     staggerom. Posuny sú zámerne malé: sekcia má byť pokojná, nie efektná. */
+  var statStrip = document.querySelector('[data-statstrip]');
+  if (statStrip) {
+    gsap.timeline({ scrollTrigger: { trigger: statStrip, start: 'top 90%', once: true } })
+      .fromTo(statStrip.querySelector('.stat-rule'),
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.05, ease: 'power3.inOut' })
+      .fromTo(statStrip.querySelectorAll('.stat'),
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.85, stagger: 0.11, ease: 'power3.out' }, 0.15)
+      .fromTo(statStrip,
+        { '--divh': 0 },
+        { '--divh': 1, duration: 0.9, ease: 'power2.out' }, 0.28);
+  }
 
   /* ---------- svetelný oblúk na kartách (21st.dev glowing-effect) ----------
      Mechanika predlohy: uhol od stredu karty ku kurzoru sa animuje do
