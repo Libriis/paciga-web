@@ -1099,6 +1099,8 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 .fleetband { position: relative; min-height: 56vh; display: flex; align-items: center; overflow: hidden; }
 .fleetband-media { position: absolute; inset: 0; }
+/* rezerva na parallax, rovnako ako album pásy vyššie na stránke */
+.fleetband-media > span { position: absolute; inset: -9% 0; display: block; }
 .fleetband-media img { width: 100%; height: 100%; object-fit: cover; }
 .fleetband-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12, 13, 15, 0.78), rgba(12, 13, 15, 0.2) 65%); }
 .fleetband-content { position: relative; z-index: 1; }
@@ -1680,40 +1682,66 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .album-caption p:not(.album-line) { margin-top: 14px; color: rgba(245, 245, 245, 0.85); max-width: 54ch; font-size: 19.2px; line-height: 1.65; }
 .album-caption .micro-label { display: block; margin-bottom: 14px; color: var(--gold-soft); }
 
-/* ---- kronika: roky na zvislej osi ---- */
+/* ---- kronika: striedavé dvojice okolo zvislej osi (vzor Slash) ----
+   Os sa plní so scrollom rovnako ako tracing beam v „Čo spraviť ako prvé"
+   a dráha jazdy; uzly sa rozsvietia, keď ich plniaca sa os prejde. */
 .kronika { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; }
-.kron { --rail: clamp(34px, 5vw, 70px); position: relative; border-left: 1px solid var(--line); padding-left: var(--rail); margin-left: 4px; }
+.kron { position: relative; }
+.kron-rail {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+  transform: translateX(-0.5px);
+  overflow: hidden;
+}
+#kron-fill {
+  display: block;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg, rgba(245, 245, 245, 0.25), var(--gold));
+  box-shadow: 0 0 12px rgba(245, 245, 245, 0.3);
+}
 .kron-item {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(170px, 250px) 1fr;
-  gap: 18px 48px;
+  grid-template-columns: 1fr clamp(48px, 7vw, 110px) 1fr;
   align-items: center;
-  padding: clamp(36px, 5.4vh, 58px) 0;
+  padding: clamp(30px, 4.6vh, 60px) 0;
 }
-.kron-item + .kron-item { border-top: 1px solid var(--line); }
+/* text a fotka si vymieňajú strany; v DOM ide text vždy prvý */
+.kron-body { grid-column: 1; text-align: right; }
+.kron-body p { margin-left: auto; }
+.kron-item .photo-slot { grid-column: 3; }
+.kron-flip .kron-body { grid-column: 3; text-align: left; }
+.kron-flip .kron-body p { margin-left: 0; margin-right: auto; }
+.kron-flip .photo-slot { grid-column: 1; }
 /* uzol na osi */
-.kron-item::before {
-  content: '';
-  position: absolute;
-  left: calc(-1 * var(--rail));
-  top: 50%;
-  width: 7px; height: 7px;
+.kron-dot {
+  grid-column: 2;
+  justify-self: center;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: var(--gold-dim);
-  transform: translate(-50%, -50%);
+  background: var(--bg2);
+  border: 1px solid rgba(245, 245, 245, 0.3);
+  transition: background 0.4s ease, border-color 0.4s ease;
 }
-/* „Dnes" žije: uzol na osi pulzuje rovnako ako NON STOP bodka */
-.kron-now::before { background: var(--gold); animation: pulse 2.2s infinite; }
+.kron-dot.on { background: var(--gold); border-color: var(--gold); }
+/* „Dnes" žije: uzol pulzuje rovnako ako NON STOP bodka */
+.kron-now .kron-dot.on { animation: pulse 2.2s infinite; }
 .kron-year {
-  font-size: clamp(48px, 6.4vw, 88px);
+  font-size: clamp(40px, 5.4vw, 74px);
   font-weight: 680;
   font-variation-settings: var(--xwide);
   line-height: 1;
   letter-spacing: -0.01em;
+  margin-bottom: 14px;
 }
 .kron-body h3 { font-size: 20px; margin-bottom: 8px; }
-.kron-body p { color: var(--muted); line-height: 1.7; max-width: 56ch; }
+.kron-body p { color: var(--muted); line-height: 1.7; max-width: 44ch; }
 
 /* ---- prvenstvá: hairline zoznam namiesto kariet ---- */
 .prvenstva { background: var(--bg); border-top: 1px solid var(--line); padding: clamp(150px, 21vh, 255px) 0; }
@@ -1763,9 +1791,22 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .ed-flip .ed-text { order: 0; }
 }
 
+@media (max-width: 860px) {
+  /* kronika na mobile: os vľavo, text a fotka pod sebou v jednom stĺpci */
+  .kron-rail { left: 4px; }
+  .kron-item { grid-template-columns: 1fr; gap: 18px; padding-left: clamp(26px, 8vw, 44px); }
+  .kron-body,
+  .kron-flip .kron-body,
+  .kron-item .photo-slot,
+  .kron-flip .photo-slot { grid-column: 1; text-align: left; }
+  .kron-body p { margin-left: 0; margin-right: 0; }
+  /* grid-column: auto je nutné — absolútne pozicovaná položka mriežky si
+     inak berie za obalový blok svoju bunku (stĺpec 2), nie celý riadok,
+     a uzol by odletel k pravému okraju */
+  .kron-dot { grid-column: auto; position: absolute; left: 4px; top: 50%; transform: translate(-50%, -50%); }
+}
+
 @media (max-width: 760px) {
-  .kron { --rail: clamp(22px, 6vw, 32px); }
-  .kron-item { grid-template-columns: 1fr; gap: 10px; }
   .album-band { height: clamp(400px, 64vh, 560px); }
 }
 

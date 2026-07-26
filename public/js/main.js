@@ -93,6 +93,9 @@
     var fsFillStatic = document.getElementById('fs-beam-fill');
     if (fsFillStatic) fsFillStatic.style.width = '100%';
     document.querySelectorAll('.fs-beam-dot').forEach(function (d) { d.classList.add('on'); });
+    var kronFillStatic = document.getElementById('kron-fill');
+    if (kronFillStatic) kronFillStatic.style.height = '100%';
+    document.querySelectorAll('.kron-dot').forEach(function (d) { d.classList.add('on'); });
     return;
   }
 
@@ -418,6 +421,34 @@
     });
   }
 
+  /* ---------- kronika: plniaca sa os ----------
+     Zrkadlo tracing beamu vyššie, len zvislo. Uzol sa rozsvieti, keď ho
+     čelo osi prejde; porovnáva sa v pixeloch, lebo riadky nie sú rovnako
+     vysoké a percentá by uzly rozsvecovali skôr, než k nim os dorazí. */
+  var kronFill = document.getElementById('kron-fill');
+  if (kronFill) {
+    var kronRail = kronFill.parentNode;
+    var kronDots = gsap.utils.toArray('.kron-dot');
+    gsap.to(kronFill, {
+      height: '100%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.kron',
+        start: 'top 72%',
+        end: 'bottom 72%',
+        scrub: 0.4,
+        onUpdate: function (self) {
+          var railTop = kronRail.getBoundingClientRect().top;
+          var head = railTop + kronRail.offsetHeight * self.progress;
+          kronDots.forEach(function (d) {
+            var r = d.getBoundingClientRect();
+            d.classList.toggle('on', head >= r.top + r.height / 2);
+          });
+        }
+      }
+    });
+  }
+
   /* ---------- generic reveals ---------- */
   gsap.utils.toArray('[data-reveal]').forEach(function (el) {
     gsap.from(el, {
@@ -528,7 +559,7 @@
       gsap.fromTo(ph, { yPercent: -7 }, {
         yPercent: 7,
         ease: 'none',
-        scrollTrigger: { trigger: ph.closest('.branch-card, .album-band'), start: 'top bottom', end: 'bottom top', scrub: true }
+        scrollTrigger: { trigger: ph.closest('.branch-card, .album-band, .fleetband'), start: 'top bottom', end: 'bottom top', scrub: true }
       });
     });
 

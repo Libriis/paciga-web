@@ -94,26 +94,44 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
         <h2 data-textreveal>Naša cesta</h2>
         <div class="gold-line" data-line aria-hidden="true"></div>
       </div>
+      <!-- Striedavé dvojice okolo zvislej osi; os sa plní so scrollom a uzly
+           sa rozsvietia, keď ich prejde. Fotky sú zatiaľ placeholdery. -->
       <div class="kron">
+        <div class="kron-rail" aria-hidden="true"><i id="kron-fill"></i></div>
+
         <div class="kron-item" data-reveal>
-          <div class="kron-year">2016</div>
           <div class="kron-body">
+            <div class="kron-year">2016</div>
             <h3>Vlastné prenosné chladenie</h3>
             <p>Na výstave Slovak Funeral sme predstavili vlastnú technológiu prenosného chladenia. Ako prví v regióne.</p>
           </div>
+          <span class="kron-dot" aria-hidden="true"></span>
+          <div class="photo-slot ps-43" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Archív: stánok na výstave Slovak Funeral 2016</em>
+          </div>
         </div>
-        <div class="kron-item" data-reveal>
-          <div class="kron-year">2018</div>
+
+        <div class="kron-item kron-flip" data-reveal>
           <div class="kron-body">
+            <div class="kron-year">2018</div>
             <h3>Vznik spoločnosti Paciga</h3>
             <p>24. mája 2018 sme v Spišskej Belej nadviazali na spoločnosť Archa Belá a začali písať vlastný príbeh.</p>
           </div>
+          <span class="kron-dot" aria-hidden="true"></span>
+          <div class="photo-slot ps-43" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Archív: prvá prevádzka v Spišskej Belej</em>
+          </div>
         </div>
+
         <div class="kron-item kron-now" data-reveal>
-          <div class="kron-year">Dnes</div>
           <div class="kron-body">
+            <div class="kron-year">Dnes</div>
             <h3>Tri mestá pod Tatrami</h3>
             <p>Poprad, Spišská Belá a Liptovský Mikuláš. Sme pri vás každý deň, v ktorúkoľvek hodinu.</p>
+          </div>
+          <span class="kron-dot" aria-hidden="true"></span>
+          <div class="photo-slot ps-43" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Tím pred pobočkou v Poprade, dnes</em>
           </div>
         </div>
       </div>
@@ -211,8 +229,8 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
 
   <!-- ============ FLOTILA ============ -->
   <section class="fleetband">
-    <div class="fleetband-media" aria-hidden="true">
-      <img src="/assets/journey-poster.jpg" alt="" loading="lazy" decoding="async">
+    <div class="fleetband-media" data-parallax aria-hidden="true">
+      <span><img src="/assets/journey-poster.jpg" alt="" loading="lazy" decoding="async"></span>
       <div class="fleetband-shade"></div>
     </div>
     <div class="container fleetband-content">
