@@ -138,52 +138,6 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
     </div>
   </section>
 
-  <!-- ============ RECENZIE (svetlá sekcia) ============ -->
-  <section class="reviews" id="recenzie">
-    <div class="container">
-      <div class="reviews-head">
-        <div class="stars" aria-hidden="true">★★★★★</div>
-        <h2 data-textreveal>Slová rodín, ktoré sme sprevádzali.</h2>
-        <p data-textreveal>Recenzie z profilu Google.</p>
-      </div>
-      <div class="reviews-rail" data-reveal>
-        <div class="reviews-rail-track">
-          {[0, 1].map((dup) => (
-            <div class="reviews-set" aria-hidden={dup === 1 ? 'true' : undefined}>
-              {RECENZIE_RAIL.map((r) => (
-                <blockquote class="review rail-card">
-                  <p>„{r.t}“</p>
-                  <footer>{r.m}</footer>
-                </blockquote>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-      <p class="reviews-more" data-reveal>
-        <a class="link-underline gold" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
-      </p>
-    </div>
-  </section>
-
-  <!-- ============ NONSTOP callout ============ -->
-  <section class="nonstop">
-    <div class="container nonstop-inner">
-      <div class="nonstop-left">
-        <div class="gold-rule" data-line aria-hidden="true"></div>
-        <div>
-          <div class="nonstop-title" data-reveal>Potrebujete pomôcť práve teraz?</div>
-          <div class="nonstop-sub" data-reveal>NON STOP prevoz zosnulých. Sme pri vás v ktorúkoľvek hodinu, aj v noci a cez víkendy.</div>
-        </div>
-      </div>
-      <div class="nonstop-right" data-reveal>
-        <span class="micro-label">NON STOP LINKA</span>
-        <a href="tel:0903596364" class="phone-primary">0903 596 364</a>
-        <a href="tel:0948110109" class="phone-secondary">0948 110 109</a>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ SLUŽBY (tri kapitoly ako karty, zoznam je na podstránke) ============
        Karta pod kurzorom alebo fokusom ostane ostrá, ostatné sa stlmia.
        Fotky sú zatiaľ placeholdery s popisom, čo na zábere má byť. -->
@@ -235,6 +189,52 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
       </div>
 
       <a class="btn-gold svc-all" href="/pohrebne-sluzby" data-reveal>Prezrieť si všetky naše služby</a>
+    </div>
+  </section>
+
+  <!-- ============ RECENZIE (svetlá sekcia) ============ -->
+  <section class="reviews" id="recenzie">
+    <div class="container">
+      <div class="reviews-head">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <h2 data-textreveal>Slová rodín, ktoré sme sprevádzali.</h2>
+        <p data-textreveal>Recenzie z profilu Google.</p>
+      </div>
+      <div class="reviews-rail" data-reveal>
+        <div class="reviews-rail-track">
+          {[0, 1].map((dup) => (
+            <div class="reviews-set" aria-hidden={dup === 1 ? 'true' : undefined}>
+              {RECENZIE_RAIL.map((r) => (
+                <blockquote class="review rail-card">
+                  <p>„{r.t}“</p>
+                  <footer>{r.m}</footer>
+                </blockquote>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <p class="reviews-more" data-reveal>
+        <a class="link-underline gold" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ NONSTOP callout ============ -->
+  <section class="nonstop">
+    <div class="container nonstop-inner">
+      <div class="nonstop-left">
+        <div class="gold-rule" data-line aria-hidden="true"></div>
+        <div>
+          <div class="nonstop-title" data-reveal>Potrebujete pomôcť práve teraz?</div>
+          <div class="nonstop-sub" data-reveal>NON STOP prevoz zosnulých. Sme pri vás v ktorúkoľvek hodinu, aj v noci a cez víkendy.</div>
+        </div>
+      </div>
+      <div class="nonstop-right" data-reveal>
+        <span class="micro-label">NON STOP LINKA</span>
+        <a href="tel:0903596364" class="phone-primary">0903 596 364</a>
+        <a href="tel:0948110109" class="phone-secondary">0948 110 109</a>
+      </div>
     </div>
   </section>
 
