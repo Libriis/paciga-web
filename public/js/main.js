@@ -222,8 +222,15 @@
     .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
 
   /* ---------- posledná cesta: pinovaná jazda (frame scrub kreslí journey.js) ----------
-     ČASY NIŽŠIE SÚ NA OSI celej 46 s jazdy (0..1), kde švy klipov ležia na
-     0.174 / 0.348 / 0.478 / 0.652 / 0.826 (klipy 8+8+6+8+8+8 s).
+     ČASY NIŽŠIE SÚ NA OSI celej 40 s jazdy (0..1), kde švy klipov ležia na
+     0.2 / 0.4 / 0.6 / 0.8 (päť klipov po 8 s, 965 framov).
+
+     Pôvodne to bolo 46 s a klipy 8+8+6+8+8+8. Šesťsekundový tretí klip išiel
+     preč: bol to iný záber toho istého sprievodu, začínal o kus skôr v deji,
+     takže sa muž v popredí pri šve vrátil v čase a znovu prešiel k okraju.
+     Vo videe to bola tretina sekundy, pri scrube 7 px na frame to bolo dobre
+     čitateľné cúvnutie. Zarovnať dva rôzne zábery vyhodením framov sa nedá,
+     preto padol celý klip: sekvencia 1110 -> 965 framov (mobil 555 -> 482).
 
      setupJourney je zámerne písaný na viac úsekov: cez from/to sa dá jazda
      rozrezať na samostatné pinované sekcie a funkcia at() časy prepočíta na
@@ -337,17 +344,21 @@
      takže časy nižšie sú priamo na osi jazdy. */
   setupJourney({
     key: 'a', pin: 'journey-pin', from: 0, to: 1,
-    bounds: [0.174, 0.478, 0.652, 0.826],
-    stationProg: [0.02, 0.20, 0.50, 0.68, 0.85],
+    bounds: [0.200, 0.400, 0.600, 0.800],
+    stationProg: [0.02, 0.225, 0.425, 0.625, 0.825],
     build: function (tl, texts, jtIn, jtOut, at, dur) {
       /* hero drží celú scénu hmly a odíde pred švom prvého klipu */
       tl.to(texts[0], { autoAlpha: 0, duration: dur(0.05) }, at(0.112))
-        .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.112));
-      jtIn(texts[1], 0.180); jtOut(texts[1], 0.304);  /* sprievod */
-      jtIn(texts[2], 0.354); jtOut(texts[2], 0.444);  /* limuzína */
-      jtIn(texts[3], 0.494); jtOut(texts[3], 0.610);  /* starostlivosť */
-      jtIn(texts[4], 0.660); jtOut(texts[4], 0.784);  /* šperky */
-      jtIn(texts[5], 0.834, 0.052);                   /* záver: kraj + CTA, zostáva */
+        .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.129));
+      /* Šesť textov na piatich klipoch: druhý klip nesie dva. Vojde sa to,
+         lebo jeho prvá polovica je hmla nad flotilou a druhá už sprievod,
+         čiže každý text má vlastný obraz. Limuzína zámerne až od 0.322,
+         prelínačka do sprievodu dobehne okolo 0.346 a text sedí na aute. */
+      jtIn(texts[1], 0.206); jtOut(texts[1], 0.278);  /* sprievod */
+      jtIn(texts[2], 0.300); jtOut(texts[2], 0.362);  /* limuzína */
+      jtIn(texts[3], 0.418); jtOut(texts[3], 0.551);  /* starostlivosť */
+      jtIn(texts[4], 0.609); jtOut(texts[4], 0.751);  /* šperky */
+      jtIn(texts[5], 0.809, 0.052);                   /* záver: kraj + CTA, zostáva */
     }
   });
 
