@@ -11,55 +11,58 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
 
 
 
-  <!-- ============ HLAVIČKA S TELEFÓNMI ============ -->
-  <section class="page-head">
-    <div class="container">
-      <div class="eyebrow" data-reveal>Kontakt</div>
-      <h1 data-textreveal>Sme tu.<br>Kedykoľvek.</h1>
-      <p class="page-head-lead" data-reveal>Prevoz zosnulých zabezpečujeme NON STOP, každý deň v roku. Zavolajte a o všetko ostatné sa postaráme.</p>
-      <div class="contact-phones">
-        <div data-reveal>
-          <div class="cp-label">Marek Paciga · NON STOP</div>
-          <a class="cp-num" href="tel:0903596364">0903 596 364</a>
-        </div>
-        <div data-reveal>
-          <div class="cp-label">Služba · NON STOP</div>
-          <a class="cp-num" href="tel:0948110109">0948 110 109</a>
-        </div>
-      </div>
-      <a class="contact-mail" href="mailto:paciga@paciga.sk" data-reveal>paciga@paciga.sk</a>
-    </div>
-  </section>
+  <!-- ============ KONTAKT: TELEFÓNY A FORMULÁR VEDĽA SEBA ============
+       Prvé dve sekcie stránky stoja vedľa seba, aby sa obe zmestili na
+       prvú obrazovku: vľavo telefóny, vpravo formulár. Pobočky a
+       fakturačné údaje ostávajú pod tým, tie sa doscrollujú. -->
+  <section class="contact-top">
+    <div class="container ct-grid">
+      <div class="ct-left">
+        <div class="eyebrow" data-reveal>Kontakt</div>
+        <h1 data-textreveal>Sme tu.<br>Kedykoľvek.</h1>
+        <p class="ct-lead" data-reveal>Prevoz zosnulých zabezpečujeme NON STOP, každý deň v roku. Zavolajte a o všetko ostatné sa postaráme.</p>
 
-  <!-- ============ NAPÍŠTE NÁM ============ -->
-  <section class="contact-form-section">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-textreveal>Napíšte nám</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-      </div>
-      <p class="contact-form-lead" data-reveal>Ak vám je ťažko telefonovať, napíšte nám. Ozveme sa vám čo najskôr a všetko vybavíme za vás.</p>
-      <form id="kontakt-form" class="contact-form" data-reveal>
-        <label>Vaše meno
-          <input type="text" name="meno" maxlength="120" required autocomplete="name">
-        </label>
-        <div class="contact-form-row">
-          <label>Telefón
-            <input type="tel" name="telefon" maxlength="40" autocomplete="tel">
-          </label>
-          <label>E-mail
-            <input type="email" name="email" maxlength="200" autocomplete="email">
-          </label>
+        <div class="contact-phones">
+          <div data-reveal>
+            <div class="cp-label">Marek Paciga · NON STOP</div>
+            <a class="cp-num" href="tel:0903596364">0903 596 364</a>
+          </div>
+          <div data-reveal>
+            <div class="cp-label">Služba · NON STOP</div>
+            <a class="cp-num" href="tel:0948110109">0948 110 109</a>
+          </div>
         </div>
-        <label>Vaša správa
-          <textarea name="sprava" rows="6" maxlength="4000" required></textarea>
-        </label>
-        <input type="text" name="web" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button type="submit" class="btn-gold">Odoslať správu</button>
-        <p class="form-status" role="status" aria-live="polite"></p>
-      </form>
-      <div class="rev-aside">
-        <Review id="hegli" variant="line" />
+        <a class="contact-mail" href="mailto:paciga@paciga.sk" data-reveal>paciga@paciga.sk</a>
+
+        <div class="rev-aside ct-rev">
+          <Review id="hegli" variant="line" />
+        </div>
+      </div>
+
+      <div class="ct-right">
+        <div class="ct-form-panel" data-reveal>
+          <h2 class="ct-form-title">Napíšte nám</h2>
+          <p class="ct-form-lead">Ak vám je ťažko telefonovať, napíšte nám. Ozveme sa vám čo najskôr a všetko vybavíme za vás.</p>
+          <form id="kontakt-form" class="contact-form">
+            <label>Vaše meno
+              <input type="text" name="meno" maxlength="120" required autocomplete="name">
+            </label>
+            <div class="contact-form-row">
+              <label>Telefón
+                <input type="tel" name="telefon" maxlength="40" autocomplete="tel">
+              </label>
+              <label>E-mail
+                <input type="email" name="email" maxlength="200" autocomplete="email">
+              </label>
+            </div>
+            <label>Vaša správa
+              <textarea name="sprava" rows="4" maxlength="4000" required></textarea>
+            </label>
+            <input type="text" name="web" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn-gold">Odoslať správu</button>
+            <p class="form-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
       </div>
     </div>
   </section>

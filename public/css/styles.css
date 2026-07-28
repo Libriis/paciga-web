@@ -1408,6 +1408,29 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .rev-head h2 { margin-top: 20px; font-size: clamp(28px, 3.6vw, 46px); }
 .rev-head p { margin-top: 20px; color: var(--muted); font-size: 18px; }
 
+/* agregátne hodnotenie z Google (hviezdy = akcent, mono schéma) */
+.rev-rating {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.rev-stars { position: relative; font-size: 20px; letter-spacing: 3px; line-height: 1; }
+.rev-stars-bg { color: var(--line); }
+.rev-stars-fg {
+  position: absolute;
+  inset: 0;
+  width: var(--fill, 100%);
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--gold);
+}
+.rev-rating b { font-size: 16.5px; font-weight: 650; }
+.rev-rating i { font-style: normal; color: var(--muted); font-size: 16.5px; }
+.rev-rating:hover i { color: var(--gold); }
+
 .rev-cols {
   display: flex;
   justify-content: center;
@@ -1580,6 +1603,53 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .cp-num:hover { color: var(--fg-strong); }
 .contact-mail { display: inline-block; margin-top: clamp(28px, 5vh, 44px); font-size: clamp(17px, 1.8vw, 22px); color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 4px; transition: color 0.3s ease; }
 .contact-mail:hover { color: var(--gold); }
+/* ---- kontakt: prvé dve sekcie vedľa seba ----
+   Telefóny a formulár stáli pod sebou a mali spolu 2072 px, čiže formulár
+   nikto neuvidel bez scrollovania. Teraz sú to dva stĺpce jedného bloku,
+   ktorý sa zmestí na prvú obrazovku. Pobočky a fakturačné údaje ostávajú
+   samostatné sekcie pod tým, tie sa doscrollujú.
+
+   Horný padding drží odstup od fixnej navigácie (77 px), ale je menší než
+   .page-head na ostatných podstránkach; tam nadpis dýcha, tu má na tú istú
+   obrazovku sadnúť aj formulár. */
+.contact-top { background: var(--bg); padding: clamp(98px, 11.5vh, 142px) 0 clamp(30px, 4vh, 52px); }
+.ct-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(34px, 5vw, 84px);
+  align-items: start;
+}
+.ct-left h1 { font-size: clamp(32px, 3.4vw, 52px); line-height: 1.05; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: 0.018em; }
+.ct-lead { margin-top: 16px; max-width: 46ch; color: var(--muted); font-size: clamp(17px, 1.4vw, 19.5px); line-height: 1.65; }
+/* v polovičnom stĺpci by pôvodných až 62 px telefón zalomilo */
+.contact-top .contact-phones { gap: clamp(24px, 3vw, 48px); margin-top: clamp(22px, 3vh, 36px); }
+.contact-top .cp-num { font-size: clamp(28px, 2.7vw, 44px); margin-top: 8px; }
+.contact-top .contact-mail { margin-top: clamp(16px, 2vh, 26px); }
+.ct-rev { margin-top: clamp(18px, 2.4vh, 30px); }
+
+.ct-form-panel {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--panel);
+  padding: clamp(22px, 2.4vw, 34px);
+}
+.ct-form-title { font-size: clamp(21px, 1.9vw, 27px); }
+.ct-form-lead { margin-top: 8px; color: var(--muted); font-size: 16px; line-height: 1.6; }
+.ct-form-panel .contact-form { margin-top: clamp(18px, 2.2vh, 26px); }
+
+/* Nízke notebooky: pri 768 px výšky vh clampy narazia na svoje spodné hranice
+   a blok presiahol prvú obrazovku o 35 px. Uberá sa tam, kde to nevidno:
+   odstup od navigácie a vnútro panela formulára. */
+@media (min-width: 901px) and (max-height: 800px) {
+  .contact-top { padding-top: 86px; padding-bottom: 22px; }
+  .ct-form-panel { padding: 24px; }
+  .ct-form-panel .contact-form { margin-top: 16px; }
+}
+
+@media (max-width: 900px) {
+  .ct-grid { grid-template-columns: 1fr; gap: clamp(28px, 4.5vh, 44px); }
+}
+
 .billing { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(105px, 13.5vh, 165px) 0; }
 .billing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 .bill-item .label { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
