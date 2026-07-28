@@ -740,6 +740,17 @@ body {
    Na dotykových zariadeniach sa netlmí nič, hover tam neexistuje a karty
    sú pod sebou rovnocenné. */
 .team { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; }
+/* nadpis s maskou: obal reže, slovo v ňom vystúpi zdola.
+   padding-bottom drží dĺžne a háčiky (í, ť), inak by ich hrana orezala;
+   rovnaká hodnota ide späť ako záporný margin, aby sa výška nezmenila. */
+.mr-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.mr-word { display: inline-block; will-change: transform; }
 .team-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

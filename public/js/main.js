@@ -350,10 +350,10 @@
       /* hero drží celú scénu hmly a odíde pred švom prvého klipu */
       tl.to(texts[0], { autoAlpha: 0, duration: dur(0.05) }, at(0.112))
         .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.129));
-      /* Päť textov na piatich klipoch. Intro nosičov beží bez textu až po
-         dissolve (~0.28-0.31); limuzínový text nabieha presne keď sa voz
-         vynorí z prelínačky a sedí na aute. */
-      jtIn(texts[1], 0.300); jtOut(texts[1], 0.362);  /* limuzína */
+      /* Päť textov na piatich klipoch. Dissolve intro→pochod beží 0.14-0.20
+         (prekrýva sa s odchodom hero textu, končí na hranici kapitol);
+         limuzínový text nabieha na čistom pochode a sedí na aute. */
+      jtIn(texts[1], 0.225); jtOut(texts[1], 0.362);  /* limuzína */
       jtIn(texts[2], 0.418); jtOut(texts[2], 0.551);  /* starostlivosť */
       jtIn(texts[3], 0.609); jtOut(texts[3], 0.751);  /* šperky */
       jtIn(texts[4], 0.809, 0.052);                   /* záver: kraj + CTA, zostáva */
@@ -530,6 +530,48 @@
         { '--divh': 0 },
         { '--divh': 1, duration: 0.9, ease: 'power2.out' }, 0.28);
   }
+
+  /* ---------- nadpis s maskou (21st.dev soralabs/text-reveal-mask) ----------
+     Každé slovo dostane obal s overflow: hidden a zdola z neho vystúpi. Rozdiel
+     proti data-textreveal, ktorý web používa inde: tam slová preblikávajú
+     z rozostrenia, tu vychádzajú spod hrany. Pokojnejšie a viac editoriálne.
+
+     Namerané v predlohe (režim words): posun 110 % výšky, trvanie 0.6 s,
+     stagger 0.06 s, easing cubic-bezier(0.19, 1, 0.22, 1), čo je expo.out,
+     medzera medzi slovami 0.25em a spustenie na top 75 % (v predlohe
+     viewportMargin -25 %). Beží raz.
+
+     Predloha je React s motion; tu to robí GSAP nad rozdeleným textom, bez
+     hydratácie. Pri prefers-reduced-motion sa sem beh vôbec nedostane
+     (skoršia vetva), takže nadpis ostane obyčajným textom. */
+  gsap.utils.toArray('[data-maskreveal]').forEach(function (el) {
+    var words = el.textContent.trim().split(/\s+/);
+    var targets = [];
+    /* medzery medzi slovami nesie margin, nie text, takže rozdelený nadpis by
+       sa čítal ako jedno slovo. Predloha to rieši rovnako: celok dostane
+       aria-label a rozsekané slová sa pre čítačku skryjú. */
+    el.setAttribute('aria-label', words.join(' '));
+    el.textContent = '';
+    words.forEach(function (w, i) {
+      var mask = document.createElement('span');
+      mask.className = 'mr-mask';
+      mask.setAttribute('aria-hidden', 'true');
+      if (i < words.length - 1) mask.style.marginInlineEnd = '0.25em';
+      var word = document.createElement('span');
+      word.className = 'mr-word';
+      word.textContent = w;
+      mask.appendChild(word);
+      el.appendChild(mask);
+      targets.push(word);
+    });
+    gsap.fromTo(targets, { yPercent: 110 }, {
+      yPercent: 0,
+      duration: 0.6,
+      stagger: 0.06,
+      ease: 'expo.out',
+      scrollTrigger: { trigger: el, start: 'top 75%', once: true }
+    });
+  });
 
   /* ---------- svetelný oblúk na kartách (21st.dev glowing-effect) ----------
      Mechanika predlohy: uhol od stredu karty ku kurzoru sa animuje do
