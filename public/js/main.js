@@ -351,12 +351,12 @@
       tl.to(texts[0], { autoAlpha: 0, duration: dur(0.05) }, at(0.112))
         .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.129));
       /* Päť textov na piatich klipoch. Dissolve intro→pochod beží 0.14-0.20
-         (prekrýva sa s odchodom hero textu, končí na hranici kapitol);
-         limuzínový text nabieha na čistom pochode a sedí na aute. */
-      jtIn(texts[1], 0.225); jtOut(texts[1], 0.362);  /* limuzína */
-      jtIn(texts[2], 0.418); jtOut(texts[2], 0.551);  /* starostlivosť */
-      jtIn(texts[3], 0.609); jtOut(texts[3], 0.751);  /* šperky */
-      jtIn(texts[4], 0.809, 0.052);                   /* záver: kraj + CTA, zostáva */
+         (prekrýva sa s odchodom hero textu, končí na hranici kapitol).
+         Každý text nabieha fade-inom hneď od začiatku svojej kapitoly. */
+      jtIn(texts[1], 0.200); jtOut(texts[1], 0.333);  /* starostlivosť (stan) */
+      jtIn(texts[2], 0.400); jtOut(texts[2], 0.562);  /* limuzína (pochod) */
+      jtIn(texts[3], 0.600); jtOut(texts[3], 0.751);  /* šperky */
+      jtIn(texts[4], 0.800, 0.052);                   /* záver: kraj + CTA, zostáva */
     }
   });
 
