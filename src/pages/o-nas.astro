@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import { RECENZIE, VYBER, GOOGLE_PROFIL } from '../data/recenzie';
 
 const title = "O nás | Paciga, pohrebné a kamenárske služby";
 const description = "Rodinná pohrebná a kamenárska služba Paciga. Od roku 2018 sprevádzame rodiny v Poprade, Spišskej Belej a Liptovskom Mikuláši. Viac než 3 000 vybavených pohrebov.";
@@ -156,27 +155,52 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
     </div>
   </div>
 
-  <!-- ============ POVEDALI O NÁS ============ -->
-  <section class="quote" id="quote" data-seam>
-    <div class="container quote-inner">
-      <div class="eyebrow" data-reveal>Povedali o nás</div>
-      <div class="quote-mark" aria-hidden="true">“</div>
-      <p id="quote-text">{VYBER.harbinFilozofia}</p>
-      <div class="quote-author" data-reveal>{RECENZIE.harbin.meno} · recenzia Google</div>
+  <!-- ============ TÍM ============
+       Odpoveď na otázku z pásu nad tým, preto tu nie je vlastný veľký nadpis.
+       Štruktúra podľa 21st.dev makviesainte/team-showcase: vľavo zostava
+       portrétov s posunutými stĺpcami, vpravo tichý zoznam mien. Portrét aj
+       jeho riadok sa rozsvecujú navzájom, ostatné sa stlmia.
+       Predloha delí ľudí cez i % 3, takže pri troch vyjde presne tento tvar. -->
+  <section class="team" id="tim" data-seam>
+    <div class="container">
+      <span class="micro-label" data-reveal>Náš tím</span>
+      <div class="team-grid" data-team>
+        <div class="team-photos">
+          <div class="team-col">
+            <figure class="team-shot" data-team-id="1" tabindex="0">
+              <div class="photo-slot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+            </figure>
+          </div>
+          <div class="team-col">
+            <figure class="team-shot" data-team-id="2" tabindex="0">
+              <div class="photo-slot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+            </figure>
+          </div>
+          <div class="team-col">
+            <figure class="team-shot" data-team-id="3" tabindex="0">
+              <div class="photo-slot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+            </figure>
+          </div>
+        </div>
+        <ol class="team-list" data-reveal>
+          <li class="team-row" data-team-id="1">
+            <span class="team-dot" aria-hidden="true"></span>
+            <span class="team-name is-todo">Meno a priezvisko</span>
+            <span class="team-role">Doplniť rolu</span>
+          </li>
+          <li class="team-row" data-team-id="2">
+            <span class="team-dot" aria-hidden="true"></span>
+            <span class="team-name is-todo">Meno a priezvisko</span>
+            <span class="team-role">Doplniť rolu</span>
+          </li>
+          <li class="team-row" data-team-id="3">
+            <span class="team-dot" aria-hidden="true"></span>
+            <span class="team-name is-todo">Meno a priezvisko</span>
+            <span class="team-role">Doplniť rolu</span>
+          </li>
+        </ol>
+      </div>
     </div>
-    <div class="container reviews-grid">
-      <article class="review-card" data-reveal>
-        <p>„{VYBER.fontaniVdaka}“</p>
-        <div class="review-name">{RECENZIE.fontani.meno}</div>
-      </article>
-      <article class="review-card" data-reveal>
-        <p>„{VYBER.gallikovaUroven}“</p>
-        <div class="review-name">{RECENZIE.gallikova.meno}</div>
-      </article>
-    </div>
-    <p class="container reviews-more" data-reveal>
-      <a class="link-underline gold" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
-    </p>
   </section>
 
   <!-- ============ PRVENSTVÁ ============ -->

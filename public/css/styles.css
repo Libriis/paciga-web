@@ -727,6 +727,96 @@ body {
   line-height: 1.65;
 }
 
+/* ---- tím (21st.dev makviesainte/team-showcase) ----
+   Prevzaté z predlohy: zostava portrétov v troch posunutých stĺpcoch, vedľa
+   nej zoznam mien s markerom a mikro popiskou role. Portréty sú v odtieňoch
+   šedej so stlmeným jasom a farbu dostanú až pod kurzorom; ostatné vtedy
+   klesnú. Predloha to rieši Reactom cez useState, tu to drží trieda .on,
+   ktorú prepína pár riadkov v main.js. Bez hydratácie.
+
+   Namerané proti predlohe: šírky stĺpcov v pomere 1 : 1.11 : 1.045, posun
+   druhého o 44 % a tretieho o 21 % šírky prvého, medzera 12 px, radius
+   12 px, pokoj grayscale(1) brightness(0.77), aktív grayscale(0)
+   brightness(1) za 500 ms, stlmená fotka 0.6 a stlmený riadok 0.5, marker
+   16x12 px s radiusom 5 px a pri aktíve 20 px, meno 18 px, rola 10 px
+   verzálky s rozpalom 0.2em a odsadením 27 px.
+
+   Odchýlka: predloha má portréty 155 px, čo je na tejto stránke drobné
+   vedľa editoriálnych dvojíc. Šírka rastie cez clamp, pomery sedia. */
+.team { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; }
+.team-grid {
+  --tw: clamp(150px, 13vw, 232px);
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(32px, 5vw, 72px);
+  margin-top: clamp(28px, 4vh, 48px);
+}
+.team-photos { display: flex; gap: 12px; flex-shrink: 0; }
+.team-col:nth-child(2) { margin-top: calc(var(--tw) * 0.44); }
+.team-col:nth-child(3) { margin-top: calc(var(--tw) * 0.21); }
+.team-shot {
+  width: var(--tw);
+  aspect-ratio: 155 / 165;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+  filter: grayscale(1) brightness(0.77);
+  transition: filter 0.5s ease, opacity 0.4s ease;
+}
+.team-col:nth-child(2) .team-shot { width: calc(var(--tw) * 1.11); }
+.team-col:nth-child(3) .team-shot { width: calc(var(--tw) * 1.045); }
+.team-shot img { width: 100%; height: 100%; object-fit: cover; }
+.team-shot .photo-slot { width: 100%; height: 100%; margin: 0; }
+.team-shot.on { filter: grayscale(0) brightness(1); }
+[data-team].is-hot .team-shot:not(.on) { opacity: 0.6; }
+.team-shot:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.team-list { list-style: none; display: flex; flex-direction: column; gap: 20px; padding-top: 6px; }
+.team-row { cursor: pointer; transition: opacity 0.3s ease; }
+[data-team].is-hot .team-row:not(.on) { opacity: 0.5; }
+.team-dot {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  border-radius: 5px;
+  background: rgb(var(--fg-rgb) / 0.25);
+  transition: width 0.3s ease, background-color 0.3s ease;
+  vertical-align: middle;
+}
+.team-row.on .team-dot { width: 20px; background: var(--text); }
+.team-name {
+  margin-left: 10px;
+  font-size: 18px;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  color: rgb(var(--fg-rgb) / 0.8);
+  transition: color 0.3s ease;
+  vertical-align: middle;
+}
+.team-row.on .team-name { color: var(--text); }
+/* dočasné: meno ešte nie je doplnené, nech to je na stránke vidieť */
+.team-name.is-todo { color: var(--dim); font-style: italic; }
+.team-role {
+  display: block;
+  margin-top: 6px;
+  padding-left: 27px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  /* predloha dáva zostavu portrétov na mobile do vodorovného posuvu */
+  .team-grid { flex-direction: column; gap: 30px; }
+  .team-photos { overflow-x: auto; padding-bottom: 4px; }
+  .team-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 24px; }
+}
+@media (max-width: 520px) {
+  .team-list { grid-template-columns: 1fr; }
+}
+
 /* ---- branches ---- */
 .branches { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
 .section-head { margin-bottom: 60px; }
@@ -1692,35 +1782,10 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .mile-body h3 { font-size: clamp(20px, 2.2vw, 26px); }
 .mile-body p { margin-top: 10px; color: var(--muted); font-size: 18.6px; line-height: 1.7; max-width: 60ch; }
 
-.team { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(100px, 14vh, 170px) 0; }
-.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.team-card {
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--panel);
-  padding: 34px 26px 30px;
-  text-align: center;
-  transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.team-card:hover { border-color: rgb(var(--fg-rgb) / 0.35); transform: translateY(-5px); }
-.team-photo {
-  width: 96px; height: 96px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  border: 1px solid rgb(var(--fg-rgb) / 0.35);
-  background: radial-gradient(circle at 35% 30%, #22242a, #131418);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  font-weight: 650;
-  font-size: 22px;
-  color: var(--gold-soft);
-  letter-spacing: 0.06em;
-}
-.team-photo img { width: 100%; height: 100%; object-fit: cover; }
-.team-card h3 { font-size: 19px; }
-.team-role { margin-top: 8px; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
-.team-note { margin-top: 40px; color: var(--dim); font-size: 14px; max-width: 62ch; }
+/* Mŕtve CSS odstránené: .team, .team-grid, .team-card, .team-photo,
+   .team-role a .team-note z pôvodnej migrácie. Žiadna stránka tie triedy
+   nepoužívala a keďže blok stál v súbore nižšie, prepisoval nový tím
+   (grid namiesto flexu, rola 12 px namiesto 10). */
 
 /* dvojstĺpcová mriežka kariet platí len v quote sekcii (O nás) —
    globálny selektor predtým prepisoval trojstĺpcovú mriežku homepage */

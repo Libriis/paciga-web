@@ -533,6 +533,29 @@
         { '--divh': 1, duration: 0.9, ease: 'power2.out' }, 0.28);
   }
 
+  /* ---------- tím: portrét a jeho riadok svietia navzájom ----------
+     Predloha (21st.dev makviesainte/team-showcase) na to drží hoveredId cez
+     React useState. Tu stačí trieda: hociktorý prvok s data-team-id rozsvieti
+     všetky s rovnakým id a kontejner dostane .is-hot, čím sa zvyšok stlmí.
+     Funguje aj z klávesnice, portréty majú tabindex. */
+  var teamRoot = document.querySelector('[data-team]');
+  if (teamRoot) {
+    var teamItems = gsap.utils.toArray('[data-team-id]');
+    var setTeam = function (id) {
+      teamRoot.classList.toggle('is-hot', id !== null);
+      teamItems.forEach(function (el) {
+        el.classList.toggle('on', id !== null && el.getAttribute('data-team-id') === id);
+      });
+    };
+    teamItems.forEach(function (el) {
+      var on = function () { setTeam(el.getAttribute('data-team-id')); };
+      el.addEventListener('mouseenter', on);
+      el.addEventListener('focus', on);
+      el.addEventListener('blur', function () { setTeam(null); });
+    });
+    teamRoot.addEventListener('mouseleave', function () { setTeam(null); });
+  }
+
   /* ---------- svetelný oblúk na kartách (21st.dev glowing-effect) ----------
      Mechanika predlohy: uhol od stredu karty ku kurzoru sa animuje do
      --glow-start easingom, --glow-active svieti len keď je kurzor pri
