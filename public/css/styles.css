@@ -106,16 +106,6 @@
       rgb(245 245 245 / 0.034) 0%, rgb(245 245 245 / 0.016) 22%,
       rgb(245 245 245 / 0.010) 44%, rgb(245 245 245 / 0.004) 66%,
       rgb(245 245 245 / 0) 86%);
-  --lit-b:
-    radial-gradient(104% 82% at 96% 46%,
-      rgb(245 245 245 / 0.062) 0%, rgb(245 245 245 / 0.048) 17%,
-      rgb(245 245 245 / 0.034) 34%, rgb(245 245 245 / 0.022) 51%,
-      rgb(245 245 245 / 0.011) 68%, rgb(245 245 245 / 0.003) 84%,
-      rgb(245 245 245 / 0) 96%),
-    radial-gradient(74% 116% at 62% 40%,
-      rgb(245 245 245 / 0.034) 0%, rgb(245 245 245 / 0.016) 22%,
-      rgb(245 245 245 / 0.010) 44%, rgb(245 245 245 / 0.004) 66%,
-      rgb(245 245 245 / 0) 86%);
   --font: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --wide: 'wdth' 110;
   --xwide: 'wdth' 125;
@@ -140,15 +130,6 @@
       rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
       rgb(255 255 255 / 0) 79%),
     radial-gradient(100% 76% at 100% 88%,
-      rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
-      rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
-      rgb(58 48 32 / 0) 84%);
-  --lit-b:
-    radial-gradient(118% 88% at 92% 46%,
-      rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.60) 20%,
-      rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
-      rgb(255 255 255 / 0) 79%),
-    radial-gradient(100% 76% at 0% 88%,
       rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
       rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
       rgb(58 48 32 / 0) 84%);
@@ -254,36 +235,42 @@ section[data-seam] > .cta-inner { position: relative; z-index: 1; }
 
    Vynechané: .journey a .subhero (ležia na fotografii), .cta-band (má
    vlastnú žiaru zdola), .album-band a .fleetband (nie sú section). */
-main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band) { position: relative; }
-main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band)::after {
-  content: '';
-  position: absolute;
+/* Jedno svetlo na celý dokument, nie na každú sekciu.
+
+   Predtým mala svetlo každá sekcia zvlášť. Aj po maskovaní okrajov bolo
+   vidieť jeho tvar: eliptický nános s amplitúdou okolo 14 úrovní na palete,
+   ktorá má nad čiernou dokopy dvanásť až dvadsaťpäť úrovní. Oko si ten obrys
+   prečítalo ako šmuhu.
+
+   Teraz je svetlo jediná fixná vrstva pod obsahom a sekcie sú priehľadné,
+   takže cez ne presvitá spojité pole. Hranica sekcie nemá čo prerušiť.
+   Fixná a nie dokumentová je zámerne: gradient tak beží cez jednu obrazovku
+   a nie cez sedemtisíc pixelov, čiže je strmší a menej pásuje.
+
+   z-index -1 ju posadí nad farbu pozadia body a pod obsah. */
+.pagelight {
+  position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
   background-image: var(--lit-a);
-  /* Maska je to podstatné: svetlo musí na hornom aj dolnom okraji sekcie
-     dobehnúť do nuly. Bez nej sa každá sekcia rozsvietila odznova a na
-     hranici vznikol skok. Namerané pred maskou: 13 úrovní jasu na hranici
-     guide/firsts, čo bola tá viditeľná hrana. */
-  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0) 0%, #000 14%, #000 86%, rgb(0 0 0 / 0) 100%);
-  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0) 0%, #000 14%, #000 86%, rgb(0 0 0 / 0) 100%);
 }
-main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band):nth-of-type(even)::after {
-  background-image: var(--lit-b);
-}
-/* ::after je pozicované, takže by inak kreslilo nad statickým obsahom */
-main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band) > * { position: relative; z-index: 1; }
 
-/* Hranica medzi sekciami nemá byť vidieť. Vlastné hairline linky sekcií
-   (border-block na .situ, .firsts, .faq-section, .branches, .reviews,
-   .nonstop, .billing, .cta-band) na tmavom pozadí svietili: namerané 34
-   proti pozadiu 12, čiže výraznejšie než samotný obsah. Linky vnútri
-   sekcií, ktoré delia riadky a karty, ostávajú.
-   Rozdiel medzi --bg a --bg2 je zároveň menší, 5 úrovní -> 3. */
-/* [class] dvíha špecificitu na úroveň tried sekcií, inak by .firsts,
-   .faq-section a spol. svoj border-block ubránili */
-main > section[class] { border-top-width: 0; border-bottom-width: 0; }
+/* Sekcie prestali maľovať vlastnú plochu. Tie, ktoré mali --bg2, dostávajú
+   priehľadný nádych namiesto nepriehľadnej farby: svetlo pod nimi ostane
+   spojité a rytmus striedania sa zachová. */
+main > section[class] { background-color: transparent; }
+main > section.nonstop,
+main > section.branches,
+main > section.reviews,
+main > section.firsts,
+main > section.billing,
+main > section.prozl,
+main > section.situ,
+main > section.rozlucky,
+main > section.kronika,
+main > section.faq-section,
+main > section.cta-band { background-color: rgb(var(--fg-rgb) / 0.022); }
 
 /* Element resety a defaulty žijú v @layer base: Tailwind utility
    (layer utilities, definovaná v src/styles/tw.css) ich tak legálne prebijú
