@@ -1,0 +1,227 @@
+---
+/*
+  ŠPERKY — variant V2 „Odtlačok" (lokálny návrh, nie je v navigácii).
+  Scrollytelling: odtlačok prsta ako hlavný motív. SVG odtlačok sa kreslí
+  pri scrolle, príbeh v troch lepiacich sa kartách (vzor: 21st.dev Scroll
+  Cards), fotky vystupujú z tmy cez mäkkú kruhovú masku.
+*/
+import Base from '../layouts/Base.astro';
+
+const kroky = [
+  {
+    n: '01',
+    t: 'Odtlačok, ktorý sa nedá nahradiť.',
+    p: 'Každý odtlačok prsta je jediný na svete. Snímeme ho my a postaráme sa, aby zostal zachovaný presne taký, aký bol.',
+    img: '/assets/sperky/srdce-zlato.jpg',
+    alt: 'Zlaté srdce s gravírovaným odtlačkom prsta na retiazke',
+  },
+  {
+    n: '02',
+    t: 'Nápis podľa vášho želania.',
+    p: 'Meno, dátum alebo krátke venovanie. Znenie je celkom na vás, my ho vygravírujeme vedľa odtlačku.',
+    img: '/assets/sperky/srdce-zlato-meno.jpg',
+    alt: 'Zlaté srdce s gravírovaným menom a dátumom',
+  },
+  {
+    n: '03',
+    t: 'Pri vás. Každý deň.',
+    p: 'Retiazka, šnúrka alebo náramok. Zlato, striebro alebo ružové zlato. Kúsok, ktorý nosíte so sebou.',
+    img: '/assets/sperky/naramky.jpg',
+    alt: 'Kordónové náramky s gravírovanými príveskami na vankúšiku',
+  },
+];
+
+const ponuka = [
+  { img: '/assets/sperky/srdce-zlato.jpg', t: 'Zlaté srdce' },
+  { img: '/assets/sperky/srdce-striebro.jpg', t: 'Strieborné srdce' },
+  { img: '/assets/sperky/srdce-ruzove.jpg', t: 'Ružové zlato na šnúrke' },
+  { img: '/assets/sperky/kruh-zlato.jpg', t: 'Zlatý medailón' },
+  { img: '/assets/sperky/kruh-striebro.jpg', t: 'Strieborný medailón' },
+];
+
+const title = 'Spomienkové šperky | Paciga, pohrebné a kamenárske služby';
+const description = 'Spomienkové šperky s odtlačkom prsta vášho blízkeho. Retiazky a náramky zo zlata, striebra a ružového zlata, gravírovanie podľa želania. Showroom v Poprade.';
+---
+<Base title={`V2 Odtlačok · ${title}`} description={description} active="sperky" ogImage="/assets/sperky/srdce-zlato.jpg">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <!-- ============ HERO s odtlačkom ============ -->
+  <section class="relative flex min-h-[92vh] items-center overflow-hidden">
+    <!-- kreslený odtlačok — abstraktné oblúky, ScrollTrigger ich dokresľuje -->
+    <svg id="v2-fp" class="pointer-events-none absolute right-[-8%] top-1/2 h-[130%] w-auto -translate-y-1/2 opacity-[0.16]" viewBox="0 0 400 520" fill="none" aria-hidden="true">
+      <g stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M200 96 C 130 96 92 150 92 226 C 92 330 128 402 200 452" />
+        <path d="M200 130 C 150 130 122 172 122 232 C 122 318 152 376 208 420" />
+        <path d="M200 164 C 168 164 152 196 152 238 C 152 304 176 350 220 386" />
+        <path d="M200 198 C 186 198 180 218 180 244 C 180 288 196 322 232 350" />
+        <path d="M206 232 C 204 240 206 258 214 276 C 224 298 240 314 252 320" />
+        <path d="M200 62 C 112 62 62 132 62 224 C 62 348 108 432 190 486" />
+        <path d="M200 28 C 96 28 32 112 32 222 C 32 366 88 458 180 516" />
+        <path d="M234 130 C 272 144 296 186 296 240 C 296 316 272 372 232 410" />
+        <path d="M240 96 C 296 112 328 168 328 240 C 328 336 296 404 244 448" />
+        <path d="M246 62 C 322 82 360 156 360 242 C 360 356 316 436 250 484" />
+      </g>
+    </svg>
+    <div class="container relative">
+      <div class="eyebrow" data-reveal>Spomienkové šperky</div>
+      <h1 class="max-w-[13ch]" data-textreveal>Odtlačok, ktorý zostáva.</h1>
+      <p class="mt-5 max-w-[46ch] text-[clamp(18px,1.74vw,22px)] leading-[1.7] text-soft" data-reveal>
+        Do šperku vygravírujeme odtlačok prsta vášho blízkeho a nápis podľa
+        vášho želania. Nikdy nezabudnem.
+      </p>
+      <div class="mt-9 flex flex-wrap items-center gap-7" data-reveal>
+        <a href="mailto:paciga@paciga.sk" class="btn-gold">Napíšte nám</a>
+        <a href="#pribeh" class="link-underline">Ako šperk vzniká</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRÍBEH — lepiace sa karty ============ -->
+  <section id="pribeh" class="pb-[clamp(80px,12vh,140px)]">
+    <div class="container">
+      {kroky.map((k) => (
+        <article class="v2-step">
+          <div class="grid items-center gap-10 md:grid-cols-2">
+            <div class="order-2 md:order-1">
+              <div class="text-[13px] tracking-[0.22em] text-dim">{k.n}</div>
+              <h2 class="mt-4 max-w-[16ch]">{k.t}</h2>
+              <p class="mt-5 max-w-[44ch] text-[clamp(16.5px,1.5vw,19.5px)] leading-[1.7] text-soft">{k.p}</p>
+            </div>
+            <div class="order-1 md:order-2">
+              <div class="v2-spot">
+                <img src={k.img} alt={k.alt} loading="lazy" decoding="async" />
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ CITÁT ============ -->
+  <section class="py-[clamp(100px,15vh,180px)] text-center">
+    <div class="container">
+      <p class="mx-auto max-w-[24ch] text-[clamp(24px,3.2vw,40px)] font-[560] leading-[1.35]" data-textreveal>
+        Sú spomienky, ktoré patria len vám. Táto sa dá nosiť.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ PONUKA — tichý pás ============ -->
+  <section class="border-t border-line py-[clamp(70px,10vh,120px)]">
+    <div class="container">
+      <div class="mb-9 flex flex-wrap items-end justify-between gap-4" data-reveal>
+        <div>
+          <div class="eyebrow">Ponuka</div>
+          <h2>Srdce alebo kruh.</h2>
+        </div>
+        <span class="text-[13px] uppercase tracking-[0.18em] text-dim">Zlato · striebro · ružové zlato</span>
+      </div>
+    </div>
+    <div class="v2-strip" data-reveal>
+      {ponuka.map((p) => (
+        <figure class="v2-strip-item">
+          <img src={p.img} alt={`${p.t}, spomienkový šperk s odtlačkom prsta`} loading="lazy" decoding="async" />
+          <figcaption>{p.t}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="container">
+      <p class="mt-8 text-[14px] text-dim" data-reveal>Ukážky z ponuky. Kompletnú kolekciu vám ukážeme v showroome v Poprade.</p>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="bg-panel py-[clamp(100px,14vh,170px)] text-center">
+    <div class="container">
+      <h2 data-textreveal>Napíšte nám. Radi vám poradíme.</h2>
+      <p class="mx-auto mt-5 max-w-[52ch] text-[clamp(18px,1.7vw,22px)] leading-relaxed text-soft" data-reveal>Šperky si môžete pozrieť v showroome našej pobočky v Poprade.</p>
+      <div class="mt-8" data-reveal>
+        <a href="tel:0903596364" class="phone-big inline-block">0903 596 364</a>
+        <div class="mt-3.5 text-[14px] tracking-[0.04em] text-dim">📍 Francisciho 3288/35, 058 01 Poprad</div>
+      </div>
+      <div class="mt-9 flex justify-center" data-reveal>
+        <a href="mailto:paciga@paciga.sk" class="btn-gold">Napíšte nám</a>
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  /* Lepiace sa karty príbehu — každá sa prilepí pod nav a ďalšia ju prekryje. */
+  .v2-step {
+    position: sticky;
+    top: 90px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: clamp(28px, 4.5vw, 56px);
+    margin-bottom: 26px;
+    box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.35);
+  }
+  .v2-step:nth-child(2) { top: 104px; }
+  .v2-step:nth-child(3) { top: 118px; }
+
+  /* Fotka vystupuje z tmy — biele pozadie fotky sa mäkko rozplynie do panelu. */
+  .v2-spot { position: relative; }
+  .v2-spot img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 50%;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 74%);
+    mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 74%);
+  }
+
+  /* Horizontálny pás ponuky so scroll-snap — malé biele podložky. */
+  .v2-strip {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 4px max(24px, calc((100% - 1240px) / 2));
+    scrollbar-width: none;
+  }
+  .v2-strip::-webkit-scrollbar { display: none; }
+  .v2-strip-item { flex: 0 0 clamp(220px, 26vw, 320px); scroll-snap-align: start; }
+  .v2-strip-item img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: #f9f9f9;
+    transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .v2-strip-item:hover img { border-color: rgb(var(--fg-rgb) / 0.4); transform: translateY(-4px); }
+  .v2-strip-item figcaption { margin-top: 10px; font-size: 13px; letter-spacing: 0.06em; color: var(--muted); }
+
+  @media (max-width: 767px) {
+    .v2-step { position: static; }
+  }
+</style>
+
+<script is:inline slot="scripts">
+  // Odtlačok sa dokresľuje pri scrolle heroa (stroke-dashoffset scrub).
+  (function () {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var paths = document.querySelectorAll('#v2-fp path');
+    if (!paths.length) return;
+    paths.forEach(function (p) {
+      var len = p.getTotalLength();
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len * 0.55; /* začíname rozkreslené */
+    });
+    gsap.to(paths, {
+      strokeDashoffset: 0,
+      stagger: 0.06,
+      ease: 'none',
+      scrollTrigger: { trigger: '#v2-fp', start: 'top 80%', end: '+=90%', scrub: 0.6 },
+    });
+    ScrollTrigger.refresh();
+  })();
+</script>
