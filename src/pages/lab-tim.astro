@@ -1,0 +1,202 @@
+---
+/*
+  Interné porovnanie: tri varianty sekcie tímu na /o-nas. Nie je v navigácii,
+  noindex. Nasadený variant (staggered zostava portrétov + zoznam mien podľa
+  21st.dev makviesainte/team-showcase) klientovi nesadol, toto sú náhrady.
+
+  Mená sú placeholdery. Vymýšľať mená reálnych ľudí nebudeme, doplnia sa,
+  keď ich klient pošle. Fotky sú placeholdery s popisom záberu.
+*/
+import Base from '../layouts/Base.astro';
+
+const LUDIA = [
+  { rola: 'Doplniť rolu', foto: 'Portrét na výšku, neutrálne pozadie' },
+  { rola: 'Doplniť rolu', foto: 'Portrét na výšku, neutrálne pozadie' },
+  { rola: 'Doplniť rolu', foto: 'Portrét na výšku, neutrálne pozadie' },
+];
+
+const title = 'Lab: tím na O nás, tri varianty (interné)';
+---
+<Base title={title} description="Interné porovnanie variantov." active="">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <section class="page-head">
+    <div class="container">
+      <h1 data-textreveal>Tím na O nás<br>tri varianty</h1>
+      <p class="page-head-lead">Interné porovnanie. Sekcia sedí pod pásom „Kto sa o vás postará" a má odpovedať na tú otázku. Mená aj fotky sú zatiaľ placeholdery, takže sa pozeraj na tvar, nie na obsah.</p>
+    </div>
+  </section>
+
+  <!-- ============ V1: tri portréty vedľa seba ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V1 · Tri portréty vedľa seba</div>
+      <p class="lab-note">Najpokojnejší tvar. Tri rovnaké portréty na výšku v jednom rade, meno pod fotkou, rola ako mikro popiska. Žiadny trik, symetria a rovnaká váha pre všetkých troch. Rovnaká mriežka ako karty pobočiek nižšie na Kontakte, takže web nedostane nový cudzí tvar.</p>
+
+      <span class="micro-label">Náš tím</span>
+      <div class="t1-grid">
+        {LUDIA.map((c) => (
+          <figure class="t1-card">
+            <div class="photo-slot t1-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>{c.foto}</em></div>
+            <figcaption>
+              <h3 class="t1-name">Meno a priezvisko</h3>
+              <span class="t1-role">{c.rola}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V2: karta s prekrytím ============ -->
+  <section class="lab-sec lab-alt">
+    <div class="container">
+      <div class="lk-label">V2 · Portrét na celú kartu, meno na fotke</div>
+      <p class="lab-note">Najsilnejšia prítomnosť. Fotka vypĺňa celú kartu, dole cez ňu prechádza tmavý závoj a v ňom sedí meno s rolou. Karta pod kurzorom ostane ostrá, ostatné dve klesnú a rozostria sa, presne tou istou mechanikou, akú už majú kapitoly služieb na homepage. O nás sa tým rýmuje s domovskou stránkou.</p>
+
+      <span class="micro-label">Náš tím</span>
+      <div class="t2-grid" data-t2>
+        {LUDIA.map((c) => (
+          <article class="t2-card">
+            <div class="photo-slot t2-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>{c.foto}</em></div>
+            <div class="t2-veil" aria-hidden="true"></div>
+            <div class="t2-body">
+              <h3 class="t2-name">Meno a priezvisko</h3>
+              <span class="t2-role">{c.rola}</span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V3: typografické riadky ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V3 · Veľké mená, portrét až pri hoveri</div>
+      <p class="lab-note">Najviac editoriálny. Tri riadky cez celú šírku oddelené hairline, vľavo meno vo veľkom Archive, vpravo rola. Portrét sa objaví až keď na riadok prejdeš. Mechanika podľa 21st.dev hari/reveal-images. Funguje aj bez fotiek, čo je dnes výhoda, a pokračuje rečou kroniky a dráhy jazdy. Na mobile sú portréty zobrazené natrvalo, hover tam neexistuje.</p>
+
+      <span class="micro-label">Náš tím</span>
+      <ol class="t3-rows" data-t3>
+        {LUDIA.map((c, i) => (
+          <li class="t3-row">
+            <span class="t3-num">{'0' + (i + 1)}</span>
+            <h3 class="t3-name">Meno a priezvisko</h3>
+            <span class="t3-role">{c.rola}</span>
+            <div class="photo-slot t3-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>{c.foto}</em></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+</Base>
+
+<style is:global>
+.lk-label { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 18px; }
+.lab-sec { padding: clamp(70px, 10vh, 120px) 0; border-top: 1px solid var(--line); }
+.lab-alt { background: var(--bg2); }
+.lab-note { max-width: 64ch; color: var(--muted); font-size: 17.4px; line-height: 1.65; margin-bottom: clamp(40px, 6vh, 64px); }
+
+/* ---- V1: tri portréty vedľa seba ---- */
+.t1-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.4vw, 34px);
+  margin-top: clamp(24px, 3.4vh, 40px);
+}
+.t1-shot { aspect-ratio: 3 / 4; width: 100%; border-radius: 14px; }
+.t1-card figcaption { margin-top: 18px; }
+.t1-name { font-size: clamp(19px, 1.7vw, 24px); font-weight: 640; font-variation-settings: var(--wide); }
+.t1-role {
+  display: block; margin-top: 8px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.2em; color: var(--muted);
+}
+
+/* ---- V2: portrét na celú kartu ---- */
+.t2-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.4vw, 34px);
+  margin-top: clamp(24px, 3.4vh, 40px);
+}
+.t2-card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  min-height: clamp(360px, 46vh, 520px);
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+.t2-shot { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; }
+.t2-veil {
+  position: absolute; inset-inline: 0; bottom: 0; height: 62%;
+  background: linear-gradient(180deg, rgb(var(--scrim-rgb) / 0), rgb(var(--scrim-rgb) / 0.86));
+}
+.t2-body { position: absolute; left: 26px; right: 26px; bottom: 24px; }
+.t2-name { font-size: clamp(20px, 1.8vw, 26px); font-weight: 650; color: #f5f5f5; }
+.t2-role {
+  display: block; margin-top: 8px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.2em; color: rgb(245 245 245 / 0.62);
+}
+/* rovnaká mechanika ako kapitoly služieb: ostatné stlmiť a rozostriť */
+@media (hover: hover) {
+  [data-t2]:hover .t2-card { opacity: 0.42; filter: blur(1.5px); }
+  [data-t2] .t2-card:hover { opacity: 1; filter: none; }
+}
+
+/* ---- V3: veľké mená, portrét pri hoveri ---- */
+.t3-rows { list-style: none; margin-top: clamp(24px, 3.4vh, 40px); border-top: 1px solid var(--line); }
+.t3-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: clamp(16px, 2.4vw, 40px);
+  padding: clamp(22px, 3.2vh, 40px) 0;
+  border-bottom: 1px solid var(--line);
+}
+.t3-num { font-size: 12px; letter-spacing: 0.16em; color: var(--dim); }
+.t3-name {
+  font-size: clamp(28px, 4vw, 58px);
+  font-weight: 660;
+  font-variation-settings: var(--xwide);
+  line-height: 1.02;
+  color: rgb(var(--fg-rgb) / 0.72);
+  transition: color 0.35s ease;
+}
+.t3-role {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.2em; color: var(--muted);
+}
+.t3-shot {
+  position: absolute;
+  right: clamp(120px, 18vw, 300px);
+  top: 50%;
+  width: clamp(150px, 15vw, 210px);
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  transform: translateY(-50%) scale(0.94);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  z-index: 2;
+}
+@media (hover: hover) {
+  .t3-row:hover .t3-name { color: var(--fg-strong); }
+  .t3-row:hover .t3-shot { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+/* bez hoveru (mobil, dotyk) portrét jednoducho stojí v riadku */
+@media (hover: none) {
+  .t3-row { grid-template-columns: auto 1fr; }
+  .t3-shot { position: static; opacity: 1; transform: none; width: 100%; margin-top: 18px; grid-column: 1 / -1; }
+}
+
+@media (max-width: 860px) {
+  .t1-grid, .t2-grid { grid-template-columns: 1fr; }
+  .t3-row { grid-template-columns: auto 1fr; row-gap: 8px; }
+  .t3-role { grid-column: 2; }
+  .t3-shot { position: static; opacity: 1; transform: none; width: 100%; margin-top: 16px; grid-column: 1 / -1; }
+}
+</style>
