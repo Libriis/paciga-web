@@ -157,48 +157,41 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
 
   <!-- ============ TÍM ============
        Odpoveď na otázku z pásu nad tým, preto tu nie je vlastný veľký nadpis.
-       Štruktúra podľa 21st.dev makviesainte/team-showcase: vľavo zostava
-       portrétov s posunutými stĺpcami, vpravo tichý zoznam mien. Portrét aj
-       jeho riadok sa rozsvecujú navzájom, ostatné sa stlmia.
-       Predloha delí ľudí cez i % 3, takže pri troch vyjde presne tento tvar. -->
+       Fotka vypĺňa celú kartu, dole cez ňu ide závoj a v ňom sedí meno s rolou.
+       Karta pod kurzorom ostane ostrá, ostatné dve klesnú a rozostria sa,
+       čiže tou istou mechanikou ako kapitoly služieb na homepage.
+       Vybraný variant V2 z /lab-tim.
+
+       data-reveal je zámerne na mriežke a nie na kartách: GSAP by kartám
+       zapísal opacity inline a stlmenie nezvýraznených by neprešlo. -->
   <section class="team" id="tim" data-seam>
     <div class="container">
       <span class="micro-label" data-reveal>Náš tím</span>
-      <div class="team-grid" data-team>
-        <div class="team-photos">
-          <div class="team-col">
-            <figure class="team-shot" data-team-id="1" tabindex="0">
-              <div class="photo-slot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
-            </figure>
-          </div>
-          <div class="team-col">
-            <figure class="team-shot" data-team-id="2" tabindex="0">
-              <div class="photo-slot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
-            </figure>
-          </div>
-          <div class="team-col">
-            <figure class="team-shot" data-team-id="3" tabindex="0">
-              <div class="photo-slot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
-            </figure>
-          </div>
-        </div>
-        <ol class="team-list" data-reveal>
-          <li class="team-row" data-team-id="1">
-            <span class="team-dot" aria-hidden="true"></span>
-            <span class="team-name is-todo">Meno a priezvisko</span>
+      <div class="team-grid" data-reveal>
+        <article class="team-card">
+          <div class="photo-slot team-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+          <div class="team-veil" aria-hidden="true"></div>
+          <div class="team-body">
+            <h3 class="team-name">Meno a priezvisko</h3>
             <span class="team-role">Doplniť rolu</span>
-          </li>
-          <li class="team-row" data-team-id="2">
-            <span class="team-dot" aria-hidden="true"></span>
-            <span class="team-name is-todo">Meno a priezvisko</span>
+          </div>
+        </article>
+        <article class="team-card">
+          <div class="photo-slot team-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+          <div class="team-veil" aria-hidden="true"></div>
+          <div class="team-body">
+            <h3 class="team-name">Meno a priezvisko</h3>
             <span class="team-role">Doplniť rolu</span>
-          </li>
-          <li class="team-row" data-team-id="3">
-            <span class="team-dot" aria-hidden="true"></span>
-            <span class="team-name is-todo">Meno a priezvisko</span>
+          </div>
+        </article>
+        <article class="team-card">
+          <div class="photo-slot team-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+          <div class="team-veil" aria-hidden="true"></div>
+          <div class="team-body">
+            <h3 class="team-name">Meno a priezvisko</h3>
             <span class="team-role">Doplniť rolu</span>
-          </li>
-        </ol>
+          </div>
+        </article>
       </div>
     </div>
   </section>

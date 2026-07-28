@@ -338,8 +338,8 @@
     }
   }
 
-  /* Jazda vcelku: 5 kapitol, 6 textov. Informačný oblúk: kto sme
-     → čo robiť + telefón → limuzína → rozsah služieb → spomienkové šperky
+  /* Jazda vcelku: 5 kapitol, 5 textov. Informačný oblúk: kto sme
+     → limuzína → rozsah služieb → spomienkové šperky
      → kde sme + kontakt. Pri from 0 / to 1 je at() aj dur() identita,
      takže časy nižšie sú priamo na osi jazdy. */
   setupJourney({
@@ -350,15 +350,13 @@
       /* hero drží celú scénu hmly a odíde pred švom prvého klipu */
       tl.to(texts[0], { autoAlpha: 0, duration: dur(0.05) }, at(0.112))
         .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.129));
-      /* Šesť textov na piatich klipoch: druhý klip nesie dva. Vojde sa to,
-         lebo jeho prvá polovica je hmla nad flotilou a druhá už sprievod,
-         čiže každý text má vlastný obraz. Limuzína zámerne až od 0.322,
-         prelínačka do sprievodu dobehne okolo 0.346 a text sedí na aute. */
-      jtIn(texts[1], 0.206); jtOut(texts[1], 0.278);  /* sprievod */
-      jtIn(texts[2], 0.300); jtOut(texts[2], 0.362);  /* limuzína */
-      jtIn(texts[3], 0.418); jtOut(texts[3], 0.551);  /* starostlivosť */
-      jtIn(texts[4], 0.609); jtOut(texts[4], 0.751);  /* šperky */
-      jtIn(texts[5], 0.809, 0.052);                   /* záver: kraj + CTA, zostáva */
+      /* Päť textov na piatich klipoch. Intro nosičov beží bez textu až po
+         dissolve (~0.28-0.31); limuzínový text nabieha presne keď sa voz
+         vynorí z prelínačky a sedí na aute. */
+      jtIn(texts[1], 0.300); jtOut(texts[1], 0.362);  /* limuzína */
+      jtIn(texts[2], 0.418); jtOut(texts[2], 0.551);  /* starostlivosť */
+      jtIn(texts[3], 0.609); jtOut(texts[3], 0.751);  /* šperky */
+      jtIn(texts[4], 0.809, 0.052);                   /* záver: kraj + CTA, zostáva */
     }
   });
 
@@ -531,29 +529,6 @@
       .fromTo(statStrip,
         { '--divh': 0 },
         { '--divh': 1, duration: 0.9, ease: 'power2.out' }, 0.28);
-  }
-
-  /* ---------- tím: portrét a jeho riadok svietia navzájom ----------
-     Predloha (21st.dev makviesainte/team-showcase) na to drží hoveredId cez
-     React useState. Tu stačí trieda: hociktorý prvok s data-team-id rozsvieti
-     všetky s rovnakým id a kontejner dostane .is-hot, čím sa zvyšok stlmí.
-     Funguje aj z klávesnice, portréty majú tabindex. */
-  var teamRoot = document.querySelector('[data-team]');
-  if (teamRoot) {
-    var teamItems = gsap.utils.toArray('[data-team-id]');
-    var setTeam = function (id) {
-      teamRoot.classList.toggle('is-hot', id !== null);
-      teamItems.forEach(function (el) {
-        el.classList.toggle('on', id !== null && el.getAttribute('data-team-id') === id);
-      });
-    };
-    teamItems.forEach(function (el) {
-      var on = function () { setTeam(el.getAttribute('data-team-id')); };
-      el.addEventListener('mouseenter', on);
-      el.addEventListener('focus', on);
-      el.addEventListener('blur', function () { setTeam(null); });
-    });
-    teamRoot.addEventListener('mouseleave', function () { setTeam(null); });
   }
 
   /* ---------- svetelný oblúk na kartách (21st.dev glowing-effect) ----------
