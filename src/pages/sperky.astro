@@ -1,4 +1,11 @@
 ---
+/*
+  Spomienkové šperky — „Ateliér": tmavá stránka s konfigurátorom.
+  Veľká biela foto scéna (biele pozadie fotiek priznané ako svetlo v tmavej
+  miestnosti) a segmentové prepínače tvaru a kovu. Vzor: Nike By You
+  konfigurátor (Mobbin) + segmented button group (21st.dev).
+  Prepínanie čistým DOM skriptom, bez React ostrova.
+*/
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
 import type { FaqItem } from '../components/Faq.astro';
@@ -30,96 +37,276 @@ const otazky: FaqItem[] = [
   },
 ];
 
+// Fotomapa konfigurátora — len kombinácie, ktoré máme nafotené.
+// Kruh v ružovom zlate ukážeme v showroome (chip sa vypína).
+const varianty = [
+  { id: 'srdce-zlato', img: '/assets/sperky/srdce-zlato.jpg', popis: 'Zlaté srdce na retiazke' },
+  { id: 'srdce-striebro', img: '/assets/sperky/srdce-striebro.jpg', popis: 'Strieborné srdce na retiazke' },
+  { id: 'srdce-ruzove', img: '/assets/sperky/srdce-ruzove.jpg', popis: 'Srdce z ružového zlata na čiernej šnúrke' },
+  { id: 'kruh-zlato', img: '/assets/sperky/kruh-zlato.jpg', popis: 'Zlatý medailón na retiazke' },
+  { id: 'kruh-striebro', img: '/assets/sperky/kruh-striebro.jpg', popis: 'Strieborný medailón na retiazke' },
+];
+
 const title = "Spomienkové šperky | Paciga, pohrebné a kamenárske služby";
 const description = "Spomienkové šperky s odtlačkom prsta vášho blízkeho. Retiazky a náramky zo zlata, striebra a ružového zlata, gravírovanie podľa želania. Showroom v Poprade.";
 const ogTitle = "Spomienkové šperky | Paciga";
 const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blízkeho, gravírované podľa vášho želania.";
 ---
-<Base title={title} description={description} active="sperky" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/sperky-hero.jpg">
-
-
+<Base title={title} description={description} active="sperky" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/sperky/kolekcia.jpg">
 
   <!-- ============ HERO ============ -->
-  <section class="tile tile-light" style="padding-top: clamp(225px, 30vh, 330px);">
-    <div class="tile-eyebrow" data-reveal>Spomienkové šperky</div>
-    <h1 data-textreveal>Nikdy nezabudnem.</h1>
-    <p class="tile-lead" data-reveal>Šperk s odtlačkom prsta vášho blízkeho. Kúsok, ktorý zostáva s vami každý deň.</p>
-    <div class="tile-actions" data-reveal>
-      <a href="mailto:paciga@paciga.sk" class="btn-ink">Napíšte nám</a>
-      <a href="/kontakt" class="link-underline">Navštívte showroom v Poprade</a>
-    </div>
-    <div class="tile-media" data-reveal>
-      <img src="/assets/sperky-hero.jpg" alt="Kolekcia spomienkových šperkov Paciga: retiazky a náramky so srdcami a medailónmi" fetchpriority="high" decoding="async">
+  <section class="page-head" style="padding-bottom: clamp(40px, 6vh, 70px);">
+    <div class="container">
+      <div class="eyebrow" data-reveal>Spomienkové šperky</div>
+      <h1 data-textreveal>Navrhnite šperk, ktorý zostane.</h1>
+      <p class="page-head-lead" data-reveal>
+        Tvar, kov a nápis podľa vášho želania. Odtlačok prsta vášho blízkeho
+        doplníme my. Vyskúšajte si kombinácie priamo tu.
+      </p>
     </div>
   </section>
 
-  <!-- ============ ODTLAČOK ============ -->
-  <section class="tile tile-dark">
-    <div class="tile-eyebrow" data-reveal>Ako šperk vzniká</div>
-    <h2 data-textreveal>Odtlačok, ktorý zostáva.</h2>
-    <p class="tile-lead" data-reveal>Do šperku vygravírujeme odtlačok prsta vášho blízkeho a nápis podľa vášho želania. Vyberiete si zlato, striebro alebo ružové zlato.</p>
-  </section>
+  <!-- ============ KONFIGURÁTOR ============ -->
+  <section class="pb-[clamp(80px,12vh,140px)]">
+    <div class="container">
+      <div class="grid gap-9 lg:grid-cols-[1.15fr_1fr] lg:items-center">
 
-  <!-- ============ RETIAZKY ============ -->
-  <section class="tile tile-light">
-    <h2 data-textreveal>Retiazky so srdcom.</h2>
-    <p class="tile-lead" data-reveal>Srdce alebo okrúhly medailón s odtlačkom a venovaním, na jemnej retiazke alebo šnúrke.</p>
-    <div class="tile-media narrow" data-reveal>
-      <img src="/assets/sperky-retiazka.jpg" alt="Zlatá retiazka so srdcom, gravírovaný odtlačok prsta a nápis Nikdy nezabudnem" loading="lazy" decoding="async">
-    </div>
-  </section>
+        <!-- scéna — fotky sa krížovo prelínajú -->
+        <div class="v3-stage" data-reveal>
+          {varianty.map((v, i) => (
+            <img src={v.img} alt={v.popis} class:list={['v3-photo', { 'is-on': i === 0 }]} data-variant={v.id} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+          ))}
+          <div class="v3-stage-caption">
+            <span id="v3-popis">Zlaté srdce na retiazke</span>
+            <span class="text-dim">Gravír: odtlačok + nápis podľa želania</span>
+          </div>
+        </div>
 
-  <!-- ============ VÝBER ============ -->
-  <section class="tile tile-parchment">
-    <h2 data-textreveal>Vyberte si tvar aj kov.</h2>
-    <p class="tile-lead" data-reveal>Každý šperk gravírujeme na mieru. Nápis je podľa vášho želania.</p>
-    <div class="sperky-grid">
-      <article class="sperky-card" data-reveal>
-        <img src="/assets/sperky-p1.jpg" alt="Zlaté srdce s odtlačkom prsta na retiazke" loading="lazy" decoding="async">
-        <h3>Zlaté srdce</h3>
-        <p>s odtlačkom a venovaním</p>
-      </article>
-      <article class="sperky-card" data-reveal>
-        <img src="/assets/sperky-p2.jpg" alt="Strieborný okrúhly medailón s odtlačkom prsta" loading="lazy" decoding="async">
-        <h3>Strieborný medailón</h3>
-        <p>s odtlačkom a venovaním</p>
-      </article>
-      <article class="sperky-card" data-reveal>
-        <img src="/assets/sperky-p3.jpg" alt="Srdce z ružového zlata na čiernej šnúrke" loading="lazy" decoding="async">
-        <h3>Ružové zlato</h3>
-        <p>na čiernej šnúrke</p>
-      </article>
+        <!-- ovládanie -->
+        <div>
+          <div class="v3-group" data-reveal>
+            <div class="v3-label">Tvar</div>
+            <div class="v3-seg" role="group" aria-label="Výber tvaru">
+              <button type="button" class="v3-opt is-on" data-tvar="srdce">Srdce</button>
+              <button type="button" class="v3-opt" data-tvar="kruh">Kruh</button>
+            </div>
+          </div>
+
+          <div class="v3-group" data-reveal>
+            <div class="v3-label">Kov</div>
+            <div class="v3-seg" role="group" aria-label="Výber kovu">
+              <button type="button" class="v3-opt is-on" data-kov="zlato">Zlato</button>
+              <button type="button" class="v3-opt" data-kov="striebro">Striebro</button>
+              <button type="button" class="v3-opt" data-kov="ruzove">Ružové zlato</button>
+            </div>
+            <p class="v3-note" id="v3-note" hidden>Kruh v ružovom zlate vám ukážeme v showroome.</p>
+          </div>
+
+          <div class="v3-group" data-reveal>
+            <div class="v3-label">Nápis podľa vášho želania</div>
+            <p class="mt-2 max-w-[42ch] text-[15.5px] leading-[1.65] text-soft">
+              Na šperku býva najčastejšie meno a dátum alebo krátke venovanie,
+              napríklad „Láska pretrvá" či „Nikdy nezabudnem". Znenie je celkom na vás.
+            </p>
+          </div>
+
+          <div class="mt-9 flex flex-wrap items-center gap-6" data-reveal>
+            <a href="mailto:paciga@paciga.sk" class="btn-gold">Napíšte nám</a>
+            <a href="tel:0903596364" class="link-underline">Zavolať 0903 596 364</a>
+          </div>
+        </div>
+
+      </div>
     </div>
-    <p class="sperky-note" data-reveal>Ukážky z ponuky. Kompletnú kolekciu vám ukážeme v showroome v Poprade.</p>
   </section>
 
   <!-- ============ NÁRAMKY ============ -->
-  <section class="tile tile-light">
-    <h2 data-textreveal>Kordónové náramky.</h2>
-    <p class="tile-lead" data-reveal>Jemná šnúrka a kovový prívesok s odtlačkom. Nenápadný spôsob, ako mať blízkeho pri sebe.</p>
-    <div class="tile-media" data-reveal>
-      <img src="/assets/sperky-naramky.jpg" alt="Tri kordónové náramky s gravírovanými príveskami na vankúšiku" loading="lazy" decoding="async">
+  <section class="border-t border-line py-[clamp(80px,12vh,140px)]">
+    <div class="container">
+      <div class="grid items-center gap-10 md:grid-cols-2">
+        <figure class="overflow-hidden rounded-[20px] border border-line bg-[#f9f9f9]" data-reveal>
+          <img src="/assets/sperky/naramky.jpg" alt="Kordónové náramky s gravírovanými príveskami na vankúšiku" class="block w-full" loading="lazy" decoding="async" />
+        </figure>
+        <div>
+          <div class="eyebrow" data-reveal>Náramky</div>
+          <h2 data-textreveal>Aj ako náramok na šnúrke.</h2>
+          <p class="mt-5 max-w-[44ch] text-[clamp(16.5px,1.5vw,19.5px)] leading-[1.7] text-soft" data-reveal>
+            Čierna kordónová šnúrka s posuvnými uzlami a prívesok s odtlačkom.
+            Náramkové prívesky vyrábame aj v modrej a čiernej.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AKO TO PREBIEHA ============ -->
+  <section class="bg-ink2 py-[clamp(80px,12vh,140px)]">
+    <div class="container">
+      <div class="eyebrow" data-reveal>Ako to prebieha</div>
+      <h2 data-textreveal>O všetko sa postaráme.</h2>
+      <div class="mt-12 grid grid-cols-1 gap-[22px] md:grid-cols-3">
+        {[
+          { n: '01', t: 'Ozvite sa nám', p: 'Zavolajte alebo napíšte. Prejdeme s vami výber tvaru, kovu aj znenie nápisu.' },
+          { n: '02', t: 'Snímeme odtlačok', p: 'Odtlačok prsta vášho blízkeho zabezpečíme my. Nemusíte na nič myslieť.' },
+          { n: '03', t: 'Šperk je váš', p: 'Hotový kúsok si prevezmete v showroome v Poprade alebo vám ho doručíme.' },
+        ].map((k) => (
+          <div class="rounded-[18px] border border-line bg-panel p-[26px]" data-reveal>
+            <div class="text-[13px] tracking-[0.2em] text-dim">{k.n}</div>
+            <h3 class="mt-3 text-[21px]">{k.t}</h3>
+            <p class="mt-2.5 text-[15.5px] leading-relaxed text-soft">{k.p}</p>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
   <!-- ============ ČASTÉ OTÁZKY ============ -->
-  <section class="tile tile-dark faq-tile">
+  <section class="py-[clamp(80px,12vh,140px)]">
     <div class="container">
       <Faq items={otazky} eyebrow="Časté otázky" heading="Čo sa najčastejšie pýtate" />
     </div>
   </section>
 
   <!-- ============ CTA ============ -->
-  <section class="tile tile-dark">
-    <h2 data-textreveal>Napíšte nám. Radi vám poradíme.</h2>
-    <p class="tile-lead" data-reveal>Šperky si môžete pozrieť v showroome našej pobočky v Poprade.</p>
-    <div class="tile-contact" data-reveal>
-      <a href="tel:0903596364" class="phone-big">0903 596 364</a>
-      <div class="addr">📍 Francisciho 3288/35, 058 01 Poprad</div>
-    </div>
-    <div class="tile-actions" data-reveal>
-      <a href="mailto:paciga@paciga.sk" class="btn-gold">Napíšte nám</a>
+  <section class="bg-panel py-[clamp(100px,14vh,170px)] text-center">
+    <div class="container">
+      <h2 data-textreveal>Napíšte nám. Radi vám poradíme.</h2>
+      <p class="mx-auto mt-5 max-w-[52ch] text-[clamp(18px,1.7vw,22px)] leading-relaxed text-soft" data-reveal>Šperky si môžete pozrieť v showroome našej pobočky v Poprade.</p>
+      <div class="mt-8" data-reveal>
+        <a href="tel:0903596364" class="phone-big inline-block">0903 596 364</a>
+        <div class="mt-3.5 text-[14px] tracking-[0.04em] text-dim">📍 Francisciho 3288/35, 058 01 Poprad</div>
+      </div>
+      <div class="mt-9 flex justify-center" data-reveal>
+        <a href="mailto:paciga@paciga.sk" class="btn-gold">Napíšte nám</a>
+      </div>
     </div>
   </section>
 
 </Base>
+
+<style>
+  /* Scéna ateliéru — biely ostrov v tmavej miestnosti. Fotka vypĺňa celú
+     scénu, biele pozadie fotky JE pozadím scény. */
+  .v3-stage {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 22px;
+    border: 1px solid var(--line);
+    background: #f9f9f9;
+    overflow: hidden;
+  }
+  .v3-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .v3-photo.is-on { opacity: 1; }
+  .v3-stage-caption {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 16px;
+    padding: 13px 18px;
+    border-radius: 14px;
+    background: rgba(12, 13, 15, 0.82);
+    backdrop-filter: blur(10px);
+    color: var(--text);
+    font-size: 13.5px;
+    letter-spacing: 0.03em;
+  }
+  :root[data-theme='light'] .v3-stage-caption { background: rgba(255, 255, 255, 0.85); }
+
+  /* Segmentový prepínač — pilulky v spoločnom ráme (vzor 21st.dev). */
+  .v3-group { margin-top: 26px; }
+  .v3-group:first-child { margin-top: 0; }
+  .v3-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 600;
+  }
+  .v3-seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 10px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgb(var(--fg-rgb) / 0.03);
+  }
+  .v3-opt {
+    padding: 10px 20px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+  }
+  .v3-opt:hover { color: var(--text); }
+  .v3-opt.is-on { background: var(--gold); color: var(--bg); }
+  .v3-opt:disabled { opacity: 0.35; cursor: not-allowed; }
+  .v3-opt:disabled:hover { color: var(--muted); }
+  .v3-note { margin-top: 10px; font-size: 13.5px; color: var(--dim); }
+</style>
+
+<script is:inline slot="scripts">
+  // Konfigurátor — kombinácia tvar × kov prepína fotku na scéne.
+  (function () {
+    var POPISY = {
+      'srdce-zlato': 'Zlaté srdce na retiazke',
+      'srdce-striebro': 'Strieborné srdce na retiazke',
+      'srdce-ruzove': 'Srdce z ružového zlata na čiernej šnúrke',
+      'kruh-zlato': 'Zlatý medailón na retiazke',
+      'kruh-striebro': 'Strieborný medailón na retiazke',
+    };
+    var tvar = 'srdce';
+    var kov = 'zlato';
+    var fotky = document.querySelectorAll('.v3-photo');
+    var popis = document.getElementById('v3-popis');
+    var note = document.getElementById('v3-note');
+    var tvarBtns = document.querySelectorAll('[data-tvar]');
+    var kovBtns = document.querySelectorAll('[data-kov]');
+    var ruzoveBtn = document.querySelector('[data-kov="ruzove"]');
+
+    function render() {
+      var id = tvar + '-' + kov;
+      fotky.forEach(function (f) {
+        f.classList.toggle('is-on', f.getAttribute('data-variant') === id);
+      });
+      if (POPISY[id]) popis.textContent = POPISY[id];
+      /* kruh + ružové zlato nemáme nafotené — chip sa vypína s vysvetlením */
+      var kruhRuzove = tvar === 'kruh';
+      ruzoveBtn.disabled = kruhRuzove;
+      note.hidden = !kruhRuzove;
+      tvarBtns.forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-tvar') === tvar); });
+      kovBtns.forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-kov') === kov); });
+    }
+
+    tvarBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        tvar = b.getAttribute('data-tvar');
+        if (tvar === 'kruh' && kov === 'ruzove') kov = 'zlato';
+        render();
+      });
+    });
+    kovBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (b.disabled) return;
+        kov = b.getAttribute('data-kov');
+        render();
+      });
+    });
+    render();
+  })();
+</script>
