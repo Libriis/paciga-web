@@ -310,6 +310,26 @@ body {
   .fs-beam { display: none; } /* vertikálny stack, horizontálna linka stráca zmysel */
 }
 
+/* obrí priehľadný otáznik v pozadí — „čo mám robiť?" nálada sekcie */
+.fs-q {
+  position: absolute;
+  right: clamp(-30px, 3vw, 100px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(380px, 34vw, 620px);
+  line-height: 0.9;
+  font-weight: 700;
+  color: var(--gold);
+  opacity: 0.05;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.firststeps > .container { position: relative; z-index: 1; }
+@media (max-width: 860px) {
+  .fs-q { font-size: 70vw; right: -10vw; } /* na mobile len náznak pri kraji */
+}
+
 /* ---- shared atoms ---- */
 .eyebrow {
   font-size: 12px;

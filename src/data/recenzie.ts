@@ -19,6 +19,12 @@ export interface Recenzia {
 export const GOOGLE_PROFIL =
   'https://www.google.com/maps/search/?api=1&query=Paciga+pohrebn%C3%A9+slu%C5%BEby+Poprad';
 
+/** Agregátne hodnotenie z Google Business profilu (hviezdičky pri recenziách).
+ *  Drží sa RUČNE, nejde z API — pri zmene na profile aktualizovať tu.
+ *  TODO: overiť s klientom presné číslo; počet recenzií zámerne neuvádzame,
+ *  kým ho klient nepotvrdí. */
+export const GOOGLE_HODNOTENIE = 5.0;
+
 export const RECENZIE = {
   fontani: {
     meno: 'Michaela Fontani',
