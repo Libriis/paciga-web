@@ -80,7 +80,7 @@
   --fg-rgb: 245 245 245;
   --scrim-rgb: 12 13 15;
   --bg: #0c0d0f;
-  --bg2: #111214;
+  --bg2: #0f1013;
   --panel: #16181c;
   --panel2: #191b1e;
   --line: rgb(var(--fg-rgb) / 0.08);
@@ -97,22 +97,22 @@
      tmavnenie rohov: #0c0d0f má nad čiernou celých dvanásť úrovní, takže sa
      tam nedá stmavovať bez toho, aby gradient pásoval. Objem nesie svetlo. */
   --lit-a:
-    radial-gradient(96% 74% at 4% -16%,
+    radial-gradient(104% 82% at 4% 46%,
       rgb(245 245 245 / 0.062) 0%, rgb(245 245 245 / 0.048) 17%,
       rgb(245 245 245 / 0.034) 34%, rgb(245 245 245 / 0.022) 51%,
       rgb(245 245 245 / 0.011) 68%, rgb(245 245 245 / 0.003) 84%,
       rgb(245 245 245 / 0) 96%),
-    radial-gradient(72% 128% at 38% -6%,
+    radial-gradient(74% 116% at 38% 40%,
       rgb(245 245 245 / 0.034) 0%, rgb(245 245 245 / 0.016) 22%,
       rgb(245 245 245 / 0.010) 44%, rgb(245 245 245 / 0.004) 66%,
       rgb(245 245 245 / 0) 86%);
   --lit-b:
-    radial-gradient(96% 74% at 96% -16%,
+    radial-gradient(104% 82% at 96% 46%,
       rgb(245 245 245 / 0.062) 0%, rgb(245 245 245 / 0.048) 17%,
       rgb(245 245 245 / 0.034) 34%, rgb(245 245 245 / 0.022) 51%,
       rgb(245 245 245 / 0.011) 68%, rgb(245 245 245 / 0.003) 84%,
       rgb(245 245 245 / 0) 96%),
-    radial-gradient(72% 128% at 62% -6%,
+    radial-gradient(74% 116% at 62% 40%,
       rgb(245 245 245 / 0.034) 0%, rgb(245 245 245 / 0.016) 22%,
       rgb(245 245 245 / 0.010) 44%, rgb(245 245 245 / 0.004) 66%,
       rgb(245 245 245 / 0) 86%);
@@ -128,27 +128,27 @@
      web používa na šperkoch (--lc a --lc2), takže deň nevymýšľa novú paletu.
      Panely ostávajú čisté biele, aby sa karty od pozadia oddelili. */
   --bg: #f9f9f9;
-  --bg2: #f1f0ee;
+  --bg2: #f5f4f2;
   --panel: #ffffff;
   --panel2: #fafafa;
   /* Vo dni je svetlo čistá biela a tieň teplý, nie čierny. Čierny tieň na
      lomenej bielej vyzerá špinavo, teplý ju posunie k parchmentu #f1f0ee,
      ktorý paleta už má. */
   --lit-a:
-    radial-gradient(122% 96% at 8% -12%,
+    radial-gradient(118% 88% at 8% 46%,
       rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.60) 20%,
       rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
       rgb(255 255 255 / 0) 79%),
-    radial-gradient(104% 82% at 100% 110%,
+    radial-gradient(100% 76% at 100% 88%,
       rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
       rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
       rgb(58 48 32 / 0) 84%);
   --lit-b:
-    radial-gradient(122% 96% at 92% -12%,
+    radial-gradient(118% 88% at 92% 46%,
       rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.60) 20%,
       rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
       rgb(255 255 255 / 0) 79%),
-    radial-gradient(104% 82% at 0% 110%,
+    radial-gradient(100% 76% at 0% 88%,
       rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
       rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
       rgb(58 48 32 / 0) 84%);
@@ -254,12 +254,36 @@ section[data-seam] > .cta-inner { position: relative; z-index: 1; }
 
    Vynechané: .journey a .subhero (ležia na fotografii), .cta-band (má
    vlastnú žiaru zdola), .album-band a .fleetband (nie sú section). */
-main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band) {
+main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band) { position: relative; }
+main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
   background-image: var(--lit-a);
+  /* Maska je to podstatné: svetlo musí na hornom aj dolnom okraji sekcie
+     dobehnúť do nuly. Bez nej sa každá sekcia rozsvietila odznova a na
+     hranici vznikol skok. Namerané pred maskou: 13 úrovní jasu na hranici
+     guide/firsts, čo bola tá viditeľná hrana. */
+  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0) 0%, #000 14%, #000 86%, rgb(0 0 0 / 0) 100%);
+  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0) 0%, #000 14%, #000 86%, rgb(0 0 0 / 0) 100%);
 }
-main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band):nth-of-type(even) {
+main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band):nth-of-type(even)::after {
   background-image: var(--lit-b);
 }
+/* ::after je pozicované, takže by inak kreslilo nad statickým obsahom */
+main > section:not(.journey):not(.subhero):not(.fleetband):not(.cta-band) > * { position: relative; z-index: 1; }
+
+/* Hranica medzi sekciami nemá byť vidieť. Vlastné hairline linky sekcií
+   (border-block na .situ, .firsts, .faq-section, .branches, .reviews,
+   .nonstop, .billing, .cta-band) na tmavom pozadí svietili: namerané 34
+   proti pozadiu 12, čiže výraznejšie než samotný obsah. Linky vnútri
+   sekcií, ktoré delia riadky a karty, ostávajú.
+   Rozdiel medzi --bg a --bg2 je zároveň menší, 5 úrovní -> 3. */
+/* [class] dvíha špecificitu na úroveň tried sekcií, inak by .firsts,
+   .faq-section a spol. svoj border-block ubránili */
+main > section[class] { border-top-width: 0; border-bottom-width: 0; }
 
 /* Element resety a defaulty žijú v @layer base: Tailwind utility
    (layer utilities, definovaná v src/styles/tw.css) ich tak legálne prebijú
