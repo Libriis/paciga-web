@@ -270,7 +270,10 @@ main > section.situ,
 main > section.rozlucky,
 main > section.kronika,
 main > section.faq-section,
-main > section.cta-band { background-color: rgb(var(--fg-rgb) / 0.022); }
+/* 0.013 je zámerne: na tmavom to je 3 úrovne jasu, presne toľko, koľko
+   mal rozdiel --bg a --bg2 predtým. Pri 0.022 to bolo 5 a hranica sa
+   znovu ozvala. */
+main > section.cta-band { background-color: rgb(var(--fg-rgb) / 0.013); }
 
 /* Element resety a defaulty žijú v @layer base: Tailwind utility
    (layer utilities, definovaná v src/styles/tw.css) ich tak legálne prebijú
