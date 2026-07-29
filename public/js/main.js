@@ -180,10 +180,10 @@
     onUpdate: function (self) {
       var y = self.scroll();
       if (nav) {
+        /* menu sa uz neskryva pri scrolle a pozadie je solid v CSS zaklade;
+           data-solid ostava pre pripadne buduce odlisenie stavu po scrolle */
         if (y > 60 || nav.classList.contains('nav-open')) nav.setAttribute('data-solid', '1');
         else nav.removeAttribute('data-solid');
-        if (y > 500 && y > lastY + 4 && !nav.classList.contains('nav-open')) nav.classList.add('nav-hidden');
-        else if (y < lastY - 4 || y <= 500) nav.classList.remove('nav-hidden');
       }
       lastY = y;
       syncCallPill();

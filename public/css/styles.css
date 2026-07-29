@@ -87,7 +87,7 @@
   --text: #f5f5f5;
   --fg-strong: #ffffff;
   --on-accent: #0c0d0f;
-  --nav-bg: rgb(var(--scrim-rgb) / 0.82);
+  --nav-bg: rgb(var(--scrim-rgb)); /* solid — menu má vždy plné pozadie */
   --muted: rgb(var(--fg-rgb) / 0.55);
   --dim: rgb(var(--fg-rgb) / 0.35);
   --gold: #f5f5f5; /* akcent: biela (cierno-biela schema) */
@@ -136,7 +136,7 @@
   --text: #0c0d0f;
   --fg-strong: #000000;
   --on-accent: #ffffff;
-  --nav-bg: rgb(255 255 255 / 0.86);
+  --nav-bg: rgb(255 255 255); /* solid — menu má vždy plné pozadie */
   --gold: #0c0d0f;
   /* linka potrebuje na bielom o kúsok viac kontrastu než 0.08 na čiernom */
   --line: rgb(var(--fg-rgb) / 0.13);
@@ -422,15 +422,18 @@ body {
   pointer-events: none;
 }
 
-/* ---- nav ---- */
+/* ---- nav ----
+   Vždy plná farba pod menu a žiadne skrývanie pri scrolle (žiadosť klienta
+   29.7.). data-solid aj .nav-hidden ostávajú v JS bez efektu — pozadie nesie
+   základné pravidlo. */
 #site-nav {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 100;
-  transition: background 0.45s ease, box-shadow 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  background: var(--nav-bg);
+  box-shadow: 0 1px 0 var(--line);
+  transition: background 0.45s ease, box-shadow 0.45s ease;
 }
-#site-nav[data-solid] { background: var(--nav-bg); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
-#site-nav.nav-hidden { transform: translateY(-100%); }
 .nav-inner { display: flex; align-items: center; gap: 28px; padding: 18px 0; }
 .nav-logo img { height: 40px; width: auto; }
 /* logo je monochromatická biela kresba — v dennej téme ho stačí invertovať */
