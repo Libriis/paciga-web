@@ -68,14 +68,11 @@
 }
 
 /* ---- tokens & reset ----
-   DVE TÉMY. Všetky priehľadné odtiene textu a liniek sa derivujú z jedného
-   kanála --fg-rgb, takže prepnutie témy je otázka pár riadkov nižšie a nie
-   stovky hodnôt po súbore.
-   --scrim-rgb ostáva tmavý v oboch témach: zatmavuje fotografie, nad ktorými
-   je text vždy biely. --on-accent je farba textu na vyplnenom akcente
-   (tlačidlá, pilulky, ::selection). --fg-strong je hover, silnejší než --text.
-   Tému drží atribút data-theme na <html>, nastavuje ho inline skript
-   v Base.astro ešte pred prvým vykreslením. */
+   Jedna tmavá téma (prepínač deň/noc odstránený 29. 7. 2026 na žiadosť
+   klienta). Všetky priehľadné odtiene textu a liniek sa derivujú z jedného
+   kanála --fg-rgb. --scrim-rgb zatmavuje fotografie, nad ktorými je text
+   vždy biely. --on-accent je farba textu na vyplnenom akcente (tlačidlá,
+   pilulky, ::selection). --fg-strong je hover, silnejší než --text. */
 :root {
   --fg-rgb: 245 245 245;
   --scrim-rgb: 12 13 15;
@@ -111,40 +108,8 @@
   --xwide: 'wdth' 125;
 }
 
-/* ---- svetlá téma (deň) ---- */
-:root[data-theme='light'] {
-  --fg-rgb: 12 13 15;
-  /* Nie čistá biela. Lomená a teplý parchment sú tie isté hodnoty, aké už
-     web používa na šperkoch (--lc a --lc2), takže deň nevymýšľa novú paletu.
-     Panely ostávajú čisté biele, aby sa karty od pozadia oddelili. */
-  --bg: #f9f9f9;
-  --bg2: #f5f4f2;
-  --panel: #ffffff;
-  --panel2: #fafafa;
-  /* Vo dni je svetlo čistá biela a tieň teplý, nie čierny. Čierny tieň na
-     lomenej bielej vyzerá špinavo, teplý ju posunie k parchmentu #f1f0ee,
-     ktorý paleta už má. */
-  --lit-a:
-    radial-gradient(118% 88% at 8% 46%,
-      rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.60) 20%,
-      rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
-      rgb(255 255 255 / 0) 79%),
-    radial-gradient(100% 76% at 100% 88%,
-      rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
-      rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
-      rgb(58 48 32 / 0) 84%);
-  --text: #0c0d0f;
-  --fg-strong: #000000;
-  --on-accent: #ffffff;
-  --nav-bg: rgb(255 255 255); /* solid — menu má vždy plné pozadie */
-  --gold: #0c0d0f;
-  /* linka potrebuje na bielom o kúsok viac kontrastu než 0.08 na čiernom */
-  --line: rgb(var(--fg-rgb) / 0.13);
-}
-
-/* Sekcie ležiace na fotografii držia tmavú tému v oboch režimoch. Text nad
-   filmovou jazdou, subhero a album pásmi je vždy biely a scrim pod ním tmavý,
-   takže prepnutie na deň by ich urobilo nečitateľnými. */
+/* Sekcie ležiace na fotografii si tmavé tokeny držia lokálne (text nad
+   filmovou jazdou, subhero a album pásmi je vždy biely a scrim tmavý). */
 .journey,
 .subhero,
 .album-band,
@@ -452,56 +417,9 @@ body {
 }
 .nav-inner { display: flex; align-items: center; gap: 28px; padding: 18px 0; }
 .nav-logo img { height: clamp(46px, 3.6vw, 56px); width: auto; }
-/* logo je monochromatická biela kresba — v dennej téme ho stačí invertovať */
-:root[data-theme='light'] .nav-logo img,
-:root[data-theme='light'] .footer-brand img { filter: invert(1); }
-
-/* ---- prepínač deň/noc (21st.dev ayushmxxn/theme-toggle) ----
-   Prevzaté z predlohy: pilulka 64×32 s vnútrom 4 px, dva kruhy 24 px,
-   ktoré si vymenia miesto posunom o 32 px. Aktívny kruh má výplň,
-   neaktívny je priehľadný. Stav drží data-theme na <html>. */
-.theme-toggle {
-  display: inline-flex;
-  width: 64px;
-  height: 32px;
-  margin-left: 16px;
-  padding: 4px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--panel);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.3s ease, border-color 0.3s ease;
-}
-.theme-toggle:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
-.theme-toggle > span {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-.theme-toggle i {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-}
-.theme-toggle svg { width: 16px; height: 16px; stroke-width: 1.5; }
-/* noc: vyplnený mesiac vľavo, tlmené slnko vpravo */
-.tt-moon { background: rgb(var(--fg-rgb) / 0.12); color: var(--text); }
-.tt-sun { background: transparent; color: var(--dim); }
-/* deň: kruhy si vymenia strany */
-:root[data-theme='light'] .tt-moon { transform: translateX(32px); background: transparent; color: var(--text); }
-:root[data-theme='light'] .tt-sun { transform: translateX(-32px); background: rgb(var(--fg-rgb) / 0.1); color: var(--text); }
-@media (max-width: 900px) {
-  /* burger má margin-left: auto, takže prepínač za ním sedí pri pravom okraji */
-  .theme-toggle { margin-left: 12px; }
-}
-/* Lišta má vlastnú, širšiu mieru než zvyšok obsahu: deväť odkazov, NON STOP
-   CTA a prepínač deň/noc sa do 1240 px nezmestia (potrebujú 1253) a menu sa
-   láme na druhý riadok. Rozostup 18 px drží rezervu aj pri 1280 px. */
+/* Lišta má vlastnú, širšiu mieru než zvyšok obsahu: deväť odkazov a NON STOP
+   CTA sa do 1240 px nezmestia a menu sa láme na druhý riadok. Rozostup 18 px
+   drží rezervu aj pri 1280 px. */
 .nav-inner { width: min(1400px, calc(100% - 40px)); }
 .nav-links { display: flex; align-items: center; gap: 18px; margin-left: auto; flex-wrap: wrap; }
 /* Pásmo medzi burgerom (900 px) a 1365 px je na lištu tesné už bez prepínača:
@@ -509,7 +427,6 @@ body {
    čím sa zmestí aj 1280 aj 1200. */
 @media (max-width: 1365px) {
   .nav-links { gap: 12px; }
-  .theme-toggle { margin-left: 10px; }
 }
 .nav-link {
   font-size: 13.5px;
