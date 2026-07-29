@@ -64,34 +64,43 @@ const pocet = (f: string) => (f === 'all' ? clanky.length : clanky.filter((c) =>
 ---
 <Base title={title} description={description} active="aktuality" ogTitle={ogTitle} ogDescription={ogDescription}>
 
-  <!-- ============ HLAVIČKA ============ -->
-  <section class="page-head">
-    <div class="container">
-      <div class="eyebrow" data-reveal>Aktuality</div>
-      <h1 data-textreveal>Čo je nové<br>v Pacige.</h1>
-      <p class="page-head-lead" data-reveal>Novinky, spolupráce a praktické rady, ktoré pomáhajú pozostalým aj tým, ktorí myslia dopredu.</p>
+  <!-- ============ HLAVIČKA: newsroom band (Jeton pattern, 29. 7. 2026) ====
+       Biely akcentový pás so zaoblenym spodkom: obrí titulok vľavo,
+       lead vpravo. Biela je jediný povolený akcent, plocha robí dôraz. -->
+  <section class="news-hero">
+    <div class="container news-hero-inner">
+      <div>
+        <div class="eyebrow" data-reveal>Aktuality</div>
+        <h1 data-textreveal>Čo je nové<br>v Pacige.</h1>
+      </div>
+      <p class="news-hero-lead" data-reveal>Novinky, spolupráce a praktické rady, ktoré pomáhajú pozostalým aj tým, ktorí myslia dopredu.</p>
     </div>
   </section>
 
-  <!-- ============ FILTER + MRIEŽKA KARIET ============ -->
+  <!-- ============ NAJNOVŠIE ČLÁNKY + FILTER + MRIEŽKA ============ -->
   <section class="news">
     <div class="container">
 
-      <div class="news-filters" data-reveal>
-        {filtre.map((x) => (
-          <button type="button" class:list={['news-chip', { on: x.f === 'all' }]} data-f={x.f}>
-            {x.label} <small>{pocet(x.f)}</small>
-          </button>
-        ))}
+      <div class="news-head" data-reveal>
+        <h2>Najnovšie články</h2>
+        <div class="news-filters">
+          {filtre.map((x) => (
+            <button type="button" class:list={['news-chip', { on: x.f === 'all' }]} data-f={x.f}>
+              {x.label} <small>{pocet(x.f)}</small>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div class="news-grid">
         {clanky.map((c) => (
           <article class="news-card" data-t={c.t} data-reveal>
-            <div class="news-photo" style={`background-image:url('${c.foto}')`}></div>
+            <div class="news-photo" style={`background-image:url('${c.foto}')`}>
+              <span class="news-tag">{c.tag}</span>
+            </div>
             <div class="news-card-body">
-              <div class="news-meta"><span class="news-tag">{c.tag}</span><span class="news-date">{c.datum}</span></div>
               <h3>{c.titulok}</h3>
+              <div class="news-date">{c.datum}</div>
               <p>{c.text}</p>
               {c.link && <a class="news-go" href={c.link}>{c.linkText}</a>}
             </div>
