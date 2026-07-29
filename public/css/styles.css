@@ -2403,6 +2403,17 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   font-size: clamp(17px, 1.5vw, 19.5px);
   line-height: 1.65;
 }
+/* pätnásť služieb ako hashtagy — každý je odkaz na kotvu na stránke služieb */
+.svc-tags {
+  max-width: 700px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+  line-height: 1.75;
+}
+.svc-tags a { color: var(--muted); white-space: nowrap; transition: color 0.3s ease; }
+.svc-tags a:hover, .svc-tags a:focus-visible { color: var(--gold); }
 
 /* ---- mriežka kariet (grid gap-6 mt-12 v predlohe) ---- */
 .svc-grid {
