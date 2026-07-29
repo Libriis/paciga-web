@@ -5,6 +5,12 @@ const title = "O nás | Paciga, pohrebné a kamenárske služby";
 const description = "Rodinná pohrebná a kamenárska služba Paciga. Od roku 2018 sprevádzame rodiny v Poprade, Spišskej Belej a Liptovskom Mikuláši. Viac než 3 000 vybavených pohrebov.";
 const ogTitle = "O nás | Paciga";
 const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rodiny s ľudskosťou, dôstojnosťou a empatiou.";
+
+// Nosiči pre pás „celý tím". Mená sú zástupné, kým klient dodá reálny zoznam.
+const nosici = [
+  'Peter Krupa', 'Ján Šoltés', 'Milan Gavura', 'Štefan Bača', 'Jozef Krempaský',
+  'Tomáš Olekšák', 'Marek Pavlica', 'Michal Zoričák', 'Ondrej Britaňák', 'Lukáš Hudáček',
+];
 ---
 <Base title={title} description={description} active="o-nas" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/o-nas-tim.jpg">
 
@@ -184,15 +190,15 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
       </div>
       <div class="team-full" id="team-full" hidden>
         <div class="team-mini-grid">
-          {Array.from({ length: 10 }).map(() => (
-            <article class="team-mini" tabindex="0" aria-label="Člen tímu, nosič">
+          {nosici.map((meno) => (
+            <article class="team-mini" tabindex="0" aria-label={`${meno}, nosič`}>
               <span class="team-mini-photo" aria-hidden="true">
                 <svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M32 30c6.6 0 12-5.4 12-12S38.6 6 32 6 20 11.4 20 18s5.4 12 12 12Zm0 7c-11.9 0-23 6-23 17.4V64h46v-9.6C55 43 43.9 37 32 37Z"/></svg>
               </span>
               <div class="team-mini-pop" aria-hidden="true">
                 <span class="team-pop-photo"><svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M32 30c6.6 0 12-5.4 12-12S38.6 6 32 6 20 11.4 20 18s5.4 12 12 12Zm0 7c-11.9 0-23 6-23 17.4V64h46v-9.6C55 43 43.9 37 32 37Z"/></svg></span>
                 <div class="team-pop-body">
-                  <h3 class="team-pop-name">Meno a priezvisko</h3>
+                  <h3 class="team-pop-name">{meno}</h3>
                   <span class="team-pop-role">Nosič</span>
                 </div>
               </div>
