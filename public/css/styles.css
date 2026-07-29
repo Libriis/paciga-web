@@ -435,7 +435,7 @@ body {
   transition: background 0.45s ease, box-shadow 0.45s ease;
 }
 .nav-inner { display: flex; align-items: center; gap: 28px; padding: 18px 0; }
-.nav-logo img { height: 40px; width: auto; }
+.nav-logo img { height: clamp(46px, 3.6vw, 56px); width: auto; }
 /* logo je monochromatická biela kresba — v dennej téme ho stačí invertovať */
 :root[data-theme='light'] .nav-logo img,
 :root[data-theme='light'] .footer-brand img { filter: invert(1); }
