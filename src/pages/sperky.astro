@@ -101,7 +101,7 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
   </section>
 
   <!-- ============ KONFIGURÁTOR ============ -->
-  <section id="konfigurator" class="scroll-mt-[90px] pt-[clamp(60px,9vh,110px)] pb-[clamp(80px,12vh,140px)]">
+  <section id="konfigurator" class="scroll-mt-[90px] pt-[clamp(36px,5vh,60px)] pb-[clamp(80px,12vh,140px)]">
     <div class="container">
       <div class="grid gap-9 lg:grid-cols-[1.15fr_1fr] lg:items-center">
 
@@ -210,17 +210,17 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
 <style>
   /* Split hero (21st.dev hero-section-2 v brand tokenoch): obsah vľavo,
      fotka kolekcie s diagonálnym clip-path odkrytím vpravo. */
+  /* Hero drží len výšku obsahu — konfigurátor nastupuje hneď pod CTA. */
   .sperk-hero {
     display: flex;
     flex-direction: column;
-    min-height: 100svh;
   }
   .sh-left {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 48px;
-    padding: clamp(130px, 17vh, 190px) clamp(28px, 4vw, 64px) 44px max(24px, calc((100vw - 1240px) / 2));
+    gap: 44px;
+    padding: clamp(110px, 14vh, 150px) clamp(28px, 4vw, 64px) 40px max(24px, calc((100vw - 1240px) / 2));
   }
   .sh-title { margin-top: 18px; font-size: clamp(38px, 4.6vw, 72px); font-weight: 680; line-height: 1.06; letter-spacing: -0.01em; font-variation-settings: var(--wide); }
   .sh-quiet { color: var(--muted); }
