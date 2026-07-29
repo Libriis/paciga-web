@@ -2449,6 +2449,17 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.5s ease;
 }
 .svc-card:hover .svc-card-media .photo-slot { transform: scale(1.08); opacity: 1; }
+/* reálna fotka v slote karty — rovnaký box ako placeholder, cover rez.
+   Selektor s img, aby prebil všeobecné .svc-card-media img (contain, 58 %). */
+.svc-card-media img.svc-photo {
+  width: min(72%, 210px);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  opacity: 0.92;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.5s ease;
+}
+.svc-card:hover .svc-card-media img.svc-photo { transform: scale(1.08); opacity: 1; }
 .svc-card-media img {
   width: min(58%, 200px);
   height: auto;
