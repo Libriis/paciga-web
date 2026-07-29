@@ -51,37 +51,6 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
     </div>
   </section>
 
-  <!-- ============ PRÍBEH (editoriálne dvojice: text + fotografia) ============
-       Fotky sú zatiaľ placeholdery. Popis v <em> hovorí, čo na zábere má byť,
-       takže sa dá fotiť priamo podľa nich. Všetky sloty: [data-photo-slot]. -->
-  <section class="about-intro">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-textreveal>Náš príbeh</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-      </div>
-
-      <div class="ed-pair">
-        <div class="ed-text">
-          <p data-reveal>Spoločnosť Paciga vznikla 24. mája 2018 v Spišskej Belej ako priamy nástupca spoločnosti Archa Belá. Sme rodinná firma a od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
-        </div>
-        <div class="photo-slot ps-43" data-photo-slot data-reveal>
-          <span>Miesto pre fotografiu</span><em>Interiér pobočky, kde prijímate rodiny</em>
-        </div>
-      </div>
-
-      <div class="ed-pair ed-flip">
-        <div class="ed-text">
-          <p data-reveal>Odvtedy sme sprevádzali viac než tri tisíc rodín. Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
-          <p data-reveal>Naším poslaním od prvého dňa je konať čestne a na vysokej profesionálnej úrovni.</p>
-        </div>
-        <div class="photo-slot ps-43" data-photo-slot data-reveal>
-          <span>Miesto pre fotografiu</span><em>Kvetinárstvo, výroba vencov a smútočnej výzdoby</em>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ FOTOPÁS: NAŠA PRÁCA ============ -->
   <div class="album-band" data-parallax>
     <span><img src="/assets/cintorin.jpg" alt="Stan Paciga pri poslednej rozlúčke na cintoríne" loading="lazy" decoding="async"></span>
@@ -97,10 +66,12 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
     <div class="container">
       <div class="section-head">
         <div class="eyebrow" data-reveal>Kronika</div>
-        <h2 data-textreveal>Naša cesta</h2>
+        <h2 data-textreveal>Náš príbeh</h2>
         <div class="gold-line" data-line aria-hidden="true"></div>
       </div>
-      <!-- Striedavé dvojice okolo zvislej osi; os sa plní so scrollom a uzly
+      <!-- Jedna súvislá sekcia: bývalý „Náš príbeh" (editoriálne dvojice) je
+           vliaty do časovej osi — texty aj foto sloty nesú uzly kroniky.
+           Striedavé dvojice okolo zvislej osi; os sa plní so scrollom a uzly
            sa rozsvietia, keď ich prejde. Fotky sú zatiaľ placeholdery. -->
       <div class="kron">
         <div class="kron-rail" aria-hidden="true"><i id="kron-fill"></i></div>
@@ -121,19 +92,31 @@ const ogDescription = "Rodinná firma spod Tatier. Od roku 2018 sprevádzame rod
           <div class="kron-body">
             <div class="kron-year">2018</div>
             <h3>Vznik spoločnosti Paciga</h3>
-            <p>24. mája 2018 sme v Spišskej Belej nadviazali na spoločnosť Archa Belá a začali písať vlastný príbeh.</p>
+            <p>24. mája 2018 sme v Spišskej Belej nadviazali na spoločnosť Archa Belá. Sme rodinná firma a od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
           <div class="photo-slot ps-43" data-photo-slot>
-            <span>Miesto pre fotografiu</span><em>Archív: prvá prevádzka v Spišskej Belej</em>
+            <span>Miesto pre fotografiu</span><em>Interiér pobočky, kde prijímate rodiny</em>
           </div>
         </div>
 
-        <div class="kron-item kron-now" data-reveal>
+        <div class="kron-item" data-reveal>
+          <div class="kron-body">
+            <div class="kron-year">3&nbsp;000+</div>
+            <h3>Rodiny, ktoré sme sprevádzali</h3>
+            <p>Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
+          </div>
+          <span class="kron-dot" aria-hidden="true"></span>
+          <div class="photo-slot ps-43" data-photo-slot>
+            <span>Miesto pre fotografiu</span><em>Kvetinárstvo, výroba vencov a smútočnej výzdoby</em>
+          </div>
+        </div>
+
+        <div class="kron-item kron-flip kron-now" data-reveal>
           <div class="kron-body">
             <div class="kron-year">Dnes</div>
             <h3>Tri mestá pod Tatrami</h3>
-            <p>Poprad, Spišská Belá a Liptovský Mikuláš. Sme pri vás každý deň, v ktorúkoľvek hodinu.</p>
+            <p>Poprad, Spišská Belá a Liptovský Mikuláš. Sme pri vás každý deň, v ktorúkoľvek hodinu. Čestne a na vysokej profesionálnej úrovni.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
           <div class="photo-slot ps-43" data-photo-slot>
