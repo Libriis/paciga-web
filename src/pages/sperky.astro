@@ -16,12 +16,12 @@ const otazky: FaqItem[] = [
     a: 'Odtlačok prsta vášho blízkeho a nápis podľa vášho želania. Práve odtlačok robí zo šperku kúsok, ktorý sa nedá nahradiť.',
   },
   {
-    q: 'Z akých kovov si môžem vybrať?',
-    a: 'Zo zlata, striebra a ružového zlata. Prívesok nosíte na jemnej retiazke alebo na kordónovej šnúrke.',
+    q: 'V akých farbách si môžem vybrať?',
+    a: 'Zlatá, strieborná, ružová a čierna. Prívesok nosíte na jemnej retiazke alebo na kordónovej šnúrke, náramok na čiernej šnúrke s posuvnými uzlami.',
   },
   {
     q: 'Aké tvary sú v ponuke?',
-    a: 'Srdce a okrúhly medailón. Oba tvary vieme vyrobiť v ktoromkoľvek z ponúkaných kovov.',
+    a: 'Srdce a okrúhly medailón. Oba tvary vieme vyrobiť v ktorejkoľvek z ponúkaných farieb, ako náhrdelník aj ako náramok.',
   },
   {
     q: 'Môžem si zvoliť vlastný nápis?',
@@ -33,18 +33,30 @@ const otazky: FaqItem[] = [
   },
   {
     q: 'Ako si šperk objednám?',
-    a: 'Zavolajte na 0903 596 364 alebo napíšte na paciga@paciga.sk. Prejdeme s vami výber tvaru, kovu aj znenie gravíru.',
+    a: 'Zavolajte na 0903 596 364 alebo napíšte na paciga@paciga.sk. Prejdeme s vami výber typu, tvaru, farby aj znenie gravíru.',
   },
 ];
 
-// Fotomapa konfigurátora — len kombinácie, ktoré máme nafotené.
-// Kruh v ružovom zlate ukážeme v showroome (chip sa vypína).
+// Fotomapa konfigurátora: typ × tvar × farba, všetkých 16 kombinácií.
+// Päť pôvodných fotiek je z ateliérového fotenia, zvyšok sú úpravy
+// reálnych fotiek (paciga-image, gravír kontrolovaný).
 const varianty = [
-  { id: 'srdce-zlato', img: '/assets/sperky/srdce-zlato.jpg', popis: 'Zlaté srdce na retiazke' },
-  { id: 'srdce-striebro', img: '/assets/sperky/srdce-striebro.jpg', popis: 'Strieborné srdce na retiazke' },
-  { id: 'srdce-ruzove', img: '/assets/sperky/srdce-ruzove.jpg', popis: 'Srdce z ružového zlata na čiernej šnúrke' },
-  { id: 'kruh-zlato', img: '/assets/sperky/kruh-zlato.jpg', popis: 'Zlatý medailón na retiazke' },
-  { id: 'kruh-striebro', img: '/assets/sperky/kruh-striebro.jpg', popis: 'Strieborný medailón na retiazke' },
+  { id: 'nahrdelnik-srdce-zlata', img: '/assets/sperky/srdce-zlato.jpg', popis: 'Zlaté srdce na retiazke' },
+  { id: 'nahrdelnik-srdce-strieborna', img: '/assets/sperky/srdce-striebro.jpg', popis: 'Strieborné srdce na retiazke' },
+  { id: 'nahrdelnik-srdce-ruzova', img: '/assets/sperky/srdce-ruzove.jpg', popis: 'Srdce z ružového zlata na čiernej šnúrke' },
+  { id: 'nahrdelnik-srdce-cierna', img: '/assets/sperky/nh-srdce-cierna.jpg', popis: 'Čierne srdce na čiernej šnúrke' },
+  { id: 'nahrdelnik-kruh-zlata', img: '/assets/sperky/kruh-zlato.jpg', popis: 'Zlatý medailón na retiazke' },
+  { id: 'nahrdelnik-kruh-strieborna', img: '/assets/sperky/kruh-striebro.jpg', popis: 'Strieborný medailón na retiazke' },
+  { id: 'nahrdelnik-kruh-ruzova', img: '/assets/sperky/nh-kruh-ruzova.jpg', popis: 'Medailón z ružového zlata na čiernej šnúrke' },
+  { id: 'nahrdelnik-kruh-cierna', img: '/assets/sperky/nh-kruh-cierna.jpg', popis: 'Čierny medailón na čiernej šnúrke' },
+  { id: 'naramok-srdce-zlata', img: '/assets/sperky/nr-srdce-zlata.jpg', popis: 'Náramok so zlatým srdcom' },
+  { id: 'naramok-srdce-strieborna', img: '/assets/sperky/nr-srdce-strieborna.jpg', popis: 'Náramok so strieborným srdcom' },
+  { id: 'naramok-srdce-ruzova', img: '/assets/sperky/nr-srdce-ruzova.jpg', popis: 'Náramok so srdcom z ružového zlata' },
+  { id: 'naramok-srdce-cierna', img: '/assets/sperky/nr-srdce-cierna.jpg', popis: 'Náramok s čiernym srdcom' },
+  { id: 'naramok-kruh-zlata', img: '/assets/sperky/nr-kruh-zlata.jpg', popis: 'Náramok so zlatým medailónom' },
+  { id: 'naramok-kruh-strieborna', img: '/assets/sperky/nr-kruh-strieborna.jpg', popis: 'Náramok so strieborným medailónom' },
+  { id: 'naramok-kruh-ruzova', img: '/assets/sperky/nr-kruh-ruzova.jpg', popis: 'Náramok s medailónom z ružového zlata' },
+  { id: 'naramok-kruh-cierna', img: '/assets/sperky/nr-kruh-cierna.jpg', popis: 'Náramok s čiernym medailónom' },
 ];
 
 const title = "Spomienkové šperky | Paciga, pohrebné a kamenárske služby";
@@ -60,8 +72,8 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
       <div class="eyebrow" data-reveal>Spomienkové šperky</div>
       <h1 data-textreveal>Navrhnite šperk, ktorý zostane.</h1>
       <p class="page-head-lead" data-reveal>
-        Tvar, kov a nápis podľa vášho želania. Odtlačok prsta vášho blízkeho
-        doplníme my. Vyskúšajte si kombinácie priamo tu.
+        Typ, tvar, farba a nápis podľa vášho želania. Odtlačok prsta vášho
+        blízkeho doplníme my. Vyskúšajte si kombinácie priamo tu.
       </p>
     </div>
   </section>
@@ -85,6 +97,14 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
         <!-- ovládanie -->
         <div>
           <div class="v3-group" data-reveal>
+            <div class="v3-label">Typ</div>
+            <div class="v3-seg" role="group" aria-label="Výber typu">
+              <button type="button" class="v3-opt is-on" data-typ="nahrdelnik">Náhrdelník</button>
+              <button type="button" class="v3-opt" data-typ="naramok">Náramok</button>
+            </div>
+          </div>
+
+          <div class="v3-group" data-reveal>
             <div class="v3-label">Tvar</div>
             <div class="v3-seg" role="group" aria-label="Výber tvaru">
               <button type="button" class="v3-opt is-on" data-tvar="srdce">Srdce</button>
@@ -93,13 +113,13 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
           </div>
 
           <div class="v3-group" data-reveal>
-            <div class="v3-label">Kov</div>
-            <div class="v3-seg" role="group" aria-label="Výber kovu">
-              <button type="button" class="v3-opt is-on" data-kov="zlato">Zlato</button>
-              <button type="button" class="v3-opt" data-kov="striebro">Striebro</button>
-              <button type="button" class="v3-opt" data-kov="ruzove">Ružové zlato</button>
+            <div class="v3-label">Farba</div>
+            <div class="v3-seg" role="group" aria-label="Výber farby">
+              <button type="button" class="v3-opt is-on" data-farba="zlata">Zlatá</button>
+              <button type="button" class="v3-opt" data-farba="strieborna">Strieborná</button>
+              <button type="button" class="v3-opt" data-farba="ruzova">Ružová</button>
+              <button type="button" class="v3-opt" data-farba="cierna">Čierna</button>
             </div>
-            <p class="v3-note" id="v3-note" hidden>Kruh v ružovom zlate vám ukážeme v showroome.</p>
           </div>
 
           <div class="v3-group" data-reveal>
@@ -132,7 +152,7 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
           <h2 data-textreveal>Aj ako náramok na šnúrke.</h2>
           <p class="mt-5 max-w-[44ch] text-[clamp(16.5px,1.5vw,19.5px)] leading-[1.7] text-soft" data-reveal>
             Čierna kordónová šnúrka s posuvnými uzlami a prívesok s odtlačkom.
-            Náramkové prívesky vyrábame aj v modrej a čiernej.
+            Prívesky naň vyrábame vo všetkých farbách, navyše aj v modrej.
           </p>
         </div>
       </div>
@@ -146,7 +166,7 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
       <h2 data-textreveal>O všetko sa postaráme.</h2>
       <div class="mt-12 grid grid-cols-1 gap-[22px] md:grid-cols-3">
         {[
-          { n: '01', t: 'Ozvite sa nám', p: 'Zavolajte alebo napíšte. Prejdeme s vami výber tvaru, kovu aj znenie nápisu.' },
+          { n: '01', t: 'Ozvite sa nám', p: 'Zavolajte alebo napíšte. Prejdeme s vami výber typu, tvaru, farby aj znenie nápisu.' },
           { n: '02', t: 'Snímeme odtlačok', p: 'Odtlačok prsta vášho blízkeho zabezpečíme my. Nemusíte na nič myslieť.' },
           { n: '03', t: 'Šperk je váš', p: 'Hotový kúsok si prevezmete v showroome v Poprade alebo vám ho doručíme.' },
         ].map((k) => (
@@ -259,50 +279,33 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
 </style>
 
 <script is:inline slot="scripts">
-  // Konfigurátor — kombinácia tvar × kov prepína fotku na scéne.
+  // Konfigurátor — kombinácia typ × tvar × farba prepína fotku na scéne.
+  // Popisy sa čítajú z alt textov fotiek, zdroj pravdy je pole varianty.
   (function () {
-    var POPISY = {
-      'srdce-zlato': 'Zlaté srdce na retiazke',
-      'srdce-striebro': 'Strieborné srdce na retiazke',
-      'srdce-ruzove': 'Srdce z ružového zlata na čiernej šnúrke',
-      'kruh-zlato': 'Zlatý medailón na retiazke',
-      'kruh-striebro': 'Strieborný medailón na retiazke',
-    };
-    var tvar = 'srdce';
-    var kov = 'zlato';
+    var stav = { typ: 'nahrdelnik', tvar: 'srdce', farba: 'zlata' };
     var fotky = document.querySelectorAll('.v3-photo');
     var popis = document.getElementById('v3-popis');
-    var note = document.getElementById('v3-note');
-    var tvarBtns = document.querySelectorAll('[data-tvar]');
-    var kovBtns = document.querySelectorAll('[data-kov]');
-    var ruzoveBtn = document.querySelector('[data-kov="ruzove"]');
 
     function render() {
-      var id = tvar + '-' + kov;
+      var id = stav.typ + '-' + stav.tvar + '-' + stav.farba;
       fotky.forEach(function (f) {
-        f.classList.toggle('is-on', f.getAttribute('data-variant') === id);
+        var on = f.getAttribute('data-variant') === id;
+        f.classList.toggle('is-on', on);
+        if (on) popis.textContent = f.getAttribute('alt');
       });
-      if (POPISY[id]) popis.textContent = POPISY[id];
-      /* kruh + ružové zlato nemáme nafotené — chip sa vypína s vysvetlením */
-      var kruhRuzove = tvar === 'kruh';
-      ruzoveBtn.disabled = kruhRuzove;
-      note.hidden = !kruhRuzove;
-      tvarBtns.forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-tvar') === tvar); });
-      kovBtns.forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-kov') === kov); });
+      ['typ', 'tvar', 'farba'].forEach(function (os) {
+        document.querySelectorAll('[data-' + os + ']').forEach(function (b) {
+          b.classList.toggle('is-on', b.getAttribute('data-' + os) === stav[os]);
+        });
+      });
     }
 
-    tvarBtns.forEach(function (b) {
-      b.addEventListener('click', function () {
-        tvar = b.getAttribute('data-tvar');
-        if (tvar === 'kruh' && kov === 'ruzove') kov = 'zlato';
-        render();
-      });
-    });
-    kovBtns.forEach(function (b) {
-      b.addEventListener('click', function () {
-        if (b.disabled) return;
-        kov = b.getAttribute('data-kov');
-        render();
+    ['typ', 'tvar', 'farba'].forEach(function (os) {
+      document.querySelectorAll('[data-' + os + ']').forEach(function (b) {
+        b.addEventListener('click', function () {
+          stav[os] = b.getAttribute('data-' + os);
+          render();
+        });
       });
     });
     render();
