@@ -761,6 +761,92 @@ body {
   .team-grid { grid-template-columns: 1fr; }
 }
 
+/* ---- celý tím (nosiči) ----
+   Pás desiatich miniatúr pod hlavnými kartami, skrytý do kliknutia na
+   „Zobraziť celý tím". Miniatúra je nemá: len silueta na paneli. Desať
+   mien vedľa seba by sa nedalo čítať, preto meno a rolu nesie až väčšia
+   karta, ktorá vystúpi nad miniatúrou pod kurzorom. Väčšia karta preberá
+   panel, linku a radius tímovej sekcie, žiadny nový cudzí tvar.
+   Krajné dve miniatúry kotvia kartu k hrane pásu, inak by vytiekla z
+   kontajnera. Na dotyku hover neexistuje, karta sa tam nezobrazuje. */
+.team-more { margin-top: clamp(28px, 4vh, 44px); text-align: center; }
+.team-full { opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s ease; }
+.team-full.is-open { opacity: 1; transform: none; }
+.team-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: clamp(8px, 1vw, 14px);
+  margin-top: clamp(24px, 3.4vh, 36px);
+}
+.team-mini {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  cursor: pointer;
+  transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.team-mini:hover, .team-mini:focus-visible { border-color: rgb(var(--fg-rgb) / 0.4); transform: translateY(-4px); outline: none; }
+.team-mini-photo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  color: rgb(var(--fg-rgb) / 0.26);
+}
+.team-mini-photo svg { width: 72%; height: auto; transform: translateY(9%); }
+.team-mini-pop {
+  --tx: -50%;
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 14px);
+  transform: translate(var(--tx), 8px);
+  width: clamp(200px, 21vw, 250px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--panel2);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+  box-shadow: 0 18px 50px rgb(var(--scrim-rgb) / 0.55);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.team-mini:hover .team-mini-pop, .team-mini:focus-visible .team-mini-pop { opacity: 1; transform: translate(var(--tx), 0); }
+.team-mini:nth-child(-n+2) .team-mini-pop { left: 0; --tx: 0; }
+.team-mini:nth-last-child(-n+2) .team-mini-pop { left: auto; right: 0; --tx: 0; }
+.team-pop-photo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 150px;
+  overflow: hidden;
+  background: var(--bg2);
+  color: rgb(var(--fg-rgb) / 0.3);
+}
+.team-pop-photo svg { width: 44%; height: auto; transform: translateY(8%); }
+.team-pop-body { padding: 16px 18px 18px; }
+.team-pop-name { font-size: 17px; font-weight: 650; color: var(--text); }
+.team-pop-role {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+@media (max-width: 860px) {
+  .team-mini-grid { grid-template-columns: repeat(5, 1fr); }
+}
+@media (hover: none) {
+  .team-mini-pop { display: none; }
+}
+
 /* ---- branches ---- */
 .branches { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
 .section-head { margin-bottom: 60px; }
@@ -2270,6 +2356,9 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .kron-body { grid-column: 1; text-align: right; }
 .kron-body p { margin-left: auto; }
 .kron-item .photo-slot { grid-column: 3; }
+/* reálne fotky kroniky — rovnaké miesto v mriežke ako photo-slot */
+.kron-item .kron-photo { grid-column: 3; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
+.kron-flip .kron-photo { grid-column: 1; }
 .kron-flip .kron-body { grid-column: 3; text-align: left; }
 .kron-flip .kron-body p { margin-left: 0; margin-right: auto; }
 .kron-flip .photo-slot { grid-column: 1; }
@@ -2353,7 +2442,9 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .kron-body,
   .kron-flip .kron-body,
   .kron-item .photo-slot,
-  .kron-flip .photo-slot { grid-column: 1; text-align: left; }
+  .kron-flip .photo-slot,
+  .kron-item .kron-photo,
+  .kron-flip .kron-photo { grid-column: 1; text-align: left; }
   .kron-body p { margin-left: 0; margin-right: 0; }
   /* grid-column: auto je nutné — absolútne pozicovaná položka mriežky si
      inak berie za obalový blok svoju bunku (stĺpec 2), nie celý riadok,
