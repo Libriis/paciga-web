@@ -1791,8 +1791,9 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .parte-kond-list h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 650; font-variation-settings: var(--wide); margin-bottom: 28px; }
 .pcond-note { margin-top: 22px; color: var(--dim); font-size: 15px; max-width: 56ch; }
 
-/* footer patrí k scrollovaciemu stĺpcu, nesmie vojsť pod fixný panel */
-#parte-main .site-footer { margin-left: 44%; }
+/* footer beží v plnej šírke: pri doscrollovaní sa nasunie ponad fixný
+   panel s fotkou (z-index nad panelom, nepriehľadné pozadie má vlastné) */
+#parte-main .site-footer { position: relative; z-index: 6; }
 
 /* nav leží nad tmavým fixným panelom — podklad potrebuje hneď, nie až po
    scrolle (rovnaký princíp ako .page-light #site-nav na šperkoch) */
@@ -1806,7 +1807,6 @@ body:has(#parte-main) #site-nav { background: var(--nav-bg); backdrop-filter: bl
   .phero-candle { bottom: 22px; }
   .parte-back { top: 92px; }
   .parte-content { margin-left: 0; max-width: none; padding-top: 48px; }
-  #parte-main .site-footer { margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .phero-flame { animation: none; }
