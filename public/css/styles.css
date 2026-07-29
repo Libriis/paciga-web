@@ -2457,40 +2457,42 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.5s ease;
 }
 .svc-card:hover .svc-card-media img { transform: scale(1.1); opacity: 1; }
-/* vyrezaný roh vpravo dole: pozadie sekcie + rounded-tl = ilúzia výrezu */
-.svc-notch {
+/* odkaz z karty — 21st.dev ruixen.ui/animated-link (vybrany V1 z /lab-karty):
+   podčiarknutie nabieha zľava, šípka sa zdvihne do rohu. Nahrádza
+   vyrezaný roh so šípkou (svc-notch), ktorý klientovi nesadol. */
+.svc-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 4px auto 0;
+  padding-bottom: 4px;
+  font-size: 15px;
+  color: var(--muted);
+  transition: color 0.3s ease;
+}
+.svc-link::after {
+  content: "";
   position: absolute;
-  right: 0;
+  left: 0;
   bottom: 0;
-  width: 80px;
-  height: 80px;
-  z-index: 2;
-  background: var(--bg);
-  border-left: 1px solid var(--line);
-  border-top: 1px solid var(--line);
-  border-radius: 12px 0 0 0;
+  width: 100%;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.svc-arrow {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  color: var(--text);
-  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+.svc-link svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.svc-arrow svg { width: 20px; height: 20px; }
-.svc-card:hover .svc-arrow {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
-  transform: scale(1.1);
-}
+.svc-card:hover .svc-link, .svc-card:focus-visible .svc-link { color: var(--gold); }
+.svc-card:hover .svc-link::after, .svc-card:focus-visible .svc-link::after { transform: scaleX(1); }
+.svc-card:hover .svc-link svg, .svc-card:focus-visible .svc-link svg { opacity: 1; transform: translate(0, 0); }
 .svc-all { display: table; margin: clamp(30px, 4.5vh, 48px) auto 0; }
 
 @media (max-width: 980px) {
@@ -2500,8 +2502,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .svc-grid { grid-template-columns: 1fr; }
   .svc-panel-body { padding: clamp(40px, 7vh, 64px) 18px; }
   .svc-card { min-height: 260px; }
-  .svc-notch { width: 64px; height: 64px; }
-  .svc-arrow { width: 40px; height: 40px; right: 8px; bottom: 8px; }
 }
 
 /* ============================================================
