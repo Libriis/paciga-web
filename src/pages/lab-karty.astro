@@ -1,0 +1,200 @@
+---
+/*
+  Interné porovnanie: tri varianty odkazovej afordancie na kartách služieb
+  na homepage — náhrada šípky vo vyrezanom rohu (svc-notch), ktorá klientovi
+  nesadla. Nie je v navigácii, noindex.
+
+  Referencie 21st.dev, preložené do brand tokenov:
+  - V1 ruixen.ui/animated-link      — podčiarknutie nabieha zľava + šípka sa zdvihne
+  - V2 magicui/interactive-hover-button — spodný pás sa naplní akcentom zľava
+  - V3 soralabs/section-cta         — čip pod nadpisom, na hover sa vyplní a šípka sa stočí
+*/
+import Base from '../layouts/Base.astro';
+
+const KARTY = [
+  { t1: 'Obrad', t2: 'a preprava', pocet: '7 služieb', href: '/pohrebne-sluzby#rakvy', foto: 'Sprievod pred obradom, vozidlá a personál' },
+  { t1: 'Starostlivosť', t2: 'o pozostalých', pocet: '6 služieb', href: '/pohrebne-sluzby#kvetinarstvo', foto: 'Kvetinárstvo, viazanie vencov' },
+  { t1: 'Kamenárstvo', t2: '', pocet: '2 služby', href: '/pohrebne-sluzby#kamenarstvo', foto: 'Dielňa kamenárstva, gravírovanie do žuly' },
+];
+
+const title = 'Lab: odkaz z kariet služieb, tri varianty (interné)';
+---
+<Base title={title} description="Interné porovnanie variantov." active="">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <section class="page-head">
+    <div class="container">
+      <h1 data-textreveal>Odkaz z kariet služieb<br>tri varianty</h1>
+      <p class="page-head-lead">Interné porovnanie. Šípka vo vyrezanom rohu karty ide preč; každý variant ukazuje iný spôsob, ako povedať „kliknutím prejdete na stránku služby". Fotky sú placeholdery.</p>
+    </div>
+  </section>
+
+  <!-- ============ V1: tichý odkaz (ruixen.ui/animated-link) ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V1 · Tichý odkaz pod fotkou</div>
+      <p class="lab-note">Reč, ktorú web už používa: textový odkaz s podčiarknutím, ktoré pri hoveri nabehne zľava, a šípkou, ktorá sa zdvihne do rohu. Najtichší variant — karta ostáva čistá, afordancia je v texte.</p>
+      <div class="lk-grid">
+        {KARTY.map((k) => (
+          <a class="lkcard lkv1" href={k.href}>
+            <h3 class="lk-title">{k.t1}{k.t2 && <br />}{k.t2}</h3>
+            <div class="lk-media"><div class="photo-slot"><span>Miesto pre fotografiu</span><em>{k.foto}</em></div></div>
+            <span class="lk-link">Zobraziť služby
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V2: spodný pás (magicui/interactive-hover-button) ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V2 · Spodný pás s výplňou</div>
+      <p class="lab-note">Celá spodná hrana karty je odkazový pás. Pri hoveri sa zľava naplní akcentom a šípka dobehne sprava. Najsilnejšia afordancia — na prvý pohľad tlačidlo, stále v mono palete.</p>
+      <div class="lk-grid">
+        {KARTY.map((k) => (
+          <a class="lkcard lkv2" href={k.href}>
+            <h3 class="lk-title">{k.t1}{k.t2 && <br />}{k.t2}</h3>
+            <div class="lk-media"><div class="photo-slot"><span>Miesto pre fotografiu</span><em>{k.foto}</em></div></div>
+            <span class="lk-bar"><span>Otvoriť služby</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V3: čip s počtom (soralabs/section-cta) ============ -->
+  <section class="lab-sec">
+    <div class="container">
+      <div class="lk-label">V3 · Čip s počtom služieb</div>
+      <p class="lab-note">Pod nadpisom sedí čip s počtom služieb a šípkou. Pri hoveri sa vyplní a šípka sa stočí doprava. Jediný variant, ktorý okrem „klikni" povie aj čo za kliknutím je.</p>
+      <div class="lk-grid">
+        {KARTY.map((k) => (
+          <a class="lkcard lkv3" href={k.href}>
+            <h3 class="lk-title">{k.t1}{k.t2 && <br />}{k.t2}</h3>
+            <span class="lk-chip">{k.pocet}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </span>
+            <div class="lk-media"><div class="photo-slot"><span>Miesto pre fotografiu</span><em>{k.foto}</em></div></div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lab-sec { padding: clamp(44px, 6vh, 72px) 0; border-top: 1px solid var(--line); }
+  .lk-label { font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+  .lab-note { margin: 10px 0 30px; max-width: 760px; color: var(--muted); font-size: 16px; line-height: 1.6; }
+  .lk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+  .lkcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 340px;
+    padding: 26px 22px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+  .lkcard:hover, .lkcard:focus-visible { border-color: rgb(var(--fg-rgb) / 0.28); }
+  .lk-title { margin: 6px 0 8px; text-align: center; font-size: clamp(21px, 2.1vw, 29px); line-height: 1.1; font-weight: 680; }
+  .lk-media { flex: 1; display: grid; place-items: center; padding: 8px 0 12px; min-height: 0; }
+  .lk-media :global(.photo-slot) {
+    width: min(66%, 190px);
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    opacity: 0.9;
+    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.5s ease;
+  }
+  .lkcard:hover .lk-media :global(.photo-slot) { transform: scale(1.06); opacity: 1; }
+
+  /* V1: podčiarknutie zľava + šípka sa zdvihne (animated-link) */
+  .lkv1 .lk-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 2px auto 0;
+    padding-bottom: 4px;
+    font-size: 15px;
+    color: var(--muted);
+    transition: color 0.3s ease;
+  }
+  .lkv1 .lk-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .lkv1 .lk-link svg { width: 14px; height: 14px; opacity: 0; transform: translate(-4px, 4px); transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.19, 1, 0.22, 1); }
+  .lkv1:hover .lk-link { color: var(--gold); }
+  .lkv1:hover .lk-link::after { transform: scaleX(1); }
+  .lkv1:hover .lk-link svg { opacity: 1; transform: translate(0, 0); }
+
+  /* V2: spodný pás s výplňou zľava (interactive-hover-button) */
+  .lkv2 { padding-bottom: 0; }
+  .lkv2 .lk-bar {
+    position: relative;
+    margin: 12px -22px 0;
+    padding: 15px 22px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    color: var(--muted);
+    overflow: hidden;
+    transition: color 0.35s ease;
+  }
+  .lkv2 .lk-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .lkv2 .lk-bar > span, .lkv2 .lk-bar > svg { position: relative; z-index: 1; }
+  .lkv2 .lk-bar svg { width: 17px; height: 17px; opacity: 0.7; transform: translateX(-6px); transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .lkv2:hover .lk-bar { color: var(--on-accent); }
+  .lkv2:hover .lk-bar::before { transform: translateX(0); }
+  .lkv2:hover .lk-bar svg { opacity: 1; transform: translateX(0); }
+
+  /* V3: čip s počtom, výplň + stočenie šípky (section-cta) */
+  .lkv3 .lk-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 auto 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13.5px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+  }
+  .lkv3 .lk-chip svg { width: 13px; height: 13px; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .lkv3:hover .lk-chip { background: var(--gold); color: var(--on-accent); border-color: var(--gold); }
+  .lkv3:hover .lk-chip svg { transform: rotate(45deg); }
+
+  @media (max-width: 980px) { .lk-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px) { .lk-grid { grid-template-columns: 1fr; } .lkcard { min-height: 280px; } }
+</style>
