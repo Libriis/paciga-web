@@ -5,10 +5,64 @@ const title = "Aktuality | Paciga, pohrebné a kamenárske služby";
 const description = "Novinky pohrebnej služby Paciga: spolupráce, konferencie a praktické rady pre pozostalých.";
 const ogTitle = "Aktuality | Paciga";
 const ogDescription = "Čo je nové v Pacige: novinky, partnerstvá a rady, ktoré pomáhajú.";
+
+// Karty s fotkou (Fluz "Stacked deals" pattern, 29. 7. 2026): jednotná mriežka,
+// fotka hore, meta riadok, titulok, popis. Filter chips podľa tagu.
+const clanky = [
+  {
+    datum: '29. mája 2026', tag: 'Rada', t: 'rada', foto: '/assets/sperky-studio.jpg',
+    titulok: 'Odtlačok prsta zosnulého na pamiatku',
+    text: 'Ako vzniká spomienkový šperk: od sňatia odtlačku až po gravírovanie do striebra, zlata alebo ružového zlata. Kúsok blízkeho človeka, ktorý zostáva navždy.',
+    link: '/sperky', linkText: 'Pozrieť kolekciu šperkov →',
+  },
+  {
+    datum: '26. mája 2026', tag: 'Novinka', t: 'novinka', foto: '/assets/o-nas-tim.jpg',
+    titulok: 'Zúčastnili sme sa Medzinárodnej konferencie pohrebných služieb na Slovensku',
+    text: 'Priniesli sme si poznatky a kontakty, ktoré posúvajú naše služby ďalej. Vzdelávame sa, aby ste u nás vždy našli aktuálny štandard starostlivosti.',
+  },
+  {
+    datum: '30. januára 2026', tag: 'Rada', t: 'rada', foto: '/assets/sluzby-hero.jpg',
+    titulok: 'Viac než pohrebná služba: kompletné riešenie pre pozostalých',
+    text: 'Od prevozu a obradu po kamenárstvo a smútkové poradenstvo. Prehľad všetkého, čo za vás vieme vybaviť, aby ste sa mohli sústrediť na rozlúčku.',
+    link: '/pohrebne-sluzby', linkText: 'Prehľad služieb →',
+  },
+  {
+    datum: '14. januára 2026', tag: 'Rada', t: 'rada', foto: '/assets/info-hero.jpg',
+    titulok: 'Riešenie pozostalosti po pohrebe',
+    text: 'Dedičské konanie, úrady, zmluvy a účty. Na koho sa obrátiť po pohrebe a s čím vám vieme pomôcť my a naši partneri.',
+    link: '/informacie-pre-pozostalych', linkText: 'Sprievodca pre pozostalých →',
+  },
+  {
+    datum: '11. decembra 2025', tag: 'Spolupráca', t: 'spolupraca', foto: '/assets/cintorin.jpg',
+    titulok: 'Spolupráca so Spomínam.sk',
+    text: 'Spájame sa s platformou Spomínam.sk, aby spomienky na blízkych zostali živé aj v digitálnom priestore.',
+  },
+  {
+    datum: '26. novembra 2025', tag: 'Spolupráca', t: 'spolupraca', foto: '/assets/o-nas-limuzina.jpg',
+    titulok: 'Digitálna pomoc po pohrebe: spolupracujeme s platformou Potom.sk',
+    text: 'Potom.sk uľahčuje pozostalým vybavovanie všetkého, čo po pohrebe nasleduje. Sme radi, že našim rodinám vieme ponúknuť aj túto podporu.',
+  },
+  {
+    datum: '13. októbra 2025', tag: 'Rada', t: 'rada', foto: '/assets/asset-01.jpg',
+    titulok: 'Smútočné oznámenia, fotografia zosnulého a smútočná hudba',
+    text: 'Praktický sprievodca prípravou parte, výberom fotografie a hudby na rozlúčku. Malé rozhodnutia, ktoré dodajú obradu osobný tón.',
+  },
+  {
+    datum: '9. októbra 2025', tag: 'Novinka', t: 'novinka', foto: '/assets/asset-05.jpg',
+    titulok: 'XXI. Konferencia HCA Slovakia',
+    text: 'Boli sme pri tom: odborná konferencia o štandardoch a inováciách v pohrebníctve. Držíme krok s tým najlepším v odbore.',
+  },
+];
+
+const filtre = [
+  { f: 'all', label: 'Všetko' },
+  { f: 'rada', label: 'Rady' },
+  { f: 'novinka', label: 'Novinky' },
+  { f: 'spolupraca', label: 'Spolupráce' },
+];
+const pocet = (f: string) => (f === 'all' ? clanky.length : clanky.filter((c) => c.t === f).length);
 ---
 <Base title={title} description={description} active="aktuality" ogTitle={ogTitle} ogDescription={ogDescription}>
-
-
 
   <!-- ============ HLAVIČKA ============ -->
   <section class="page-head">
@@ -19,86 +73,50 @@ const ogDescription = "Čo je nové v Pacige: novinky, partnerstvá a rady, ktor
     </div>
   </section>
 
-  <!-- ============ ZOZNAM ČLÁNKOV ============ -->
+  <!-- ============ FILTER + MRIEŽKA KARIET ============ -->
   <section class="news">
     <div class="container">
 
-      <article class="news-item" data-reveal>
-        <div class="news-date">29. mája 2026</div>
-        <div class="news-body">
-          <div class="news-tag">Rada</div>
-          <h3>Odtlačok prsta zosnulého na pamiatku</h3>
-          <p>Ako vzniká spomienkový šperk: od sňatia odtlačku až po gravírovanie do striebra, zlata alebo ružového zlata. Kúsok blízkeho človeka, ktorý zostáva navždy.</p>
-          <a class="news-go" href="/sperky">Pozrieť kolekciu šperkov →</a>
-        </div>
-      </article>
+      <div class="news-filters" data-reveal>
+        {filtre.map((x) => (
+          <button type="button" class:list={['news-chip', { on: x.f === 'all' }]} data-f={x.f}>
+            {x.label} <small>{pocet(x.f)}</small>
+          </button>
+        ))}
+      </div>
 
-      <article class="news-item" data-reveal>
-        <div class="news-date">26. mája 2026</div>
-        <div class="news-body">
-          <div class="news-tag">Novinka</div>
-          <h3>Zúčastnili sme sa Medzinárodnej konferencie pohrebných služieb na Slovensku</h3>
-          <p>Priniesli sme si poznatky a kontakty, ktoré posúvajú naše služby ďalej. Vzdelávame sa, aby ste u nás vždy našli aktuálny štandard starostlivosti.</p>
-        </div>
-      </article>
-
-      <article class="news-item" data-reveal>
-        <div class="news-date">30. januára 2026</div>
-        <div class="news-body">
-          <div class="news-tag">Rada</div>
-          <h3>Viac než pohrebná služba: kompletné riešenie pre pozostalých</h3>
-          <p>Od prevozu a obradu po kamenárstvo a smútkové poradenstvo. Prehľad všetkého, čo za vás vieme vybaviť, aby ste sa mohli sústrediť na rozlúčku.</p>
-          <a class="news-go" href="/pohrebne-sluzby">Prehľad služieb →</a>
-        </div>
-      </article>
-
-      <article class="news-item" data-reveal>
-        <div class="news-date">14. januára 2026</div>
-        <div class="news-body">
-          <div class="news-tag">Rada</div>
-          <h3>Riešenie pozostalosti po pohrebe</h3>
-          <p>Dedičské konanie, úrady, zmluvy a účty. Na koho sa obrátiť po pohrebe a s čím vám vieme pomôcť my a naši partneri.</p>
-          <a class="news-go" href="/informacie-pre-pozostalych">Sprievodca pre pozostalých →</a>
-        </div>
-      </article>
-
-      <article class="news-item" data-reveal>
-        <div class="news-date">11. decembra 2025</div>
-        <div class="news-body">
-          <div class="news-tag">Spolupráca</div>
-          <h3>Spolupráca so Spomínam.sk</h3>
-          <p>Spájame sa s platformou Spomínam.sk, aby spomienky na blízkych zostali živé aj v digitálnom priestore.</p>
-        </div>
-      </article>
-
-      <article class="news-item" data-reveal>
-        <div class="news-date">26. novembra 2025</div>
-        <div class="news-body">
-          <div class="news-tag">Spolupráca</div>
-          <h3>Digitálna pomoc po pohrebe: spolupracujeme s platformou Potom.sk</h3>
-          <p>Potom.sk uľahčuje pozostalým vybavovanie všetkého, čo po pohrebe nasleduje. Sme radi, že našim rodinám vieme ponúknuť aj túto podporu.</p>
-        </div>
-      </article>
-
-      <article class="news-item" data-reveal>
-        <div class="news-date">13. októbra 2025</div>
-        <div class="news-body">
-          <div class="news-tag">Rada</div>
-          <h3>Smútočné oznámenia, fotografia zosnulého a smútočná hudba</h3>
-          <p>Praktický sprievodca prípravou parte, výberom fotografie a hudby na rozlúčku. Malé rozhodnutia, ktoré dodajú obradu osobný tón.</p>
-        </div>
-      </article>
-
-      <article class="news-item" data-reveal>
-        <div class="news-date">9. októbra 2025</div>
-        <div class="news-body">
-          <div class="news-tag">Novinka</div>
-          <h3>XXI. Konferencia HCA Slovakia</h3>
-          <p>Boli sme pri tom: odborná konferencia o štandardoch a inováciách v pohrebníctve. Držíme krok s tým najlepším v odbore.</p>
-        </div>
-      </article>
+      <div class="news-grid">
+        {clanky.map((c) => (
+          <article class="news-card" data-t={c.t} data-reveal>
+            <div class="news-photo" style={`background-image:url('${c.foto}')`}></div>
+            <div class="news-card-body">
+              <div class="news-meta"><span class="news-tag">{c.tag}</span><span class="news-date">{c.datum}</span></div>
+              <h3>{c.titulok}</h3>
+              <p>{c.text}</p>
+              {c.link && <a class="news-go" href={c.link}>{c.linkText}</a>}
+            </div>
+          </article>
+        ))}
+      </div>
 
     </div>
   </section>
 
+<Fragment slot="scripts">
+<script is:inline>
+(function () {
+  var chips = document.querySelectorAll('.news-chip');
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.classList.remove('on'); });
+      chip.classList.add('on');
+      var f = chip.getAttribute('data-f');
+      document.querySelectorAll('.news-card').forEach(function (card) {
+        card.classList.toggle('hidden', f !== 'all' && card.getAttribute('data-t') !== f);
+      });
+    });
+  });
+})();
+</script>
+</Fragment>
 </Base>

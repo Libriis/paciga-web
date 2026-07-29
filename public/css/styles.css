@@ -68,14 +68,11 @@
 }
 
 /* ---- tokens & reset ----
-   DVE TÉMY. Všetky priehľadné odtiene textu a liniek sa derivujú z jedného
-   kanála --fg-rgb, takže prepnutie témy je otázka pár riadkov nižšie a nie
-   stovky hodnôt po súbore.
-   --scrim-rgb ostáva tmavý v oboch témach: zatmavuje fotografie, nad ktorými
-   je text vždy biely. --on-accent je farba textu na vyplnenom akcente
-   (tlačidlá, pilulky, ::selection). --fg-strong je hover, silnejší než --text.
-   Tému drží atribút data-theme na <html>, nastavuje ho inline skript
-   v Base.astro ešte pred prvým vykreslením. */
+   Jedna tmavá téma (prepínač deň/noc odstránený 29. 7. 2026 na žiadosť
+   klienta). Všetky priehľadné odtiene textu a liniek sa derivujú z jedného
+   kanála --fg-rgb. --scrim-rgb zatmavuje fotografie, nad ktorými je text
+   vždy biely. --on-accent je farba textu na vyplnenom akcente (tlačidlá,
+   pilulky, ::selection). --fg-strong je hover, silnejší než --text. */
 :root {
   --fg-rgb: 245 245 245;
   --scrim-rgb: 12 13 15;
@@ -111,40 +108,8 @@
   --xwide: 'wdth' 125;
 }
 
-/* ---- svetlá téma (deň) ---- */
-:root[data-theme='light'] {
-  --fg-rgb: 12 13 15;
-  /* Nie čistá biela. Lomená a teplý parchment sú tie isté hodnoty, aké už
-     web používa na šperkoch (--lc a --lc2), takže deň nevymýšľa novú paletu.
-     Panely ostávajú čisté biele, aby sa karty od pozadia oddelili. */
-  --bg: #f9f9f9;
-  --bg2: #f5f4f2;
-  --panel: #ffffff;
-  --panel2: #fafafa;
-  /* Vo dni je svetlo čistá biela a tieň teplý, nie čierny. Čierny tieň na
-     lomenej bielej vyzerá špinavo, teplý ju posunie k parchmentu #f1f0ee,
-     ktorý paleta už má. */
-  --lit-a:
-    radial-gradient(118% 88% at 8% 46%,
-      rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.60) 20%,
-      rgb(255 255 255 / 0.32) 40%, rgb(255 255 255 / 0.12) 61%,
-      rgb(255 255 255 / 0) 79%),
-    radial-gradient(100% 76% at 100% 88%,
-      rgb(58 48 32 / 0.075) 0%, rgb(58 48 32 / 0.050) 24%,
-      rgb(58 48 32 / 0.026) 47%, rgb(58 48 32 / 0.008) 67%,
-      rgb(58 48 32 / 0) 84%);
-  --text: #0c0d0f;
-  --fg-strong: #000000;
-  --on-accent: #ffffff;
-  --nav-bg: rgb(255 255 255); /* solid — menu má vždy plné pozadie */
-  --gold: #0c0d0f;
-  /* linka potrebuje na bielom o kúsok viac kontrastu než 0.08 na čiernom */
-  --line: rgb(var(--fg-rgb) / 0.13);
-}
-
-/* Sekcie ležiace na fotografii držia tmavú tému v oboch režimoch. Text nad
-   filmovou jazdou, subhero a album pásmi je vždy biely a scrim pod ním tmavý,
-   takže prepnutie na deň by ich urobilo nečitateľnými. */
+/* Sekcie ležiace na fotografii si tmavé tokeny držia lokálne (text nad
+   filmovou jazdou, subhero a album pásmi je vždy biely a scrim tmavý). */
 .journey,
 .subhero,
 .album-band,
@@ -381,6 +346,22 @@ body {
   transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease, background 0.35s ease;
 }
 .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgb(var(--fg-rgb) / 0.25); background: var(--fg-strong); }
+/* sekundárne tlačidlo: obrysová pilulka — jasná klikateľnosť bez váhy
+   plného CTA. Nahrádza tiché link-underline pri samostatných akciách. */
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 26px;
+  border: 1px solid rgb(var(--fg-rgb) / 0.28);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  transition: border-color 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease;
+}
+.btn-line:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 10px 30px rgb(var(--fg-rgb) / 0.12); }
+.btn-line.sm { padding: 10px 18px; font-size: 14px; }
 .btn-lg { font-size: 17px; padding: 20px 38px; }
 
 .link-underline {
@@ -436,56 +417,9 @@ body {
 }
 .nav-inner { display: flex; align-items: center; gap: 28px; padding: 18px 0; }
 .nav-logo img { height: clamp(46px, 3.6vw, 56px); width: auto; }
-/* logo je monochromatická biela kresba — v dennej téme ho stačí invertovať */
-:root[data-theme='light'] .nav-logo img,
-:root[data-theme='light'] .footer-brand img { filter: invert(1); }
-
-/* ---- prepínač deň/noc (21st.dev ayushmxxn/theme-toggle) ----
-   Prevzaté z predlohy: pilulka 64×32 s vnútrom 4 px, dva kruhy 24 px,
-   ktoré si vymenia miesto posunom o 32 px. Aktívny kruh má výplň,
-   neaktívny je priehľadný. Stav drží data-theme na <html>. */
-.theme-toggle {
-  display: inline-flex;
-  width: 64px;
-  height: 32px;
-  margin-left: 16px;
-  padding: 4px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--panel);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.3s ease, border-color 0.3s ease;
-}
-.theme-toggle:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
-.theme-toggle > span {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-.theme-toggle i {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-}
-.theme-toggle svg { width: 16px; height: 16px; stroke-width: 1.5; }
-/* noc: vyplnený mesiac vľavo, tlmené slnko vpravo */
-.tt-moon { background: rgb(var(--fg-rgb) / 0.12); color: var(--text); }
-.tt-sun { background: transparent; color: var(--dim); }
-/* deň: kruhy si vymenia strany */
-:root[data-theme='light'] .tt-moon { transform: translateX(32px); background: transparent; color: var(--text); }
-:root[data-theme='light'] .tt-sun { transform: translateX(-32px); background: rgb(var(--fg-rgb) / 0.1); color: var(--text); }
-@media (max-width: 900px) {
-  /* burger má margin-left: auto, takže prepínač za ním sedí pri pravom okraji */
-  .theme-toggle { margin-left: 12px; }
-}
-/* Lišta má vlastnú, širšiu mieru než zvyšok obsahu: deväť odkazov, NON STOP
-   CTA a prepínač deň/noc sa do 1240 px nezmestia (potrebujú 1253) a menu sa
-   láme na druhý riadok. Rozostup 18 px drží rezervu aj pri 1280 px. */
+/* Lišta má vlastnú, širšiu mieru než zvyšok obsahu: deväť odkazov a NON STOP
+   CTA sa do 1240 px nezmestia a menu sa láme na druhý riadok. Rozostup 18 px
+   drží rezervu aj pri 1280 px. */
 .nav-inner { width: min(1400px, calc(100% - 40px)); }
 .nav-links { display: flex; align-items: center; gap: 18px; margin-left: auto; flex-wrap: wrap; }
 /* Pásmo medzi burgerom (900 px) a 1365 px je na lištu tesné už bez prepínača:
@@ -493,7 +427,6 @@ body {
    čím sa zmestí aj 1280 aj 1200. */
 @media (max-width: 1365px) {
   .nav-links { gap: 12px; }
-  .theme-toggle { margin-left: 10px; }
 }
 .nav-link {
   font-size: 13.5px;
@@ -1705,12 +1638,26 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .bill-item p { color: var(--muted); font-size: 19.2px; line-height: 1.7; }
 
 /* ---- podstránky: aktuality ---- */
+/* Aktuality: filter chips + mriežka foto kariet (Fluz pattern, 29. 7. 2026) */
 .news { background: var(--bg); padding: 0 0 clamp(84px, 11vh, 150px); }
-.news-item { display: grid; grid-template-columns: clamp(120px, 16vw, 200px) 1fr; gap: clamp(20px, 4vw, 56px); padding: clamp(34px, 5vh, 52px) 0; border-top: 1px solid var(--line); }
-.news-item:last-child { border-bottom: 1px solid var(--line); }
-.news-date { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); padding-top: 6px; }
-.news-body h3 { font-size: clamp(20px, 2.2vw, 28px); max-width: 26ch; }
-.news-body p { margin-top: 12px; color: var(--muted); font-size: 18.6px; line-height: 1.7; max-width: 64ch; }
+.news-filters { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
+.news-chip { font: inherit; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; cursor: pointer; transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease; }
+.news-chip:hover { border-color: rgb(var(--fg-rgb) / 0.4); color: var(--text); }
+.news-chip.on { background: var(--gold); color: var(--on-accent); border-color: var(--gold); }
+.news-chip small { opacity: 0.6; margin-left: 6px; font-size: inherit; }
+.news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.news-card { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.news-card:hover { border-color: rgb(var(--fg-rgb) / 0.4); transform: translateY(-5px); }
+.news-card.hidden { display: none; }
+.news-photo { height: 190px; flex: none; background-size: cover; background-position: center; filter: saturate(0.5) brightness(0.72); transition: filter 0.5s ease; }
+.news-card:hover .news-photo { filter: saturate(0.85) brightness(0.85); }
+.news-card-body { display: flex; flex-direction: column; flex: 1; padding: 24px 26px 28px; }
+.news-meta { display: flex; align-items: center; gap: 14px; }
+.news-meta .news-tag { margin-bottom: 0; }
+.news-date { font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.news-card h3 { margin-top: 14px; font-size: 20.5px; font-variation-settings: var(--wide); line-height: 1.3; }
+.news-card p { margin-top: 10px; color: var(--muted); font-size: 15.5px; line-height: 1.65; flex: 1; }
+.news-card .news-go { margin-top: 16px; }
 
 /* ---- podstránky: opustili nás ---- */
 .memorial-note { margin-top: 44px; color: var(--dim); font-size: 17.4px; max-width: 62ch; }
@@ -1818,12 +1765,13 @@ body:has(#parte-main) #site-nav { background: var(--nav-bg); backdrop-filter: bl
 @media (max-width: 900px) {
   .svcgrid { grid-template-columns: repeat(2, 1fr); }
   .billing-grid { grid-template-columns: 1fr; }
-  .news-item { grid-template-columns: 1fr; gap: 8px; }
+  .news-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 560px) {
   .svcgrid { grid-template-columns: 1fr; }
   .step { grid-template-columns: 1fr; gap: 14px; }
   .contact-phones { flex-direction: column; }
+  .news-grid { grid-template-columns: 1fr; }
 }
 
 /* ---- Pohrebné služby: foto karty, odkazové karty, kotvy ---- */
