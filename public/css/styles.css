@@ -1847,19 +1847,21 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .subhero + .situ { padding-top: clamp(64px, 8vh, 96px); }
 .situ-label { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 600; margin-bottom: 16px; }
 .situ-row { display: flex; gap: 12px; flex-wrap: wrap; }
+/* rozcestnikove cipy: akcentova vypln ako btn-gold (v tmavej teme biele),
+   nie siva — klient chce jasne viditelne tlacidla */
 .situ-chip {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--line);
-  background: var(--panel);
+  border: 1px solid transparent;
+  background: var(--gold);
   border-radius: 999px;
   padding: 15px 26px;
   font-size: 15.5px;
-  font-weight: 600;
-  color: var(--muted);
-  transition: border-color 0.3s ease, color 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  font-weight: 650;
+  color: var(--on-accent);
+  transition: background 0.35s ease, box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.situ-chip:hover { border-color: rgb(var(--fg-rgb) / 0.45); color: var(--text); transform: translateY(-2px); }
+.situ-chip:hover { background: var(--fg-strong); transform: translateY(-2px); box-shadow: 0 10px 30px rgb(var(--fg-rgb) / 0.2); }
 
 .callbar {
   position: fixed;
