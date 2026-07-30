@@ -89,6 +89,24 @@ const mail = `mailto:?subject=${enc(sprava)}&body=${enc(sprava + '\n\n' + url)}`
     var smsBtn = box.querySelector('.zd-sms');
     if (smsBtn && window.matchMedia('(pointer: coarse)').matches) smsBtn.hidden = false;
 
+    /* Blok na fotke: sviečka nad ním musí sedieť tesne, nech sa výška bloku
+       zmení akokoľvek (zalomenie tlačidiel pri inej šírke panela). Do panela
+       zapíšeme, kde blok začína, sviečka si z toho odvodí svoju polohu. */
+    if (box.classList.contains('zd-na-fotke')) {
+      var panel = box.closest('.phero');
+      if (panel) {
+        /* offsetTop/offsetHeight zámerne namiesto getBoundingClientRect:
+           blok má data-reveal a GSAP ho pri načítaní posúva, takže rect by
+           vrátil polohu počas animácie a sviečka by na blok naliezala. */
+        var meraj = function () {
+          panel.style.setProperty('--zd-top', Math.round(panel.offsetHeight - box.offsetTop) + 'px');
+        };
+        meraj();
+        window.addEventListener('resize', meraj, { passive: true });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(meraj);
+      }
+    }
+
     var copy = box.querySelector('.zd-copy');
     if (copy) {
       copy.addEventListener('click', function () {
