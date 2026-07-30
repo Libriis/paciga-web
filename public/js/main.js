@@ -7,6 +7,29 @@
   var nav = document.getElementById('site-nav');
   var burger = document.getElementById('nav-burger');
 
+  /* ---------- odložené postery videí (beží aj bez GSAP) ----------
+     Videá v kartách pobočiek majú preload="none", ale poster sa sťahoval
+     hneď. Boli to tri fotky pod ohybom, spolu vyše 1 MB, ktoré štartovali
+     v tej istej sekunde ako styles.css a font. Na Slow 4G tým dusili
+     kritickú cestu: 37 kB CSS sa ťahalo 2,5 s a FCP čakal na jeho koniec.
+     Poster preto visí na data-poster a nasadí sa až keď sa karta blíži. */
+  var posterEls = document.querySelectorAll('video[data-poster]');
+  if (posterEls.length) {
+    var setPoster = function (v) {
+      if (v.dataset.poster) { v.poster = v.dataset.poster; delete v.dataset.poster; }
+    };
+    if ('IntersectionObserver' in window) {
+      var po = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { setPoster(e.target); po.unobserve(e.target); }
+        });
+      }, { rootMargin: '400px 0px' });
+      posterEls.forEach(function (v) { po.observe(v); });
+    } else {
+      posterEls.forEach(setPoster);
+    }
+  }
+
   /* ---------- mobile menu (works with or without GSAP) ---------- */
   var lenis = null;
 
