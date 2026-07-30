@@ -1,0 +1,94 @@
+---
+/*
+  Detail článku — newsroom band (variant V3, vybraný 30. 7. 2026).
+  Článok otvára ten istý pás s fotkou ako hlavičky podstránok, len namiesto
+  názvu sekcie nesie titulok článku. Pod ním telo v úzkom stĺpci, CTA
+  a tri ďalšie články.
+*/
+import Base from '../../layouts/Base.astro';
+import { CLANKY, getClanok, maDetail, ostatneClanky } from '../../data/aktuality';
+
+export function getStaticPaths() {
+  return CLANKY.filter(maDetail).map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const c = slug ? getClanok(slug) : undefined;
+if (!c) return Astro.redirect('/aktuality', 302);
+
+const dalsie = ostatneClanky(c.slug);
+
+const title = `${c.titulok} | Aktuality | Paciga`;
+const description = c.text;
+
+const jsonld = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: c.titulok,
+  datePublished: c.datumIso,
+  image: new URL(c.foto, Astro.site ?? Astro.url).href,
+  author: { '@type': 'Organization', name: 'Paciga' },
+  publisher: { '@type': 'Organization', name: 'Paciga', url: 'https://paciga.sk' },
+});
+---
+<Base title={title} description={description} active="aktuality"
+  ogTitle={c.titulok} ogDescription={c.text} ogImage={c.foto}>
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={jsonld}></script>
+  </Fragment>
+
+  <!-- ============ HLAVIČKA: newsroom band s fotkou článku ============ -->
+  <section class="news-hero has-photo">
+    <div class="nh-media" aria-hidden="true">
+      <img src={c.foto} alt="" fetchpriority="high" decoding="async">
+    </div>
+    <div class="container news-hero-inner">
+      <div>
+        <a href="/aktuality" class="clanok-back" data-reveal>← Späť na aktuality</a>
+        <h1 data-textreveal>{c.titulok}</h1>
+        <div class="clanok-meta" data-reveal>
+          <span class="news-tag">{c.tag}</span>
+          <time datetime={c.datumIso}>{c.datum}</time>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TELO ČLÁNKU ============ -->
+  <article class="clanok">
+    <p class="clanok-lead" data-reveal>{c.text}</p>
+    {c.telo!.map((odsek) => <p data-reveal>{odsek}</p>)}
+
+    {c.cta && (
+      <aside class="clanok-cta" data-reveal>
+        <h2>{c.cta.nadpis}</h2>
+        <p>{c.cta.text}</p>
+        <a class="btn-gold" href={c.cta.odkaz}>{c.cta.odkazText}</a>
+      </aside>
+    )}
+  </article>
+
+  <!-- ============ ĎALŠIE ČLÁNKY ============ -->
+  <section class="clanok-dalsie">
+    <div class="container">
+      <h2 data-reveal>Ďalšie články</h2>
+      <div class="news-grid">
+        {dalsie.map((d) => (
+          <article class="news-card" data-reveal>
+            <div class="news-photo" style={`background-image:url('${d.foto}')`}>
+              <span class="news-tag">{d.tag}</span>
+            </div>
+            <div class="news-card-body">
+              <h3>{maDetail(d)
+                ? <a href={`/aktuality/${d.slug}`}>{d.titulok}</a>
+                : d.titulok}</h3>
+              <div class="news-date">{d.datum}</div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Base>
