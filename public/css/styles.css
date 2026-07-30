@@ -508,7 +508,8 @@ body {
 /* ---- quote ---- */
 .quote { padding: clamp(96px, 13vh, 165px) 0; background: var(--bg); }
 .quote-inner { max-width: 880px; position: relative; }
-.quote-inner .micro-label { display: block; margin-bottom: 26px; color: var(--gold-soft); }
+/* výrok v jednom bloku s číslami na O nás */
+.stats .quote-inner { margin-top: clamp(48px, 7vh, 84px); }
 /* V1 editoriálny serif (Playfair) — pull-quote kontrast k Archivo */
 .quote-mark { font-family: 'Playfair Display', Georgia, serif; font-size: 150px; line-height: 0.55; color: var(--gold-dim); font-weight: 500; margin-bottom: 30px; }
 #quote-text { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(30px, 3.9vw, 52px); line-height: 1.28; font-weight: 500; letter-spacing: 0.002em; }
