@@ -1723,11 +1723,10 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .bill-item .label { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
 .bill-item p { color: var(--muted); font-size: 19.2px; line-height: 1.7; }
 
-/* ---- podstránky: aktuality (newsroom pattern podľa Jeton, 29. 7. 2026) ---- */
-/* Tmavý newsroom band so zaobleným spodkom: tvar oddeľuje hlavičku od
-   blogovej mriežky, plochu nesie jemný nános dokumentového svetla (rovnaká
-   miera ako sekcie s --bg2) orámovaný hairline linkou. Akcent ostáva
-   v bielom aktívnom filter chipe, žiadna biela plocha. */
+/* ---- newsroom band (zdieľaná hlavička: aktuality, opustili nás) ---- */
+/* Tmavý band so zaobleným spodkom (pattern podľa Jeton): tvar oddeľuje
+   hlavičku od obsahu, plochu nesie jemný nános dokumentového svetla
+   (rovnaká miera ako sekcie s --bg2) orámovaný hairline linkou. */
 .news-hero { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 32px 32px; padding: clamp(150px, 18vh, 200px) 0 clamp(48px, 7vh, 76px); }
 /* pravidlo "main > section[class]" maľuje sekcie transparentne — band si
    svoj nános svetla musí vybojovať špecificitou */
