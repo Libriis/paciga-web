@@ -1895,9 +1895,10 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .parte-back { position: absolute; z-index: 3; top: 104px; left: clamp(24px, 4vw, 64px); font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
 .parte-back:hover { color: var(--gold); }
 
-/* tichá svieca (V2 z výberu 29. 7. 2026). Od 30. 7. sedí vyššie, aby pod
-   ňou mal miesto blok zdieľania pre rodinu. */
-.phero-candle { position: absolute; left: 50%; bottom: clamp(190px, 27vh, 250px); transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: var(--muted); }
+/* tichá svieca (V2 z výberu 29. 7. 2026). Od 30. 7. sedí tesne nad blokom
+   zdieľania: --zd-top je vzdialenosť vrchu bloku od spodku panela, počíta
+   ju skript v Zdielanie.astro. Fallback drží rozumnú polohu aj bez JS. */
+.phero-candle { position: absolute; left: 50%; bottom: calc(var(--zd-top, 170px) + clamp(18px, 2.6vh, 30px)); transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: var(--muted); }
 .phero-halo { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgb(var(--fg-rgb) / 0.22) 0%, rgb(var(--fg-rgb) / 0.07) 42%, transparent 70%); opacity: 0; transition: opacity 0.6s ease; pointer-events: none; }
 .phero-flame { display: block; width: 11px; height: 17px; margin-bottom: 2px; background: radial-gradient(50% 65% at 50% 70%, var(--fg-strong) 0%, rgb(var(--fg-rgb) / 0.85) 40%, transparent 75%); border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; animation: pheroFlick 2.2s ease-in-out infinite alternate; opacity: 0.3; transition: opacity 0.4s ease, filter 0.4s ease; }
 @keyframes pheroFlick { from { transform: scale(1); } to { transform: scale(1.14); } }
