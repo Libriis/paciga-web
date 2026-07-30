@@ -2568,61 +2568,68 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   gap: clamp(16px, 1.7vw, 24px);
   margin-top: clamp(28px, 4vh, 48px);
 }
+/* Karta služby = fotka (vzor YLLW services, Mobbin; vybrané 30. 7. 2026).
+   Fotka vypĺňa celú kartu, názov leží na nej hore, odkaz dole. Predtým
+   bola fotka malý štvorec nalepený doprostred, čo pôsobilo ako výplň. */
 .svc-card {
   position: relative;
-  /* predloha ma nazvy jednoslovne a obrazok absolutne v strede karty;
-     nase nazvy su dvojriadkove, tak medium centrujeme do zvysku vysky.
-     Vizual je rovnaky, len sa text a foto neprekryvaju. */
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
-  min-height: 300px;
-  padding: clamp(18px, 2vw, 26px);
+  min-height: 400px;
+  padding: 0;
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 24px;
-  transition: border-color 0.4s ease, background 0.4s ease;
+  border-radius: 22px;
+  transition: border-color 0.4s ease;
 }
 .svc-card:hover, .svc-card:focus-visible { border-color: rgb(var(--fg-rgb) / 0.28); }
 .svc-card-title {
   position: relative;
-  z-index: 1;
-  margin: 10px 0;
-  text-align: center;
-  font-size: clamp(22px, 2.6vw, 34px);
+  z-index: 2;
+  margin: 0;
+  padding: clamp(20px, 2vw, 26px) clamp(20px, 2vw, 26px) 0;
+  text-align: left;
+  font-size: clamp(21px, 2.3vw, 30px);
   line-height: 1.1;
   font-weight: 680;
   font-variation-settings: var(--wide);
 }
-/* médium v strede karty, ako produktový výrez v predlohe */
+/* médium vypĺňa kartu, scrim drží titulok aj odkaz čitateľné */
 .svc-card-media {
-  flex: 1;
-  display: grid;
-  place-items: center;
-  padding: 12px 16px 16px;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  padding: 0;
   min-height: 0;
 }
-.svc-card-media .photo-slot {
-  width: min(72%, 210px);
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  opacity: 0.9;
-  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.5s ease;
+.svc-card-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgb(var(--scrim-rgb) / 0.72) 0%, rgb(var(--scrim-rgb) / 0.25) 38%,
+    rgb(var(--scrim-rgb) / 0.15) 62%, rgb(var(--scrim-rgb) / 0.8) 100%);
 }
-.svc-card:hover .svc-card-media .photo-slot { transform: scale(1.08); opacity: 1; }
-/* reálna fotka v slote karty — rovnaký box ako placeholder, cover rez.
-   Selektor s img, aby prebil všeobecné .svc-card-media img (contain, 58 %).
-   POZOR: nazov .svc-photo je obsadeny starou sekciou sluzieb (absolute layer),
+/* POZOR: nazov .svc-photo je obsadeny starou sekciou sluzieb (absolute layer),
    preto svc-card-photo. */
 .svc-card-media img.svc-card-photo {
-  width: min(72%, 210px);
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
   object-fit: cover;
-  border-radius: 12px;
-  opacity: 0.92;
-  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.5s ease;
+  border-radius: 0;
+  opacity: 1;
+  filter: saturate(0.45) brightness(0.6);
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.5s ease;
 }
-.svc-card:hover .svc-card-media img.svc-card-photo { transform: scale(1.08); opacity: 1; }
+.svc-card:hover .svc-card-media img.svc-card-photo,
+.svc-card:focus-visible .svc-card-media img.svc-card-photo {
+  transform: scale(1.06);
+  filter: saturate(0.75) brightness(0.72);
+}
 .svc-card-media img {
   width: min(58%, 200px);
   height: auto;
@@ -2636,10 +2643,11 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    vyrezaný roh so šípkou (svc-notch), ktorý klientovi nesadol. */
 .svc-link {
   position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin: 4px auto 0;
+  margin: auto clamp(20px, 2vw, 26px) clamp(18px, 1.8vw, 24px);
   padding-bottom: 4px;
   font-size: 15px;
   color: var(--muted);
@@ -2675,7 +2683,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 @media (max-width: 700px) {
   .svc-grid { grid-template-columns: 1fr; }
   .svc-panel-body { padding: clamp(40px, 7vh, 64px) 18px; }
-  .svc-card { min-height: 260px; }
+  .svc-card { min-height: 320px; }
 }
 
 /* ============================================================
