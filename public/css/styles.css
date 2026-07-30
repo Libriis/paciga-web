@@ -2588,32 +2588,17 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    ============================================================ */
 .register { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; position: relative; overflow: hidden; }
 
-/* ---- panel s nadpisom (bg-accent/50 rounded-2xl v predlohe) ---- */
-.svc-panel {
-  position: relative;
-  background: var(--bg2);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-}
-/* zapustený blok vľavo hore: v predlohe tu sedela navigácia,
-   tu nesie eyebrow. Pozadie sekcie + rounded-br dáva rovnaký obrys. */
-.svc-panel-tab {
-  display: inline-flex;
-  align-items: center;
-  background: var(--bg);
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  border-radius: 16px 0 16px 0;
-  padding: 16px clamp(20px, 2.4vw, 30px) 16px clamp(18px, 2.2vw, 26px);
-}
-.svc-panel-body { padding: clamp(56px, 9vh, 96px) 24px; text-align: center; }
+/* Hlavička sekcie služieb (30. 7. 2026). Predtým tu stál orámovaný panel
+   so zapusteným jazykom, ktorý na homepage nikde inde nie je. Teraz drží
+   ten istý vzor ako ostatné sekcie: eyebrow, nadpis, gold-line. */
+.svc-head { margin-bottom: clamp(30px, 4.5vh, 52px); }
+.svc-head .eyebrow { margin-bottom: 16px; }
 .svc-title {
-  font-size: clamp(32px, 5.2vw, 72px);
-  line-height: 1.06;
-  font-weight: 680;
+  font-size: clamp(30px, 4.4vw, 54px);
+  line-height: 1.08;
+  font-weight: 640;
   font-variation-settings: var(--wide);
-  letter-spacing: 0.018em;
-  margin-inline: auto;
+  letter-spacing: -0.01em;
 }
 /* dvojtónový nadpis ako v predlohe, len bez farby: biela do polopriehľadnej */
 .svc-title-grad {
@@ -2631,10 +2616,10 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 /* pätnásť služieb ako hashtagy — každý je odkaz na kotvu na stránke služieb */
 .svc-tags {
-  max-width: 700px;
+  max-width: 72ch;
+  margin-left: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 4px 16px;
   line-height: 1.75;
 }
@@ -2762,7 +2747,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 @media (max-width: 700px) {
   .svc-grid { grid-template-columns: 1fr; }
-  .svc-panel-body { padding: clamp(40px, 7vh, 64px) 18px; }
   .svc-card { min-height: 320px; }
 }
 
