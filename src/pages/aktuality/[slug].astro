@@ -7,7 +7,7 @@
 */
 import Base from '../../layouts/Base.astro';
 import Zdielanie from '../../components/Zdielanie.astro';
-import { CLANKY, getClanok, maDetail, ostatneClanky } from '../../data/aktuality';
+import { CLANKY, getClanok, maDetail, ostatneClanky, bloky } from '../../data/aktuality';
 
 export function getStaticPaths() {
   return CLANKY.filter(maDetail).map((c) => ({ params: { slug: c.slug } }));
@@ -59,7 +59,11 @@ const jsonld = JSON.stringify({
   <!-- ============ TELO ČLÁNKU ============ -->
   <article class="clanok">
     <p class="clanok-lead" data-reveal>{c.text}</p>
-    {c.telo!.map((odsek) => <p data-reveal>{odsek}</p>)}
+    {bloky(c.telo!).map((b) =>
+      b.typ === 'h' ? <h2 data-reveal>{b.text}</h2>
+      : b.typ === 'ul' ? <ul class="clanok-zoznam" data-reveal>{b.polozky.map((p) => <li>{p}</li>)}</ul>
+      : <p data-reveal>{b.text}</p>
+    )}
 
     <Zdielanie url={new URL(`/aktuality/${c.slug}`, Astro.site ?? Astro.url).href} titulok={c.titulok} typ="clanok" />
 
