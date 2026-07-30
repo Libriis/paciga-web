@@ -25,9 +25,7 @@ const { url, titulok, typ, naFotke = false } = Astro.props;
 const jeParte = typ === 'parte';
 const label = jeParte ? 'Pre rodinu a blízkych' : 'Zdieľanie';
 const nadpis = jeParte ? 'Pošlite oznámenie blízkym' : 'Pošlite článok ďalej';
-const podnadpis = naFotke
-  ? 'Pošlite odkaz tým, ktorí by o rozlúčke nemuseli vedieť.'
-  : jeParte
+const podnadpis = jeParte
     ? 'Pošlite odkaz na toto parte tým, ktorí by o rozlúčke nemuseli vedieť. Otvorí sa im rovnaká stránka s dátumom, časom aj miestom.'
     : 'Ak by článok niekomu pomohol, pošlite mu ho. Otvorí sa mu presne táto stránka.';
 
@@ -39,9 +37,10 @@ const sms = `sms:?&body=${enc(sprava + ' ' + url)}`;
 const mail = `mailto:?subject=${enc(sprava)}&body=${enc(sprava + '\n\n' + url)}`;
 ---
 <section class:list={['zdielanie', { 'zd-na-fotke': naFotke }]} data-url={url} data-sprava={sprava} data-reveal>
-  <div class="zd-label">{label}</div>
+  {/* na fotke nesie blok len nadpis, popisky by tam robili hluk */}
+  {!naFotke && <div class="zd-label">{label}</div>}
   <h2>{nadpis}</h2>
-  <p class="zd-sub">{podnadpis}</p>
+  {!naFotke && <p class="zd-sub">{podnadpis}</p>}
 
   <div class="zd-row">
     <button type="button" class="zd-btn zd-primary zd-share" hidden>
