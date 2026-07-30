@@ -204,7 +204,12 @@
   var heroTl = gsap.timeline({ delay: 0.15, defaults: { ease: 'power3.out' } });
   heroTl
     .from('#hero-title .ch', { yPercent: 120, duration: 1.05, stagger: 0.026 }, 0)
-    .from('[data-hero-el]', { opacity: 0, y: 26, duration: 1.0, stagger: 0.12 }, 0.45);
+    /* .hero-lead je LCP element. Fade cezeň Chrome nepočíta ako vykreslenie,
+       takže si intro drží LCP až kým animácia nedobehne. Preto len posun, bez
+       opacity. Eyebrow a akcie fadeujú ďalej, časy držia pôvodný stagger 0.12. */
+    .from('.eyebrow[data-hero-el]', { opacity: 0, y: 26, duration: 1.0 }, 0.45)
+    .from('.hero-lead[data-hero-el]', { y: 26, duration: 1.0 }, 0.57)
+    .from('.hero-actions[data-hero-el]', { opacity: 0, y: 26, duration: 1.0 }, 0.69);
 
   /* ---------- posledná cesta: pinovaná jazda (frame scrub kreslí journey.js) ----------
      ČASY NIŽŠIE SÚ NA OSI celej 40 s jazdy (0..1), kde švy klipov ležia na

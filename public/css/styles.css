@@ -1825,6 +1825,17 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .zd-copy.is-done { border-color: rgb(var(--fg-rgb) / 0.4); color: var(--text); }
 .clanok .zdielanie { margin-top: 44px; }
 
+/* verzia priamo na fotke (spodok fixného panela parte): bez karty,
+   kompaktnejšia, text stojí na zosilnenom scrime fotky */
+.zd-na-fotke { position: absolute; left: 0; right: 0; bottom: clamp(26px, 4vh, 44px); z-index: 2; padding: 0 clamp(20px, 2.4vw, 34px); background: none; border: 0; text-align: center; }
+.zd-na-fotke .zd-label { margin-bottom: 6px; }
+.zd-na-fotke h2 { font-size: 17px; }
+.zd-na-fotke .zd-sub { margin: 6px auto 0; font-size: 13.5px; max-width: 40ch; }
+.zd-na-fotke .zd-row { justify-content: center; gap: 8px; margin-top: 14px; }
+.zd-na-fotke .zd-btn { padding: 9px 15px; font-size: 13px; background: rgb(var(--scrim-rgb) / 0.4); backdrop-filter: blur(6px); }
+.zd-na-fotke .zd-btn svg { width: 15px; height: 15px; }
+.zd-na-fotke .zd-primary { background: var(--gold); }
+
 /* ---- detail článku (variant V3, 30. 7. 2026) ---- */
 .clanok-back { display: inline-block; margin-bottom: 18px; font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
 .clanok-back:hover { color: var(--gold); }
@@ -1876,15 +1887,17 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 /* bez fotky: iniciály na radiálnom gradiente (memoriam pattern vo veľkom) */
 .phero-initials { height: 100%; display: grid; place-items: center; background: radial-gradient(circle at 50% 38%, #22242a, #131418 70%); font-size: clamp(120px, 15vw, 220px); font-weight: 680; font-variation-settings: var(--wide); color: rgb(var(--fg-rgb) / 0.14); user-select: none; }
 /* scrim: hore pre nav a šípku späť, dole pre sviecu — vždy tmavý (--scrim-rgb) */
+/* spodný scrim je zosilnený a siaha vyššie: nesie sviecu aj blok zdieľania */
 .phero-media::after { content: ''; position: absolute; inset: 0; pointer-events: none; background:
   linear-gradient(270deg, rgb(var(--scrim-rgb) / 0.5) 0%, rgb(var(--scrim-rgb) / 0.1) 18%, rgb(var(--scrim-rgb) / 0) 42%),
   linear-gradient(180deg, rgb(var(--scrim-rgb) / 0.55) 0%, rgb(var(--scrim-rgb) / 0) 22%),
-  linear-gradient(0deg, rgb(var(--scrim-rgb) / 0.8) 0%, rgb(var(--scrim-rgb) / 0.3) 24%, rgb(var(--scrim-rgb) / 0) 46%); }
+  linear-gradient(0deg, rgb(var(--scrim-rgb) / 0.94) 0%, rgb(var(--scrim-rgb) / 0.82) 22%, rgb(var(--scrim-rgb) / 0.45) 42%, rgb(var(--scrim-rgb) / 0) 62%); }
 .parte-back { position: absolute; z-index: 3; top: 104px; left: clamp(24px, 4vw, 64px); font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
 .parte-back:hover { color: var(--gold); }
 
-/* tichá svieca na strede dolnej časti fotky (V2 z výberu 29. 7. 2026) */
-.phero-candle { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: var(--muted); }
+/* tichá svieca (V2 z výberu 29. 7. 2026). Od 30. 7. sedí vyššie, aby pod
+   ňou mal miesto blok zdieľania pre rodinu. */
+.phero-candle { position: absolute; left: 50%; bottom: clamp(190px, 27vh, 250px); transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: var(--muted); }
 .phero-halo { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgb(var(--fg-rgb) / 0.22) 0%, rgb(var(--fg-rgb) / 0.07) 42%, transparent 70%); opacity: 0; transition: opacity 0.6s ease; pointer-events: none; }
 .phero-flame { display: block; width: 11px; height: 17px; margin-bottom: 2px; background: radial-gradient(50% 65% at 50% 70%, var(--fg-strong) 0%, rgb(var(--fg-rgb) / 0.85) 40%, transparent 75%); border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; animation: pheroFlick 2.2s ease-in-out infinite alternate; opacity: 0.3; transition: opacity 0.4s ease, filter 0.4s ease; }
 @keyframes pheroFlick { from { transform: scale(1); } to { transform: scale(1.14); } }
@@ -1944,7 +1957,18 @@ body:has(#parte-main) #site-nav { background: var(--nav-bg); backdrop-filter: bl
   .phero { position: relative; inset: auto; width: 100%; height: auto; }
   .phero-media { height: 62vh; border-right: 0; border-bottom: 1px solid var(--line); }
   .phero-initials { font-size: clamp(96px, 30vw, 160px); }
+  /* na mobile ostáva na fotke len svieca, zdieľanie klesne pod ňu ako karta:
+     inak by blok prekryl tvár na portréte */
   .phero-candle { bottom: 22px; }
+  .zd-na-fotke {
+    position: static; padding: 26px 24px; margin: 24px clamp(20px, 5vw, 28px) 0;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 20px; text-align: left;
+  }
+  .zd-na-fotke h2 { font-size: 20px; }
+  .zd-na-fotke .zd-sub { margin-left: 0; margin-right: 0; font-size: 14.5px; }
+  .zd-na-fotke .zd-row { justify-content: flex-start; }
+  .zd-na-fotke .zd-btn { background: none; backdrop-filter: none; }
+  .zd-na-fotke .zd-primary { background: var(--gold); color: var(--on-accent); }
   .parte-back { top: 92px; }
   .parte-content { margin-left: 0; max-width: none; padding-top: 48px; }
 }

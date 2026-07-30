@@ -64,16 +64,19 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
       {p.foto_url
         ? <img src={p.foto_url} alt={p.meno} decoding="async">
         : <div class="phero-initials" aria-hidden="true">{inicialky(p.meno)}</div>}
+      <!-- svieca leží na fotke, na desktope vyššie, aby pod ňou bolo zdieľanie -->
+      <button type="button" class="phero-candle" id="phero-light" aria-pressed="false">
+        <span class="phero-halo" aria-hidden="true"></span>
+        <span class="phero-flame" aria-hidden="true"></span>
+        <span class="phero-wick" aria-hidden="true"></span>
+        <span class="phero-body" aria-hidden="true"></span>
+        <span class="phero-label"><span class="off">Zapáliť sviečku</span><span class="on">Sviečka horí</span></span>
+        <span class="phero-sviecky"><span class="phero-count">{p.sviecky > 0 ? svieckyText(p.sviecky) : ''}</span></span>
+      </button>
     </div>
     <a href="/opustili-nas" class="parte-back">← Všetky oznámenia</a>
-    <button type="button" class="phero-candle" id="phero-light" aria-pressed="false">
-      <span class="phero-halo" aria-hidden="true"></span>
-      <span class="phero-flame" aria-hidden="true"></span>
-      <span class="phero-wick" aria-hidden="true"></span>
-      <span class="phero-body" aria-hidden="true"></span>
-      <span class="phero-label"><span class="off">Zapáliť sviečku</span><span class="on">Sviečka horí</span></span>
-      <span class="phero-sviecky"><span class="phero-count">{p.sviecky > 0 ? svieckyText(p.sviecky) : ''}</span></span>
-    </button>
+    <!-- zdieľanie pod sviečkou: na desktope na fotke, na mobile kartou pod ňou -->
+    <Zdielanie url={new URL(`/parte/${p.slug}`, Astro.site ?? Astro.url).href} titulok={p.meno} typ="parte" naFotke />
   </aside>
 
   <!-- ============ SCROLLOVACÍ OBSAH ============ -->
@@ -115,8 +118,6 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
         </div>
       </section>
     )}
-
-    <Zdielanie url={new URL(`/parte/${p.slug}`, Astro.site ?? Astro.url).href} titulok={p.meno} typ="parte" />
 
     {kondolencie.length > 0 && (
       <div class="parte-kond-list">
