@@ -28,6 +28,15 @@ const nosici = [
       </div>
       <p class="news-hero-lead" data-reveal>Pohrebné a kamenárske služby Paciga. Od roku 2018 sprevádzame rodiny v Poprade, Spišskej Belej a Liptovskom Mikuláši.</p>
     </div>
+    <div class="container news-hero-chips" data-reveal>
+      <div class="situ-label">Čo vás zaujíma?</div>
+      <div class="situ-row">
+        <a href="#pribeh" class="situ-chip">Náš príbeh</a>
+        <a href="#tim" class="situ-chip">Náš tím</a>
+        <a href="#prvenstva" class="situ-chip">Prvenstvá</a>
+        <a href="#vozidla" class="situ-chip">Vozový park</a>
+      </div>
+    </div>
   </section>
 
   <!-- ============ ČÍSLA ============
@@ -58,18 +67,22 @@ const nosici = [
     </div>
   </section>
 
-  <!-- ============ FOTOPÁS: NAŠA PRÁCA ============ -->
-  <div class="album-band" data-parallax>
-    <span><img src="/assets/cintorin.jpg" alt="Stan Paciga pri poslednej rozlúčke na cintoríne" loading="lazy" decoding="async"></span>
-    <div class="album-shade" aria-hidden="true"></div>
-    <div class="container album-caption">
-      <span class="micro-label" data-reveal>Naša práca</span>
-      <p class="album-line" data-reveal>Od prvého telefonátu po dôstojnú rozlúčku.</p>
+  <!-- ============ VÝROK: NAŠA PRÁCA ============
+       Typografický pás namiesto fotopásu (hero fotka, čísla a ďalšia fotka
+       boli priveľa vrstiev nad sebou). Slová sa odhaľujú so scrollom —
+       mašinéria #quote-text vo main.js, serif Playfair len pre citáty. -->
+  <section class="quote" id="quote">
+    <div class="container">
+      <div class="quote-inner">
+        <span class="micro-label" data-reveal>Naša práca</span>
+        <p id="quote-text">Od prvého telefonátu po dôstojnú rozlúčku.</p>
+        <div class="quote-author">Paciga · rodinná pohrebná a kamenárska služba</div>
+      </div>
     </div>
-  </div>
+  </section>
 
   <!-- ============ KRONIKA ============ -->
-  <section class="kronika" data-seam>
+  <section class="kronika">
     <div class="container">
       <div class="section-head">
         <div class="eyebrow" data-reveal>Kronika</div>
