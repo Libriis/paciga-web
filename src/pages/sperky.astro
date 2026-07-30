@@ -103,7 +103,7 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
   <!-- ============ KONFIGURÁTOR ============ -->
   <section id="konfigurator" class="scroll-mt-[90px] pt-[clamp(36px,5vh,60px)] pb-[clamp(80px,12vh,140px)]">
     <div class="container">
-      <div class="grid gap-9 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+      <div class="grid gap-9 lg:grid-cols-[1.35fr_1fr] lg:items-center">
 
         <!-- scéna — fotky sa krížovo prelínajú -->
         <div class="v3-stage" data-reveal>
@@ -156,6 +156,8 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
             <a href="mailto:paciga@paciga.sk" class="btn-gold">Napíšte nám</a>
             <a href="tel:0903596364" class="btn-line">Zavolať 0903 596 364</a>
           </div>
+
+          <p class="mt-7 text-[14px] tracking-[0.04em] text-dim" data-reveal>📍 Naživo v showroome: Francisciho 3288/35, Poprad</p>
         </div>
 
       </div>
@@ -299,7 +301,7 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
     letter-spacing: 0.03em;
   }
   /* Segmentový prepínač — pilulky v spoločnom ráme (vzor 21st.dev). */
-  .v3-group { margin-top: 26px; }
+  .v3-group { margin-top: 30px; }
   .v3-group:first-child { margin-top: 0; }
   .v3-label {
     font-size: 11px;
@@ -309,7 +311,8 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
     font-weight: 600;
   }
   .v3-seg {
-    display: inline-flex;
+    display: flex;
+    width: 100%;
     flex-wrap: wrap;
     gap: 4px;
     margin-top: 10px;
@@ -319,6 +322,7 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
     background: rgb(var(--fg-rgb) / 0.03);
   }
   .v3-opt {
+    flex: 1 1 0;
     padding: 10px 20px;
     border-radius: 999px;
     color: var(--muted);
