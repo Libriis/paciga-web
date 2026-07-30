@@ -1845,6 +1845,9 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .clanok-lead { font-size: clamp(19px, 1.7vw, 22px); line-height: 1.65; color: var(--text); margin-bottom: 32px; }
 .clanok p { font-size: 17.5px; line-height: 1.85; margin-bottom: 22px; color: rgb(var(--fg-rgb) / 0.84); }
 .clanok h2 { font-size: clamp(21px, 2vw, 28px); font-weight: 650; font-variation-settings: var(--wide); margin: 42px 0 14px; }
+.clanok-zoznam { margin: 0 0 22px; padding-left: 22px; }
+.clanok-zoznam li { font-size: 17.5px; line-height: 1.8; margin-bottom: 10px; color: rgb(var(--fg-rgb) / 0.84); }
+.clanok-zoznam li::marker { color: var(--dim); }
 .clanok-cta { margin: 44px 0 0; padding: 30px 28px; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; }
 .clanok-cta h2 { margin: 0; font-size: 22px; }
 .clanok-cta p { margin-top: 8px; color: var(--muted); font-size: 15.5px; }
