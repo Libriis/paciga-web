@@ -20,5 +20,13 @@ export default defineConfig({
       // motion/react si inak vie potiahnut vlastnu instanciu Reactu (useContext null)
       dedupe: ['react', 'react-dom'],
     },
+    server: {
+      watch: {
+        // Build output nesledovať. Watcher inak drží handle na každom súbore
+        // v .vercel/output aj dist a po prvom builde počas behu dev servera
+        // vyčerpá file handles: tisíce EMFILE a proces spadne.
+        ignored: ['**/.vercel/**', '**/dist/**'],
+      },
+    },
   },
 });
