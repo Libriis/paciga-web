@@ -1733,7 +1733,12 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* jednotná výška bandu na všetkých stránkach: min-height podľa najvyššieho
    obsahu (4-riadkový titulok), obsah kotví dole. Na mobile tečie prirodzene. */
 @media (min-width: 761px) {
-  .news-hero { display: flex; flex-direction: column; justify-content: flex-end; min-height: clamp(650px, 56vw, 664px); }
+  .news-hero { display: flex; flex-direction: column; justify-content: flex-end; }
+  /* vysoku jednotnu vysku drzia fotkove bandy (fotka priestor vyuzije),
+     textove bandy (aktuality, opustili nas) su kratsie s vlastnou
+     jednotnou vyskou, nech nad textom nestoji prazdna plocha */
+  .news-hero.has-photo { min-height: clamp(650px, 56vw, 664px); }
+  .news-hero:not(.has-photo) { min-height: clamp(424px, 31.5vw, 440px); padding-top: clamp(120px, 15vh, 150px); }
   .news-hero > .container { width: min(1240px, calc(100% - 48px)); }
 }
 /* chipový rad sekcie zakomponovaný do bandu (situ pattern) */
