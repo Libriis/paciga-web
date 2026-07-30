@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Zdielanie from '../../components/Zdielanie.astro';
 import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl, dnesnyDatum } from '../../lib/parte';
 
 export const prerender = false;
@@ -101,7 +102,6 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
         <div class="parte-card-actions">
           <a class="parte-pill" href={mapUrl(p.rozlucka_miesto!)} target="_blank" rel="noopener">Zobraziť na mape →</a>
           {ics && <a class="parte-pill" href={ics} download={`rozlucka-${p.slug}.ics`}>Pridať do kalendára</a>}
-          <button type="button" class="parte-pill copy-link">Kopírovať odkaz</button>
         </div>
       </section>
     )}
@@ -113,11 +113,10 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
         <div class="parte-card-rows">
           <div class="parte-card-row"><span class="k">Miesto</span><span class="v">📍 {p.rozlucka_miesto}</span></div>
         </div>
-        <div class="parte-card-actions">
-          <button type="button" class="parte-pill copy-link">Kopírovať odkaz</button>
-        </div>
       </section>
     )}
+
+    <Zdielanie url={new URL(`/parte/${p.slug}`, Astro.site ?? Astro.url).href} titulok={p.meno} typ="parte" />
 
     {kondolencie.length > 0 && (
       <div class="parte-kond-list">
@@ -152,15 +151,5 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
 <Fragment slot="scripts">
 <script is:inline src="/js/candles.js"></script>
 <script is:inline src="/js/forms.js"></script>
-<script is:inline>
-(function () {
-  document.querySelectorAll(".copy-link").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var done = function () { btn.textContent = "Odkaz skopírovaný"; setTimeout(function () { btn.textContent = "Kopírovať odkaz"; }, 2500); };
-      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(location.href).then(done); }
-    });
-  });
-})();
-</script>
 </Fragment>
 </Base>

@@ -1,0 +1,105 @@
+---
+/*
+  Zdieľanie (variant C, vybraný 30. 7. 2026) — blok pre parte aj články.
+
+  Zámer: zdieľanie tu nie je propagácia, ale funkcia. Rodina posiela odkaz
+  na parte blízkym, čitateľ posiela článok ďalej. Ikony sú monochrómne
+  hairline, žiadne firemné farby platforiem.
+
+  Žiadne mŕtve tlačidlá: „Poslať" (Web Share API) a SMS sa zobrazia len
+  tam, kde fungujú, čiže hlavne na mobiloch. Na desktope ostáva Facebook,
+  WhatsApp, e-mail a kopírovanie odkazu.
+*/
+interface Props {
+  /** absolútna URL stránky */
+  url: string;
+  /** text do správy (meno zosnulého alebo titulok článku) */
+  titulok: string;
+  /** parte = oznámenie rodine, clanok = článok */
+  typ: 'parte' | 'clanok';
+}
+const { url, titulok, typ } = Astro.props;
+
+const jeParte = typ === 'parte';
+const label = jeParte ? 'Pre rodinu a blízkych' : 'Zdieľanie';
+const nadpis = jeParte ? 'Pošlite oznámenie blízkym' : 'Pošlite článok ďalej';
+const podnadpis = jeParte
+  ? 'Pošlite odkaz na toto parte tým, ktorí by o rozlúčke nemuseli vedieť. Otvorí sa im rovnaká stránka s dátumom, časom aj miestom.'
+  : 'Ak by článok niekomu pomohol, pošlite mu ho. Otvorí sa mu presne táto stránka.';
+
+const sprava = jeParte ? `Smútočné oznámenie: ${titulok}` : titulok;
+const enc = encodeURIComponent;
+const fb = `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`;
+const wa = `https://wa.me/?text=${enc(sprava + ' ' + url)}`;
+const sms = `sms:?&body=${enc(sprava + ' ' + url)}`;
+const mail = `mailto:?subject=${enc(sprava)}&body=${enc(sprava + '\n\n' + url)}`;
+---
+<section class="zdielanie" data-url={url} data-sprava={sprava} data-reveal>
+  <div class="zd-label">{label}</div>
+  <h2>{nadpis}</h2>
+  <p class="zd-sub">{podnadpis}</p>
+
+  <div class="zd-row">
+    <button type="button" class="zd-btn zd-primary zd-share" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M12 16V3"/><path d="m8 7 4-4 4 4"/></svg>
+      Poslať
+    </button>
+    <a class="zd-btn" href={fb} target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg>
+      Facebook
+    </a>
+    <a class="zd-btn" href={wa} target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.5-.3.3c-.1.1-.2.3 0 .5.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l2 .9c.2.1.4.2.4.3.1.1.1.6-.1 1.2z"/></svg>
+      WhatsApp
+    </a>
+    <a class="zd-btn zd-sms" href={sms} hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg>
+      SMS
+    </a>
+    <a class="zd-btn" href={mail}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      E-mail
+    </a>
+    <button type="button" class="zd-btn zd-copy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+      <span class="zd-copy-text">Kopírovať odkaz</span>
+    </button>
+  </div>
+</section>
+
+<script is:inline>
+(function () {
+  document.querySelectorAll('.zdielanie').forEach(function (box) {
+    var url = box.getAttribute('data-url');
+    var sprava = box.getAttribute('data-sprava');
+
+    /* Web Share API: na mobile otvorí systémovú ponuku, kde je Messenger,
+       WhatsApp aj SMS. Na desktope tlačidlo ostáva skryté. */
+    var share = box.querySelector('.zd-share');
+    if (share && navigator.share) {
+      share.hidden = false;
+      share.addEventListener('click', function () {
+        navigator.share({ title: sprava, text: sprava, url: url }).catch(function () {});
+      });
+    }
+    /* SMS len na dotykových zariadeniach, inak by odkaz nikam neviedol */
+    var smsBtn = box.querySelector('.zd-sms');
+    if (smsBtn && window.matchMedia('(pointer: coarse)').matches) smsBtn.hidden = false;
+
+    var copy = box.querySelector('.zd-copy');
+    if (copy) {
+      copy.addEventListener('click', function () {
+        var t = copy.querySelector('.zd-copy-text');
+        var done = function () {
+          copy.classList.add('is-done');
+          t.textContent = 'Odkaz skopírovaný';
+          setTimeout(function () { copy.classList.remove('is-done'); t.textContent = 'Kopírovať odkaz'; }, 2500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(done);
+        }
+      });
+    }
+  });
+})();
+</script>

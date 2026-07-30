@@ -1803,6 +1803,28 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .news-card.has-detail:hover h3 { color: var(--fg-strong); }
 .news-card.has-detail:hover .news-go { color: var(--fg-strong); }
 
+/* ---- zdieľanie (variant C, 30. 7. 2026): parte aj články ----
+   Ikony sú monochrómne hairline, žiadne firemné farby platforiem. */
+.zdielanie { padding: 30px 28px; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; }
+.zd-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 600; margin-bottom: 8px; }
+.zdielanie h2 { font-size: 22px; font-weight: 650; font-variation-settings: var(--wide); }
+.zd-sub { margin-top: 8px; color: var(--muted); font-size: 15px; max-width: 48ch; }
+.zd-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.zd-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 11px 18px; font: inherit; font-size: 14px;
+  color: var(--muted); background: none;
+  border: 1px solid var(--line); border-radius: 999px;
+  cursor: pointer; transition: border-color 0.3s ease, color 0.3s ease;
+}
+.zd-btn:hover { border-color: rgb(var(--fg-rgb) / 0.4); color: var(--text); }
+.zd-btn svg { width: 16px; height: 16px; flex: none; }
+.zd-btn[hidden] { display: none; }
+.zd-primary { background: var(--gold); color: var(--on-accent); border-color: var(--gold); font-weight: 650; }
+.zd-primary:hover { background: var(--fg-strong); border-color: var(--fg-strong); color: var(--on-accent); }
+.zd-copy.is-done { border-color: rgb(var(--fg-rgb) / 0.4); color: var(--text); }
+.clanok .zdielanie { margin-top: 44px; }
+
 /* ---- detail článku (variant V3, 30. 7. 2026) ---- */
 .clanok-back { display: inline-block; margin-bottom: 18px; font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
 .clanok-back:hover { color: var(--gold); }

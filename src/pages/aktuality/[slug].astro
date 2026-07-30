@@ -6,6 +6,7 @@
   a tri ďalšie články.
 */
 import Base from '../../layouts/Base.astro';
+import Zdielanie from '../../components/Zdielanie.astro';
 import { CLANKY, getClanok, maDetail, ostatneClanky } from '../../data/aktuality';
 
 export function getStaticPaths() {
@@ -59,6 +60,8 @@ const jsonld = JSON.stringify({
   <article class="clanok">
     <p class="clanok-lead" data-reveal>{c.text}</p>
     {c.telo!.map((odsek) => <p data-reveal>{odsek}</p>)}
+
+    <Zdielanie url={new URL(`/aktuality/${c.slug}`, Astro.site ?? Astro.url).href} titulok={c.titulok} typ="clanok" />
 
     {c.cta && (
       <aside class="clanok-cta" data-reveal>
