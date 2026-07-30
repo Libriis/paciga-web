@@ -1728,6 +1728,12 @@ section > .container, .services-pin > .container, .services-track, .services-pro
    hlavičku od obsahu, plochu nesie jemný nános dokumentového svetla
    (rovnaká miera ako sekcie s --bg2) orámovaný hairline linkou. */
 .news-hero { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 32px 32px; padding: clamp(150px, 18vh, 200px) 0 clamp(48px, 7vh, 76px); }
+/* jednotná výška bandu na všetkých stránkach: min-height podľa najvyššieho
+   obsahu (4-riadkový titulok), obsah kotví dole. Na mobile tečie prirodzene. */
+@media (min-width: 761px) {
+  .news-hero { display: flex; align-items: flex-end; min-height: clamp(560px, 52vw, 660px); }
+  .news-hero > .container { width: min(1240px, calc(100% - 48px)); }
+}
 /* pravidlo "main > section[class]" maľuje sekcie transparentne — band si
    svoj nános svetla musí vybojovať špecificitou */
 main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
