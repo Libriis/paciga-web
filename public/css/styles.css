@@ -2591,14 +2591,24 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 /* Hlavička sekcie služieb (30. 7. 2026). Predtým tu stál orámovaný panel
    so zapusteným jazykom, ktorý na homepage nikde inde nie je. Teraz drží
    ten istý vzor ako ostatné sekcie: eyebrow, nadpis, gold-line. */
-.svc-head { margin-bottom: clamp(30px, 4.5vh, 52px); }
-.svc-head .eyebrow { margin-bottom: 16px; }
+/* dvojstĺpec: nadpis vľavo, hashtagy služieb vedľa neho vpravo */
+.svc-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 64px);
+  margin-bottom: clamp(30px, 4.5vh, 52px);
+}
+.svc-eyebrow { margin-bottom: 16px; font-size: 14px; letter-spacing: 0.2em; }
 .svc-title {
   font-size: clamp(30px, 4.4vw, 54px);
   line-height: 1.08;
   font-weight: 640;
   font-variation-settings: var(--wide);
   letter-spacing: -0.01em;
+}
+@media (max-width: 900px) {
+  .svc-head { grid-template-columns: 1fr; gap: 22px; }
 }
 /* dvojtónový nadpis ako v predlohe, len bez farby: biela do polopriehľadnej */
 .svc-title-grad {
@@ -2616,8 +2626,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 /* pätnásť služieb ako hashtagy — každý je odkaz na kotvu na stránke služieb */
 .svc-tags {
-  max-width: 72ch;
-  margin-left: 0;
+  max-width: none;
+  margin: 6px 0 0;
   display: flex;
   flex-wrap: wrap;
   gap: 4px 16px;
