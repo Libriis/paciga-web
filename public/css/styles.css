@@ -1796,6 +1796,30 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .news-date { margin-top: 8px; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
 .news-card p { margin-top: 10px; color: var(--muted); font-size: 14.5px; line-height: 1.6; flex: 1; }
 .news-card .news-go { margin-top: 12px; }
+/* karta s vlastným článkom je klikateľná celá (stretched link) */
+.news-card.has-detail { position: relative; }
+.news-card-link { color: inherit; }
+.news-card-link::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: 16px; }
+.news-card.has-detail:hover h3 { color: var(--fg-strong); }
+.news-card.has-detail:hover .news-go { color: var(--fg-strong); }
+
+/* ---- detail článku (variant V3, 30. 7. 2026) ---- */
+.clanok-back { display: inline-block; margin-bottom: 18px; font-size: 13.5px; letter-spacing: 0.06em; color: var(--dim); transition: color 0.3s ease; }
+.clanok-back:hover { color: var(--gold); }
+.news-hero .clanok-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 22px; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.news-hero .clanok-meta .news-tag { margin: 0; }
+.clanok { width: min(720px, calc(100% - 48px)); margin: 0 auto; padding: clamp(50px, 7vh, 80px) 0 0; }
+.clanok-lead { font-size: clamp(19px, 1.7vw, 22px); line-height: 1.65; color: var(--text); margin-bottom: 32px; }
+.clanok p { font-size: 17.5px; line-height: 1.85; margin-bottom: 22px; color: rgb(var(--fg-rgb) / 0.84); }
+.clanok h2 { font-size: clamp(21px, 2vw, 28px); font-weight: 650; font-variation-settings: var(--wide); margin: 42px 0 14px; }
+.clanok-cta { margin: 44px 0 0; padding: 30px 28px; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; }
+.clanok-cta h2 { margin: 0; font-size: 22px; }
+.clanok-cta p { margin-top: 8px; color: var(--muted); font-size: 15.5px; }
+.clanok-cta .btn-gold { margin-top: 18px; }
+.clanok-dalsie { padding: clamp(56px, 8vh, 90px) 0 clamp(80px, 12vh, 140px); }
+.clanok-dalsie h2 { font-size: clamp(22px, 2.2vw, 30px); font-weight: 650; font-variation-settings: var(--wide); margin-bottom: 26px; }
+.clanok-dalsie .news-card h3 a { color: inherit; }
+.clanok-dalsie .news-card:hover h3 a { color: var(--fg-strong); }
 @media (max-width: 1100px) { .news-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 760px) { .news-hero-inner { grid-template-columns: 1fr; } .news-hero-lead { padding-bottom: 0; } }
 
