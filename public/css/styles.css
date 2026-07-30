@@ -1752,6 +1752,9 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
    titulky v dvoch riadkoch a s chipmi neprerastá jednotnú výšku */
 .news-hero h1 { font-size: clamp(40px, 4.9vw, 68px); font-weight: 680; line-height: 1.06; letter-spacing: -0.01em; font-variation-settings: var(--wide); }
 .news-hero-inner { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; }
+/* fotkový band nesie len eyebrow + titulok, lead je preč (text na fotke
+   sa nedal spoľahlivo udržať čitateľný pri každom obrázku) */
+.news-hero.has-photo .news-hero-inner { grid-template-columns: 1fr; }
 .news-hero-lead { max-width: 32ch; font-size: clamp(15.5px, 1.3vw, 18px); line-height: 1.65; color: var(--muted); padding-bottom: 8px; }
 /* fotková verzia bandu: hero fotka stránky pod tmavým scrimom, tvar a rám
    bandu ostávajú. Text je vždy biely nad scrimom (--scrim-rgb). */
