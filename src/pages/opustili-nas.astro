@@ -37,7 +37,18 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
         <div class="eyebrow" data-reveal>Opustili nás</div>
         <h1 data-textreveal>So spomienkou<br>a úctou.</h1>
       </div>
-      <p class="news-hero-lead" data-reveal>Spomíname na tých, ktorých sme vyprevadili na poslednej ceste. Zapáľte im sviečku, plamienok zostane svietiť pri ich mene.</p>
+      <div data-reveal>
+        <p class="news-hero-lead">Spomíname na tých, ktorých sme vyprevadili na poslednej ceste. Zapáľte im sviečku, plamienok zostane svietiť pri ich mene.</p>
+        <!-- vyhľadávanie: bez JS ostáva skryté a zoznam je kompletný -->
+        <div class="parte-search" id="parte-search" hidden>
+          <div class="parte-search-field">
+            <input type="search" id="ps-input" aria-label="Hľadať spomienku podľa mena"
+              placeholder="Hľadať podľa mena" autocomplete="off" spellcheck="false">
+            <button type="button" class="ps-clear" aria-label="Vymazať hľadanie">×</button>
+          </div>
+          <div class="parte-count" id="parte-count" role="status" aria-live="polite"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -62,18 +73,8 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
   )}
 
   <!-- ============ SPOMIENKY ============ -->
-  <section class="memoriam" style="padding-top: 0;">
+  <section class="memoriam" style="padding-top: clamp(48px, 7vh, 76px);">
     <div class="container">
-
-      <!-- vyhľadávanie: bez JS ostáva skryté a zoznam je kompletný -->
-      <div class="parte-search" id="parte-search" hidden>
-        <div class="parte-search-field">
-          <input type="search" id="ps-input" aria-label="Hľadať spomienku podľa mena"
-            placeholder="Hľadať podľa mena" autocomplete="off" spellcheck="false">
-          <button type="button" class="ps-clear" aria-label="Vymazať hľadanie">×</button>
-        </div>
-        <div class="parte-count" id="parte-count" role="status" aria-live="polite"></div>
-      </div>
 
       <div id="parte-list">
       {skupiny.map((skupina) => (
