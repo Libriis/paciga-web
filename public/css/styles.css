@@ -1762,7 +1762,10 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .news-hero.has-photo .nh-media { border-radius: 0 0 32px 32px; overflow: hidden; }
 .news-hero.has-photo .nh-media { position: absolute; inset: 0; z-index: 0; }
 .news-hero.has-photo .nh-media img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.5) brightness(0.62); }
-.news-hero.has-photo .nh-media::after { content: ''; position: absolute; inset: 0; background:
+/* Zaoblený roh kreslí svetlá linka po spodnej hrane: v rohoch sa zatočí
+   a skončí, takže tvar je čitateľný aj na tmavej fotke a po bokoch
+   nevzniká zvislý sivý chvost ako pri plnom ráme. */
+.news-hero.has-photo .nh-media::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 -1px 0 rgb(var(--fg-rgb) / 0.22); background:
   linear-gradient(90deg, rgb(var(--scrim-rgb) / 0.85) 0%, rgb(var(--scrim-rgb) / 0.5) 55%, rgb(var(--scrim-rgb) / 0.3) 100%),
   linear-gradient(0deg, rgb(var(--scrim-rgb) / 0.5) 0%, rgb(var(--scrim-rgb) / 0) 40%); }
 .news-hero.has-photo .news-hero-inner { position: relative; z-index: 1; }
