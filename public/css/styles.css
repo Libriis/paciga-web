@@ -2208,7 +2208,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    a zoznam ostáva kompletný.
    ============================================================ */
 .parte-search[hidden] { display: none; }
-.parte-search { margin: 40px 0 8px; }
+/* pole žije v newsroom bande pod leadom, zoznam parte začína hneď pod hlavičkou */
+.parte-search { margin: 22px 0 0; }
 .parte-search-field { position: relative; max-width: 520px; }
 .parte-search input[type="search"] {
   width: 100%;
@@ -2249,12 +2250,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .ps-clear:hover { color: var(--text); }
 .parte-search.has-query .ps-clear { display: flex; }
 
-/* keď je pole vyhľadávania na stránke, zoznam pod ním potrebuje odstup,
-   inak počítadlo splynie s nadpisom mesiaca */
-.parte-search:not([hidden]) + #parte-list { margin-top: 46px; }
-
 .parte-count {
-  margin-top: 16px;
+  margin-top: 12px;
   min-height: 20px;
   font-size: 12.5px;
   letter-spacing: 0.16em;
