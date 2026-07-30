@@ -17,15 +17,19 @@ interface Props {
   titulok: string;
   /** parte = oznámenie rodine, clanok = článok */
   typ: 'parte' | 'clanok';
+  /** blok leží priamo na fotke (fixný panel parte): bez karty, kompaktnejší */
+  naFotke?: boolean;
 }
-const { url, titulok, typ } = Astro.props;
+const { url, titulok, typ, naFotke = false } = Astro.props;
 
 const jeParte = typ === 'parte';
 const label = jeParte ? 'Pre rodinu a blízkych' : 'Zdieľanie';
 const nadpis = jeParte ? 'Pošlite oznámenie blízkym' : 'Pošlite článok ďalej';
-const podnadpis = jeParte
-  ? 'Pošlite odkaz na toto parte tým, ktorí by o rozlúčke nemuseli vedieť. Otvorí sa im rovnaká stránka s dátumom, časom aj miestom.'
-  : 'Ak by článok niekomu pomohol, pošlite mu ho. Otvorí sa mu presne táto stránka.';
+const podnadpis = naFotke
+  ? 'Pošlite odkaz tým, ktorí by o rozlúčke nemuseli vedieť.'
+  : jeParte
+    ? 'Pošlite odkaz na toto parte tým, ktorí by o rozlúčke nemuseli vedieť. Otvorí sa im rovnaká stránka s dátumom, časom aj miestom.'
+    : 'Ak by článok niekomu pomohol, pošlite mu ho. Otvorí sa mu presne táto stránka.';
 
 const sprava = jeParte ? `Smútočné oznámenie: ${titulok}` : titulok;
 const enc = encodeURIComponent;
@@ -34,7 +38,7 @@ const wa = `https://wa.me/?text=${enc(sprava + ' ' + url)}`;
 const sms = `sms:?&body=${enc(sprava + ' ' + url)}`;
 const mail = `mailto:?subject=${enc(sprava)}&body=${enc(sprava + '\n\n' + url)}`;
 ---
-<section class="zdielanie" data-url={url} data-sprava={sprava} data-reveal>
+<section class:list={['zdielanie', { 'zd-na-fotke': naFotke }]} data-url={url} data-sprava={sprava} data-reveal>
   <div class="zd-label">{label}</div>
   <h2>{nadpis}</h2>
   <p class="zd-sub">{podnadpis}</p>
