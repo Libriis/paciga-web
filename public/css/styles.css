@@ -1964,7 +1964,11 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    prechádzala do parchmentu na 45 pixloch a čítalo by sa to ako tmavý pás,
    nie ako prechod. Pod fotkou teda dostane priestor, inde ostáva 45 px. */
 .subhero + .situ { padding-top: clamp(64px, 8vh, 96px); }
-.situ-label { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 600; margin-bottom: 16px; }
+/* 0.35 alfa bola pri 12 px verzálkach na fotke pod hranicou čitateľnosti;
+   label je otázka, na ktorú čipy odpovedajú, takže musí byť vidieť */
+.situ-label { font-size: 12.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); font-weight: 650; margin-bottom: 16px; }
+/* nad fotkou hero bandu ešte mäkký tieň — fotka má aj svetlé plochy */
+.news-hero .situ-label { text-shadow: 0 1px 3px rgba(12, 13, 15, 0.7), 0 6px 24px rgba(12, 13, 15, 0.6); }
 .situ-row { display: flex; gap: 12px; flex-wrap: wrap; }
 /* rozcestnikove cipy: akcentova vypln ako btn-gold (v tmavej teme biele),
    nie siva — klient chce jasne viditelne tlacidla */
