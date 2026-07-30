@@ -354,11 +354,13 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
       <div class="memoriam-grid">
         {parteList.map((p) => (
           <div class={`memoriam-card${p.sviecky > 0 ? " warm" : ""}${p.sviecky >= 10 ? " heat3" : p.sviecky >= 3 ? " heat2" : ""}`} data-reveal data-slug={p.slug}>
-            <div class="memoriam-photo" aria-hidden="true">{p.foto_url
-              ? <img src={p.foto_url} alt="" loading="lazy" decoding="async" />
-              : <span>{inicialky(p.meno)}</span>}</div>
-            <h3>{p.meno}</h3>
-            <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}</div>
+            <a class="memoriam-link" href={`/parte/${p.slug}`}>
+              <div class="memoriam-photo" aria-hidden="true">{p.foto_url
+                ? <img src={p.foto_url} alt="" loading="lazy" decoding="async" />
+                : <span>{inicialky(p.meno)}</span>}</div>
+              <h3>{p.meno}</h3>
+              <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}</div>
+            </a>
             <div class="memoriam-candle" aria-hidden="true"><span class="spark"></span><span class="spark"></span><span class="spark"></span><i class="flame"></i></div><div class="memoriam-links"><button type="button" class="gold-link candle-btn">Zapáliť sviečku<span class="candle-count">{p.sviecky > 0 ? ` · ${p.sviecky}` : ''}</span></button><a href={`/parte/${p.slug}`} class="soft-link">Kondolencia</a></div>
           </div>
         ))}
