@@ -151,6 +151,11 @@ const NAV = [
 <script is:inline src="/assets/vendor/lenis.min.js"></script>
 <script is:inline src="/js/main.js"></script>
 {journey && <script is:inline src="/js/journey.js"></script>}
+{/* Core Web Vitals z terénu. defer, aby nesúperili o pásmo s ničím
+    dôležitým; web-vitals číta buffered záznamy, takže mu neskoré
+    pripojenie LCP ani FCP neujde. Poradie drží defer. */}
+<script is:inline defer src="/assets/vendor/web-vitals.js"></script>
+<script is:inline defer src="/js/vitals.js"></script>
 <slot name="scripts" />
 </body>
 </html>
