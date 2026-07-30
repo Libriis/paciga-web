@@ -1724,15 +1724,17 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .bill-item p { color: var(--muted); font-size: 19.2px; line-height: 1.7; }
 
 /* ---- podstránky: aktuality (newsroom pattern podľa Jeton, 29. 7. 2026) ---- */
-/* biely akcentový band so zaobleným spodkom: titulok vľavo, lead vpravo */
-.news-hero { background: var(--gold); color: var(--on-accent); border-radius: 0 0 32px 32px; padding: clamp(150px, 18vh, 200px) 0 clamp(48px, 7vh, 76px); }
-/* pravidlo "main > section[class]" maľuje sekcie transparentne — band je
-   akcentová výnimka a plnú bielu si musí vybojovať špecificitou */
-main > section.news-hero { background-color: var(--gold); }
-.news-hero .eyebrow { color: var(--on-accent); opacity: 0.55; }
-.news-hero h1 { color: var(--on-accent); font-size: clamp(44px, 6.4vw, 92px); font-weight: 680; line-height: 1.04; letter-spacing: -0.01em; font-variation-settings: var(--wide); }
+/* Tmavý newsroom band so zaobleným spodkom: tvar oddeľuje hlavičku od
+   blogovej mriežky, plochu nesie jemný nános dokumentového svetla (rovnaká
+   miera ako sekcie s --bg2) orámovaný hairline linkou. Akcent ostáva
+   v bielom aktívnom filter chipe, žiadna biela plocha. */
+.news-hero { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 32px 32px; padding: clamp(150px, 18vh, 200px) 0 clamp(48px, 7vh, 76px); }
+/* pravidlo "main > section[class]" maľuje sekcie transparentne — band si
+   svoj nános svetla musí vybojovať špecificitou */
+main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
+.news-hero h1 { font-size: clamp(44px, 6.4vw, 92px); font-weight: 680; line-height: 1.04; letter-spacing: -0.01em; font-variation-settings: var(--wide); }
 .news-hero-inner { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; }
-.news-hero-lead { max-width: 36ch; font-size: clamp(15.5px, 1.3vw, 18px); line-height: 1.65; color: rgb(12 13 15 / 0.68); padding-bottom: 8px; }
+.news-hero-lead { max-width: 36ch; font-size: clamp(15.5px, 1.3vw, 18px); line-height: 1.65; color: var(--muted); padding-bottom: 8px; }
 
 .news { background: var(--bg); padding: 0 0 clamp(84px, 11vh, 150px); }
 .news-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: clamp(48px, 7vh, 76px) 0 38px; }
