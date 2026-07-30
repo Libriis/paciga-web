@@ -33,10 +33,32 @@
   /* ---------- mobile menu (works with or without GSAP) ---------- */
   var lenis = null;
 
+  /* Zámok scrollu pod otvoreným menu.
+     lenis.stop() na dotyku nestačí: Lenis má syncTouch vypnutý, takže prsty
+     hýbu natívnym scrollom, ktorý o Lenis nevie. Body ide do position: fixed
+     s odloženým offsetom (CSS trieda .nav-locked na <html>) a pri zavretí sa
+     pozícia vráti presne — layout je rovnaký, ScrollTrigger nič neprepočítava. */
+  var lockedY = 0;
+
+  function lockScroll() {
+    if (document.documentElement.classList.contains('nav-locked')) return;
+    lockedY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.top = -lockedY + 'px';
+    document.documentElement.classList.add('nav-locked');
+  }
+
+  function unlockScroll() {
+    if (!document.documentElement.classList.contains('nav-locked')) return;
+    document.documentElement.classList.remove('nav-locked');
+    document.body.style.top = '';
+    window.scrollTo(0, lockedY);
+  }
+
   function closeMenu() {
     if (!nav || !nav.classList.contains('nav-open')) return;
     nav.classList.remove('nav-open');
     if (burger) burger.setAttribute('aria-expanded', 'false');
+    unlockScroll();
     if (lenis) lenis.start();
   }
 
@@ -44,11 +66,21 @@
     burger.addEventListener('click', function () {
       var open = nav.classList.toggle('nav-open');
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if (open) { nav.setAttribute('data-solid', '1'); if (lenis) lenis.stop(); }
-      else if (lenis) lenis.start();
+      if (open) {
+        nav.setAttribute('data-solid', '1');
+        lockScroll();
+        if (lenis) lenis.stop();
+      } else {
+        unlockScroll();
+        if (lenis) lenis.start();
+      }
     });
     nav.querySelectorAll('.nav-links a').forEach(function (a) {
       a.addEventListener('click', closeMenu);
+    });
+    /* Escape zatvára menu aj na tabletoch s klávesnicou. */
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMenu();
     });
   }
 
@@ -144,7 +176,9 @@
       if (!target) return;
       e.preventDefault();
       closeMenu();
-      lenis.scrollTo(target, { offset: -72, duration: 1.5 });
+      /* -90 = výška lišty (82) s rezervou; rovnaká hodnota ako scroll-margin-top
+         v CSS, aby skok cez JS a natívny skok cez hash skončili rovnako */
+      lenis.scrollTo(target, { offset: -90, duration: 1.5 });
     });
   });
 
@@ -167,6 +201,28 @@
     }
     return false;
   }
+  /* Je na obrazovke telefón, ktorý si vie užívateľ ťuknúť priamo?
+     Pill je fixný vpravo dole a na mobile prekrýval koniec stránky: v pätičke
+     riadok s IČO, na službách a v informáciách presne vlastnú CTA s číslom.
+     Keď je na obrazovke skutočný tel: odkaz, pill je zbytočný a len zavadzia.
+     Sledujeme každý tel: odkaz mimo lišty a mimo samotného pillu — nové sekcie
+     tak netreba nikde dopisovať. */
+  var telVisible = 0;
+  if ('IntersectionObserver' in window) {
+    var telIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var was = en.target.dataset.telSeen === '1';
+        if (en.isIntersecting && !was) { telVisible++; en.target.dataset.telSeen = '1'; }
+        else if (!en.isIntersecting && was) { telVisible--; delete en.target.dataset.telSeen; }
+      });
+      syncCallPill();
+    }, { threshold: 0.4 });
+    document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+      if (a === callPill || (nav && nav.contains(a))) return;
+      telIo.observe(a);
+    });
+  }
+
   /* telefón vždy poruke: na mobile po hero (v nav je za burgerom),
      na desktope keď sa nav schová. Volá to aj onToggle jazdy — poradie
      callbackov medzi triggermi nie je zaručené, takže prepočet len v scroll
@@ -179,6 +235,7 @@
        tak v hero CTA, v kapitole Cesta a v závere. Na mobile pill zostáva —
        tam je v nav schovaný za burgerom a stanice sú vypnuté. */
     if (pillOn && !mqMobile.matches && journeyOnScreen()) pillOn = false;
+    if (pillOn && telVisible > 0) pillOn = false;
     callPill.classList.toggle('on', pillOn);
   }
 

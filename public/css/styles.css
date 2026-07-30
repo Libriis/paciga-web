@@ -458,7 +458,8 @@ body {
 .callpill {
   position: fixed;
   right: clamp(16px, 2.5vw, 32px);
-  bottom: clamp(16px, 3vh, 28px);
+  /* safe-area: na iPhone s gesture barom pill inak sedí v jej pásme */
+  bottom: calc(clamp(16px, 3vh, 28px) + env(safe-area-inset-bottom));
   z-index: 90;
   display: inline-flex;
   align-items: center;
@@ -478,11 +479,28 @@ body {
 }
 .callpill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--on-accent); animation: pulse 2.2s ease-in-out infinite; }
 .callpill.on { opacity: 1; transform: none; pointer-events: auto; }
-.nav-burger { display: none; flex-direction: column; gap: 5px; padding: 8px; margin-left: auto; }
+.nav-burger { display: none; flex-direction: column; gap: 5px; padding: 12px 8px; margin-left: auto; }
 .nav-burger span { width: 24px; height: 2px; background: var(--text); transition: transform 0.3s ease, opacity 0.3s ease; }
 
+/* ---- zámok scrollu pri otvorenom mobilnom menu ----
+   Lenis má syncTouch vypnutý, takže na dotyku beží natívny scroll a
+   lenis.stop() nezamkne nič — stránka pod otvoreným menu ušla. Body ide
+   do position: fixed s odloženým offsetom, main.js ho pri zavretí vráti.
+   Layout sa nemení, ScrollTrigger teda neprepočítava. */
+html.nav-locked,
+html.nav-locked body { overflow: hidden; }
+html.nav-locked body {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
 /* ---- hero ---- */
-.hero { position: relative; height: 100vh; overflow: hidden; }
+/* svh, nie vh: 100vh je na iOS najväčší viewport (lišta schovaná), takže hero
+   bol pri načítaní orezaný a pri prvom scrolle poskočil. dvh sem nedávame —
+   priebežná zmena výšky by prepočítavala pripnuté ScrollTriggery. */
+.hero { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
 .hero-media { position: absolute; inset: -6% 0; will-change: transform; }
 .hero-media video { width: 100%; height: 100%; object-fit: cover; }
 .hero-shade {
@@ -531,7 +549,7 @@ body {
 
 /* ---- services (pinned horizontal) ---- */
 .services { background: var(--bg); position: relative; }
-.services-pin { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding: 90px 0 60px; }
+.services-pin { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding: 90px 0 60px; }
 .services-head { margin-bottom: 54px; }
 .services-track {
   display: flex;
@@ -594,7 +612,7 @@ body {
 
 /* ---- fleet showcase ---- */
 .fleet { position: relative; background: var(--bg); }
-.fleet-pin { position: relative; height: 100vh; overflow: hidden; display: grid; place-items: center; }
+.fleet-pin { position: relative; height: 100vh; height: 100svh; overflow: hidden; display: grid; place-items: center; }
 .fleet-media {
   position: absolute; inset: 0;
   clip-path: inset(18% 26% 18% 26% round 22px);
@@ -1022,16 +1040,37 @@ body {
     background: var(--bg);
     backdrop-filter: blur(18px);
     flex-direction: column;
-    justify-content: center;
-    gap: 26px;
+    justify-content: flex-start;
+    /* nowrap prebíja flex-wrap: wrap zo základu lišty. So zalamovaním sa
+       položky pri pretečení skladali do druhého stĺpca mimo obrazovky
+       namiesto toho, aby sa dal drawer odscrollovať. */
+    flex-wrap: nowrap;
+    gap: 8px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.35s ease;
     z-index: 90;
+    /* Deväť položiek a CTA sa na nízkom displeji (alebo pri zväčšenom
+       systémovom písme) nezmestia. Drawer je preto vlastný scroll port.
+       overscroll-behavior drží gesto vnútri: bez neho sa scroll reťazí na
+       dokument a stránka uteká pod otvoreným menu. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: calc(82px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));
   }
+  /* margin: auto namiesto justify-content: center — vycentruje, kým je miesto,
+     a pri pretečení nechá dosiahnuť aj prvú a poslednú položku. */
+  .nav-links > :first-child { margin-top: auto; }
+  .nav-links > :last-child { margin-bottom: auto; }
   #site-nav.nav-open .nav-links { opacity: 1; pointer-events: auto; }
-  .nav-link { font-size: 19px; }
+  /* 44 px dotyková plocha aj pri 19 px písme. Podčiarknutie aktívnej položky
+     drží pri texte, inak by odskočilo na hranu paddingu. */
+  .nav-link { font-size: 19px; padding: 11px 12px; background-position: left calc(100% - 11px); }
+  .nav-links .nav-cta { margin-top: 18px; padding: 13px 20px; }
   .nav-burger { display: flex; position: relative; z-index: 95; }
+  /* logo ostáva nad drawerom — cesta domov z otvoreného menu */
+  .nav-logo { position: relative; z-index: 95; }
   #site-nav.nav-open .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   #site-nav.nav-open .nav-burger span:nth-child(2) { opacity: 0; }
   #site-nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -1148,7 +1187,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 /* ---- posledná cesta: scrollovaná filmová jazda (frame scrub) ---- */
 .journey { position: relative; background: var(--bg); }
-.journey-pin { position: relative; height: 100vh; overflow: hidden; }
+.journey-pin { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
 .journey-poster,
 .journey-canvas {
   position: absolute;
@@ -1364,8 +1403,12 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .svc-chapter-stone::before {
   content: '';
   position: absolute; inset: 0;
-  /* reálna fotka cintorína s pomníkmi (stlmená), nie generovaná textúra */
-  background-image: linear-gradient(180deg, rgba(12, 13, 15, 0.55), rgba(12, 13, 15, 0.75)), url('../assets/cintorin.jpg');
+  /* reálna fotka cintorína s pomníkmi (stlmená), nie generovaná textúra
+     POZOR: .svc-chapter-stone dnes nepoužíva žiadna stránka a cintorin.jpg
+     sa presunul do src/assets (astro:assets). Ak sa trieda vráti do hry,
+     fotku vlož ako <Image>, nie ako CSS pozadie — inak si mobil stiahne
+     desktopovú veľkosť. */
+  background-image: linear-gradient(180deg, rgba(12, 13, 15, 0.55), rgba(12, 13, 15, 0.75));
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -1746,7 +1789,9 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* chipový rad sekcie zakomponovaný do bandu (situ pattern) */
 .news-hero-chips { margin-top: 24px; position: relative; z-index: 1; }
 /* ciele kotiev z bandu potrebujú odstup od fixného menu */
-#pribeh, #tim, #prvenstva, #vozidla, #limuzina { scroll-margin-top: 90px; }
+/* #sluzby chýbalo: pri priamom vstupe s hashom (bez JS, alebo z výsledku
+   vyhľadávania) skok skončil pod 82 px lištou. */
+#pribeh, #tim, #prvenstva, #vozidla, #limuzina, #sluzby { scroll-margin-top: 90px; }
 /* pravidlo "main > section[class]" maľuje sekcie transparentne — band si
    svoj nános svetla musí vybojovať špecificitou */
 main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
@@ -1789,6 +1834,9 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .news-card { display: flex; flex-direction: column; }
 .news-card.hidden { display: none; }
 .news-photo { position: relative; height: 180px; flex: none; border-radius: 16px; overflow: hidden; background-size: cover; background-position: center; filter: saturate(0.5) brightness(0.72); transition: filter 0.5s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+/* Fotka karty je teraz <img> z astro:assets, nie CSS pozadie — mobil tak
+   dostane vlastnú veľkosť cez srcset namiesto desktopovej. */
+.news-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .news-card:hover .news-photo { filter: saturate(0.85) brightness(0.85); transform: translateY(-4px); }
 .news-photo .news-tag { position: absolute; top: 12px; right: 12px; margin: 0; background: var(--gold); color: var(--on-accent); border: 0; filter: none; }
 .news-card-body { display: flex; flex-direction: column; flex: 1; padding: 16px 2px 0; }
@@ -2015,6 +2063,9 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   opacity: 0.32;
   transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
+/* Fotka už nie je CSS pozadie, ale <img> z astro:assets — inak by mobil
+   sťahoval desktopovú veľkosť bez srcset. Vypĺňa rovnakú plochu. */
+.fc-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .first-card.has-photo::after {
   content: '';
   position: absolute; inset: 0;
@@ -2931,4 +2982,80 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .kam-steps { grid-template-columns: 1fr; gap: 34px; }
   .kam-steps::before { top: 0; bottom: 0; left: 27px; right: auto; width: 1px; height: 100%; }
   .kam-step { padding-top: 0; padding-left: 76px; }
+}
+
+/* ============================================================
+   MOBIL: dotykové plochy a čitateľnosť
+   ------------------------------------------------------------
+   Meranie 30. 7. 2026 pri 390×844 našlo desiatky odkazov nižších
+   ako 44 px a text pod 14 px. Publikum tejto stránky je z väčšej
+   časti staršie a často ju otvára v strese, takže presné trafenie
+   malého odkazu je reálna prekážka.
+
+   Zásah je zámerne úzky: mení sa len to, čo sa číta alebo klikne.
+   Verzálkové štítky (eyebrow, footer-title, stat-word, news-tag)
+   ostávajú malé, lebo nesú hierarchiu, nie obsah — len tie pod
+   12 px sa dvíhajú na 12. Desktop sa nemení.
+   ============================================================ */
+@media (max-width: 900px) {
+  /* ---- pätička: stĺpce odkazov ---- */
+  .footer-col a,
+  .footer-social a,
+  .footer-legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .footer-col { gap: 0; }
+  .footer-social { gap: 20px; }
+  /* !important v základnom pravidle (riadok 998) inak prebije mobilnú veľkosť */
+  .footer-map { font-size: 14.5px !important; }
+  .footer-social a { font-size: 14.5px; }
+  .footer-dim { font-size: 14px; }
+  /* adresy nie sú odkazy, len text — mapový odkaz pod nimi si berie výšku sám */
+  .footer-col.addresses span { padding-bottom: 4px; }
+
+  /* ---- odkazy pri parte a spomienkach ---- */
+  .gold-link,
+  .soft-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14.5px;
+  }
+  .memoriam-date { font-size: 14.5px; }
+
+  /* ---- telefónne čísla: najdôležitejší klik na stránke ---- */
+  .branch-tel,
+  .step-tel,
+  .callbar-tel,
+  .phone-secondary,
+  .contact-mail,
+  .phone-big {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .nav-links .nav-cta { font-size: 14.5px; }
+  .callpill { font-size: 14px; }
+
+  /* ---- ovládacie prvky ---- */
+  .nav-burger { padding: 14px 8px; }
+  .v3-opt { min-height: 44px; }
+  .news-chip { min-height: 44px; }
+  .jhud-skip { min-height: 44px; padding-inline: 4px; }
+  .sh-cta { display: inline-flex; align-items: center; min-height: 44px; }
+  .rev-rating { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* ---- čítaný text pod 14 px ---- */
+  .news-date { font-size: 13.5px; }
+  .news-go { font-size: 14.5px; }
+  .fc-go { font-size: 14.5px; }
+  .situ-label { font-size: 13.5px; }
+  label { font-size: 13.5px; }
+
+  /* ---- štítky, ktoré boli pod 12 px ---- */
+  .team-pop-role { font-size: 12px; }
+  .stat-word { font-size: 13px; }
+  .news-tag { font-size: 12px; }
 }
