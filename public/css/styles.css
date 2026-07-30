@@ -1755,9 +1755,11 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .news-hero-lead { max-width: 32ch; font-size: clamp(15.5px, 1.3vw, 18px); line-height: 1.65; color: var(--muted); padding-bottom: 8px; }
 /* fotková verzia bandu: hero fotka stránky pod tmavým scrimom, tvar a rám
    bandu ostávajú. Text je vždy biely nad scrimom (--scrim-rgb). */
-/* fotkovy band ram nepotrebuje — hairline sa na zaoblenom rohu krivila
-   ako sivy artefakt nad fotkou; oddelenie robi fotka a radius */
-.news-hero.has-photo { position: relative; overflow: hidden; border: 0; }
+/* Fotkovy band bez ramu. Makky tien pod bandom stlmi dokumentove svetlo
+   (pagelight) pri spodnej hrane: nepriehladna fotka svetlo zakryva a bez
+   tiena sa pod hranou objavovalo naraz — pri lavom rohu ako sivy flek. */
+.news-hero.has-photo { position: relative; overflow: visible; border: 0; box-shadow: 0 8px 18px -4px rgb(var(--scrim-rgb) / 0.7), 0 34px 70px -12px rgb(var(--scrim-rgb) / 0.65); }
+.news-hero.has-photo .nh-media { border-radius: 0 0 32px 32px; overflow: hidden; }
 .news-hero.has-photo .nh-media { position: absolute; inset: 0; z-index: 0; }
 .news-hero.has-photo .nh-media img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.5) brightness(0.62); }
 .news-hero.has-photo .nh-media::after { content: ''; position: absolute; inset: 0; background:
