@@ -241,7 +241,10 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
   a.sh-ci:hover { color: var(--text); }
   .sh-photo {
     min-height: 44vh;
-    background: #f9f9f9 url('/assets/sperky/kolekcia.jpg') center / cover no-repeat;
+    /* kolekcia-hero má po stranách dotiahnuté pozadie, aby sa všetkých sedem
+       kúskov zmestilo do panela aj po diagonálnom reze (rozmery panela
+       ostávajú nezmenené) */
+    background: #f9f9f9 url('/assets/sperky/kolekcia-hero.jpg') center / cover no-repeat;
   }
   @media (min-width: 900px) {
     .sperk-hero { flex-direction: row; }
