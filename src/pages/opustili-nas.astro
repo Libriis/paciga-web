@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
 import { getParteList, inicialky, fmtKratky, fmtDenMesiac, mesiacLabel, dnesnyDatum, denLabel, maNadchadzajucuRozlucku } from '../lib/parte';
 import type { Parte } from '../lib/parte';
 
@@ -85,7 +86,7 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
               <div class={`memoriam-card${p.sviecky > 0 ? " warm" : ""}${p.sviecky >= 10 ? " heat3" : p.sviecky >= 3 ? " heat2" : ""}`} data-reveal data-slug={p.slug} data-meno={p.meno}>
                 <a class="memoriam-link" href={`/parte/${p.slug}`}>
                   <div class="memoriam-photo" aria-hidden="true">{p.foto_url
-                    ? <img src={p.foto_url} alt="" loading="lazy" decoding="async" />
+                    ? <Foto src={p.foto_url} widths={[220, 440]} sizes="(max-width: 560px) 92vw, 260px" />
                     : <span>{inicialky(p.meno)}</span>}</div>
                   <h3>{p.meno}</h3>
                   <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}</div>

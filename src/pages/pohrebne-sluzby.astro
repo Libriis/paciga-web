@@ -1,5 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { SIRKY_HERO, SIRKY_KARTA, KVALITA_POZADIE, KVALITA_KARTA, KVALITA_DETAIL } from '../lib/images';
+import sluzbyHero from '../assets/sluzby-hero.jpg';
+import limuzina from '../assets/o-nas-limuzina.jpg';
+import sperkyStudio from '../assets/sperky-studio.jpg';
+import fc01 from '../assets/asset-01.jpg';
+import fc04 from '../assets/asset-04.jpg';
+import fc09 from '../assets/asset-09.jpg';
+import fc08 from '../assets/asset-08.jpg';
 
 const title = "Pohrebné služby | Paciga, pohrebné a kamenárske služby";
 const description = "Kompletné pohrebné služby Paciga: rakvy, obrad, kremácia, prevoz zosnulých NON STOP, kvetinárstvo, kamenárstvo, spomienkové šperky. Poprad, Spišská Belá, Liptovský Mikuláš.";
@@ -13,7 +22,7 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
   <!-- ============ HLAVIČKA: newsroom band s fotkou ============ -->
   <section class="news-hero has-photo">
     <div class="nh-media" aria-hidden="true">
-      <img src="/assets/sluzby-hero.jpg" alt="" fetchpriority="high" decoding="async">
+      <Image src={sluzbyHero} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="eager" fetchpriority="high" decoding="async" />
     </div>
     <div class="container news-hero-inner">
       <div>
@@ -49,7 +58,7 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
             <p>Široký výber elegantných rakiev z prvotriednych materiálov. V showroome v Poprade si ich pozriete naživo.</p>
           </article>
           <article class="first-card has-photo" id="rozlucka" data-reveal>
-            <span class="fc-photo" style="background-image:url('/assets/asset-01.jpg')" aria-hidden="true"></span>
+            <span class="fc-photo" aria-hidden="true"><Image src={fc01} widths={SIRKY_KARTA} quality={KVALITA_POZADIE} sizes="(max-width: 900px) 92vw, 33vw" alt="" loading="lazy" /></span>
             <h3>Rozlúčka a pochovanie na cintoríne</h3>
             <p>Kompletné zabezpečenie obradu vrátane prípravy miesta, výzdoby a organizácie celého priebehu.</p>
           </article>
@@ -79,12 +88,12 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
         </div>
         <div class="svcgrid">
           <article class="first-card has-photo" id="prevoz" data-reveal>
-            <span class="fc-photo" style="background-image:url('/assets/asset-04.jpg')" aria-hidden="true"></span>
+            <span class="fc-photo" aria-hidden="true"><Image src={fc04} widths={SIRKY_KARTA} quality={KVALITA_POZADIE} sizes="(max-width: 900px) 92vw, 33vw" alt="" loading="lazy" /></span>
             <h3>Prevoz zosnulých NON STOP</h3>
             <p>Dôstojný a rýchly prevoz z bytov a nemocníc, 24 hodín denne. Dbáme na hygienické aj právne predpisy.</p>
           </article>
           <article class="first-card has-photo" id="medzinarodny-prevoz" data-reveal>
-            <span class="fc-photo" style="background-image:url('/assets/asset-09.jpg')" aria-hidden="true"></span>
+            <span class="fc-photo" aria-hidden="true"><Image src={fc09} widths={SIRKY_KARTA} quality={KVALITA_POZADIE} sizes="(max-width: 900px) 92vw, 33vw" alt="" loading="lazy" /></span>
             <h3>Medzinárodný prevoz</h3>
             <p>Preprava zosnulých zo zahraničia vrátane vybavenia všetkých dokumentov. Ako prví v regióne.</p>
           </article>
@@ -135,7 +144,7 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
             <p>Naplánujte si poslednú rozlúčku vopred podľa vlastných predstáv a odbremeňte svojich blízkych.</p>
           </article>
           <a class="first-card has-photo" href="/sperky" data-reveal>
-            <span class="fc-photo" style="background-image:url('/assets/asset-08.jpg')" aria-hidden="true"></span>
+            <span class="fc-photo" aria-hidden="true"><Image src={fc08} widths={SIRKY_KARTA} quality={KVALITA_POZADIE} sizes="(max-width: 900px) 92vw, 33vw" alt="" loading="lazy" /></span>
             <h3>Spomienkové šperky s odtlačkom</h3>
             <p>Náramky a retiazky s gravírovaným odtlačkom prsta. Kúsok blízkeho človeka navždy pri vás.</p>
             <span class="fc-go">Pozrieť kolekciu →</span>
@@ -149,7 +158,7 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
   <!-- ============ LIMUZÍNA ============ -->
   <section class="fleetband" id="limuzina">
     <div class="fleetband-media" aria-hidden="true">
-      <img src="/assets/o-nas-limuzina.jpg" alt="" loading="lazy" decoding="async">
+      <Image src={limuzina} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="lazy" decoding="async" />
       <div class="fleetband-shade"></div>
     </div>
     <div class="container fleetband-content">
@@ -170,7 +179,7 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
         <p data-reveal><a class="btn-line" href="/sperky">Pozrieť kolekciu →</a></p>
       </div>
       <figure class="story-photo" data-reveal>
-        <img src="/assets/sperky-studio.jpg" alt="Spomienkový náhrdelník s odtlačkom prsta a gravírovaným nápisom Láska pretrvá" loading="lazy" decoding="async">
+        <Image src={sperkyStudio} widths={SIRKY_KARTA} quality={KVALITA_DETAIL} sizes="(max-width: 900px) 92vw, 50vw" alt="Spomienkový náhrdelník s odtlačkom prsta a gravírovaným nápisom Láska pretrvá" loading="lazy" decoding="async" />
       </figure>
     </div>
   </section>

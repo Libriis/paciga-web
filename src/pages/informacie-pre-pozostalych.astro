@@ -1,5 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { SIRKY_HERO, KVALITA_POZADIE } from '../lib/images';
+import infoHero from '../assets/info-hero.jpg';
 import Faq from '../components/Faq.astro';
 import type { FaqItem } from '../components/Faq.astro';
 
@@ -50,7 +53,7 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
   <!-- ============ HLAVIČKA: newsroom band s fotkou ============ -->
   <section class="news-hero has-photo">
     <div class="nh-media" aria-hidden="true">
-      <img src="/assets/info-hero.jpg" alt="" fetchpriority="high" decoding="async">
+      <Image src={infoHero} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="eager" fetchpriority="high" decoding="async" />
     </div>
     <div class="container news-hero-inner">
       <div>

@@ -1,0 +1,48 @@
+---
+/*
+  Fotka z reťazcovej cesty.
+
+  Časť fotiek chodí z dát ako reťazec: aktuality.ts, parte-seed.json a
+  hlavne Supabase (foto_url zákazky). Lokálne cesty vieme prehnať cez
+  astro:assets a dostať WebP + srcset, externé URL nie. Komponent to
+  rozhodne za volajúceho, takže stránky ostávajú bez vetvenia.
+*/
+import { Image } from 'astro:assets';
+import { lokalnyObrazok, SIRKY_KARTA } from '../lib/images';
+
+interface Props {
+  src: string | null | undefined;
+  alt?: string;
+  widths?: number[];
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+}
+
+const {
+  src,
+  alt = '',
+  widths = SIRKY_KARTA,
+  sizes = '(max-width: 900px) 92vw, 33vw',
+  loading = 'lazy',
+  fetchpriority,
+  class: trieda,
+} = Astro.props;
+
+const lokalna = lokalnyObrazok(src);
+---
+{lokalna
+  ? <Image
+      src={lokalna}
+      widths={widths}
+      sizes={sizes}
+      alt={alt}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding="async"
+      class={trieda}
+    />
+  : src
+    ? <img src={src} alt={alt} loading={loading} fetchpriority={fetchpriority} decoding="async" class={trieda} />
+    : null}

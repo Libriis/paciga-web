@@ -6,6 +6,8 @@
   a tri ďalšie články.
 */
 import Base from '../../layouts/Base.astro';
+import Foto from '../../components/Foto.astro';
+import { SIRKY_HERO } from '../../lib/images';
 import Zdielanie from '../../components/Zdielanie.astro';
 import { CLANKY, getClanok, maDetail, ostatneClanky, bloky } from '../../data/aktuality';
 
@@ -42,7 +44,7 @@ const jsonld = JSON.stringify({
   <!-- ============ HLAVIČKA: newsroom band s fotkou článku ============ -->
   <section class="news-hero has-photo">
     <div class="nh-media" aria-hidden="true">
-      <img src={c.foto} alt="" fetchpriority="high" decoding="async">
+      <Foto src={c.foto} alt="" widths={SIRKY_HERO} sizes="100vw" loading="eager" fetchpriority="high" />
     </div>
     <div class="container news-hero-inner">
       <div>
@@ -83,7 +85,8 @@ const jsonld = JSON.stringify({
       <div class="news-grid">
         {dalsie.map((d) => (
           <article class="news-card" data-reveal>
-            <div class="news-photo" style={`background-image:url('${d.foto}')`}>
+            <div class="news-photo">
+              <Foto src={d.foto} alt={d.fotoAlt} widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, (max-width: 1100px) 46vw, 30vw" />
               <span class="news-tag">{d.tag}</span>
             </div>
             <div class="news-card-body">
