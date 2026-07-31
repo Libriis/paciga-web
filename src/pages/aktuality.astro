@@ -1,12 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
-import { CLANKY as clanky, maDetail } from '../data/aktuality';
+import { getClanky, maDetail } from '../lib/clanky';
+
+// Články spravuje redaktor v /admin/clanky, preto sa čítajú za behu.
+// Bez databázy (alebo kým je tabuľka prázdna) padne knižnica späť na
+// pôvodný src/data/aktuality.ts, takže prehľad nikdy nie je prázdny.
+export const prerender = false;
 
 const title = "Aktuality | Paciga, pohrebné a kamenárske služby";
 const description = "Novinky pohrebnej služby Paciga: spolupráce, konferencie a praktické rady pre pozostalých.";
 const ogTitle = "Aktuality | Paciga";
 const ogDescription = "Rady a novinky, ktoré pomáhajú: spolupráce, konferencie a praktickí sprievodcovia pre pozostalých.";
+
+const clanky = await getClanky();
 
 const filtre = [
   { f: 'all', label: 'Všetko' },

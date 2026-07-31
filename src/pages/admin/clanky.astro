@@ -1,0 +1,413 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+<AdminLayout title="Aktuality" active="clanky">
+
+  <div class="adm-head">
+    <h1>Aktuality</h1>
+    <button type="button" class="adm-btn" id="clanok-new">+ Nový článok</button>
+  </div>
+
+  <form id="clanok-form" class="adm-form hidden">
+    <h2 style="margin-top:0" id="clanok-form-title">Nový článok</h2>
+    <input type="hidden" name="id">
+
+    <label>Titulok
+      <input type="text" name="titulok" required maxlength="200" placeholder="napr. Kvetinová výzdoba na pohrebe">
+    </label>
+
+    <label>Adresa článku
+      <input type="text" name="slug" required maxlength="120" pattern="[a-z0-9-]+"
+        placeholder="kvetinova-vyzdoba-na-pohrebe">
+      <span class="adm-hint">Doplní sa sama z titulku. Po zverejnení ju už nemeň, staré odkazy by prestali fungovať.</span>
+    </label>
+
+    <div class="adm-grid3" style="margin-top:18px">
+      <label>Kategória
+        <select name="kategoria">
+          <option value="rada">Rada</option>
+          <option value="novinka">Novinka</option>
+          <option value="spolupraca">Spolupráca</option>
+        </select>
+      </label>
+      <label>Dátum
+        <input type="date" name="datum" required>
+      </label>
+      <label>Stav
+        <select name="published">
+          <option value="true">Zverejnený</option>
+          <option value="false">Koncept</option>
+        </select>
+      </label>
+    </div>
+
+    <label style="margin-top:18px">Perex
+      <textarea name="perex" rows="3" required maxlength="600"
+        placeholder="Dve až tri vety, ktoré uvidí čitateľ na karte v prehľade."></textarea>
+      <span class="adm-hint"><span id="perex-pocet">0</span> / 600 znakov</span>
+    </label>
+
+    <div class="adm-grid2" style="margin-top:18px">
+      <label>Titulná fotka
+        <input type="file" name="foto" accept="image/*">
+        <span class="adm-hint">Na šírku, aspoň 1200 px. Zmenší sa sama.</span>
+      </label>
+      <div>
+        <span class="adm-label">Náhľad</span>
+        <div id="foto-nahlad" class="adm-foto-nahlad"></div>
+      </div>
+    </div>
+
+    <label>Popis fotky
+      <input type="text" name="foto_alt" maxlength="200"
+        placeholder="Čo je na fotke, pre čítačky obrazovky a vyhľadávače">
+    </label>
+
+    <!-- ---- TELO ---- -->
+    <div style="margin-top:24px">
+      <span class="adm-label">Text článku</span>
+      <div class="blok-panel">
+        <button type="button" class="adm-btn ghost sm" data-blok="h">Nadpis</button>
+        <button type="button" class="adm-btn ghost sm" data-blok="p">Odstavec</button>
+        <button type="button" class="adm-btn ghost sm" data-blok="ul">Odrážka</button>
+        <span class="adm-hint" style="margin-left:auto">Riadok, na ktorom stojí kurzor, zmení na daný typ.</span>
+      </div>
+      <textarea name="telo" id="telo" rows="16"
+        placeholder="Odstavce oddeľ prázdnym riadkom.&#10;&#10;## Takto vyzerá medzinadpis&#10;&#10;→ Takto odrážka"></textarea>
+      <details class="adm-nahlad-box" open>
+        <summary>Náhľad, ako to uvidí čitateľ</summary>
+        <div id="telo-nahlad" class="adm-nahlad"></div>
+      </details>
+    </div>
+
+    <!-- ---- CTA ---- -->
+    <details style="margin-top:20px">
+      <summary class="adm-label" style="cursor:pointer">Výzva na konci článku</summary>
+      <p class="adm-hint" style="margin:8px 0 14px">Keď necháš prázdne, článok skončí bez výzvy.</p>
+      <label>Nadpis výzvy
+        <input type="text" name="cta_nadpis" maxlength="200" placeholder="Napíšte nám. Radi vám poradíme.">
+      </label>
+      <label>Text výzvy
+        <textarea name="cta_text" rows="2" maxlength="400"></textarea>
+      </label>
+      <div class="adm-grid2">
+        <label>Odkaz
+          <input type="text" name="cta_odkaz" maxlength="200" placeholder="/kontakt">
+        </label>
+        <label>Text odkazu
+          <input type="text" name="cta_odkaz_text" maxlength="120" placeholder="Kontakt a pobočky">
+        </label>
+      </div>
+    </details>
+
+    <div class="adm-actions">
+      <button type="submit" class="adm-btn">Uložiť</button>
+      <button type="button" class="adm-btn ghost" id="clanok-cancel">Zrušiť</button>
+      <span id="clanok-status" class="adm-status"></span>
+    </div>
+  </form>
+
+  <div id="clanok-list" class="adm-list"></div>
+
+  <div id="import-box" class="adm-card hidden" style="margin-top:24px">
+    <h2 style="margin:0 0 6px">Staré články ešte nie sú v systéme</h2>
+    <p class="kpi-poznamka" style="margin:0 0 14px">
+      V databáze zatiaľ nie je ani jeden článok, takže web zobrazuje pôvodných
+      <strong id="import-pocet">0</strong> článkov priamo z kódu. Presuň ich sem,
+      aby sa dali upravovať. Spúšťa sa raz, existujúce články neprepíše.
+    </p>
+    <button type="button" class="adm-btn" id="import-btn">Presunúť staré články do systému</button>
+    <span id="import-status" class="adm-status"></span>
+  </div>
+
+<style>
+  .blok-panel { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+  #telo { width: 100%; font-family: ui-monospace, monospace; font-size: 13.5px; line-height: 1.7; }
+  .adm-nahlad-box { margin-top: 12px; }
+  .adm-nahlad-box > summary { cursor: pointer; font-size: 13px; color: var(--dim); padding: 6px 0; }
+  .adm-nahlad { padding: 18px 20px; background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; }
+  .adm-nahlad h3 { font-size: 18px; margin: 20px 0 8px; }
+  .adm-nahlad h3:first-child { margin-top: 0; }
+  .adm-nahlad p { margin: 0 0 12px; line-height: 1.7; font-size: 14.5px; }
+  .adm-nahlad ul { margin: 0 0 12px; padding-left: 20px; }
+  .adm-nahlad li { margin-bottom: 5px; line-height: 1.6; font-size: 14.5px; }
+  .adm-nahlad:empty::before { content: 'Zatiaľ prázdne.'; color: var(--dim); font-size: 14px; }
+  .adm-foto-nahlad { height: 92px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .adm-foto-nahlad img { max-width: 100%; max-height: 100%; object-fit: cover; }
+  .adm-foto-nahlad:empty::before { content: 'bez fotky'; color: var(--dim); font-size: 13px; }
+  .clanok-riadok { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; background: var(--bg2); }
+  .clanok-riadok img { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .clanok-riadok .bez-fotky { width: 64px; height: 48px; border-radius: 6px; background: var(--bg); flex-shrink: 0; }
+  .clanok-info { flex: 1; min-width: 0; }
+  .clanok-info strong { display: block; margin-bottom: 3px; }
+  .clanok-meta { font-size: 12.5px; color: var(--dim); }
+  .stitok { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .stitok.rada { background: rgba(74,143,214,.16); color: #7fb3e8; }
+  .stitok.novinka { background: rgba(191,124,44,.16); color: #d59a52; }
+  .stitok.spolupraca { background: rgba(47,158,119,.16); color: #57bd97; }
+  .stitok.koncept { background: rgba(245,245,245,.1); color: var(--dim); }
+</style>
+
+<script>
+import { getClient, requireAuth, esc, zmensiFotku, DEMO } from '../../scripts/admin-core.js';
+import { CLANKY as STARE } from '../../data/aktuality';
+
+const sb = getClient();
+const $ = (s) => document.querySelector(s);
+await requireAuth();
+
+const KATEGORIE = { rada: 'Rada', novinka: 'Novinka', spolupraca: 'Spolupráca' };
+const f = $('#clanok-form');
+const status = $('#clanok-status');
+let clanky = [];
+let editovany = null;
+
+/* ---------- pomocné ---------- */
+
+/** Titulok na adresu článku: bez diakritiky, malé písmená, spojovníky. */
+function naSlug(s) {
+  return s
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 120);
+}
+
+const fmtDatum = (iso) => {
+  const M = ['jan', 'feb', 'mar', 'apr', 'máj', 'jún', 'júl', 'aug', 'sep', 'okt', 'nov', 'dec'];
+  const [r, m, d] = String(iso).slice(0, 10).split('-').map(Number);
+  return r ? `${d}. ${M[m - 1]} ${r}` : '—';
+};
+
+/* Textarea drží odstavce oddelené prázdnym riadkom, databáza pole reťazcov. */
+const naPole = (t) => t.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
+const zPola = (p) => (Array.isArray(p) ? p : []).join('\n\n');
+
+/* ---------- náhľad tela ---------- */
+function vykresliNahlad() {
+  const bloky = [];
+  for (const r of naPole($('#telo').value)) {
+    if (r.startsWith('## ')) bloky.push({ typ: 'h', text: r.slice(3) });
+    else if (r.startsWith('→ ')) {
+      const p = bloky[bloky.length - 1];
+      if (p && p.typ === 'ul') p.polozky.push(r.slice(2));
+      else bloky.push({ typ: 'ul', polozky: [r.slice(2)] });
+    } else bloky.push({ typ: 'p', text: r });
+  }
+  $('#telo-nahlad').innerHTML = bloky.map((b) =>
+    b.typ === 'h' ? `<h3>${esc(b.text)}</h3>`
+    : b.typ === 'ul' ? `<ul>${b.polozky.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`
+    : `<p>${esc(b.text)}</p>`
+  ).join('');
+}
+
+/* ---------- tlačidlá blokov ---------- */
+document.querySelectorAll('[data-blok]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const ta = $('#telo');
+    const typ = btn.dataset.blok;
+    const pred = ta.value.slice(0, ta.selectionStart);
+    const zaciatok = pred.lastIndexOf('\n') + 1;
+    const koniecRel = ta.value.slice(zaciatok).indexOf('\n');
+    const koniec = koniecRel === -1 ? ta.value.length : zaciatok + koniecRel;
+
+    const holy = ta.value.slice(zaciatok, koniec).replace(/^(## |→ )/, '');
+    const novy = typ === 'h' ? '## ' + holy : typ === 'ul' ? '→ ' + holy : holy;
+
+    ta.value = ta.value.slice(0, zaciatok) + novy + ta.value.slice(koniec);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = zaciatok + novy.length;
+    vykresliNahlad();
+  });
+});
+
+$('#telo').addEventListener('input', vykresliNahlad);
+f.perex.addEventListener('input', () => { $('#perex-pocet').textContent = f.perex.value.length; });
+
+f.titulok.addEventListener('input', () => {
+  // Adresu dopĺňame len novému článku. Pri úprave by zmena rozbila staré odkazy.
+  if (!editovany) f.slug.value = naSlug(f.titulok.value);
+});
+
+f.foto.addEventListener('change', () => {
+  const file = f.foto.files[0];
+  $('#foto-nahlad').innerHTML = file ? `<img src="${URL.createObjectURL(file)}" alt="">` : '';
+});
+
+/* ---------- zoznam ---------- */
+async function nacitaj() {
+  const { data, error } = await sb.from('clanky').select('*').order('datum', { ascending: false });
+  if (error) {
+    $('#clanok-list').innerHTML = `<p class="adm-status err">Články sa nepodarilo načítať: ${esc(error.message)}</p>`;
+    return;
+  }
+  clanky = data || [];
+  vykresliZoznam();
+
+  const prazdno = clanky.length === 0;
+  $('#import-box').classList.toggle('hidden', !prazdno);
+  $('#import-pocet').textContent = STARE.length;
+}
+
+function vykresliZoznam() {
+  if (!clanky.length) {
+    $('#clanok-list').innerHTML = '<p class="adm-status">Zatiaľ žiadny článok.</p>';
+    return;
+  }
+  $('#clanok-list').innerHTML = clanky.map((c) => `
+    <div class="clanok-riadok">
+      ${c.foto_url ? `<img src="${esc(c.foto_url)}" alt="">` : '<div class="bez-fotky"></div>'}
+      <div class="clanok-info">
+        <strong>${esc(c.titulok)}</strong>
+        <div class="clanok-meta">
+          <span class="stitok ${esc(c.kategoria)}">${esc(KATEGORIE[c.kategoria] || c.kategoria)}</span>
+          ${c.published ? '' : '<span class="stitok koncept">koncept</span>'}
+          · ${fmtDatum(c.datum)}
+          · ${(c.telo || []).length} ${(c.telo || []).length === 1 ? 'odstavec' : 'odstavcov'}
+        </div>
+      </div>
+      <a class="adm-btn ghost sm" href="/aktuality/${esc(c.slug)}" target="_blank" rel="noopener">Zobraziť</a>
+      <button type="button" class="adm-btn ghost sm" data-upravit="${esc(c.id)}">Upraviť</button>
+      <button type="button" class="adm-btn ghost sm" data-zmazat="${esc(c.id)}">Zmazať</button>
+    </div>`).join('');
+
+  $('#clanok-list').querySelectorAll('[data-upravit]').forEach((b) =>
+    b.addEventListener('click', () => otvor(clanky.find((c) => c.id === b.dataset.upravit))));
+  $('#clanok-list').querySelectorAll('[data-zmazat]').forEach((b) =>
+    b.addEventListener('click', () => zmaz(clanky.find((c) => c.id === b.dataset.zmazat))));
+}
+
+/* ---------- formulár ---------- */
+function otvor(c) {
+  editovany = c || null;
+  f.classList.remove('hidden');
+  $('#clanok-form-title').textContent = c ? 'Úprava článku' : 'Nový článok';
+  status.textContent = '';
+  status.classList.remove('err');
+
+  f.id.value = c?.id ?? '';
+  f.titulok.value = c?.titulok ?? '';
+  f.slug.value = c?.slug ?? '';
+  f.kategoria.value = c?.kategoria ?? 'rada';
+  f.datum.value = c?.datum ? String(c.datum).slice(0, 10) : new Date().toISOString().slice(0, 10);
+  f.published.value = String(c?.published ?? true);
+  f.perex.value = c?.perex ?? '';
+  f.foto_alt.value = c?.foto_alt ?? '';
+  f.telo.value = zPola(c?.telo);
+  f.cta_nadpis.value = c?.cta_nadpis ?? '';
+  f.cta_text.value = c?.cta_text ?? '';
+  f.cta_odkaz.value = c?.cta_odkaz ?? '';
+  f.cta_odkaz_text.value = c?.cta_odkaz_text ?? '';
+  f.foto.value = '';
+  $('#foto-nahlad').innerHTML = c?.foto_url ? `<img src="${esc(c.foto_url)}" alt="">` : '';
+  $('#perex-pocet').textContent = f.perex.value.length;
+
+  vykresliNahlad();
+  f.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+$('#clanok-new').addEventListener('click', () => otvor(null));
+$('#clanok-cancel').addEventListener('click', () => { f.classList.add('hidden'); editovany = null; });
+
+f.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  status.textContent = 'Ukladám…';
+  status.classList.remove('err');
+
+  try {
+    let foto_url = editovany?.foto_url;
+    const file = f.foto.files[0];
+    if (file) {
+      status.textContent = 'Nahrávam fotku…';
+      const blob = await zmensiFotku(file, 1600);
+      const cesta = `${f.slug.value}-${Date.now()}.webp`;
+      const { error: upErr } = await sb.storage.from('clanky-foto').upload(cesta, blob, { contentType: 'image/webp' });
+      if (upErr) throw new Error('Fotku sa nepodarilo nahrať: ' + upErr.message);
+      foto_url = sb.storage.from('clanky-foto').getPublicUrl(cesta).data.publicUrl;
+    }
+
+    const zaznam = {
+      slug: f.slug.value.trim(),
+      titulok: f.titulok.value.trim(),
+      perex: f.perex.value.trim(),
+      kategoria: f.kategoria.value,
+      datum: f.datum.value,
+      foto_url: foto_url ?? null,
+      foto_alt: f.foto_alt.value.trim() || null,
+      telo: naPole(f.telo.value),
+      cta_nadpis: f.cta_nadpis.value.trim() || null,
+      cta_text: f.cta_text.value.trim() || null,
+      cta_odkaz: f.cta_odkaz.value.trim() || null,
+      cta_odkaz_text: f.cta_odkaz_text.value.trim() || null,
+      published: f.published.value === 'true',
+    };
+
+    const { error } = editovany
+      ? await sb.from('clanky').update(zaznam).eq('id', editovany.id)
+      : await sb.from('clanky').insert(zaznam);
+    if (error) throw error;
+
+    status.textContent = 'Uložené.';
+    f.classList.add('hidden');
+    editovany = null;
+    await nacitaj();
+  } catch (err) {
+    status.textContent = err.message || 'Uloženie zlyhalo.';
+    status.classList.add('err');
+  }
+});
+
+async function zmaz(c) {
+  if (!c) return;
+  if (!confirm(`Naozaj zmazať článok „${c.titulok}"? Táto akcia sa nedá vrátiť.`)) return;
+  const { error } = await sb.from('clanky').delete().eq('id', c.id);
+  if (error) { alert('Mazanie zlyhalo: ' + error.message); return; }
+  await nacitaj();
+}
+
+/* ---------- jednorazový import starých článkov ---------- */
+$('#import-btn').addEventListener('click', async () => {
+  const btn = $('#import-btn');
+  const s = $('#import-status');
+  btn.disabled = true;
+  s.textContent = 'Presúvam…';
+  s.classList.remove('err');
+
+  const zaznamy = STARE.map((c) => ({
+    slug: c.slug,
+    titulok: c.titulok,
+    perex: c.text,
+    kategoria: c.t,
+    datum: c.datumIso,
+    foto_url: c.foto || null,
+    foto_alt: c.fotoAlt || null,
+    telo: c.telo || [],
+    odkaz: c.link || null,
+    odkaz_text: c.linkText || null,
+    cta_nadpis: c.cta?.nadpis || null,
+    cta_text: c.cta?.text || null,
+    cta_odkaz: c.cta?.odkaz || null,
+    cta_odkaz_text: c.cta?.odkazText || null,
+    published: true,
+  }));
+
+  const { error } = await sb.from('clanky').insert(zaznamy);
+  if (error) {
+    s.textContent = 'Presun zlyhal: ' + error.message;
+    s.classList.add('err');
+    btn.disabled = false;
+    return;
+  }
+  s.textContent = `Hotovo, presunutých ${zaznamy.length}.`;
+  await nacitaj();
+});
+
+if (DEMO) {
+  $('#clanok-list').innerHTML = '<p class="adm-status">V demo režime sa články neukladajú. ' +
+    'Po pripojení Supabase sa systém prepne na ostré dáta sám.</p>';
+} else {
+  await nacitaj();
+}
+</script>
+</AdminLayout>
