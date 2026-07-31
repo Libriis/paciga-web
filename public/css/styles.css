@@ -2001,8 +2001,16 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 #parte-main .site-footer { position: relative; z-index: 6; }
 
 /* nav leží nad tmavým fixným panelom — podklad potrebuje hneď, nie až po
-   scrolle (rovnaký princíp ako .page-light #site-nav na šperkoch) */
-body:has(#parte-main) #site-nav { background: var(--nav-bg); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
+   scrolle (rovnaký princíp ako .page-light #site-nav na šperkoch)
+
+   POZOR: sem nepatrí backdrop-filter. Bol tu blur(14px) a rozbíjal mobilné
+   menu práve a len na parte stránkach. backdrop-filter robí z prvku
+   containing block pre position: fixed potomkov, takže drawer .nav-links
+   (fixed, inset: 0) sa neroztiahol na viewport, ale na box lišty: 114 px
+   namiesto 844. Bolo vidno prvú položku a zvyšok menu ostal pod fotkou.
+   Navyše bol neviditeľný, --nav-bg je nepriehľadné. To isté platí pre
+   transform, filter, perspective, contain a will-change. */
+body:has(#parte-main) #site-nav { background: var(--nav-bg); box-shadow: 0 1px 0 var(--line); }
 
 @media (max-width: 900px) {
   /* na mobile je fotka hore v normálnom toku, svieca je jej súčasťou */
