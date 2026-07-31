@@ -2,7 +2,7 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import FotoPole from '../../components/admin/FotoPole.tsx';
 ---
-<AdminLayout title="Zákazka" active="zakazky">
+<AdminLayout title="Zákazka">
 
   <div id="nenajdene" class="hidden">
     <h1>Zákazka sa nenašla</h1>
@@ -173,7 +173,7 @@ import { getClient, requireAuth, esc, fmtD, fmtDT, STAVY, POBOCKY, ZDROJE, DOKUM
 const sb = getClient();
 const $ = (sel) => document.querySelector(sel);
 
-await requireAuth();
+await requireAuth('zakazky');
 
 const id = new URLSearchParams(location.search).get('id');
 let z = null;

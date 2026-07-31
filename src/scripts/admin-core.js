@@ -134,14 +134,93 @@ export function getClient() {
   return _sb;
 }
 
-/** Auth brána: bez session presmeruje na /admin/login. Vracia session
-    a zapojí user box v layoute (e-mail + odhlásenie + demo banner). */
-export async function requireAuth() {
+/* ---------- právomoci ---------- */
+
+/** Kam vedie ktorá sekcia. Mimo SEKCIE, lebo to je vec navigácie. */
+export const ODKAZY = {
+  dashboard: '/admin',
+  zakazky: '/admin/zakazky',
+  kontakty: '/admin/kontakty',
+  statistiky: '/admin/statistiky',
+  web: '/admin/web',
+  clanky: '/admin/clanky',
+  vitals: '/admin/vitals',
+};
+
+/** Sekcie administrácie. Kľúč sedí s hodnotou v admini.pristupy a s RLS. */
+export const SEKCIE = [
+  { key: 'dashboard', label: 'Dashboard', popis: 'Prehľad a najbližšie udalosti' },
+  { key: 'zakazky', label: 'Zákazky', popis: 'Zákazky, úkony a doklady' },
+  { key: 'kontakty', label: 'Kontakty', popis: 'Pozostalí a objednávatelia' },
+  { key: 'statistiky', label: 'Štatistiky', popis: 'Grafy a porovnanie pobočiek' },
+  { key: 'web', label: 'Web a parte', popis: 'Parte, kondolencie, dopyty' },
+  { key: 'clanky', label: 'Aktuality', popis: 'Články na webe' },
+  { key: 'vitals', label: 'Rýchlosť webu', popis: 'Merania z terénu' },
+];
+
+/* Prístupy prihláseného. Načítajú sa raz za stránku.
+   Slúžia na skladanie menu a na presmerovanie zo zakázanej stránky.
+   Skutočnú hranicu drží RLS: aj keby si to niekto v prehliadači prepísal,
+   z databázy nedostane ani riadok. */
+let _pristupy = null;
+
+export async function mojProfil() {
+  if (_pristupy) return _pristupy;
+  const sb = getClient();
+  if (DEMO) {
+    _pristupy = { meno: 'Demo', email: 'demo', pristupy: ['*'], hlavny: true };
+    return _pristupy;
+  }
+  const { data, error } = await sb.rpc('moje_pristupy');
+  const r = Array.isArray(data) ? data[0] : data;
+  _pristupy = error || !r
+    ? { meno: null, email: null, pristupy: [], hlavny: false }
+    : { meno: r.meno, email: r.email, pristupy: r.pristupy ?? [], hlavny: !!r.hlavny };
+  return _pristupy;
+}
+
+export const maPristup = (profil, sekcia) =>
+  !!profil && (profil.hlavny || profil.pristupy.includes('*') || profil.pristupy.includes(sekcia));
+
+/* Menu sa vykresľuje až tu, nie v layoute. Layout je statické HTML a
+   nevie, kto sa prihlási; prístupy prídu až z databázy po prihlásení. */
+function zostavMenu(profil) {
+  const nav = document.querySelector('.adm-nav');
+  if (!nav) return;
+
+  const polozky = SEKCIE.filter((s) => maPristup(profil, s.key));
+  if (profil.hlavny) polozky.push({ key: 'pouzivatelia', label: 'Používatelia' });
+
+  const tu = location.pathname.replace(/\/$/, '') || '/admin';
+  nav.innerHTML = polozky.map((s) => {
+    const href = s.key === 'pouzivatelia' ? '/admin/pouzivatelia' : ODKAZY[s.key];
+    const aktivna = href === tu || (href !== '/admin' && tu.startsWith(href));
+    return `<a href="${href}"${aktivna ? ' class="on"' : ''}>${s.label}<span class="badge" id="nav-badge-${s.key}"></span></a>`;
+  }).join('');
+
+  // Novú zákazku ponúkame len tomu, kto zákazky vôbec vidí.
+  const cta = document.querySelector('.adm-cta');
+  if (cta && !maPristup(profil, 'zakazky')) cta.remove();
+}
+
+/** Auth brána: bez session presmeruje na /admin/login. Keď je zadaná sekcia,
+    overí aj právomoc a bez nej pošle používateľa na prvú dostupnú stránku.
+    Vracia session a zapojí user box v layoute. */
+export async function requireAuth(sekcia) {
   const sb = getClient();
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
     location.href = '/admin/login?next=' + encodeURIComponent(location.pathname + location.search);
     return new Promise(() => {}); // stránka odchádza, nič ďalej nerob
+  }
+
+  const profil = await mojProfil();
+  zostavMenu(profil);
+
+  if (sekcia && !maPristup(profil, sekcia)) {
+    const prva = SEKCIE.find((s) => maPristup(profil, s.key));
+    location.href = prva ? ODKAZY[prva.key] : '/admin/bez-pristupu';
+    return new Promise(() => {});
   }
   const who = document.getElementById('adm-user');
   // Prihlasujeme sa menom, nie adresou, tak aj v pätke ukazujeme meno.

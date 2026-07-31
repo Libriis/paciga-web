@@ -3,7 +3,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 import FotoPole from '../../components/admin/FotoPole.tsx';
 import EditorClanku from '../../components/admin/EditorClanku.tsx';
 ---
-<AdminLayout title="Aktuality" active="clanky" siroky>
+<AdminLayout title="Aktuality" siroky>
 
   <div class="adm-head">
     <h1>Aktuality</h1>
@@ -120,7 +120,7 @@ import staticke from '../../data/staticke-obrazky.json';
 
 const sb = getClient();
 const $ = (s) => document.querySelector(s);
-await requireAuth();
+await requireAuth('clanky');
 
 const KATEGORIE = { rada: 'Rada', novinka: 'Novinka', spolupraca: 'Spolupráca' };
 const f = $('#clanok-form');

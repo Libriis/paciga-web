@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
-<AdminLayout title="Rýchlosť webu" active="vitals">
+<AdminLayout title="Rýchlosť webu">
 
   <h1>Rýchlosť webu</h1>
   <p class="kpi-poznamka" style="margin:-6px 0 14px">
@@ -45,7 +45,7 @@ import { getClient, requireAuth, esc, DEMO } from '../../scripts/admin-core.js';
 const sb = getClient();
 const $ = (s) => document.querySelector(s);
 
-await requireAuth();
+await requireAuth('vitals');
 
 /* Prahy Core Web Vitals. Hodnota je hranica „good", druhá hranica „poor";
    medzi nimi je needs-improvement. Merané vždy na 75. percentile. */

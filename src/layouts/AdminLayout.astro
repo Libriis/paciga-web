@@ -4,21 +4,11 @@
 
 interface Props {
   title: string;
-  active?: string;
   /** obsahové stránky potrebujú širší priestor pre dvojstĺpcový editor */
   siroky?: boolean;
 }
-const { title, active = '', siroky = false } = Astro.props;
+const { title, siroky = false } = Astro.props;
 
-const NAV = [
-  { key: 'dashboard', href: '/admin', label: 'Dashboard' },
-  { key: 'zakazky', href: '/admin/zakazky', label: 'Zákazky' },
-  { key: 'kontakty', href: '/admin/kontakty', label: 'Kontakty' },
-  { key: 'statistiky', href: '/admin/statistiky', label: 'Štatistiky' },
-  { key: 'web', href: '/admin/web', label: 'Web a parte' },
-  { key: 'clanky', href: '/admin/clanky', label: 'Aktuality' },
-  { key: 'vitals', href: '/admin/vitals', label: 'Rýchlosť webu' },
-];
 ---
 <!DOCTYPE html>
 <html lang="sk">
@@ -46,11 +36,10 @@ const NAV = [
       sizes="130px" width="130" height="46"
       alt="Paciga" loading="eager" decoding="async" /></a>
     <a class="adm-cta" href="/admin/zakazky?nova=1">+ Nová zákazka</a>
-    <nav class="adm-nav">
-      {NAV.map((item) => (
-        <a href={item.href} class:list={[{ on: item.key === active }]}>{item.label}<span class="badge" id={`nav-badge-${item.key}`}></span></a>
-      ))}
-    </nav>
+    {/* Menu je zámerne prázdne. Skladá ho requireAuth() v admin-core podľa
+        právomocí prihláseného. Keby tu bol statický zoznam, na okamih by
+        blikli položky, ktoré daný používateľ vidieť nemá. */}
+    <nav class="adm-nav" aria-busy="true"></nav>
     <div class="spacer"></div>
     <a class="adm-weblink" href="/" target="_blank" rel="noopener">Zobraziť web →</a>
     <div class="adm-userbox">

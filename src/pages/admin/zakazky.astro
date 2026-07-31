@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
-<AdminLayout title="Zákazky" active="zakazky">
+<AdminLayout title="Zákazky">
 
   <div class="adm-head">
     <h1>Zákazky</h1>
@@ -86,7 +86,7 @@ import { getClient, requireAuth, esc, fmtD, fmtTermin, fmtEUR, STAVY, AKTIVNE_ST
 const sb = getClient();
 const $ = (sel) => document.querySelector(sel);
 
-await requireAuth();
+await requireAuth('zakazky');
 
 let filter = 'aktivne';
 let hladanie = '';
