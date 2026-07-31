@@ -42,8 +42,13 @@
       siet: siet,
       navigacia: m.navigationType || null
     });
+    /* Typ musí byť application/json, nie text/plain. Astro chráni POST
+       pred CSRF a odmieta „jednoduché" content typy (text/plain,
+       form-urlencoded, multipart) cez 403 aj pri požiadavke z rovnakej
+       domény. sendBeacon vráti true aj tak, lebo len zaradí request do
+       fronty, takže sa tá chyba nedá odchytiť na klientovi. */
     try {
-      navigator.sendBeacon('/api/vitals', new Blob([telo], { type: 'text/plain;charset=UTF-8' }));
+      navigator.sendBeacon('/api/vitals', new Blob([telo], { type: 'application/json' }));
     } catch (e) { /* ticho, telemetria nesmie rušiť stránku */ }
   }
 
