@@ -78,6 +78,17 @@ create policy web_vitals_admin_read on public.web_vitals
   for all to authenticated using (public.je_admin()) with check (public.je_admin());
 
 -- ---------- politiky storage ----------
+-- storage.buckets má RLS zapnuté a Postgres doň bez politiky nepustí nikoho.
+-- Supabase pri nahrávaní súboru bucket najprv overuje, takže bez tohto
+-- riadku padne každý upload z administrácie, hoci politiky na
+-- storage.objects nižšie sedia. Pri zakladaní bucketu cez dashboard sa
+-- politika pridá sama; my buckety zakladáme SQL insertom, preto ručne.
+-- Verejné čítanie fotiek to neovplyvňuje, cesta /storage/v1/object/public/
+-- RLS obchádza.
+drop policy if exists "buckety vidi admin" on storage.buckets;
+create policy "buckety vidi admin" on storage.buckets
+  for select to authenticated using (public.je_admin());
+
 drop policy if exists "parte-foto verejne citanie" on storage.objects;
 drop policy if exists "parte-foto admin citanie" on storage.objects;
 create policy "parte-foto admin citanie" on storage.objects
