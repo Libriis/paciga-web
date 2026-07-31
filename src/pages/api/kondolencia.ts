@@ -1,13 +1,14 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabase';
 import { sendEmail } from '../../lib/email';
+import { rateLimitOk } from '../../lib/ratelimit';
 
 export const prerender = false;
 
 const json = (body: object, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!supabase) return json({ error: 'Databáza nie je nakonfigurovaná.' }, 503);
 
   const body = await request.json().catch(() => null);
@@ -15,6 +16,13 @@ export const POST: APIRoute = async ({ request }) => {
 
   // honeypot — boti pole vyplnia, ľudia ho nevidia
   if (typeof body.web === 'string' && body.web.trim() !== '') return json({ ok: true });
+
+  // rate limit: max 5 kondolencií za hodinu z jednej IP
+  let ip = 'unknown';
+  try { ip = clientAddress; } catch { /* lokálny build bez adaptéra */ }
+  if (!(await rateLimitOk('kondolencia', ip, 5, 3600))) {
+    return json({ error: 'Priveľa požiadaviek. Skúste to prosím o chvíľu.' }, 429);
+  }
 
   const slug = typeof body.slug === 'string' ? body.slug : '';
   const meno = typeof body.meno === 'string' ? body.meno.trim() : '';

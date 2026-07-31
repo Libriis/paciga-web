@@ -32,8 +32,8 @@ const jsonld = JSON.stringify({
   datePublished: c.datumIso,
   image: new URL(c.foto, Astro.site ?? Astro.url).href,
   author: { '@type': 'Organization', name: 'Paciga' },
-  publisher: { '@type': 'Organization', name: 'Paciga', url: 'https://paciga.sk' },
-});
+  publisher: { '@type': 'Organization', name: 'Paciga', url: 'https://www.paciga.sk' },
+}).replace(/</g, '\\u003c');
 ---
 <Base title={title} description={description} active="aktuality"
   ogTitle={c.titulok} ogDescription={c.text} ogImage={c.foto}>

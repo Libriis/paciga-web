@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabase';
+import { rateLimitOk } from '../../lib/ratelimit';
 
 export const prerender = false;
 
@@ -21,6 +22,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   // 1 sviečka na IP a deň pre každé parte — hash IP sa nikde neukladá v čitateľnej podobe
   let ip = 'unknown';
   try { ip = clientAddress; } catch { /* lokálny build bez adaptéra */ }
+
+  // burst limit: max 30 pokusov za hodinu z jednej IP (proti enumerácii parte)
+  if (!(await rateLimitOk('sviecka', ip, 30, 3600))) {
+    return json({ error: 'Priveľa požiadaviek. Skúste to prosím o chvíľu.' }, 429);
+  }
+
   const ipHash = await sha256(`${ip}|${import.meta.env.SVIECKA_SALT ?? 'paciga-sviecka'}`);
 
   const { data, error } = await supabase.rpc('zapal_sviecku', { p_slug: slug, p_ip_hash: ipHash });
