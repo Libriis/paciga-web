@@ -175,3 +175,76 @@
    Editor článku ale potrebuje dva stĺpce vedľa seba, inak sa text
    v monospace láme po pár slovách. */
 .adm-main.siroky > * { max-width: 1320px; }
+
+/* ---- portrétny variant: fotka zosnulého v krúžku ----
+   Na parte sa fotka zobrazuje v krúžku vedľa mena, takže aj v administrácii
+   má náhľad ukazovať presne ten výrez, ktorý uvidí návštevník. */
+.fp-portret { max-width: 260px; }
+/* Obe podoby držia rovnakú výšku, inak zóna po vložení fotky poskočí. */
+.fp-portret .fp-zona { min-height: 152px; padding: 16px; }
+.fp-portret .fp-zona.ma-fotku {
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; background: var(--bg2);
+}
+.fp-portret .fp-nahlad {
+  width: 108px; height: 108px; max-height: none;
+  border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--line);
+}
+.fp-portret .fp-vyzva strong { font-size: 13.5px; }
+.fp-portret .fp-vyzva span { font-size: 12px; }
+.fp-portret .fp-popis { display: none; }
+.fp-portret .fp-zmazat { top: 8px; right: 8px; width: 26px; height: 26px; }
+.fp-popis-pod {
+  margin: 8px 0 0; font-size: 12px; color: var(--dim);
+  letter-spacing: normal; text-transform: none; text-align: center;
+}
+
+/* ---- zoznam parte a ďalších záznamov s fotkou v krúžku ---- */
+.obsah-riadok .kruh { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.obsah-riadok .kruh-prazdny {
+  display: flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+  background: var(--bg2); border: 1px solid var(--line);
+  font-size: 15px; font-weight: 650; color: var(--dim); letter-spacing: 0.02em;
+}
+
+/* ---- štítky stavu obsahu ---- */
+.stitok.skryte { color: #e8a0a0; border-color: rgba(232, 160, 160, 0.32); }
+.stitok.ceka { color: #ffd9a0; border-color: rgba(255, 217, 160, 0.32); }
+.stitok.hotovo { color: #b4e2c0; border-color: rgba(180, 226, 192, 0.32); }
+.stitok.tiche { color: var(--dim); border-color: var(--line); }
+
+/* ---- dropzone na dokumenty zákazky ---- */
+.fp-doklad { max-width: 100%; }
+.fp-doklad .fp-zona { min-height: 116px; }
+.fp-doklad .fp-nahlad { max-height: 190px; }
+
+/* ---- karta obsahu s citátom: kondolencie a dopyty ----
+   Odkaz od pozostalého je to hlavné, čo má redaktor prečítať, preto
+   dostáva vlastný blok s odsadením, nie ďalší riadok drobného textu. */
+.obsah-karta {
+  padding: 16px 18px; margin-bottom: 10px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  transition: border-color 0.18s ease, opacity 0.18s ease;
+}
+.obsah-karta:hover { border-color: var(--gold-soft); }
+.obsah-karta.je-vybavene { opacity: 0.6; }
+.obsah-karta.je-vybavene:hover { opacity: 1; }
+.obsah-karta-hlava {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+}
+.obsah-citat {
+  margin: 13px 0 0; padding: 2px 0 2px 15px;
+  border-left: 2px solid var(--line);
+  font-size: 14.5px; line-height: 1.7; color: rgb(var(--fg-rgb) / 0.8);
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.obsah-kontakt { color: var(--muted); border-bottom: 1px solid var(--line); }
+.obsah-kontakt:hover { color: var(--text); border-bottom-color: var(--gold-soft); }
+
+@media (max-width: 720px) {
+  .obsah-karta-hlava { flex-direction: column; gap: 12px; }
+  .obsah-karta-hlava .adm-actions { width: 100%; }
+}
