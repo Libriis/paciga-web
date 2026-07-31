@@ -9,7 +9,7 @@
   stránka spadne späť na obyčajný <img>.
 */
 import type { ImageMetadata } from 'astro';
-import { getImage } from 'astro:assets';
+
 
 const moduly = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/**/*.{jpg,jpeg,png,webp,avif}',
@@ -46,21 +46,13 @@ export const KVALITA_KARTA = 70;
 export const KVALITA_DETAIL = 80;
 
 /*
-  Poster videa sa nedá poslať cez <Image>, atribút poster berie iba URL.
-  Preto ho prepustíme obrázkovou službou ručne a vrátime hotovú cestu.
+  Poster videa cez obrázkovú službu NEPUSTÍŤ. Atribút poster berie iba URL
+  a getImage() v SSR stránke (prerender = false) vráti runtime cestu na
+  endpoint /_image. Web má output: 'static', takže sa ten endpoint
+  nenasadzuje a na produkcii vracia 404. V deve to pritom funguje, čo je
+  presne ten druh rozdielu, ktorý sa ľahko prehliadne.
 
-  Bez tohto ostával v markupe natvrdo '/assets/asset-03.jpg', čo po
-  presune fotiek do src/assets vracalo 404 a karta pobočky ostala bez
-  posteru. Karta má na mobile 325 px, pri DPR 3 teda ~975 px; 960 stačí.
+  Postery preto žijú ako hotové statické WebP v public/assets/poster-*.webp
+  (960 px, kvalita 70; karta má na mobile 325 px, pri DPR 3 teda ~975 px).
+  Prekresliť ich treba ručne, ak sa zmenia zdrojové fotky.
 */
-export async function posterVidea(src: string): Promise<string> {
-  const zdroj = lokalnyObrazok(src);
-  if (!zdroj) return src;
-  const { src: cesta } = await getImage({
-    src: zdroj,
-    width: 960,
-    format: 'webp',
-    quality: KVALITA_KARTA,
-  });
-  return cesta;
-}
