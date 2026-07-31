@@ -16,11 +16,12 @@
 </head>
 <body>
 <div id="login-wrap">
-  <div id="demo-banner" class="adm-demo hidden"><strong>DEMO režim.</strong> Prihlásiš sa ľubovoľným e-mailom a heslom.</div>
+  <div id="demo-banner" class="adm-demo hidden"><strong>DEMO režim.</strong> Prihlásiš sa ľubovoľným menom a heslom.</div>
   <h1 style="font-size:clamp(26px,4vw,36px);font-weight:680;margin-bottom:26px">Administrácia<br>Paciga</h1>
   <form id="login-form" class="adm-form">
-    <label>E-mail
-      <input type="email" name="email" required autocomplete="username">
+    <label>Prihlasovacie meno
+      <input type="text" name="login" required autocomplete="username"
+        autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="napr. paciga">
     </label>
     <label>Heslo
       <input type="password" name="password" required autocomplete="current-password">
@@ -42,6 +43,20 @@ sb.auth.getSession().then(({ data: { session } }) => {
   if (session) location.href = next;
 });
 
+/* Supabase Auth prihlasuje e-mailom alebo telefónom, prihlasovacie meno
+   nepozná. Riešime to bez vlastnej tabuľky a bez verejného vyhľadávania:
+   krátke meno doplníme na firemnú adresu. Účet „paciga" má teda v Supabase
+   e-mail paciga@paciga.sk.
+
+   Kto zadá celú adresu (obsahuje @), pošle sa tak, ako ju napísal. Vďaka
+   tomu fungujú aj správcovské účty mimo firemnej domény. */
+const DOMENA = 'paciga.sk';
+
+const naEmail = (vstup) => {
+  const v = vstup.trim().toLowerCase();
+  return v.includes('@') ? v : `${v}@${DOMENA}`;
+};
+
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.target;
@@ -49,11 +64,12 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   status.textContent = 'Prihlasujem…';
   status.classList.remove('err');
   const { error } = await sb.auth.signInWithPassword({
-    email: f.elements.email.value,
+    email: naEmail(f.elements.login.value),
     password: f.elements.password.value,
   });
   if (error) {
-    status.textContent = 'Nesprávny e-mail alebo heslo.';
+    // Zámerne nehovoríme, ktorá z dvoch hodnôt je zlá.
+    status.textContent = 'Nesprávne prihlasovacie meno alebo heslo.';
     status.classList.add('err');
   } else {
     location.href = next;
