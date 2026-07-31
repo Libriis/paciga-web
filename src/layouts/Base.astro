@@ -3,10 +3,8 @@
 // tw.css = globálny Tailwind v4 (utility + Paciga tokeny) — nové veci píšeme
 // utility-first, legacy classy v public/css/styles.css ostávajú v platnosti.
 import '../styles/tw.css';
-import { Image, getImage } from 'astro:assets';
 import { GOOGLE_PROFIL } from '../data/recenzie';
 import { lokalnyObrazok } from '../lib/images';
-import logo from '../assets/asset-02.png';
 
 interface Props {
   title: string;
@@ -30,13 +28,16 @@ const {
   journey = false,
 } = Astro.props;
 
-/* OG obrázok: fotky sa presunuli do src/assets, takže pôvodná verejná cesta
-   už nevedie na súbor. Lokálne cesty preto prepustíme cez obrázkovú službu
-   a rovno ich zrežeme na 1200 px JPEG, čo je formát, ktorý sociálne siete
-   čakajú. Externé URL (Supabase foto v parte) ostávajú tak, ako prišli. */
-const ogZdroj = lokalnyObrazok(ogImage);
-const ogCesta = ogZdroj
-  ? (await getImage({ src: ogZdroj, width: 1200, format: 'jpg' })).src
+/* OG obrázok: fotky žijú v src/assets, takže pôvodná verejná cesta už na
+   súbor nevedie. Cez getImage() to ale ísť nesmie. Base.astro obaľuje aj
+   stránky s prerender = false a tam getImage() vráti runtime cestu
+   /_image?href=..., ktorá sa pri output: 'static' nenasadzuje. Facebook by
+   si teda pri zdieľaní parte vypýtal 404 a náhľad by ostal prázdny.
+   Náhľady sú preto hotové súbory v public/og/, ktoré generuje
+   scripts/staticke-obrazky.mjs. Externé URL (Supabase foto v parte)
+   ostávajú tak, ako prišli. */
+const ogCesta = lokalnyObrazok(ogImage)
+  ? '/og/' + ogImage!.replace('/assets/', '').replace(/\//g, '-').replace(/\.[^.]+$/, '.jpg')
   : ogImage;
 const ogImageAbs = new URL(ogCesta, Astro.site ?? Astro.url).href;
 
@@ -83,7 +84,19 @@ const NAV = [
 <!-- fixed nav -->
 <header id="site-nav">
   <div class="container nav-inner">
-    <a href="/" class="nav-logo"><Image src={logo} widths={[130, 260]} sizes="130px" alt="Paciga, pohrebné a kamenárske služby" loading="eager" /></a>
+    {/* Logo ide zámerne cez hotový súbor v public/, nie cez <Image>.
+        Base.astro obaľuje aj stránky s prerender = false (index,
+        opustili-nas, parte/[slug]) a tam <Image> vracia runtime cestu na
+        obrázkovú službu, ktorá sa pri output: 'static' nenasadzuje.
+        Logo preto na homepage vracalo 404. Rovnaký dôvod ako pri
+        posteroch kariet pobočiek (commit fc64033).
+        Varianty prekresli cez scripts/staticke-obrazky.mjs.
+        Zložené zátvorky, nie HTML komentár: ten by šiel do každej stránky. */}
+    <a href="/" class="nav-logo"><img
+      src="/assets/logo-130.webp"
+      srcset="/assets/logo-130.webp 130w, /assets/logo-260.webp 260w"
+      sizes="130px" width="130" height="46"
+      alt="Paciga, pohrebné a kamenárske služby" loading="eager" decoding="async" /></a>
     <button class="nav-burger" id="nav-burger" aria-label="Otvoriť menu" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
@@ -109,7 +122,11 @@ const NAV = [
   <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <Image src={logo} widths={[110, 220]} sizes="110px" alt="Paciga, pohrebné a kamenárske služby" loading="lazy" />
+        <img
+          src="/assets/logo-110.webp"
+          srcset="/assets/logo-110.webp 110w, /assets/logo-220.webp 220w"
+          sizes="110px" width="110" height="39"
+          alt="Paciga, pohrebné a kamenárske služby" loading="lazy" decoding="async" />
         <p>Pohrebné a kamenárske služby Paciga. Rodinná firma, ktorá vás sprevádza s úctou od roku 2018.</p>
         <div class="footer-social">
           <a href="https://www.facebook.com/pakspaciga/" target="_blank" rel="noopener">Facebook</a>

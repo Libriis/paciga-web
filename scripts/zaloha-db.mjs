@@ -200,10 +200,13 @@ for (const b of BUCKETY) {
   }
 }
 
-for (const s of ['schema.sql', 'schema-crm.sql', 'schema-vitals.sql', 'schema-admin.sql']) {
+// Číselný prefix nie je ozdoba. Schémy sa musia spúšťať v tomto poradí
+// a schema-admin.sql posledný, inak sa vrátia slabé admin politiky.
+const SCHEMY = ['schema.sql', 'schema-crm.sql', 'schema-vitals.sql', 'schema-admin.sql'];
+SCHEMY.forEach((s, i) => {
   const z = join(KOREN, 'supabase', s);
-  if (existsSync(z)) writeFileSync(join(kam, s), readFileSync(z));
-}
+  if (existsSync(z)) writeFileSync(join(kam, `0${i + 1}-${s}`), readFileSync(z));
+});
 
 console.log(`\nHotovo. ${zlyhalo ? `${zlyhalo} chyb, zalohu preverte.` : 'Bez chyb.'}`);
 if (!auth.service) {
