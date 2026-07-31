@@ -2,7 +2,7 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import FotoPole from '../../components/admin/FotoPole.tsx';
 ---
-<AdminLayout title="Web a parte" active="web">
+<AdminLayout title="Web a parte">
 
   <div class="adm-tabs" style="display:flex;gap:8px;border-bottom:1px solid var(--line);margin-bottom:30px;flex-wrap:wrap">
     <button type="button" class="adm-tab on" data-tab="parte" style="background:none;border:0;cursor:pointer;font:inherit;font-size:15px;font-weight:600;color:var(--muted);padding:12px 18px;border-bottom:2px solid transparent">Parte</button>
@@ -98,7 +98,7 @@ import { getClient, requireAuth, esc, fmtD, fmtDT, zmensiFotku, vytvorZakazku, n
 const sb = getClient();
 const $ = (sel) => document.querySelector(sel);
 
-await requireAuth();
+await requireAuth('web');
 
 /* prepínanie tabov (aj priamym odkazom /admin/web#dopyty) */
 const tabs = document.querySelectorAll('.adm-tab');

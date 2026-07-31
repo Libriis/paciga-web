@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
-<AdminLayout title="Dashboard" active="dashboard">
+<AdminLayout title="Dashboard">
 
   <div class="adm-head">
     <h1 id="pozdrav" style="margin:0">Dashboard</h1>
@@ -61,7 +61,7 @@ import { getClient, requireAuth, esc, fmtD, fmtEUR, STAVY, AKTIVNE_STAVY, POBOCK
 const sb = getClient();
 const $ = (sel) => document.querySelector(sel);
 
-await requireAuth();
+await requireAuth('dashboard');
 
 const [zRes, dRes, kRes] = await Promise.all([
   sb.from('zakazky').select('*'),

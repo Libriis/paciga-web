@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
-<AdminLayout title="Štatistiky" active="statistiky">
+<AdminLayout title="Štatistiky">
 
   <h1>Štatistiky a vyhodnotenia</h1>
 
@@ -102,7 +102,7 @@ import { getClient, requireAuth, esc, fmtD, fmtEUR, POBOCKY, POBOCKY_FARBY, MESI
 const sb = getClient();
 const $ = (sel) => document.querySelector(sel);
 
-await requireAuth();
+await requireAuth('statistiky');
 
 const [zRes, dRes, kRes, pRes] = await Promise.all([
   sb.from('zakazky').select('*'),

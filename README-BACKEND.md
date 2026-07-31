@@ -50,8 +50,9 @@ Bez nastavených env premenných web funguje ďalej — parte sa berú zo
    `supabase/schema-vitals.sql` (Core Web Vitals z terénu),
    `supabase/schema-admin.sql` (admin identita — prepisuje admin politiky
    z predchádzajúcich troch, preto musí ísť po nich),
-   `supabase/schema-clanky.sql` (aktuality; potrebuje `je_admin()`
-   zo štvorky, takže ide posledná).
+   `supabase/schema-clanky.sql` (aktuality; potrebuje `je_admin()` zo štvorky),
+   `supabase/schema-pristupy.sql` (právomoci používateľov — **posledná**,
+   prepisuje politiky všetkých predchádzajúcich).
 3. **Authentication → Users → Add user** → e-mail + heslo pre klienta.
    Adresa sa musí zhodovať s riadkom v tabuľke `admini`, inak sa prihlásenie
    podarí, ale admin neuvidí nič. Predvyplnená je `paciga@paciga.sk`.
@@ -105,9 +106,16 @@ npm run build          # produkčný build
   verejnosť číta iba publikované parte a schválené kondolencie, vkladať smie
   iba neschválené kondolencie a dopyty.
 - Admin operácie vyžadujú prihláseného používateľa, ktorý je **navyše
-  uvedený v tabuľke `admini`**. Samotné prihlásenie nestačí. Kontrolu robí
-  funkcia `public.je_admin()`, na ktorej stoja všetky admin politiky aj
-  prístup k obom storage bucketom. Zoznam adminov sa cez API nedá prečítať.
+  uvedený v tabuľke `admini`**. Samotné prihlásenie nestačí.
+- Každý používateľ má v `admini.pristupy` zoznam sekcií, ku ktorým sa
+  dostane. Vynucuje ich `public.ma_pristup()` priamo v RLS na tabuľkách,
+  nie skrytím položky v menu. Kto pozná adresu, otvorí ju priamo, ale
+  z databázy nedostane ani riadok. Menu z tých istých hodnôt len vychádza.
+- Zoznam používateľov číta a mení iba **hlavný správca**
+  (`admini.hlavny`), stráži to `public.je_hlavny_admin()`. Bežný redaktor
+  si právomoci pridať nevie a zoznam ostatných ani neuvidí. Vlastné
+  prístupy si prečíta funkciou `public.moje_pristupy()`, ktorá vracia
+  výhradne jeho riadok.
 - Sviečky: unikát (parte, hash IP, deň) — IP sa ukladá len ako solený hash.
 - Formuláre majú honeypot pole proti botom; kondolencie sa zverejňujú až po
   schválení v admine.
@@ -128,7 +136,8 @@ supabase/schema.sql        web: parte, kondolencie, dopyty, sviečky + seed
 supabase/schema-crm.sql    CRM: zákazky, kontakty, úkony, dokumenty
 supabase/schema-vitals.sql Core Web Vitals z terénu + prehľad percentilov
 supabase/schema-admin.sql  admin identita — spúšťať po prvých troch
-supabase/schema-clanky.sql aktuality ako redakčný obsah — spúšťať poslednú
+supabase/schema-clanky.sql aktuality ako redakčný obsah
+supabase/schema-pristupy.sql právomoci používateľov — spúšťať poslednú
 ```
 
 ## Redakčný systém
@@ -151,3 +160,16 @@ je na ich jednorazový presun do databázy tlačidlo.
 
 Staré adresy `*.html` (zdieľané na Facebooku) presmeruje middleware 301
 na čisté URL (`/parte/meno-priezvisko`).
+
+## Právomoci používateľov
+
+Hlavný správca nastavuje v `/admin/pouzivatelia`, kto ktorú sekciu vidí:
+dashboard, zákazky, kontakty, štatistiky, web a parte, aktuality, rýchlosť webu.
+
+Samotné účty sa zakladajú v Supabase (Authentication → Users → Add user,
+zapnúť Auto Confirm User), lebo vytvorenie používateľa vyžaduje servisný
+kľúč a ten do prehliadača nepatrí. Prihlasovacie meno `peter` znamená
+adresu `peter@paciga.sk`; riadok v `admini` a účet v Supabase sa musia
+zhodovať, inak sa človek prihlási, ale neuvidí nič.
+
+Kto nemá pridelenú ani jednu sekciu, skončí na `/admin/bez-pristupu`.
