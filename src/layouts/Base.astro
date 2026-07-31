@@ -3,7 +3,10 @@
 // tw.css = globálny Tailwind v4 (utility + Paciga tokeny) — nové veci píšeme
 // utility-first, legacy classy v public/css/styles.css ostávajú v platnosti.
 import '../styles/tw.css';
+import { Image, getImage } from 'astro:assets';
 import { GOOGLE_PROFIL } from '../data/recenzie';
+import { lokalnyObrazok } from '../lib/images';
+import logo from '../assets/asset-02.png';
 
 interface Props {
   title: string;
@@ -27,7 +30,15 @@ const {
   journey = false,
 } = Astro.props;
 
-const ogImageAbs = new URL(ogImage, Astro.site ?? Astro.url).href;
+/* OG obrázok: fotky sa presunuli do src/assets, takže pôvodná verejná cesta
+   už nevedie na súbor. Lokálne cesty preto prepustíme cez obrázkovú službu
+   a rovno ich zrežeme na 1200 px JPEG, čo je formát, ktorý sociálne siete
+   čakajú. Externé URL (Supabase foto v parte) ostávajú tak, ako prišli. */
+const ogZdroj = lokalnyObrazok(ogImage);
+const ogCesta = ogZdroj
+  ? (await getImage({ src: ogZdroj, width: 1200, format: 'jpg' })).src
+  : ogImage;
+const ogImageAbs = new URL(ogCesta, Astro.site ?? Astro.url).href;
 
 const NAV = [
   { key: 'domov', href: '/', label: 'Domov' },
@@ -72,7 +83,7 @@ const NAV = [
 <!-- fixed nav -->
 <header id="site-nav">
   <div class="container nav-inner">
-    <a href="/" class="nav-logo"><img src="/assets/asset-02.png" alt="Paciga, pohrebné a kamenárske služby"></a>
+    <a href="/" class="nav-logo"><Image src={logo} widths={[130, 260]} sizes="130px" alt="Paciga, pohrebné a kamenárske služby" loading="eager" /></a>
     <button class="nav-burger" id="nav-burger" aria-label="Otvoriť menu" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
@@ -98,7 +109,7 @@ const NAV = [
   <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <img src="/assets/asset-02.png" alt="Paciga, pohrebné a kamenárske služby">
+        <Image src={logo} widths={[110, 220]} sizes="110px" alt="Paciga, pohrebné a kamenárske služby" loading="lazy" />
         <p>Pohrebné a kamenárske služby Paciga. Rodinná firma, ktorá vás sprevádza s úctou od roku 2018.</p>
         <div class="footer-social">
           <a href="https://www.facebook.com/pakspaciga/" target="_blank" rel="noopener">Facebook</a>
@@ -151,6 +162,11 @@ const NAV = [
 <script is:inline src="/assets/vendor/lenis.min.js"></script>
 <script is:inline src="/js/main.js"></script>
 {journey && <script is:inline src="/js/journey.js"></script>}
+{/* Core Web Vitals z terénu. defer, aby nesúperili o pásmo s ničím
+    dôležitým; web-vitals číta buffered záznamy, takže mu neskoré
+    pripojenie LCP ani FCP neujde. Poradie drží defer. */}
+<script is:inline defer src="/assets/vendor/web-vitals.js"></script>
+<script is:inline defer src="/js/vitals.js"></script>
 <slot name="scripts" />
 </body>
 </html>

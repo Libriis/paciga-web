@@ -1,5 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { SIRKY_HERO, KVALITA_POZADIE } from '../lib/images';
+import cintorin from '../assets/cintorin.jpg';
 import Faq from '../components/Faq.astro';
 import type { FaqItem } from '../components/Faq.astro';
 
@@ -38,7 +41,7 @@ const ogDescription = "Vytesané navždy. Pomník uvidíte v 3D skôr, ako sa ka
   <!-- ============ HLAVIČKA: newsroom band s fotkou ============ -->
   <section class="news-hero has-photo">
     <div class="nh-media" aria-hidden="true">
-      <img src="/assets/cintorin.jpg" alt="" fetchpriority="high" decoding="async">
+      <Image src={cintorin} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="eager" fetchpriority="high" decoding="async" />
     </div>
     <div class="container news-hero-inner">
       <div>

@@ -1,5 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { SIRKY_HERO, SIRKY_KARTA, KVALITA_POZADIE, KVALITA_KARTA } from '../lib/images';
+import tim from '../assets/o-nas-tim.jpg';
+import kron2016 from '../assets/kron-2016.jpg';
+import kron2018 from '../assets/kron-2018.jpg';
+import kron3000 from '../assets/kron-3000.jpg';
+import kronDnes from '../assets/kron-dnes.jpg';
+import ludia from '../assets/asset-05.jpg';
+import fleetStill from '../assets/fleet-still.jpg';
 
 const title = "O nás | Paciga, pohrebné a kamenárske služby";
 const description = "Rodinná pohrebná a kamenárska služba Paciga. Od roku 2018 sprevádzame rodiny v Poprade, Spišskej Belej a Liptovskom Mikuláši. Viac než 3 000 vybavených pohrebov.";
@@ -19,7 +28,7 @@ const nosici = [
   <!-- ============ HLAVIČKA: newsroom band s fotkou ============ -->
   <section class="news-hero has-photo">
     <div class="nh-media" aria-hidden="true">
-      <img src="/assets/o-nas-tim.jpg" alt="" fetchpriority="high" decoding="async">
+      <Image src={tim} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="eager" fetchpriority="high" decoding="async" />
     </div>
     <div class="container news-hero-inner">
       <div>
@@ -90,7 +99,7 @@ const nosici = [
             <p>Na výstave Slovak Funeral sme predstavili vlastnú technológiu prenosného chladenia. Ako prví v regióne.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <img class="kron-photo" src="/assets/kron-2016.jpg" alt="Stany Paciga s technikou pri príprave hrobového miesta" loading="lazy" decoding="async">
+          <Image class="kron-photo" src={kron2016} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Stany Paciga s technikou pri príprave hrobového miesta" loading="lazy" decoding="async" />
         </div>
 
         <div class="kron-item kron-flip" data-reveal>
@@ -100,7 +109,7 @@ const nosici = [
             <p>24. mája 2018 sme v Spišskej Belej nadviazali na spoločnosť Archa Belá. Sme rodinná firma a od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <img class="kron-photo" src="/assets/kron-2018.jpg" alt="Nosiči Paciga s rakvou pri kaplnke" loading="lazy" decoding="async">
+          <Image class="kron-photo" src={kron2018} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Nosiči Paciga s rakvou pri kaplnke" loading="lazy" decoding="async" />
         </div>
 
         <div class="kron-item" data-reveal>
@@ -110,7 +119,7 @@ const nosici = [
             <p>Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <img class="kron-photo" src="/assets/kron-3000.jpg" alt="Smútočný obrad pod stanom Paciga" loading="lazy" decoding="async">
+          <Image class="kron-photo" src={kron3000} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Smútočný obrad pod stanom Paciga" loading="lazy" decoding="async" />
         </div>
 
         <div class="kron-item kron-flip kron-now" data-reveal>
@@ -120,7 +129,7 @@ const nosici = [
             <p>Poprad, Spišská Belá a Liptovský Mikuláš. Sme pri vás každý deň, v ktorúkoľvek hodinu. Čestne a na vysokej profesionálnej úrovni.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <img class="kron-photo" src="/assets/kron-dnes.jpg" alt="Stan Paciga na cintoríne pod zasneženými Tatrami" loading="lazy" decoding="async">
+          <Image class="kron-photo" src={kronDnes} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Stan Paciga na cintoríne pod zasneženými Tatrami" loading="lazy" decoding="async" />
         </div>
       </div>
     </div>
@@ -128,7 +137,7 @@ const nosici = [
 
   <!-- ============ FOTOPÁS: ĽUDIA ============ -->
   <div class="album-band album-band-right" id="ludia" data-parallax>
-    <span><img src="/assets/asset-05.jpg" alt="Dvaja členovia tímu Paciga v rovnošatách pri pohrebnej limuzíne pod Tatrami" loading="lazy" decoding="async"></span>
+    <span><Image src={ludia} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="Dvaja členovia tímu Paciga v rovnošatách pri pohrebnej limuzíne pod Tatrami" loading="lazy" decoding="async" /></span>
     <div class="album-shade" aria-hidden="true"></div>
     <div class="container album-caption">
       <span class="micro-label" data-reveal>Ľudia</span>
@@ -268,7 +277,7 @@ const nosici = [
   <!-- ============ FLOTILA ============ -->
   <section class="fleetband" id="vozidla">
     <div class="fleetband-media" data-parallax aria-hidden="true">
-      <span><img src="/assets/fleet-still.jpg" alt="" loading="lazy" decoding="async"></span>
+      <span><Image src={fleetStill} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="lazy" decoding="async" /></span>
       <div class="fleetband-shade"></div>
     </div>
     <div class="container fleetband-content">

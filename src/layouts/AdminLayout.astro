@@ -1,6 +1,9 @@
 ---
 // Spoločný obal admin/CRM stránok: sidebar navigácia + user box + demo banner.
 // Autentifikáciu rieši skript každej stránky cez requireAuth() z admin-core.
+import { Image } from 'astro:assets';
+import logo from '../assets/asset-02.png';
+
 interface Props {
   title: string;
   active?: string;
@@ -31,7 +34,7 @@ const NAV = [
 <body>
 <div class="adm-shell">
   <aside class="adm-side">
-    <a class="logo" href="/admin"><img src="/assets/asset-02.png" alt="Paciga"></a>
+    <a class="logo" href="/admin"><Image src={logo} widths={[130, 260]} sizes="130px" alt="Paciga" loading="eager" /></a>
     <a class="adm-cta" href="/admin/zakazky?nova=1">+ Nová zákazka</a>
     <nav class="adm-nav">
       {NAV.map((item) => (

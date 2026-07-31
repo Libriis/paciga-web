@@ -120,7 +120,7 @@ function LogoItem({
       <span className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-[13px] font-semibold tracking-wide text-soft transition-colors duration-300 group-hover:border-gold group-hover:text-gold sm:h-12 sm:w-12">
         {initials(partner.name)}
       </span>
-      <span className="select-none whitespace-nowrap text-[11px] font-medium tracking-wide text-soft transition-colors duration-300 group-hover:text-snow sm:text-[11.5px]">
+      <span className="select-none whitespace-nowrap text-[12.5px] font-medium tracking-wide text-soft transition-colors duration-300 group-hover:text-snow sm:text-[11.5px]">
         {partner.name}
       </span>
     </motion.a>

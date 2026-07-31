@@ -1,0 +1,51 @@
+name: Lighthouse
+
+# Regresna poistka na vykon. Fontova diera (dva subsety, preloadnuty len
+# jeden) zila mesiace a nasla sa az rucnou forenzikou. Toto ma zabranit
+# tomu, aby sa taka vec vratila neviditelne.
+#
+# Meria sa produkcia, nie preview. Preview deploye su za Vercel SSO a
+# potrebovali by VERCEL_AUTOMATION_BYPASS_SECRET. Ako to rozsirit, pozri
+# poznamku na konci suboru.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+      - 'src/**'
+      - 'astro.config.mjs'
+      - 'package.json'
+  workflow_dispatch:
+  schedule:
+    # pondelok 6:00 UTC, zachyti aj regresie z obsahu, nielen z kodu
+    - cron: '0 6 * * 1'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Produkcia sa nasadzuje z main. Po pushi chvilu trva, kym je deploy
+      # zivy, inak by sme merali predchadzajucu verziu.
+      - name: Pockat na nasadenie
+        if: github.event_name == 'push'
+        run: sleep 90
+
+      - name: Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+# Rozsirenie na preview deploye:
+#   1. Vo Vercel projekte zapni Protection Bypass for Automation a skopiruj
+#      vygenerovany secret.
+#   2. V GitHube ho pridaj ako repository secret VERCEL_BYPASS.
+#   3. Sem doplni trigger `pull_request` a do lighthouserc.json v sekcii
+#      collect nastav:
+#        "settings": { "extraHeaders": "{\"x-vercel-protection-bypass\":\"...\"}" }
+#      s hodnotou zo secretu.
+# Potom bude rozpocet blokovat uz samotny PR, nie az deploy na produkciu.

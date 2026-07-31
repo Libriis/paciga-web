@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Foto from '../../components/Foto.astro';
 import Zdielanie from '../../components/Zdielanie.astro';
 import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl, dnesnyDatum } from '../../lib/parte';
 
@@ -62,7 +63,7 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
   <aside class="phero" data-name={p.meno} data-slug={p.slug}>
     <div class="phero-media">
       {p.foto_url
-        ? <img src={p.foto_url} alt={p.meno} decoding="async">
+        ? <Foto src={p.foto_url} alt={p.meno} widths={[480, 768, 1080]} sizes="(max-width: 900px) 100vw, 44vw" loading="eager" fetchpriority="high" />
         : <div class="phero-initials" aria-hidden="true">{inicialky(p.meno)}</div>}
       <!-- svieca leží na fotke, na desktope vyššie, aby pod ňou bolo zdieľanie -->
       <button type="button" class="phero-candle" id="phero-light" aria-pressed="false">

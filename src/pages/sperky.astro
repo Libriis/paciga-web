@@ -8,7 +8,11 @@
 */
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
+import { getImage } from 'astro:assets';
+import { lokalnyObrazok, SIRKY_MEDAILON, KVALITA_DETAIL } from '../lib/images';
 import type { FaqItem } from '../components/Faq.astro';
+
+const SIZES_SPERK = '(max-width: 900px) 92vw, 46vw';
 
 const otazky: FaqItem[] = [
   {
@@ -59,6 +63,31 @@ const varianty = [
   { id: 'naramok-kruh-cierna', img: '/assets/sperky/nr-kruh-cierna.jpg', popis: 'Náramok s čiernym medailónom' },
 ];
 
+/* Fotky konfigurátora si predpočítame ručne, nie cez <Image>.
+   Všetkých šestnásť leží na sebe v jednej scéne, takže sú technicky vo
+   viewporte a loading="lazy" ich nezdrží — prehliadač stiahne celú sadu.
+   Na mobile to bolo skoro pol megabajtu za fotky, z ktorých vidno jednu.
+   Preto nesie zdroj len práve zobrazená; zvyšok čaká v data- atribútoch
+   a doplní ho skript pri prepnutí (a v pokoji po načítaní stránky). */
+const fotky = await Promise.all(
+  varianty.map(async (v) => {
+    const o = await getImage({
+      src: lokalnyObrazok(v.img)!,
+      widths: SIRKY_MEDAILON,
+      sizes: SIZES_SPERK,
+      quality: KVALITA_DETAIL,
+      format: 'webp',
+    });
+    return {
+      ...v,
+      src: o.src,
+      srcset: o.srcSet.attribute,
+      sirka: o.attributes.width,
+      vyska: o.attributes.height,
+    };
+  }),
+);
+
 const title = "Spomienkové šperky | Paciga, pohrebné a kamenárske služby";
 const description = "Spomienkové šperky s odtlačkom prsta vášho blízkeho. Retiazky a náramky zo zlata, striebra a ružového zlata, gravírovanie podľa želania. Dostupné na každej pobočke Paciga.";
 const ogTitle = "Spomienkové šperky | Paciga";
@@ -103,8 +132,21 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
 
         <!-- scéna — fotky sa krížovo prelínajú -->
         <div class="v3-stage" data-reveal>
-          {varianty.map((v, i) => (
-            <img src={v.img} alt={v.popis} class:list={['v3-photo', { 'is-on': i === 0 }]} data-variant={v.id} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+          {fotky.map((v, i) => (
+            <img
+              class:list={['v3-photo', { 'is-on': i === 0 }]}
+              src={i === 0 ? v.src : undefined}
+              srcset={i === 0 ? v.srcset : undefined}
+              data-src={i === 0 ? undefined : v.src}
+              data-srcset={i === 0 ? undefined : v.srcset}
+              sizes={SIZES_SPERK}
+              width={v.sirka}
+              height={v.vyska}
+              alt={v.popis}
+              data-variant={v.id}
+              fetchpriority={i === 0 ? 'high' : undefined}
+              decoding="async"
+            />
           ))}
           <div class="v3-stage-caption">
             <span id="v3-popis">Zlaté srdce na retiazke</span>
@@ -236,7 +278,9 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
   }
   .sh-cta:hover { background-size: 100% 1px; color: var(--fg-strong); }
   .sh-contact { display: flex; flex-wrap: wrap; gap: 14px 36px; }
-  .sh-ci { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 0.04em; color: var(--dim); transition: color 0.3s ease; }
+  .sh-ci { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; letter-spacing: 0.04em; color: var(--dim); transition: color 0.3s ease; }
+  /* telefón a adresa v hlavičke: plná dotyková výška na mobile */
+  @media (max-width: 900px) { a.sh-ci { min-height: 44px; } }
   .sh-ci svg { width: 18px; height: 18px; flex: none; }
   a.sh-ci:hover { color: var(--text); }
   .sh-photo {
@@ -244,7 +288,7 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
     /* kolekcia-hero má po stranách dotiahnuté pozadie, aby sa všetkých sedem
        kúskov zmestilo do panela aj po diagonálnom reze (rozmery panela
        ostávajú nezmenené) */
-    background: #f9f9f9 url('/assets/sperky/kolekcia-hero.jpg') center / cover no-repeat;
+    background: #f9f9f9 url('../assets/sperky/kolekcia-hero.jpg') center / cover no-repeat;
   }
   @media (min-width: 900px) {
     .sperk-hero { flex-direction: row; }
@@ -343,10 +387,20 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
     var fotky = document.querySelectorAll('.v3-photo');
     var popis = document.getElementById('v3-popis');
 
+    /* Doplní zdroj fotke, ktorá ho ešte nemá (viď komentár pri poli fotky). */
+    function nacitaj(f) {
+      if (!f.dataset.src) return;
+      f.srcset = f.dataset.srcset || '';
+      f.src = f.dataset.src;
+      delete f.dataset.src;
+      delete f.dataset.srcset;
+    }
+
     function render() {
       var id = stav.typ + '-' + stav.tvar + '-' + stav.farba;
       fotky.forEach(function (f) {
         var on = f.getAttribute('data-variant') === id;
+        if (on) nacitaj(f);
         f.classList.toggle('is-on', on);
         if (on) popis.textContent = f.getAttribute('alt');
       });
@@ -366,5 +420,21 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
       });
     });
     render();
+
+    /* Zvyšok sady dotiahneme až pri prvom dotyku ovládania. Kto stránku len
+       prečíta, nezaplatí za pätnásť fotiek, ktoré neuvidí — na mobilných
+       dátach je to skoro pol megabajtu. Kto konfigurátor otvorí, má ďalšie
+       prepnutia okamžité. */
+    var zvysokIde = false;
+    function dotiahniZvysok() {
+      if (zvysokIde) return;
+      zvysokIde = true;
+      fotky.forEach(nacitaj);
+    }
+    document.querySelectorAll('.v3-seg').forEach(function (seg) {
+      ['pointerdown', 'focusin'].forEach(function (ev) {
+        seg.addEventListener(ev, dotiahniZvysok, { once: true, passive: true });
+      });
+    });
   })();
 </script>
