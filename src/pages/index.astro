@@ -2,15 +2,13 @@
 import Base from '../layouts/Base.astro';
 import Ui21 from '../components/Ui21.astro';
 import LogoCloudSwap from '../components/ui/logo-clouds';
-import { Image } from 'astro:assets';
 import Foto from '../components/Foto.astro';
 import { getParteList, inicialky, fmtKratky } from '../lib/parte';
 import { RECENZIE, VYBER, GOOGLE_PROFIL, GOOGLE_HODNOTENIE } from '../data/recenzie';
-import { lokalnyObrazok, SIRKY_HERO, SIRKY_KARTA, KVALITA_POZADIE, KVALITA_KARTA } from '../lib/images';
-import journeyPoster from '../assets/journey-poster.jpg';
-import svcObrad from '../assets/svc-obrad.jpg';
-import svcStarostlivost from '../assets/svc-starostlivost.jpg';
-import svcKamenarstvo from '../assets/svc-kamenarstvo.jpg';
+// Fotky tejto stránky sa neimportujú cez astro:assets. Stránka má
+// prerender = false, takže by z nich vznikli runtime cesty na obrázkovú
+// službu a tá pri output: 'static' neexistuje. Hotové varianty sú
+// v public/assets/ssr, generuje ich scripts/staticke-obrazky.mjs.
 
 export const prerender = false;
 
@@ -52,7 +50,12 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
   <!-- ============ POSLEDNÁ CESTA (scrollovaná filmová jazda — frame scrub) ============ -->
   <section class="journey" id="hero">
     <div class="journey-pin" id="journey-pin">
-      <Image class="journey-poster" id="journey-poster" src={journeyPoster} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="Nosiči Paciga v rovnošatách nesú rakvu s kvetinovou výzdobou" loading="eager" fetchpriority="high" decoding="async" />
+      {/* Hotové súbory, nie <Image>. Táto stránka má prerender = false kvôli
+          parte z databázy, takže <Image> na nej vracia runtime cestu na
+          obrázkovú službu, ktorá sa pri output: 'static' nenasadzuje, a poster
+          vracal 404. Šírky aj kvalita sedia s SIRKY_HERO a KVALITA_POZADIE.
+          Prekresli cez scripts/staticke-obrazky.mjs. */}
+      <img class="journey-poster" id="journey-poster" src="/assets/ssr/journey-poster-1920.webp" srcset="/assets/ssr/journey-poster-480.webp 480w, /assets/ssr/journey-poster-768.webp 768w, /assets/ssr/journey-poster-1080.webp 1080w, /assets/ssr/journey-poster-1440.webp 1440w, /assets/ssr/journey-poster-1920.webp 1920w" sizes="100vw" width="1920" height="1080" alt="Nosiči Paciga v rovnošatách nesú rakvu s kvetinovou výzdobou" loading="eager" fetchpriority="high" decoding="async" />
       <canvas class="journey-canvas" id="journey-canvas" aria-hidden="true" data-journey="a"
         data-frames="965" data-path="assets/journey/f-&#123;i&#125;.webp"
         data-frames-m="482" data-path-m="assets/journey-m/f-&#123;i&#125;.webp"></canvas>
@@ -115,7 +118,7 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
 
     <!-- reduced-motion / no-JS: kľúčové zábery pod sebou -->
     <div class="journey-fallback" aria-hidden="true">
-      <Image src={journeyPoster} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="lazy" />
+      <img src="/assets/ssr/journey-poster-1920.webp" srcset="/assets/ssr/journey-poster-480.webp 480w, /assets/ssr/journey-poster-768.webp 768w, /assets/ssr/journey-poster-1080.webp 1080w, /assets/ssr/journey-poster-1440.webp 1440w, /assets/ssr/journey-poster-1920.webp 1920w" sizes="100vw" width="1920" height="1080" alt="" loading="lazy" decoding="async" />
     </div>
   </section>
 
@@ -195,7 +198,7 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         <a class="svc-card" href="/pohrebne-sluzby#rakvy" data-reveal>
           <h3 class="svc-card-title">Obrad<br>a preprava</h3>
           <div class="svc-card-media">
-            <Image class="svc-card-photo" src={svcObrad} widths={SIRKY_KARTA} quality={KVALITA_KARTA} sizes="(max-width: 900px) 92vw, 33vw" alt="Biela pohrebná limuzína Paciga s personálom pod Tatrami" loading="lazy" decoding="async" />
+            <img class="svc-card-photo" src="/assets/ssr/svc-obrad-560.webp" srcset="/assets/ssr/svc-obrad-320.webp 320w, /assets/ssr/svc-obrad-480.webp 480w, /assets/ssr/svc-obrad-560.webp 560w" sizes="(max-width: 900px) 92vw, 33vw" width="560" height="560" alt="Biela pohrebná limuzína Paciga s personálom pod Tatrami" loading="lazy" decoding="async" />
           </div>
           <span class="svc-link">Zobraziť služby
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
@@ -205,7 +208,7 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         <a class="svc-card" href="/pohrebne-sluzby#kvetinarstvo" data-reveal>
           <h3 class="svc-card-title">Starostlivosť<br>o pozostalých</h3>
           <div class="svc-card-media">
-            <Image class="svc-card-photo" src={svcStarostlivost} widths={SIRKY_KARTA} quality={KVALITA_KARTA} sizes="(max-width: 900px) 92vw, 33vw" alt="Vitrína spomienkových šperkov Paciga" loading="lazy" decoding="async" />
+            <img class="svc-card-photo" src="/assets/ssr/svc-starostlivost-560.webp" srcset="/assets/ssr/svc-starostlivost-320.webp 320w, /assets/ssr/svc-starostlivost-480.webp 480w, /assets/ssr/svc-starostlivost-560.webp 560w" sizes="(max-width: 900px) 92vw, 33vw" width="560" height="560" alt="Vitrína spomienkových šperkov Paciga" loading="lazy" decoding="async" />
           </div>
           <span class="svc-link">Zobraziť služby
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
@@ -215,7 +218,7 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         <a class="svc-card" id="kamenarstvo" href="/pohrebne-sluzby#kamenarstvo" data-reveal>
           <h3 class="svc-card-title">Kamenárstvo</h3>
           <div class="svc-card-media">
-            <Image class="svc-card-photo" src={svcKamenarstvo} widths={SIRKY_KARTA} quality={KVALITA_KARTA} sizes="(max-width: 900px) 92vw, 33vw" alt="Žulové pomníky a stan Paciga na cintoríne" loading="lazy" decoding="async" />
+            <img class="svc-card-photo" src="/assets/ssr/svc-kamenarstvo-560.webp" srcset="/assets/ssr/svc-kamenarstvo-320.webp 320w, /assets/ssr/svc-kamenarstvo-480.webp 480w, /assets/ssr/svc-kamenarstvo-560.webp 560w" sizes="(max-width: 900px) 92vw, 33vw" width="560" height="560" alt="Žulové pomníky a stan Paciga na cintoríne" loading="lazy" decoding="async" />
           </div>
           <span class="svc-link">Zobraziť služby
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
