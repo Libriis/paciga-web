@@ -1,5 +1,6 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import FotoPole from '../../components/admin/FotoPole.tsx';
 ---
 <AdminLayout title="Web a parte" active="web">
 
@@ -55,10 +56,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <label>Odkaz rodine (nepovinné — zobrazí sa namiesto štandardného textu sústrasti)
         <textarea name="odkaz_rodine" rows="3" maxlength="500"></textarea>
       </label>
-      <label>Fotografia (nepovinná — zobrazí sa v krúžku namiesto iniciálok)
-        <input type="file" name="foto" accept="image/*">
-      </label>
-      <img id="foto-nahlad" class="adm-foto-nahlad hidden" alt="">
+      <div style="margin-bottom:18px">
+        <span class="adm-label">Fotografia zosnulého</span>
+        <FotoPole name="foto" tvar="portret" client:load obnovitEvent="parte:nacitane"
+          popis="Nepovinná. Bez nej sa na webe zobrazia iniciálky." />
+      </div>
       <label>Webová adresa parte (doplní sa sama z mena)
         <input type="text" name="slug" required pattern="[a-z0-9-]{1,80}" maxlength="80">
       </label>
@@ -91,7 +93,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   </section>
 
 <script>
-import { getClient, requireAuth, esc, fmtD, fmtDT, zmensiFotku, vytvorZakazku, noveCisloZakazky, uuid } from '../../scripts/admin-core.js';
+import { getClient, requireAuth, esc, fmtD, fmtDT, zmensiFotku, vytvorZakazku, noveCisloZakazky, uuid, inicialky } from '../../scripts/admin-core.js';
 
 const sb = getClient();
 const $ = (sel) => document.querySelector(sel);
@@ -134,7 +136,8 @@ function initParte() {
     form.reset();
     f.id.value = '';
     $('#parte-form-title').textContent = 'Nové parte';
-    $('#foto-nahlad').classList.add('hidden');
+    // Pole na fotku je React ostrov, o resete formulára samo nevie.
+    window.dispatchEvent(new CustomEvent('parte:nacitane', { detail: { foto: null } }));
     form.classList.remove('hidden');
     form.scrollIntoView({ behavior: 'smooth' });
   });
@@ -145,12 +148,6 @@ function initParte() {
   f.datum_narodenia.addEventListener('change', prepocitajVek);
   f.datum_umrtia.addEventListener('change', prepocitajVek);
 
-  f.foto.addEventListener('change', () => {
-    const file = f.foto.files[0];
-    if (!file) return $('#foto-nahlad').classList.add('hidden');
-    $('#foto-nahlad').src = URL.createObjectURL(file);
-    $('#foto-nahlad').classList.remove('hidden');
-  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -216,11 +213,20 @@ async function loadParte() {
   const box = $('#parte-list');
   if (error) { box.innerHTML = `<p class="adm-empty">Chyba: ${esc(error.message)}</p>`; return; }
   if (!data.length) { box.innerHTML = '<p class="adm-empty">Zatiaľ žiadne parte.</p>'; return; }
+  const sviec = (n) => `${n} ${n === 1 ? 'sviečka' : n < 5 ? 'sviečky' : 'sviečok'}`;
   box.innerHTML = data.map((p) => `
-    <div class="adm-card adm-row">
-      <div>
-        <div class="nazov">${esc(p.meno)}${p.published ? '' : '<span class="off">skryté</span>'}</div>
-        <div class="meta">† ${fmtD(p.datum_umrtia)}${p.rozlucka_datum ? ` · rozlúčka ${fmtD(p.rozlucka_datum)}${p.rozlucka_cas ? ' o ' + esc(p.rozlucka_cas) : ''}` : ''} · ${p.sviecky} sviečok</div>
+    <div class="obsah-riadok">
+      ${p.foto_url
+        ? `<img class="kruh" src="${esc(p.foto_url)}" alt="">`
+        : `<div class="kruh-prazdny" aria-hidden="true">${esc(inicialky(p.meno))}</div>`}
+      <div class="obsah-info">
+        <strong>${esc(p.meno)}</strong>
+        <div class="obsah-meta">
+          ${p.published ? '' : '<span class="stitok skryte">skryté</span>'}
+          <span>† ${fmtD(p.datum_umrtia)}</span>
+          ${p.rozlucka_datum ? `<span>rozlúčka ${fmtD(p.rozlucka_datum)}${p.rozlucka_cas ? ' o ' + esc(p.rozlucka_cas) : ''}</span>` : ''}
+          <span>${sviec(p.sviecky)}</span>
+        </div>
       </div>
       <div class="adm-actions">
         <a class="adm-btn ghost sm" href="/parte/${esc(p.slug)}" target="_blank" rel="noopener">Zobraziť</a>
@@ -250,9 +256,7 @@ async function loadParte() {
         f.odkaz_rodine.value = p.odkaz_rodine ?? '';
         f.published.checked = p.published;
         $('#parte-form-title').textContent = `Upraviť: ${p.meno}`;
-        const nahlad = $('#foto-nahlad');
-        if (p.foto_url) { nahlad.src = p.foto_url; nahlad.classList.remove('hidden'); }
-        else nahlad.classList.add('hidden');
+        window.dispatchEvent(new CustomEvent('parte:nacitane', { detail: { foto: p.foto_url ?? null } }));
         form.classList.remove('hidden');
         form.scrollIntoView({ behavior: 'smooth' });
       }
@@ -279,16 +283,22 @@ async function loadKondolencie() {
   if (error) { pend.innerHTML = `<p class="adm-empty">Chyba: ${esc(error.message)}</p>`; appr.innerHTML = ''; return; }
 
   const render = (k) => `
-    <div class="adm-card">
-      <div class="adm-row">
-        <div class="nazov">${esc(k.meno)} <span class="off">k parte ${esc(k.parte?.meno ?? '?')}</span></div>
-        <div class="meta">${fmtDT(k.created_at)}</div>
+    <div class="obsah-karta">
+      <div class="obsah-karta-hlava">
+        <div class="obsah-info">
+          <strong>${esc(k.meno)}</strong>
+          <div class="obsah-meta">
+            <span class="stitok ${k.schvalene ? 'hotovo' : 'ceka'}">${k.schvalene ? 'na webe' : 'čaká'}</span>
+            <span>k parte ${esc(k.parte?.meno ?? '?')}</span>
+            <span>${fmtDT(k.created_at)}</span>
+          </div>
+        </div>
+        <div class="adm-actions">
+          ${k.schvalene ? '' : `<button type="button" class="adm-btn sm" data-act="ok" data-id="${k.id}">Schváliť a zverejniť</button>`}
+          <button type="button" class="adm-btn danger sm" data-act="del" data-id="${k.id}">Vymazať</button>
+        </div>
       </div>
-      <p class="kond-text">${esc(k.odkaz)}</p>
-      <div class="adm-actions">
-        ${k.schvalene ? '' : `<button type="button" class="adm-btn sm" data-act="ok" data-id="${k.id}">Schváliť a zverejniť</button>`}
-        <button type="button" class="adm-btn danger sm" data-act="del" data-id="${k.id}">Vymazať</button>
-      </div>
+      <blockquote class="obsah-citat">${esc(k.odkaz)}</blockquote>
     </div>`;
 
   const cakajuce = data.filter((k) => !k.schvalene);
@@ -318,17 +328,23 @@ async function loadDopyty() {
   if (!data.length) { box.innerHTML = '<p class="adm-empty">Zatiaľ žiadne dopyty.</p>'; return; }
 
   box.innerHTML = data.map((d) => `
-    <div class="adm-card" style="${d.precitane ? 'opacity:0.55' : ''}">
-      <div class="adm-row">
-        <div class="nazov">${esc(d.meno)}${d.precitane ? '<span class="off">vybavené</span>' : ''}</div>
-        <div class="meta">${fmtDT(d.created_at)}</div>
+    <div class="obsah-karta${d.precitane ? ' je-vybavene' : ''}">
+      <div class="obsah-karta-hlava">
+        <div class="obsah-info">
+          <strong>${esc(d.meno)}</strong>
+          <div class="obsah-meta">
+            <span class="stitok ${d.precitane ? 'tiche' : 'ceka'}">${d.precitane ? 'vybavené' : 'nové'}</span>
+            <span>${fmtDT(d.created_at)}</span>
+            ${d.telefon ? `<a href="tel:${esc(d.telefon)}" class="obsah-kontakt">${esc(d.telefon)}</a>` : ''}
+            ${d.email ? `<a href="mailto:${esc(d.email)}" class="obsah-kontakt">${esc(d.email)}</a>` : ''}
+          </div>
+        </div>
+        <div class="adm-actions">
+          <button type="button" class="adm-btn sm" data-act="zakazka" data-id="${d.id}">Vytvoriť zákazku</button>
+          <button type="button" class="adm-btn ghost sm" data-act="precitane" data-id="${d.id}" data-val="${!d.precitane}">${d.precitane ? 'Vrátiť medzi nové' : 'Označiť vybavené'}</button>
+        </div>
       </div>
-      <div class="meta">${d.telefon ? `Tel: <a href="tel:${esc(d.telefon)}" style="color:var(--text)">${esc(d.telefon)}</a>` : ''}${d.telefon && d.email ? ' · ' : ''}${d.email ? `E-mail: <a href="mailto:${esc(d.email)}" style="color:var(--text)">${esc(d.email)}</a>` : ''}</div>
-      <p class="kond-text">${esc(d.sprava)}</p>
-      <div class="adm-actions">
-        <button type="button" class="adm-btn sm" data-act="zakazka" data-id="${d.id}">Vytvoriť zákazku</button>
-        <button type="button" class="adm-btn ghost sm" data-act="precitane" data-id="${d.id}" data-val="${!d.precitane}">${d.precitane ? 'Označiť ako nevybavené' : 'Označiť ako vybavené'}</button>
-      </div>
+      <blockquote class="obsah-citat">${esc(d.sprava)}</blockquote>
     </div>`).join('');
   $('#dopyt-badge').textContent = data.filter((d) => !d.precitane).length || '';
 

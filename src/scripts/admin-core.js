@@ -109,6 +109,14 @@ export const fmtEUR = (n) => {
 
 export const MESIACE_KRATKE = ['jan', 'feb', 'mar', 'apr', 'máj', 'jún', 'júl', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
+/** „AK" z „Anna Kičáková" — pre krúžok v zozname, keď parte nemá fotku.
+    Rovnaká logika ako inicialky() v lib/parte.ts; sem je skopírovaná
+    zámerne, ten modul ťahá vlastného Supabase klienta a admin má svojho. */
+export const inicialky = (meno) => {
+  const w = String(meno ?? '').trim().split(/\s+/);
+  return ((w[0]?.[0] ?? '') + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase();
+};
+
 export const uuid = () =>
   (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2));
 

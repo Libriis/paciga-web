@@ -20,6 +20,8 @@ interface Props {
   maxMB?: number;
   /** vlastný event, ktorým admin stránka oznámi načítanie iného záznamu */
   obnovitEvent?: string;
+  /** 'sirka' pre titulné fotky článkov, 'portret' pre fotku zosnulého v krúžku */
+  tvar?: 'sirka' | 'portret';
 }
 
 const kB = (b: number) => (b < 1024 * 1024 ? `${Math.round(b / 1024)} kB` : `${(b / 1024 / 1024).toFixed(1)} MB`);
@@ -30,6 +32,7 @@ export default function FotoPole({
   popis = 'Na šírku, aspoň 1200 px. Zmenší sa sama.',
   maxMB = 12,
   obnovitEvent,
+  tvar = 'sirka',
 }: Props) {
   const [nahlad, setNahlad] = useState<string | null>(hodnota);
   const [subor, setSubor] = useState<File | null>(null);
@@ -91,7 +94,7 @@ export default function FotoPole({
   }
 
   return (
-    <div className="fp">
+    <div className={`fp fp-${tvar}`}>
       <div
         className={`fp-zona${tiahne ? ' je-tiahnute' : ''}${nahlad ? ' ma-fotku' : ''}`}
         onDragEnter={(e) => { e.preventDefault(); setTiahne(true); }}
@@ -112,10 +115,13 @@ export default function FotoPole({
         {nahlad ? (
           <>
             <img src={nahlad} alt="" className="fp-nahlad" />
-            <div className="fp-prekryv">
-              <span>{subor ? `${subor.name} · ${kB(subor.size)}` : 'Uložená fotka'}</span>
-              <span className="fp-vymen">Kliknutím vymeníš</span>
-            </div>
+            {/* Pri portréte by sa pruh cez krúžok neprečítal, popis ide pod zónu. */}
+            {tvar === 'sirka' && (
+              <div className="fp-prekryv">
+                <span>{subor ? `${subor.name} · ${kB(subor.size)}` : 'Uložená fotka'}</span>
+                <span className="fp-vymen">Kliknutím vymeníš</span>
+              </div>
+            )}
           </>
         ) : (
           <div className="fp-vyzva">
@@ -159,6 +165,10 @@ export default function FotoPole({
         className="fp-input"
         onChange={(e) => prijmi(e.target.files?.[0])}
       />
+
+      {tvar === 'portret' && nahlad && (
+        <p className="fp-popis-pod">{subor ? `${subor.name} · ${kB(subor.size)}` : 'Uložená fotka'} · kliknutím vymeníš</p>
+      )}
 
       {chyba && <p className="fp-chyba" role="alert">{chyba}</p>}
     </div>

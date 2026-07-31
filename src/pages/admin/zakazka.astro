@@ -1,5 +1,6 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import FotoPole from '../../components/admin/FotoPole.tsx';
 ---
 <AdminLayout title="Zákazka" active="zakazky">
 
@@ -125,12 +126,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="adm-card">
       <h2 style="margin:0 0 6px">Dokumenty</h2>
       <p class="meta" style="font-size:13.5px;color:var(--muted);margin-bottom:16px">Odfoť alebo naskenuj doklady — uložia sa bezpečne k zákazke.</p>
-      <form id="form-dokument" class="adm-actions" style="margin-bottom:6px">
-        <select name="typ" class="adm-btn ghost sm" style="font-weight:600"></select>
-        <label class="adm-btn ghost sm" style="cursor:pointer;margin:0">Vybrať fotku / scan
-          <input type="file" name="subor" accept="image/*" class="hidden">
-        </label>
-        <button type="submit" class="adm-btn sm">Nahrať</button>
+      <form id="form-dokument" style="margin-bottom:6px">
+        <div class="adm-grid2" style="align-items:end;gap:0 18px">
+          <label style="margin-bottom:0">Typ dokladu
+            <select name="typ"></select>
+          </label>
+          <div class="adm-actions" style="padding-bottom:2px">
+            <button type="submit" class="adm-btn">Nahrať dokument</button>
+            <span class="adm-hint" style="margin:0">Doklad sa uloží do súkromného úložiska.</span>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <FotoPole name="subor" client:load obnovitEvent="doklad:ulozeny"
+            popis="Odfoť alebo naskenuj doklad. Zmenší sa sám." />
+        </div>
       </form>
       <p class="adm-status" id="dok-status"></p>
       <div class="dok-grid" id="dok-grid"></div>
@@ -362,6 +371,8 @@ function initDokumenty() {
       });
       if (error) throw new Error(error.message);
       form.reset();
+      // Pole na doklad je React ostrov, reset formulára oň nezavadí.
+      window.dispatchEvent(new CustomEvent('doklad:ulozeny', { detail: { foto: null } }));
       status.textContent = '';
       loadDokumenty();
     } catch (err) {

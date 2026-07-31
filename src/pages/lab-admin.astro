@@ -102,6 +102,94 @@ const UKAZKA = [
       </div>
     </form>
 
+    <h2>Fotografia zosnulého (portrét)</h2>
+    <div class="adm-form">
+      <div class="adm-grid2">
+        <div>
+          <span class="adm-label">Bez fotky</span>
+          <FotoPole name="pf1" tvar="portret" client:load
+            popis="Nepovinná. Bez nej sa na webe zobrazia iniciálky." />
+        </div>
+        <div>
+          <span class="adm-label">S fotkou</span>
+          <FotoPole name="pf2" tvar="portret" hodnota="/clanky/o-nas-tim-320.webp" client:load />
+        </div>
+      </div>
+    </div>
+
+    <h2>Zoznam parte</h2>
+    <div class="obsah-riadok">
+      <div class="kruh-prazdny" aria-hidden="true">AK</div>
+      <div class="obsah-info">
+        <strong>Anna Kičáková</strong>
+        <div class="obsah-meta">
+          <span>† 9. 7. 2026</span>
+          <span>rozlúčka 11. 7. 2026 o 13:00</span>
+          <span>3 sviečky</span>
+        </div>
+      </div>
+      <div class="adm-actions">
+        <a class="adm-btn ghost sm" href="#">Zobraziť</a>
+        <button type="button" class="adm-btn ghost sm">Upraviť</button>
+        <button type="button" class="adm-btn ghost sm">Skryť</button>
+        <button type="button" class="adm-btn danger sm">Vymazať</button>
+      </div>
+    </div>
+    <div class="obsah-riadok">
+      <img class="kruh" src="/clanky/o-nas-tim-320.webp" alt="">
+      <div class="obsah-info">
+        <strong>Ondrej Mlynár</strong>
+        <div class="obsah-meta">
+          <span class="stitok skryte">skryté</span>
+          <span>† 6. 7. 2026</span>
+          <span>1 sviečka</span>
+        </div>
+      </div>
+      <div class="adm-actions">
+        <a class="adm-btn ghost sm" href="#">Zobraziť</a>
+        <button type="button" class="adm-btn ghost sm">Upraviť</button>
+        <button type="button" class="adm-btn ghost sm">Zverejniť</button>
+        <button type="button" class="adm-btn danger sm">Vymazať</button>
+      </div>
+    </div>
+
+    <h2>Kondolencie a dopyty</h2>
+    <div class="obsah-karta">
+      <div class="obsah-karta-hlava">
+        <div class="obsah-info">
+          <strong>Mária Nováková</strong>
+          <div class="obsah-meta">
+            <span class="stitok ceka">čaká</span>
+            <span>k parte Anna Kičáková</span>
+            <span>31. 7. 2026 14:22</span>
+          </div>
+        </div>
+        <div class="adm-actions">
+          <button type="button" class="adm-btn sm">Schváliť a zverejniť</button>
+          <button type="button" class="adm-btn danger sm">Vymazať</button>
+        </div>
+      </div>
+      <blockquote class="obsah-citat">Úprimnú sústrasť celej rodine. Na pani Annu budeme spomínať v dobrom, bola to úžasná susedka.</blockquote>
+    </div>
+    <div class="obsah-karta je-vybavene">
+      <div class="obsah-karta-hlava">
+        <div class="obsah-info">
+          <strong>Peter Kováč</strong>
+          <div class="obsah-meta">
+            <span class="stitok tiche">vybavené</span>
+            <span>30. 7. 2026 09:05</span>
+            <a href="#" class="obsah-kontakt">0903 111 222</a>
+            <a href="#" class="obsah-kontakt">peter@example.sk</a>
+          </div>
+        </div>
+        <div class="adm-actions">
+          <button type="button" class="adm-btn sm">Vytvoriť zákazku</button>
+          <button type="button" class="adm-btn ghost sm">Vrátiť medzi nové</button>
+        </div>
+      </div>
+      <blockquote class="obsah-citat">Dobrý deň, potreboval by som informácie o možnostiach kremácie a o cene prevozu z Popradu.</blockquote>
+    </div>
+
     <h2>Zoznam článkov</h2>
     <div class="obsah-riadok">
       <img src="/clanky/asset-01-320.webp" alt="">
