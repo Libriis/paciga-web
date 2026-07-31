@@ -18,7 +18,8 @@ export const POST: APIRoute = async ({ request }) => {
   // Vstup sa validuje pred kontrolou databázy. Nezmysel má padnúť vždy,
   // nielen keď je Supabase po ruke, a dá sa to overiť aj lokálne.
 
-  // sendBeacon posiela text/plain, nie application/json
+  // Beacon chodí ako application/json (text/plain zhodí Astro CSRF ochrana
+  // na 403). Telo aj tak čítame ako text, aby prešlo čokoľvek validné.
   const raw = await request.text().catch(() => '');
   let b: Record<string, unknown> | null = null;
   try { b = JSON.parse(raw); } catch { return json({ error: 'Neplatná požiadavka.' }, 400); }
