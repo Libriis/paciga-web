@@ -1,0 +1,142 @@
+---
+/*
+  Interná ukážka obsahových polí administrácie.
+
+  Rovnaký postup ako pri /lab-21: komponent sa najprv doladí tu a až potom
+  ide do ostrej stránky. Táto stránka je bez prihlásenia zámerne, aby sa
+  dal skontrolovať vizuál bez hesla do administrácie. Neukladá nič,
+  formulár nemá cieľ. noindex, nie je v navigácii.
+*/
+import FotoPole from '../components/admin/FotoPole.tsx';
+import EditorClanku from '../components/admin/EditorClanku.tsx';
+
+const UKAZKA = [
+  'Kvety sú vždy neoddeliteľnou súčasťou každého pohrebného obradu. Vieme nimi vyjadriť naše pocity a prejaviť sústrasť smútiacej rodine.',
+  '## Rakvová kytica',
+  'Pre pozostalých je dôležitý výber rakvovej alebo smútočnej kytice. Výber kvetov a ich farba by mal zdôrazňovať osobnosť zosnulého.',
+  '→ Živé kvety objednávame pre konkrétnu objednávku',
+  '→ Umelé vence v rôznych tvaroch a veľkostiach',
+  '→ Smútočné stuhy s posledným pozdravom',
+  'Druh kvetov, počet a farbu si môžete navrhnúť podľa vlastnej predstavy.',
+].join('\n\n');
+---
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab: obsahové polia | Paciga admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0c0d0f">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/admin.css">
+<link rel="stylesheet" href="/css/admin-obsah.css">
+</head>
+<body>
+<div class="adm-shell">
+  <main class="adm-main siroky">
+    <div class="adm-head">
+      <h1>Lab: obsahové polia</h1>
+      <span class="adm-hint" style="margin:0">Ukážka, nič sa neukladá</span>
+    </div>
+
+    <form class="adm-form" onsubmit="return false">
+      <h2 style="margin-top:0">Nový článok</h2>
+
+      <label>Titulok
+        <input type="text" name="titulok" value="Kvetinová výzdoba na pohrebe">
+      </label>
+
+      <label>Adresa článku
+        <input type="text" name="slug" value="kvetinova-vyzdoba-na-pohrebe">
+        <span class="adm-hint">Doplní sa sama z titulku. Po zverejnení ju už nemeň, staré odkazy by prestali fungovať.</span>
+      </label>
+
+      <div class="adm-grid3" style="margin-top:18px">
+        <label>Kategória
+          <select name="kategoria">
+            <option value="rada">Rada</option>
+            <option value="novinka">Novinka</option>
+            <option value="spolupraca">Spolupráca</option>
+          </select>
+        </label>
+        <label>Dátum
+          <input type="date" name="datum" value="2026-07-31">
+        </label>
+        <label>Stav
+          <select name="published">
+            <option value="true">Zverejnený</option>
+            <option value="false">Koncept</option>
+          </select>
+        </label>
+      </div>
+
+      <label style="margin-top:18px">Perex
+        <textarea name="perex" rows="3">Rakvová kytica, vence a stuhy. Ako vybrať kvety, ktoré zdôraznia osobnosť zosnulého.</textarea>
+        <span class="adm-hint">92 / 600 znakov</span>
+      </label>
+
+      <div style="margin-top:22px">
+        <span class="adm-label">Titulná fotka</span>
+        <FotoPole name="foto" client:load />
+      </div>
+
+      <div style="margin-top:22px">
+        <span class="adm-label">Titulná fotka — stav s fotkou</span>
+        <FotoPole name="foto2" hodnota="/clanky/asset-01-960.webp" client:load />
+      </div>
+
+      <label style="margin-top:18px">Popis fotky
+        <input type="text" name="foto_alt" value="Nosiči Paciga s rakvou a kvetinovou výzdobou">
+        <span class="adm-hint">Prečítajú ho čítačky obrazovky a vyhľadávače. Opíš, čo na fotke je.</span>
+      </label>
+
+      <div style="margin-top:26px">
+        <span class="adm-label">Text článku</span>
+        <EditorClanku name="telo" hodnota={UKAZKA} client:load />
+      </div>
+
+      <div class="adm-actions" style="margin-top:26px;padding-top:22px;border-top:1px solid var(--line)">
+        <button type="button" class="adm-btn">Uložiť</button>
+        <button type="button" class="adm-btn ghost">Zrušiť</button>
+      </div>
+    </form>
+
+    <h2>Zoznam článkov</h2>
+    <div class="obsah-riadok">
+      <img src="/clanky/asset-01-320.webp" alt="">
+      <div class="obsah-info">
+        <strong>Kvetinová výzdoba na pohrebe</strong>
+        <div class="obsah-meta">
+          <span class="stitok rada">Rada</span>
+          <span>5. sep 2025</span>
+          <span>4 bloky</span>
+        </div>
+      </div>
+      <div class="adm-actions">
+        <a class="adm-btn ghost sm" href="#">Zobraziť</a>
+        <button type="button" class="adm-btn ghost sm">Upraviť</button>
+        <button type="button" class="adm-btn ghost sm">Zmazať</button>
+      </div>
+    </div>
+    <div class="obsah-riadok">
+      <div class="bez-fotky"></div>
+      <div class="obsah-info">
+        <strong>Článok bez titulnej fotky</strong>
+        <div class="obsah-meta">
+          <span class="stitok novinka">Novinka</span>
+          <span class="stitok koncept">koncept</span>
+          <span>31. júl 2026</span>
+          <span>1 blok</span>
+        </div>
+      </div>
+      <div class="adm-actions">
+        <a class="adm-btn ghost sm" href="#">Zobraziť</a>
+        <button type="button" class="adm-btn ghost sm">Upraviť</button>
+        <button type="button" class="adm-btn ghost sm">Zmazať</button>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

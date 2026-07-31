@@ -7,8 +7,10 @@ import logo from '../assets/asset-02.png';
 interface Props {
   title: string;
   active?: string;
+  /** obsahové stránky potrebujú širší priestor pre dvojstĺpcový editor */
+  siroky?: boolean;
 }
-const { title, active = '' } = Astro.props;
+const { title, active = '', siroky = false } = Astro.props;
 
 const NAV = [
   { key: 'dashboard', href: '/admin', label: 'Dashboard' },
@@ -32,6 +34,7 @@ const NAV = [
 <link rel="preload" href="/assets/archivo-sk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="/css/admin.css">
+<link rel="stylesheet" href="/css/admin-obsah.css">
 </head>
 <body>
 <div class="adm-shell">
@@ -50,7 +53,7 @@ const NAV = [
       <button type="button" id="adm-logout" class="adm-btn ghost sm">Odhlásiť</button>
     </div>
   </aside>
-  <main class="adm-main">
+  <main class:list={["adm-main", { siroky }]}>
     <div id="demo-banner" class="adm-demo hidden"><strong>DEMO režim.</strong> Supabase zatiaľ nie je pripojené — všetko si môžeš preklikať, zmeny sa ukladajú len v tomto prehliadači. Po nastavení Supabase (README-BACKEND.md) sa systém prepne na ostré dáta sám.</div>
     <slot />
   </main>
