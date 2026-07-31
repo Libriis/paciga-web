@@ -5,7 +5,10 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://paciga.sk',
+  // Kanonický host je www: paciga.sk robí 301 na www.paciga.sk. Z `site` sa
+  // skladajú absolútne OG cesty (Base.astro) aj robots.txt, takže non-www
+  // hodnota by ich všetky poslala na adresu, ktorá sa presmeruje.
+  site: 'https://www.paciga.sk',
   // Statické stránky sa predgenerujú pri builde; dynamické (index, opustili-nas,
   // parte, api) majú `export const prerender = false` a bežia ako Vercel funkcia.
   output: 'static',

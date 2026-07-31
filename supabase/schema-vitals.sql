@@ -13,7 +13,8 @@
 create table if not exists public.web_vitals (
   id uuid primary key default gen_random_uuid(),
   metrika text not null check (metrika in ('LCP', 'CLS', 'INP', 'FCP', 'TTFB')),
-  hodnota double precision not null check (hodnota >= 0),
+  -- horný strop proti zjavnému nezmyslu (anon smie vkladať; beacon je verejný)
+  hodnota double precision not null check (hodnota >= 0 and hodnota <= 3600000),
   rating text not null check (rating in ('good', 'needs-improvement', 'poor')),
   cesta text not null check (char_length(cesta) between 1 and 200),
   -- 'mobile' | 'desktop', odvodené z navigator.userAgentData alebo šírky okna

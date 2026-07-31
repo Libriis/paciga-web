@@ -44,8 +44,8 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
   startDate: `${p.rozlucka_datum}T${p.rozlucka_cas}:00+02:00`,
   eventStatus: 'https://schema.org/EventScheduled',
   location: { '@type': 'Place', name: p.rozlucka_miesto },
-  organizer: { '@type': 'Organization', name: 'Paciga', url: 'https://paciga.sk' },
-}) : null;
+  organizer: { '@type': 'Organization', name: 'Paciga', url: 'https://www.paciga.sk' },
+}).replace(/</g, '\\u003c') : null;
 ---
 <Base title={title} description={description} active="opustili-nas" mainId="parte-main"
   ogTitle={`${p.meno} | Smútočné oznámenie`} ogDescription={ogDescription}
