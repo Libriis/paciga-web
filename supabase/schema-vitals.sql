@@ -1,6 +1,8 @@
 -- ============================================================
 -- Paciga web — Core Web Vitals z terénu (RUM)
 -- Spusti v Supabase: SQL Editor → New query → Run.
+-- Po tomto súbore vždy spusti aj schema-admin.sql — prepisuje
+-- tunajšiu politiku web_vitals_admin_read.
 --
 -- Načo to je: CrUX o tejto doméne nemá dáta, každý trace hlásil
 -- „no data for this page in CrUX". Laboratórne merania nás počas
@@ -54,6 +56,11 @@ from public.web_vitals
 where created_at > now() - interval '28 days'
 group by metrika, zariadenie
 order by metrika, zariadenie;
+
+-- Bez security_invoker beží view s právami toho, kto ho vytvoril, čiže
+-- obchádza RLS a percentily by videl aj anonym. S ním platí politika
+-- web_vitals: anon dostane prázdno, prihlásený admin dáta.
+alter view public.web_vitals_prehlad set (security_invoker = on);
 
 -- Upratovanie. Tabuľka rastie s návštevnosťou, staršie než 90 dní netreba.
 -- Spusti ručne alebo cez pg_cron, ak ho máš zapnutý.

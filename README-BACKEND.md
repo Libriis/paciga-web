@@ -44,15 +44,26 @@ Bez nastavených env premenných web funguje ďalej — parte sa berú zo
 ### 1. Supabase (databáza, fotky, prihlásenie) — zadarmo
 
 1. [supabase.com](https://supabase.com) → New project (región EU — Frankfurt).
-2. **SQL Editor → New query** → vlož celý obsah `supabase/schema.sql` → Run.
-   Vytvorí tabuľky, bezpečnostné politiky, funkciu sviečok, bucket na fotky
-   aj 12 existujúcich parte. Potom rovnako spusti `supabase/schema-crm.sql`
-   (zákazky, kontakty, checklist, dokumenty + privátny bucket).
-3. **Authentication → Users → Add user** → e-mail + heslo pre klienta
-   (napr. `paciga@paciga.sk`). Toto je prihlásenie do `/admin`.
-4. **Authentication → Sign In / Up** → vypni "Allow new users to sign up"
-   (aby sa nikto cudzí nezaregistroval).
-5. **Settings → API** → skopíruj `Project URL` a `anon public` kľúč.
+2. **SQL Editor → New query** → spusti schémy **v tomto poradí**:
+   `supabase/schema.sql` (tabuľky, politiky, sviečky, bucket, 12 parte),
+   `supabase/schema-crm.sql` (zákazky, kontakty, checklist, dokumenty),
+   `supabase/schema-vitals.sql` (Core Web Vitals z terénu),
+   `supabase/schema-admin.sql` (admin identita — **musí ísť posledná**,
+   prepisuje admin politiky z predchádzajúcich troch).
+3. **Authentication → Users → Add user** → e-mail + heslo pre klienta.
+   Adresa sa musí zhodovať s riadkom v tabuľke `admini`, inak sa prihlásenie
+   podarí, ale admin neuvidí nič. Predvyplnená je `paciga@paciga.sk`.
+4. **Authentication → Sign In / Up** → vypni "Allow new users to sign up".
+   Bez toho si účet vytvorí ktokoľvek. Sám o sebe ho `schema-admin.sql`
+   do dát nepustí, ale platí to len dovtedy, kým niekto ten prepínač
+   nezapne späť.
+5. Po prvom prihlásení admina prišpendli prístup na jeho `user_id`,
+   nech nevisí na e-mailovej adrese:
+   ```sql
+   update public.admini a set user_id = u.id
+   from auth.users u where lower(u.email) = lower(a.email);
+   ```
+6. **Settings → API** → skopíruj `Project URL` a `anon public` kľúč.
 
 ### 2. Resend (e-maily) — zadarmo, nepovinné
 
@@ -91,7 +102,10 @@ npm run build          # produkčný build
 - Na klienta ide len **anon** kľúč — všetko stráži Row Level Security:
   verejnosť číta iba publikované parte a schválené kondolencie, vkladať smie
   iba neschválené kondolencie a dopyty.
-- Admin operácie vyžadujú prihláseného používateľa (Supabase Auth).
+- Admin operácie vyžadujú prihláseného používateľa, ktorý je **navyše
+  uvedený v tabuľke `admini`**. Samotné prihlásenie nestačí. Kontrolu robí
+  funkcia `public.je_admin()`, na ktorej stoja všetky admin politiky aj
+  prístup k obom storage bucketom. Zoznam adminov sa cez API nedá prečítať.
 - Sviečky: unikát (parte, hash IP, deň) — IP sa ukladá len ako solený hash.
 - Formuláre majú honeypot pole proti botom; kondolencie sa zverejňujú až po
   schválení v admine.
@@ -108,7 +122,10 @@ src/pages/admin/           administrácia (client-side, Supabase Auth)
 src/lib/                   supabase klient, parte helpery, e-mail
 src/data/parte-seed.json   fallback dáta bez DB
 public/                    css, js, assets (1:1 pôvodný dizajn)
-supabase/schema.sql        celá DB schéma + seed — spustiť raz
+supabase/schema.sql        web: parte, kondolencie, dopyty, sviečky + seed
+supabase/schema-crm.sql    CRM: zákazky, kontakty, úkony, dokumenty
+supabase/schema-vitals.sql Core Web Vitals z terénu + prehľad percentilov
+supabase/schema-admin.sql  admin identita — spúšťať vždy ako poslednú
 ```
 
 Staré adresy `*.html` (zdieľané na Facebooku) presmeruje middleware 301
