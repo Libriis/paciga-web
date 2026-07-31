@@ -27,10 +27,17 @@ create index if not exists web_vitals_cesta_idx on public.web_vitals (cesta, met
 
 alter table public.web_vitals enable row level security;
 
--- Zapisuje výhradne server (service role cez /api/vitals). Anonymný klient
--- nesmie ani čítať, ani písať: čítanie by odhalilo návštevnosť, zápis by
--- otvoril dvere na zaplavenie tabuľky.
-drop policy if exists "web_vitals nikto zvonku" on public.web_vitals;
+-- Server (/api/vitals) chodí na Supabase s anon kľúčom, presne ako zvyšok
+-- webu, takže RLS platí aj naňho. Bez politiky by insert padol a endpoint
+-- by to zhltol, lebo pri chybe zámerne vracia 204. Preto rovnaký vzor ako
+-- dopyty: verejnosť smie len vkladať, čítať smie iba admin.
+drop policy if exists web_vitals_public_insert on public.web_vitals;
+create policy web_vitals_public_insert on public.web_vitals
+  for insert to anon with check (true);
+
+drop policy if exists web_vitals_admin_read on public.web_vitals;
+create policy web_vitals_admin_read on public.web_vitals
+  for all to authenticated using (true) with check (true);
 
 -- ---------- prehľad: percentily za posledných 28 dní ----------
 -- p75 je hodnota, na ktorej stoja prahy Core Web Vitals.
