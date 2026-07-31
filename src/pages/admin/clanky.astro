@@ -116,6 +116,7 @@ import EditorClanku from '../../components/admin/EditorClanku.tsx';
 <script>
 import { getClient, requireAuth, esc, zmensiFotku, DEMO } from '../../scripts/admin-core.js';
 import { CLANKY as STARE } from '../../data/aktuality';
+import staticke from '../../data/staticke-obrazky.json';
 
 const sb = getClient();
 const $ = (s) => document.querySelector(s);
@@ -148,6 +149,17 @@ const fmtDatum = (iso) => {
 /* Textarea drží odstavce oddelené prázdnym riadkom, databáza pole reťazcov. */
 const naPole = (t) => t.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
 const zPola = (p) => (Array.isArray(p) ? p : []).join('\n\n');
+
+/* Importované články majú foto_url na '/assets/nieco.jpg'. Tá cesta od
+   presunu fotiek do src/assets vracia 404, web si ju prekladá cez mapu.
+   Bez toho istého prekladu by boli náhľady v zozname prázdne štvorčeky. */
+function naNahlad(url) {
+  if (!url) return null;
+  const z = staticke[url];
+  if (!z) return url;
+  const w = z.sirky.includes(480) ? 480 : z.sirky[0];
+  return `/clanky/${z.zaklad}-${w}.webp`;
+}
 
 /* Toolbar, náhľad aj pole na fotku sú React ostrovy
    (components/admin/EditorClanku.tsx a FotoPole.tsx). Odtiaľto ich len
@@ -183,9 +195,10 @@ function vykresliZoznam() {
   }
   $('#clanok-list').innerHTML = clanky.map((c) => {
     const blokov = (c.telo || []).length;
+    const nahlad = naNahlad(c.foto_url);
     return `
     <div class="obsah-riadok">
-      ${c.foto_url ? `<img src="${esc(c.foto_url)}" alt="">` : '<div class="bez-fotky"></div>'}
+      ${nahlad ? `<img src="${esc(nahlad)}" alt="" loading="lazy">` : '<div class="bez-fotky"></div>'}
       <div class="obsah-info">
         <strong>${esc(c.titulok)}</strong>
         <div class="obsah-meta">
