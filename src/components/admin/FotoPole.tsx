@@ -11,6 +11,22 @@
   admin stránke číta súbor tak ako doteraz (f.foto.files[0]).
 */
 import { useEffect, useRef, useState } from 'react';
+import staticke from '../../data/staticke-obrazky.json';
+
+type Zaznam = { zaklad: string; sirky: number[]; pomer: number };
+const MAPA = staticke as Record<string, Zaznam>;
+
+/* Uložené foto_url starších článkov ukazuje na '/assets/nieco.jpg'. Tá cesta
+   od presunu fotiek do src/assets vracia 404 — web si ju mapuje cez
+   Foto.astro, ale sem prichádza surová. Bez prekladu by sa náhľad nenačítal,
+   mal nulovú výšku a celá zóna by skolabovala. */
+function naNahlad(url: string | null): string | null {
+  if (!url) return null;
+  const z = MAPA[url];
+  if (!z) return url;
+  const w = z.sirky.includes(960) ? 960 : z.sirky[z.sirky.length - 1];
+  return `/clanky/${z.zaklad}-${w}.webp`;
+}
 
 interface Props {
   name: string;
@@ -34,13 +50,27 @@ export default function FotoPole({
   obnovitEvent,
   tvar = 'sirka',
 }: Props) {
-  const [nahlad, setNahlad] = useState<string | null>(hodnota);
+  const [nahlad, setNahlad] = useState<string | null>(naNahlad(hodnota));
   const [subor, setSubor] = useState<File | null>(null);
   const [chyba, setChyba] = useState<string | null>(null);
   const [tiahne, setTiahne] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const obrazok = useRef<HTMLImageElement>(null);
   // Náhľad z vybraného súboru drží objektovú URL, ktorú treba uvoľniť.
   const objektUrl = useRef<string | null>(null);
+
+  /* Obrázok sa načítava už v serverovom HTML, teda skôr, než React pripojí
+     onError. Keď dovtedy zlyhá, udalosť ujde a ostane prázdna zóna s krížikom.
+     Preto po pripojení kontrolujeme aj samotný stav obrázka. */
+  useEffect(() => {
+    const img = obrazok.current;
+    if (img && img.complete && img.naturalWidth === 0) zlyhalNahlad();
+  }, [nahlad]);
+
+  function zlyhalNahlad() {
+    setNahlad(null);
+    setChyba('Uloženú fotku sa nepodarilo načítať. Vlož novú.');
+  }
 
   /* Admin stránka po načítaní iného článku vyšle event s novou fotkou.
      Bez toho by pri prepnutí záznamu ostal na obrazovke starý náhľad. */
@@ -51,7 +81,7 @@ export default function FotoPole({
       uvolni();
       setSubor(null);
       setChyba(null);
-      setNahlad(url);
+      setNahlad(naNahlad(url));
       if (input.current) input.current.value = '';
     };
     window.addEventListener(obnovitEvent, h);
@@ -114,7 +144,10 @@ export default function FotoPole({
       >
         {nahlad ? (
           <>
-            <img src={nahlad} alt="" className="fp-nahlad" />
+            {/* Keď sa uložená fotka nenačíta (zmazaná, presunutá, zlá cesta),
+                vrátime sa na výzvu. Inak by ostala prázdna zóna s krížikom
+                a redaktor by nemal ako fotku pridať. */}
+            <img ref={obrazok} src={nahlad} alt="" className="fp-nahlad" onError={zlyhalNahlad} />
             {/* Pri portréte by sa pruh cez krúžok neprečítal, popis ide pod zónu. */}
             {tvar === 'sirka' && (
               <div className="fp-prekryv">

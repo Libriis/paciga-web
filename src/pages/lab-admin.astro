@@ -86,6 +86,18 @@ const UKAZKA = [
         <FotoPole name="foto2" hodnota="/clanky/asset-01-960.webp" client:load />
       </div>
 
+      <div style="margin-top:22px">
+        <span class="adm-label">Titulná fotka — cesta importovaného článku</span>
+        <FotoPole name="foto3" hodnota="/assets/sperky-studio.jpg" client:load />
+        <span class="adm-hint">Táto cesta na serveri neexistuje, komponent ju musí preložiť na hotový variant.</span>
+      </div>
+
+      <div style="margin-top:22px">
+        <span class="adm-label">Titulná fotka — nenačítateľná fotka</span>
+        <FotoPole name="foto4" hodnota="/assets/tato-fotka-neexistuje.jpg" client:load />
+        <span class="adm-hint">Musí spadnúť späť na výzvu, nie ostať prázdna.</span>
+      </div>
+
       <label style="margin-top:18px">Popis fotky
         <input type="text" name="foto_alt" value="Nosiči Paciga s rakvou a kvetinovou výzdobou">
         <span class="adm-hint">Prečítajú ho čítačky obrazovky a vyhľadávače. Opíš, čo na fotke je.</span>
