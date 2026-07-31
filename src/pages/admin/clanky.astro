@@ -1,7 +1,9 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import FotoPole from '../../components/admin/FotoPole.tsx';
+import EditorClanku from '../../components/admin/EditorClanku.tsx';
 ---
-<AdminLayout title="Aktuality" active="clanky">
+<AdminLayout title="Aktuality" active="clanky" siroky>
 
   <div class="adm-head">
     <h1>Aktuality</h1>
@@ -47,37 +49,21 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <span class="adm-hint"><span id="perex-pocet">0</span> / 600 znakov</span>
     </label>
 
-    <div class="adm-grid2" style="margin-top:18px">
-      <label>Titulná fotka
-        <input type="file" name="foto" accept="image/*">
-        <span class="adm-hint">Na šírku, aspoň 1200 px. Zmenší sa sama.</span>
-      </label>
-      <div>
-        <span class="adm-label">Náhľad</span>
-        <div id="foto-nahlad" class="adm-foto-nahlad"></div>
-      </div>
+    <div style="margin-top:22px">
+      <span class="adm-label">Titulná fotka</span>
+      <FotoPole name="foto" client:load obnovitEvent="clanok:nacitany" />
     </div>
 
-    <label>Popis fotky
+    <label style="margin-top:18px">Popis fotky
       <input type="text" name="foto_alt" maxlength="200"
         placeholder="Čo je na fotke, pre čítačky obrazovky a vyhľadávače">
+      <span class="adm-hint">Prečítajú ho čítačky obrazovky a vyhľadávače. Opíš, čo na fotke je.</span>
     </label>
 
     <!-- ---- TELO ---- -->
-    <div style="margin-top:24px">
+    <div style="margin-top:26px">
       <span class="adm-label">Text článku</span>
-      <div class="blok-panel">
-        <button type="button" class="adm-btn ghost sm" data-blok="h">Nadpis</button>
-        <button type="button" class="adm-btn ghost sm" data-blok="p">Odstavec</button>
-        <button type="button" class="adm-btn ghost sm" data-blok="ul">Odrážka</button>
-        <span class="adm-hint" style="margin-left:auto">Riadok, na ktorom stojí kurzor, zmení na daný typ.</span>
-      </div>
-      <textarea name="telo" id="telo" rows="16"
-        placeholder="Odstavce oddeľ prázdnym riadkom.&#10;&#10;## Takto vyzerá medzinadpis&#10;&#10;→ Takto odrážka"></textarea>
-      <details class="adm-nahlad-box" open>
-        <summary>Náhľad, ako to uvidí čitateľ</summary>
-        <div id="telo-nahlad" class="adm-nahlad"></div>
-      </details>
+      <EditorClanku name="telo" client:load />
     </div>
 
     <!-- ---- CTA ---- -->
@@ -121,31 +107,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   </div>
 
 <style>
-  .blok-panel { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
-  #telo { width: 100%; font-family: ui-monospace, monospace; font-size: 13.5px; line-height: 1.7; }
-  .adm-nahlad-box { margin-top: 12px; }
-  .adm-nahlad-box > summary { cursor: pointer; font-size: 13px; color: var(--dim); padding: 6px 0; }
-  .adm-nahlad { padding: 18px 20px; background: var(--bg2); border: 1px solid var(--line); border-radius: 8px; }
-  .adm-nahlad h3 { font-size: 18px; margin: 20px 0 8px; }
-  .adm-nahlad h3:first-child { margin-top: 0; }
-  .adm-nahlad p { margin: 0 0 12px; line-height: 1.7; font-size: 14.5px; }
-  .adm-nahlad ul { margin: 0 0 12px; padding-left: 20px; }
-  .adm-nahlad li { margin-bottom: 5px; line-height: 1.6; font-size: 14.5px; }
-  .adm-nahlad:empty::before { content: 'Zatiaľ prázdne.'; color: var(--dim); font-size: 14px; }
-  .adm-foto-nahlad { height: 92px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .adm-foto-nahlad img { max-width: 100%; max-height: 100%; object-fit: cover; }
-  .adm-foto-nahlad:empty::before { content: 'bez fotky'; color: var(--dim); font-size: 13px; }
-  .clanok-riadok { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; background: var(--bg2); }
-  .clanok-riadok img { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
-  .clanok-riadok .bez-fotky { width: 64px; height: 48px; border-radius: 6px; background: var(--bg); flex-shrink: 0; }
-  .clanok-info { flex: 1; min-width: 0; }
-  .clanok-info strong { display: block; margin-bottom: 3px; }
-  .clanok-meta { font-size: 12.5px; color: var(--dim); }
-  .stitok { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-  .stitok.rada { background: rgba(74,143,214,.16); color: #7fb3e8; }
-  .stitok.novinka { background: rgba(191,124,44,.16); color: #d59a52; }
-  .stitok.spolupraca { background: rgba(47,158,119,.16); color: #57bd97; }
-  .stitok.koncept { background: rgba(245,245,245,.1); color: var(--dim); }
+  /* Editor, pole na fotku, štítky aj riadky zoznamu žijú v
+     public/css/admin-obsah.css, nech sa dajú použiť aj na ďalších
+     stránkach administrácie. */
+  .adm-form > .adm-actions { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
 </style>
 
 <script>
@@ -184,45 +149,10 @@ const fmtDatum = (iso) => {
 const naPole = (t) => t.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
 const zPola = (p) => (Array.isArray(p) ? p : []).join('\n\n');
 
-/* ---------- náhľad tela ---------- */
-function vykresliNahlad() {
-  const bloky = [];
-  for (const r of naPole($('#telo').value)) {
-    if (r.startsWith('## ')) bloky.push({ typ: 'h', text: r.slice(3) });
-    else if (r.startsWith('→ ')) {
-      const p = bloky[bloky.length - 1];
-      if (p && p.typ === 'ul') p.polozky.push(r.slice(2));
-      else bloky.push({ typ: 'ul', polozky: [r.slice(2)] });
-    } else bloky.push({ typ: 'p', text: r });
-  }
-  $('#telo-nahlad').innerHTML = bloky.map((b) =>
-    b.typ === 'h' ? `<h3>${esc(b.text)}</h3>`
-    : b.typ === 'ul' ? `<ul>${b.polozky.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`
-    : `<p>${esc(b.text)}</p>`
-  ).join('');
-}
-
-/* ---------- tlačidlá blokov ---------- */
-document.querySelectorAll('[data-blok]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const ta = $('#telo');
-    const typ = btn.dataset.blok;
-    const pred = ta.value.slice(0, ta.selectionStart);
-    const zaciatok = pred.lastIndexOf('\n') + 1;
-    const koniecRel = ta.value.slice(zaciatok).indexOf('\n');
-    const koniec = koniecRel === -1 ? ta.value.length : zaciatok + koniecRel;
-
-    const holy = ta.value.slice(zaciatok, koniec).replace(/^(## |→ )/, '');
-    const novy = typ === 'h' ? '## ' + holy : typ === 'ul' ? '→ ' + holy : holy;
-
-    ta.value = ta.value.slice(0, zaciatok) + novy + ta.value.slice(koniec);
-    ta.focus();
-    ta.selectionStart = ta.selectionEnd = zaciatok + novy.length;
-    vykresliNahlad();
-  });
-});
-
-$('#telo').addEventListener('input', vykresliNahlad);
+/* Toolbar, náhľad aj pole na fotku sú React ostrovy
+   (components/admin/EditorClanku.tsx a FotoPole.tsx). Odtiaľto ich len
+   napĺňame: textarea nastavíme cez .value a vyšleme 'input', dropzone
+   počúva na vlastný event 'clanok:nacitany'. */
 f.perex.addEventListener('input', () => { $('#perex-pocet').textContent = f.perex.value.length; });
 
 f.titulok.addEventListener('input', () => {
@@ -230,10 +160,6 @@ f.titulok.addEventListener('input', () => {
   if (!editovany) f.slug.value = naSlug(f.titulok.value);
 });
 
-f.foto.addEventListener('change', () => {
-  const file = f.foto.files[0];
-  $('#foto-nahlad').innerHTML = file ? `<img src="${URL.createObjectURL(file)}" alt="">` : '';
-});
 
 /* ---------- zoznam ---------- */
 async function nacitaj() {
@@ -255,22 +181,27 @@ function vykresliZoznam() {
     $('#clanok-list').innerHTML = '<p class="adm-status">Zatiaľ žiadny článok.</p>';
     return;
   }
-  $('#clanok-list').innerHTML = clanky.map((c) => `
-    <div class="clanok-riadok">
+  $('#clanok-list').innerHTML = clanky.map((c) => {
+    const blokov = (c.telo || []).length;
+    return `
+    <div class="obsah-riadok">
       ${c.foto_url ? `<img src="${esc(c.foto_url)}" alt="">` : '<div class="bez-fotky"></div>'}
-      <div class="clanok-info">
+      <div class="obsah-info">
         <strong>${esc(c.titulok)}</strong>
-        <div class="clanok-meta">
+        <div class="obsah-meta">
           <span class="stitok ${esc(c.kategoria)}">${esc(KATEGORIE[c.kategoria] || c.kategoria)}</span>
           ${c.published ? '' : '<span class="stitok koncept">koncept</span>'}
-          · ${fmtDatum(c.datum)}
-          · ${(c.telo || []).length} ${(c.telo || []).length === 1 ? 'odstavec' : 'odstavcov'}
+          <span>${fmtDatum(c.datum)}</span>
+          <span>${blokov} ${blokov === 1 ? 'blok' : blokov < 5 ? 'bloky' : 'blokov'}</span>
         </div>
       </div>
-      <a class="adm-btn ghost sm" href="/aktuality/${esc(c.slug)}" target="_blank" rel="noopener">Zobraziť</a>
-      <button type="button" class="adm-btn ghost sm" data-upravit="${esc(c.id)}">Upraviť</button>
-      <button type="button" class="adm-btn ghost sm" data-zmazat="${esc(c.id)}">Zmazať</button>
-    </div>`).join('');
+      <div class="adm-actions">
+        <a class="adm-btn ghost sm" href="/aktuality/${esc(c.slug)}" target="_blank" rel="noopener">Zobraziť</a>
+        <button type="button" class="adm-btn ghost sm" data-upravit="${esc(c.id)}">Upraviť</button>
+        <button type="button" class="adm-btn ghost sm" data-zmazat="${esc(c.id)}">Zmazať</button>
+      </div>
+    </div>`;
+  }).join('');
 
   $('#clanok-list').querySelectorAll('[data-upravit]').forEach((b) =>
     b.addEventListener('click', () => otvor(clanky.find((c) => c.id === b.dataset.upravit))));
@@ -294,16 +225,20 @@ function otvor(c) {
   f.published.value = String(c?.published ?? true);
   f.perex.value = c?.perex ?? '';
   f.foto_alt.value = c?.foto_alt ?? '';
-  f.telo.value = zPola(c?.telo);
   f.cta_nadpis.value = c?.cta_nadpis ?? '';
   f.cta_text.value = c?.cta_text ?? '';
   f.cta_odkaz.value = c?.cta_odkaz ?? '';
   f.cta_odkaz_text.value = c?.cta_odkaz_text ?? '';
-  f.foto.value = '';
-  $('#foto-nahlad').innerHTML = c?.foto_url ? `<img src="${esc(c.foto_url)}" alt="">` : '';
   $('#perex-pocet').textContent = f.perex.value.length;
 
-  vykresliNahlad();
+  /* Editor je neriadená textarea, takže po zmene .value ho treba upozorniť,
+     inak by náhľad vpravo ukazoval text predchádzajúceho článku. */
+  f.telo.value = zPola(c?.telo);
+  f.telo.dispatchEvent(new Event('input', { bubbles: true }));
+
+  // Dropzone si podľa toho prekreslí náhľad a zabudne predchádzajúci výber.
+  window.dispatchEvent(new CustomEvent('clanok:nacitany', { detail: { foto: c?.foto_url ?? null } }));
+
   f.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
