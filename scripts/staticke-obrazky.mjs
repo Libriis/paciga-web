@@ -25,6 +25,19 @@ const PUBLIC = join(KOREN, 'public');
 // Logo je v hlavičke aj v päte, obe s vlastnou šírkou a 2x variantom.
 const LOGO_SIRKY = [110, 130, 220, 260];
 
+/* Obrázky na homepage. Tá má prerender = false kvôli parte z databázy,
+   takže <Image> na nej vracia runtime cestu a všetky tieto fotky boli 404.
+   Šírky a kvality držia hodnoty zo src/lib/images.ts, nech sa optimalizácia
+   z 30. 7. nestratí: SIRKY_HERO/KVALITA_POZADIE a SIRKY_KARTA/KVALITA_KARTA. */
+const SSR_OBRAZKY = [
+  { zdroj: 'journey-poster.jpg', nazov: 'journey-poster', sirky: [480, 768, 1080, 1440, 1920], kvalita: 58 },
+  // Zdrojové fotky kariet majú 560 px, väčšie šírky by boli duplikáty:
+  // withoutEnlargement ich nezväčší a 640 aj 960 vyjdú byte za byte rovnako.
+  { zdroj: 'svc-obrad.jpg', nazov: 'svc-obrad', sirky: [320, 480, 560], kvalita: 70 },
+  { zdroj: 'svc-starostlivost.jpg', nazov: 'svc-starostlivost', sirky: [320, 480, 560], kvalita: 70 },
+  { zdroj: 'svc-kamenarstvo.jpg', nazov: 'svc-kamenarstvo', sirky: [320, 480, 560], kvalita: 70 },
+];
+
 // og:image musí byť hotová adresa, Facebook si ju nepredpočíta.
 // 1200 px je odporúčaná šírka náhľadu.
 const OG_SIRKA = 1200;
@@ -67,6 +80,21 @@ for (const w of LOGO_SIRKY) {
   const out = join(PUBLIC, 'assets', `logo-${w}.webp`);
   const info = await sharp(join(ZDROJE, 'asset-02.png')).resize({ width: w }).webp({ quality: 90 }).toFile(out);
   console.log(`  logo-${w}.webp  ${info.width}x${info.height}  ${kB(info.size)}`);
+}
+
+console.log('\nObrazky na SSR strankach:');
+mkdirSync(join(PUBLIC, 'assets', 'ssr'), { recursive: true });
+for (const o of SSR_OBRAZKY) {
+  const riadok = [];
+  for (const w of o.sirky) {
+    const out = join(PUBLIC, 'assets', 'ssr', `${o.nazov}-${w}.webp`);
+    const info = await sharp(join(ZDROJE, o.zdroj))
+      .resize({ width: w, withoutEnlargement: true })
+      .webp({ quality: o.kvalita })
+      .toFile(out);
+    riadok.push(`${w}=${kB(info.size)}`);
+  }
+  console.log(`  ${o.nazov.padEnd(20)} ${riadok.join('  ')}`);
 }
 
 console.log('\nOG nahlady:');
