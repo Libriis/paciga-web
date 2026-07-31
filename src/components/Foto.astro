@@ -3,12 +3,24 @@
   Fotka z reťazcovej cesty.
 
   Časť fotiek chodí z dát ako reťazec: aktuality.ts, parte-seed.json a
-  hlavne Supabase (foto_url zákazky). Lokálne cesty vieme prehnať cez
-  astro:assets a dostať WebP + srcset, externé URL nie. Komponent to
-  rozhodne za volajúceho, takže stránky ostávajú bez vetvenia.
+  hlavne Supabase (foto_url parte alebo článku). Komponent rozhodne sám,
+  odkiaľ fotku vziať, takže stránky ostávajú bez vetvenia.
+
+  Poradie:
+  1. Hotové varianty z public/clanky podľa mapy staticke-obrazky.json.
+     Toto je prvé zámerne. Fotky sa objavujú aj na stránkach s
+     prerender = false (aktuality, detail článku) a tam by <Image> vrátil
+     runtime cestu na obrázkovú službu, ktorá sa pri output: 'static'
+     nenasadzuje a vracia 404. Predgenerovaným stránkam hotový súbor
+     neuškodí, výsledok je rovnaký WebP so srcset.
+  2. astro:assets pre lokálne fotky, ktoré v mape ešte nie sú.
+  3. Obyčajný <img> pre externé URL (Supabase storage).
+
+  Varianty prekresli cez scripts/staticke-obrazky.mjs.
 */
 import { Image } from 'astro:assets';
 import { lokalnyObrazok, SIRKY_KARTA } from '../lib/images';
+import staticke from '../data/staticke-obrazky.json';
 
 interface Props {
   src: string | null | undefined;
@@ -30,19 +42,43 @@ const {
   class: trieda,
 } = Astro.props;
 
-const lokalna = lokalnyObrazok(src);
+type Zaznam = { zaklad: string; sirky: number[]; pomer: number };
+const MAPA = staticke as Record<string, Zaznam>;
+const hotova = src ? MAPA[src] : undefined;
+
+/* Zo žiadaných šírok ponechá tie, ktoré naozaj existujú. Keď zdrojová fotka
+   na žiadnu nestačí, padne sa na najväčšiu dostupnú, nech srcset nie je prázdny. */
+const dostupne = hotova ? widths.filter((w) => hotova.sirky.includes(w)) : [];
+const pouzitelne = hotova && !dostupne.length ? [hotova.sirky[hotova.sirky.length - 1]] : dostupne;
+const najvacsia = pouzitelne[pouzitelne.length - 1];
+const cesta = (w: number) => `/clanky/${hotova!.zaklad}-${w}.webp`;
+
+const lokalna = hotova ? null : lokalnyObrazok(src);
 ---
-{lokalna
-  ? <Image
-      src={lokalna}
-      widths={widths}
+{hotova
+  ? <img
+      src={cesta(najvacsia)}
+      srcset={pouzitelne.map((w) => `${cesta(w)} ${w}w`).join(', ')}
       sizes={sizes}
+      width={najvacsia}
+      height={Math.round(najvacsia / hotova.pomer)}
       alt={alt}
       loading={loading}
       fetchpriority={fetchpriority}
       decoding="async"
       class={trieda}
     />
-  : src
-    ? <img src={src} alt={alt} loading={loading} fetchpriority={fetchpriority} decoding="async" class={trieda} />
-    : null}
+  : lokalna
+    ? <Image
+        src={lokalna}
+        widths={widths}
+        sizes={sizes}
+        alt={alt}
+        loading={loading}
+        fetchpriority={fetchpriority}
+        decoding="async"
+        class={trieda}
+      />
+    : src
+      ? <img src={src} alt={alt} loading={loading} fetchpriority={fetchpriority} decoding="async" class={trieda} />
+      : null}

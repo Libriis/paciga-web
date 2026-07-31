@@ -48,8 +48,10 @@ Bez nastavených env premenných web funguje ďalej — parte sa berú zo
    `supabase/schema.sql` (tabuľky, politiky, sviečky, bucket, 12 parte),
    `supabase/schema-crm.sql` (zákazky, kontakty, checklist, dokumenty),
    `supabase/schema-vitals.sql` (Core Web Vitals z terénu),
-   `supabase/schema-admin.sql` (admin identita — **musí ísť posledná**,
-   prepisuje admin politiky z predchádzajúcich troch).
+   `supabase/schema-admin.sql` (admin identita — prepisuje admin politiky
+   z predchádzajúcich troch, preto musí ísť po nich),
+   `supabase/schema-clanky.sql` (aktuality; potrebuje `je_admin()`
+   zo štvorky, takže ide posledná).
 3. **Authentication → Users → Add user** → e-mail + heslo pre klienta.
    Adresa sa musí zhodovať s riadkom v tabuľke `admini`, inak sa prihlásenie
    podarí, ale admin neuvidí nič. Predvyplnená je `paciga@paciga.sk`.
@@ -125,8 +127,27 @@ public/                    css, js, assets (1:1 pôvodný dizajn)
 supabase/schema.sql        web: parte, kondolencie, dopyty, sviečky + seed
 supabase/schema-crm.sql    CRM: zákazky, kontakty, úkony, dokumenty
 supabase/schema-vitals.sql Core Web Vitals z terénu + prehľad percentilov
-supabase/schema-admin.sql  admin identita — spúšťať vždy ako poslednú
+supabase/schema-admin.sql  admin identita — spúšťať po prvých troch
+supabase/schema-clanky.sql aktuality ako redakčný obsah — spúšťať poslednú
 ```
+
+## Redakčný systém
+
+Obsah webu sa spravuje v `/admin` bez zásahu do kódu:
+
+- **Parte** (`/admin/web`) — všetky údaje zosnulého, termín a miesto rozlúčky,
+  odkaz rodine, fotka s automatickým zmenšením, koncept alebo zverejnené.
+- **Kondolencie** (`/admin/web`) — chodia neschválené, na web sa dostanú až
+  po schválení.
+- **Aktuality** (`/admin/clanky`) — titulok, perex, kategória, dátum, titulná
+  fotka, text a výzva na konci. Text sa píše po odstavcoch oddelených prázdnym
+  riadkom, tlačidlá Nadpis a Odrážka menia typ riadku pod kurzorom a náhľad
+  ukazuje výsledok. Koncept sa na webe nezobrazí.
+
+Prehľad aktualít aj detail článku bežia ako SSR, takže nový článok je na webe
+hneď po uložení, bez nasadzovania. Kým je tabuľka `clanky` prázdna, web
+zobrazuje pôvodných 21 článkov zo `src/data/aktuality.ts`; v `/admin/clanky`
+je na ich jednorazový presun do databázy tlačidlo.
 
 Staré adresy `*.html` (zdieľané na Facebooku) presmeruje middleware 301
 na čisté URL (`/parte/meno-priezvisko`).

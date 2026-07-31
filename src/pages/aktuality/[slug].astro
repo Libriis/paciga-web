@@ -9,17 +9,18 @@ import Base from '../../layouts/Base.astro';
 import Foto from '../../components/Foto.astro';
 import { SIRKY_HERO } from '../../lib/images';
 import Zdielanie from '../../components/Zdielanie.astro';
-import { CLANKY, getClanok, maDetail, ostatneClanky, bloky } from '../../data/aktuality';
+import { getClanok, ostatneClanky, bloky, maDetail } from '../../lib/clanky';
 
-export function getStaticPaths() {
-  return CLANKY.filter(maDetail).map((c) => ({ params: { slug: c.slug } }));
-}
+/* Články spravuje redaktor v /admin/clanky, takže zoznam adries nie je
+   pri builde známy. Predtým tu bol getStaticPaths a nový článok by dostal
+   stránku až po nasadení webu. */
+export const prerender = false;
 
 const { slug } = Astro.params;
-const c = slug ? getClanok(slug) : undefined;
+const c = slug ? await getClanok(slug) : undefined;
 if (!c) return Astro.redirect('/aktuality', 302);
 
-const dalsie = ostatneClanky(c.slug);
+const dalsie = await ostatneClanky(c.slug);
 
 const title = `${c.titulok} | Aktuality | Paciga`;
 const description = c.text;

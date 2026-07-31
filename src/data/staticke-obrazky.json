@@ -1,0 +1,261 @@
+{
+ "/assets/asset-01.jpg": {
+  "zaklad": "asset-01",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5023474178403755
+ },
+ "/assets/asset-03.jpg": {
+  "zaklad": "asset-03",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1254
+  ],
+  "pomer": 1.5
+ },
+ "/assets/asset-04.jpg": {
+  "zaklad": "asset-04",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/asset-05.jpg": {
+  "zaklad": "asset-05",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/asset-06.jpg": {
+  "zaklad": "asset-06",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/asset-07.jpg": {
+  "zaklad": "asset-07",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/asset-09.jpg": {
+  "zaklad": "asset-09",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/asset-10.jpg": {
+  "zaklad": "asset-10",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1400
+  ],
+  "pomer": 1.3333333333333333
+ },
+ "/assets/asset-11.jpg": {
+  "zaklad": "asset-11",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1400
+  ],
+  "pomer": 1.5005359056806002
+ },
+ "/assets/cintorin.jpg": {
+  "zaklad": "cintorin",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1600
+  ],
+  "pomer": 1.499531396438613
+ },
+ "/assets/fleet-still.jpg": {
+  "zaklad": "fleet-still",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.7777777777777777
+ },
+ "/assets/info-hero.jpg": {
+  "zaklad": "info-hero",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.7770597738287561
+ },
+ "/assets/journey-poster.jpg": {
+  "zaklad": "journey-poster",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.7777777777777777
+ },
+ "/assets/kron-2016.jpg": {
+  "zaklad": "kron-2016",
+  "sirky": [
+   320,
+   480,
+   640,
+   880
+  ],
+  "pomer": 1.3333333333333333
+ },
+ "/assets/kron-3000.jpg": {
+  "zaklad": "kron-3000",
+  "sirky": [
+   320,
+   480,
+   640,
+   880
+  ],
+  "pomer": 1.3333333333333333
+ },
+ "/assets/o-nas-limuzina.jpg": {
+  "zaklad": "o-nas-limuzina",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1600
+  ],
+  "pomer": 1.5009380863039399
+ },
+ "/assets/o-nas-tim.jpg": {
+  "zaklad": "o-nas-tim",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/parte-ilustracna.jpg": {
+  "zaklad": "parte-ilustracna",
+  "sirky": [
+   320,
+   480,
+   640,
+   900
+  ],
+  "pomer": 0.6666666666666666
+ },
+ "/assets/sluzby-hero.jpg": {
+  "zaklad": "sluzby-hero",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.500682128240109
+ },
+ "/assets/sperky-studio.jpg": {
+  "zaklad": "sperky-studio",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1400
+  ],
+  "pomer": 1
+ },
+ "/assets/sperky/kolekcia.jpg": {
+  "zaklad": "sperky-kolekcia",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1400
+  ],
+  "pomer": 1.5005359056806002
+ },
+ "/assets/svc-kamenarstvo.jpg": {
+  "zaklad": "svc-kamenarstvo",
+  "sirky": [
+   320,
+   480,
+   560
+  ],
+  "pomer": 1
+ },
+ "/assets/svc-obrad.jpg": {
+  "zaklad": "svc-obrad",
+  "sirky": [
+   320,
+   480,
+   560
+  ],
+  "pomer": 1
+ }
+}

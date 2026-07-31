@@ -13,7 +13,7 @@
 // Riešenie sú hotové súbory v public/, ktoré Vercel kopíruje doslova.
 // Spusti tento skript vždy, keď sa zmení logo alebo niektorá OG fotka.
 
-import { readdirSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -96,6 +96,35 @@ for (const o of SSR_OBRAZKY) {
   }
   console.log(`  ${o.nazov.padEnd(20)} ${riadok.join('  ')}`);
 }
+
+/* Fotky článkov. Detail článku aj prehľad aktualít bežia ako SSR, lebo
+   obsah spravuje redaktor v /admin/clanky. Komponent Foto.astro preto pre
+   lokálne cesty siahne po týchto hotových variantoch namiesto astro:assets.
+   Mapa nižšie mu povie, ktoré šírky reálne existujú. */
+console.log('\nFotky clankov:');
+const mapa = {};
+const SIRKY_CLANOK = [320, 480, 640, 960, 1440, 1920];
+mkdirSync(join(PUBLIC, 'clanky'), { recursive: true });
+
+for (const { cesta, relativna } of ogZdroje()) {
+  if (!existsSync(cesta)) continue;
+  const zaklad = relativna.replace(/\//g, '-').replace(/\.[^.]+$/, '');
+  const meta = await sharp(cesta).metadata();
+  const sirky = SIRKY_CLANOK.filter((w, i) => w <= meta.width || SIRKY_CLANOK[i - 1] < meta.width);
+  const hotove = [];
+  for (const w of sirky) {
+    const skutocna = Math.min(w, meta.width);
+    const out = join(PUBLIC, 'clanky', `${zaklad}-${skutocna}.webp`);
+    if (!hotove.includes(skutocna)) {
+      await sharp(cesta).resize({ width: skutocna, withoutEnlargement: true }).webp({ quality: 72 }).toFile(out);
+      hotove.push(skutocna);
+    }
+  }
+  mapa['/assets/' + relativna] = { zaklad, sirky: hotove, pomer: meta.width / meta.height };
+  console.log(`  ${zaklad.padEnd(24)} ${hotove.join(', ')}`);
+}
+writeFileSync(join(KOREN, 'src', 'data', 'staticke-obrazky.json'), JSON.stringify(mapa, null, 1) + '\n', 'utf8');
+console.log(`  mapa: src/data/staticke-obrazky.json (${Object.keys(mapa).length} fotiek)`);
 
 console.log('\nOG nahlady:');
 let spolu = 0;
