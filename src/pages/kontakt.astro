@@ -1,5 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
+import { posterVidea } from '../lib/images';
+
+/* Postery kariet pobočiek. Nasadzuje ich až IntersectionObserver v main.js,
+   takže pri načítaní stránky nesúperia o pásmo s kritickou cestou. */
+const [posterPoprad, posterBela, posterLm] = await Promise.all([
+  posterVidea('/assets/asset-03.jpg'),
+  posterVidea('/assets/asset-10.jpg'),
+  posterVidea('/assets/asset-11.jpg'),
+]);
 
 const title = "Kontakt | Paciga, pohrebné a kamenárske služby";
 const description = "Kontakt na pohrebnú službu Paciga. NON STOP 0903 596 364 a 0948 110 109. Pobočky Poprad, Spišská Belá a Liptovský Mikuláš.";
@@ -71,7 +80,7 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
       </div>
       <div class="branch-grid">
         <article class="branch-card" data-reveal>
-          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-poprad.mp4" data-poster="/assets/asset-03.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-poprad.mp4" data-poster={posterPoprad} muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
           <div class="branch-body">
             <h3>Poprad</h3>
             <p class="branch-addr">Francisciho 3288/35<br>058 01 Poprad</p>
@@ -81,7 +90,7 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
           </div>
         </article>
         <article class="branch-card" data-reveal>
-          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-bela.mp4" data-poster="/assets/asset-10.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-bela.mp4" data-poster={posterBela} muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
           <div class="branch-body">
             <h3>Spišská Belá</h3>
             <p class="branch-addr">Letná 17<br>059 01 Spišská Belá</p>
@@ -91,7 +100,7 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
           </div>
         </article>
         <article class="branch-card" data-reveal>
-          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-lm.mp4" data-poster="/assets/asset-11.jpg" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+          <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-lm.mp4" data-poster={posterLm} muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
           <div class="branch-body">
             <h3>Liptovský Mikuláš</h3>
             <p class="branch-addr">Ester Šimerovej Martinčekovej 4506/4<br>031 01 Liptovský Mikuláš</p>
