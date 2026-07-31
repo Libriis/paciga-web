@@ -3,6 +3,11 @@
 -- Spusti celý súbor v Supabase: SQL Editor → New query → Run.
 -- Obsahuje: tabuľky, RLS politiky, funkciu na sviečky,
 -- storage bucket na fotky a seed existujúcich 12 parte.
+--
+-- POZOR: admin politiky nižšie sú len provizórium („stačí byť
+-- prihlásený"). Nahrádza ich schema-admin.sql, ktorý musí bežať
+-- po tomto súbore. Keď spúšťaš tento súbor znova, pusti potom
+-- vždy aj schema-admin.sql, inak sa CRM otvorí každému účtu.
 -- ============================================================
 
 -- ---------- PARTE (smútočné oznámenia) ----------
@@ -59,8 +64,13 @@ create table if not exists public.sviecky_log (
 );
 
 -- ---------- updated_at trigger ----------
+-- search_path je pevný. Bez neho vie volajúci podstrčiť vlastnú schému
+-- a funkcia beží nad cudzími objektmi. now() je v pg_catalog, ten je
+-- v ceste vždy, takže prázdny search_path stačí.
 create or replace function public.set_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql
+set search_path = ''
+as $$
 begin
   new.updated_at := now();
   return new;
@@ -147,9 +157,14 @@ insert into storage.buckets (id, name, public)
 values ('parte-foto', 'parte-foto', true)
 on conflict (id) do nothing;
 
+-- Fotky chodia na web cez /storage/v1/object/public/parte-foto/...
+-- Tá cesta obchádza RLS, lebo bucket je public, takže anon tu politiku
+-- nepotrebuje. Keby ju mal, mohol by si vylistovať celý obsah bucketu.
+-- Listovanie potrebuje len admin v /admin, a ten je prihlásený.
 drop policy if exists "parte-foto verejne citanie" on storage.objects;
-create policy "parte-foto verejne citanie" on storage.objects
-  for select to anon, authenticated using (bucket_id = 'parte-foto');
+drop policy if exists "parte-foto admin citanie" on storage.objects;
+create policy "parte-foto admin citanie" on storage.objects
+  for select to authenticated using (bucket_id = 'parte-foto');
 
 drop policy if exists "parte-foto admin zapis" on storage.objects;
 create policy "parte-foto admin zapis" on storage.objects

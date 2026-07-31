@@ -1,6 +1,9 @@
 -- ============================================================
 -- Paciga CRM — databázová schéma (Fáza 1)
 -- Spustiť PO schema.sql (potrebuje tabuľky parte a dopyty).
+-- Po tomto súbore vždy spusti aj schema-admin.sql — prepisuje
+-- tunajšie admin politiky, ktoré samy o sebe pustia k zákazkám
+-- a dokladom každý prihlásený účet.
 -- Obsahuje: kontakty, zákazky, checklist úkonov, dokumenty,
 -- RLS (len prihlásení) a privátny storage bucket na dokumenty.
 -- ============================================================
@@ -47,6 +50,9 @@ create table if not exists public.zakazky (
 
 create index if not exists zakazky_stav_idx on public.zakazky (stav);
 create index if not exists zakazky_objednavatel_idx on public.zakazky (objednavatel_id);
+-- Cudzie kľúče bez indexu spomaľujú join aj mazanie rodičovského riadku.
+create index if not exists zakazky_parte_idx on public.zakazky (parte_id);
+create index if not exists zakazky_dopyt_idx on public.zakazky (dopyt_id);
 
 drop trigger if exists zakazky_updated_at on public.zakazky;
 create trigger zakazky_updated_at before update on public.zakazky
