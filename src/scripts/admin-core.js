@@ -144,7 +144,9 @@ export async function requireAuth() {
     return new Promise(() => {}); // stránka odchádza, nič ďalej nerob
   }
   const who = document.getElementById('adm-user');
-  if (who) who.textContent = session.user.email;
+  // Prihlasujeme sa menom, nie adresou, tak aj v pätke ukazujeme meno.
+  // Účty mimo firemnej domény necháme celé, nech je jasné, kto je prihlásený.
+  if (who) who.textContent = String(session.user.email ?? '').replace(/@paciga\.sk$/, '');
   const out = document.getElementById('adm-logout');
   if (out) out.addEventListener('click', async () => { await sb.auth.signOut(); location.href = '/admin/login'; });
   if (DEMO) document.getElementById('demo-banner')?.classList.remove('hidden');
