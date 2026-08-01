@@ -8,10 +8,15 @@
   Čo vie: prepísať text a vymeniť fotku v blokoch označených data-obsah.
   Čo zámerne nevie: meniť poradie sekcií, pridávať bloky ani siahať na
   dizajn. Klient tak nemá ako web rozbiť.
-*/
-(async () => {
-  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
 
+  Klient Supabase sa berie z balíka v projekte, nie z verejného CDN.
+  vercel.json dnes obmedzuje len frame-ancestors, base-uri a object-src,
+  ale stačí, aby doň niekto pridal script-src 'self', a načítanie z cudzej
+  domény by padlo. Takto to Astro zbundluje do vlastného súboru.
+*/
+import { createClient } from '@supabase/supabase-js';
+
+(async () => {
   const cfg = document.getElementById('edit-cfg');
   if (!cfg) return;
   const sb = createClient(cfg.dataset.url, cfg.dataset.kluc);
