@@ -145,6 +145,7 @@ export const ODKAZY = {
   web: '/admin/web',
   clanky: '/admin/clanky',
   vitals: '/admin/vitals',
+  obsah: '/admin/obsah',
 };
 
 /** Sekcie administrácie. Kľúč sedí s hodnotou v admini.pristupy a s RLS. */
@@ -156,6 +157,7 @@ export const SEKCIE = [
   { key: 'web', label: 'Web a parte', popis: 'Parte, kondolencie, dopyty' },
   { key: 'clanky', label: 'Aktuality', popis: 'Články na webe' },
   { key: 'vitals', label: 'Rýchlosť webu', popis: 'Merania z terénu' },
+  { key: 'obsah', label: 'Obsah webu', popis: 'Úprava textov a fotiek priamo na stránkach' },
 ];
 
 /* Prístupy prihláseného. Načítajú sa raz za stránku.

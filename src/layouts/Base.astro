@@ -185,5 +185,22 @@ const NAV = [
 <script is:inline defer src="/assets/vendor/web-vitals.js"></script>
 <script is:inline defer src="/js/vitals.js"></script>
 <slot name="scripts" />
+{/* Úprava obsahu priamo na stránke. Bežný návštevník stiahne len tento
+    krátky test: Supabase si reláciu ukladá do localStorage pod kľúčom
+    sb-<ref>-auth-token, takže bez prihlásenia sa editor vôbec nenačíta. */}
+<span id="edit-cfg" data-url={import.meta.env.PUBLIC_SUPABASE_URL} data-kluc={import.meta.env.PUBLIC_SUPABASE_ANON_KEY} hidden></span>
+<script is:inline>
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      if (/^sb-.*-auth-token$/.test(localStorage.key(i))) {
+        const s = document.createElement('script');
+        s.type = 'module';
+        s.src = '/js/edit.js';
+        document.body.appendChild(s);
+        break;
+      }
+    }
+  } catch (e) { /* prehliadač bez localStorage: editor sa proste nenačíta */ }
+</script>
 </body>
 </html>

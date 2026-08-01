@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Ui21 from '../components/Ui21.astro';
 import LogoCloudSwap from '../components/ui/logo-clouds';
 import Foto from '../components/Foto.astro';
+import Text from '../components/Text.astro';
 import { getParteList, inicialky, fmtKratky } from '../lib/parte';
 import { RECENZIE, VYBER, GOOGLE_PROFIL, GOOGLE_HODNOTENIE } from '../data/recenzie';
 // Fotky tejto stránky sa neimportujú cez astro:assets. Stránka má
@@ -88,9 +89,9 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
       <!-- texty staníc (pinované nad canvasom) -->
       <div class="journey-text jt-hero" data-jt="0">
         <div class="container">
-          <div class="eyebrow" data-hero-el>Rodinná pohrebná a kamenárska služba · od 2018</div>
+          <Text as="div" class="eyebrow" data-hero-el kluc="index.hero.eyebrow">Rodinná pohrebná a kamenárska služba · od 2018</Text>
           <h1 id="hero-title"><span class="line"><span>Dôstojná rozlúčka</span></span><span class="line"><span>za&nbsp;každých okolností.</span></span></h1>
-          <p class="hero-lead" data-hero-el>Pohrebné obrady, preprava a kamenárstvo. Sme pri vás nepretržite, každý deň v roku.</p>
+          <Text as="p" class="hero-lead" data-hero-el kluc="index.hero.lead">Pohrebné obrady, preprava a kamenárstvo. Sme pri vás nepretržite, každý deň v roku.</Text>
           <div class="hero-actions" data-hero-el>
             <a href="tel:0903596364" class="btn-gold">NON STOP · 0903 596 364</a>
             <a href="#sluzby" class="btn-line">Naše služby →</a>
@@ -99,19 +100,19 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
       </div>
       <div class="journey-text jt-mid" data-jt="1">
         <h2>Kompletná starostlivosť<br>pod jednou strechou</h2>
-        <p>Obrad a pochovanie, kremácia, kvetinová výzdoba, spomienkové predmety aj kamenárstvo.</p>
+        <Text as="p" kluc="index.jazda.starostlivost">Obrad a pochovanie, kremácia, kvetinová výzdoba, spomienkové predmety aj kamenárstvo.</Text>
       </div>
       <div class="journey-text jt-mid" data-jt="2">
-        <div class="badge-pill"><span>Ocenená ako najkrajšia na Slovensku</span></div>
+        <div class="badge-pill"><Text kluc="index.jazda.ocenenie">Ocenená ako najkrajšia na Slovensku</Text></div>
         <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
       </div>
       <div class="journey-text jt-mid" data-jt="3">
         <h2>„Nikdy nezabudnem.“</h2>
-        <p>Spomienkové šperky s odtlačkom prsta. Kúsok blízkeho človeka navždy.</p>
+        <Text as="p" kluc="index.jazda.sperky">Spomienkové šperky s odtlačkom prsta. Kúsok blízkeho človeka navždy.</Text>
       </div>
       <div class="journey-text jt-mid" data-jt="4">
         <h2>Spod Tatier<br>Aj vo&nbsp;vašom meste</h2>
-        <p>Poprad, Spišská Belá a Liptovský Mikuláš</p>
+        <Text as="p" kluc="index.jazda.pobocky">Poprad, Spišská Belá a Liptovský Mikuláš</Text>
         <a href="tel:0903596364" class="btn-gold jt-cta">NON STOP · 0903 596 364</a>
       </div>
     </div>

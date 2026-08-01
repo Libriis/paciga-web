@@ -30,6 +30,8 @@ interface Props {
   loading?: 'lazy' | 'eager';
   fetchpriority?: 'high' | 'low' | 'auto';
   class?: string;
+  /** ostatné atribúty prejdú na značku, napr. data-obsah z ObrazokObsah */
+  [dalsie: string]: unknown;
 }
 
 const {
@@ -40,6 +42,7 @@ const {
   loading = 'lazy',
   fetchpriority,
   class: trieda,
+  ...zvysok
 } = Astro.props;
 
 type Zaznam = { zaklad: string; sirky: number[]; pomer: number };
@@ -67,6 +70,7 @@ const lokalna = hotova ? null : lokalnyObrazok(src);
       fetchpriority={fetchpriority}
       decoding="async"
       class={trieda}
+      {...zvysok}
     />
   : lokalna
     ? <Image
@@ -78,7 +82,8 @@ const lokalna = hotova ? null : lokalnyObrazok(src);
         fetchpriority={fetchpriority}
         decoding="async"
         class={trieda}
+        {...zvysok}
       />
     : src
-      ? <img src={src} alt={alt} loading={loading} fetchpriority={fetchpriority} decoding="async" class={trieda} />
+      ? <img src={src} alt={alt} loading={loading} fetchpriority={fetchpriority} decoding="async" class={trieda} {...zvysok} />
       : null}
