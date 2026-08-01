@@ -1,0 +1,46 @@
+---
+/*
+  Editovateľná fotka.
+
+    <ObrazokObsah kluc="index.hero.foto" src="/assets/asset-07.jpg"
+      alt="Pohrebné vozidlo" widths={[480, 960, 1440]} sizes="100vw" />
+
+  Kým klient fotku nevymení, zobrazí sa predvolená zo `src` — cez rovnaké
+  hotové varianty ako zvyšok webu (Foto.astro). Po výmene sa berie súbor
+  z úložiska, ten už varianty nemá, tak ide priamo.
+
+  Atribút data-obsah hovorí editačnej vrstve, že sa fotka dá vymeniť.
+*/
+import Foto from './Foto.astro';
+import { nacitajObsah } from '../lib/obsah';
+
+interface Props {
+  kluc: string;
+  src: string;
+  alt?: string;
+  widths?: number[];
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+}
+
+const {
+  kluc,
+  src,
+  alt = '',
+  widths,
+  sizes,
+  loading = 'lazy',
+  fetchpriority,
+  class: trieda,
+} = Astro.props;
+
+const mapa = await nacitajObsah();
+const vlastna = mapa.get(kluc);
+---
+{vlastna
+  ? <img src={vlastna} alt={alt} loading={loading} fetchpriority={fetchpriority}
+      decoding="async" class={trieda} data-obsah={kluc} data-obsah-typ="obrazok" />
+  : <Foto src={src} alt={alt} widths={widths} sizes={sizes} loading={loading}
+      fetchpriority={fetchpriority} class={trieda} data-obsah={kluc} data-obsah-typ="obrazok" />}

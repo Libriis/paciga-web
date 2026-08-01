@@ -1,0 +1,36 @@
+---
+/*
+  Editovateľný text.
+
+    <Text as="h1" kluc="index.hero.nadpis" class="hero-nadpis">
+      Sprevádzame vás s úctou
+    </Text>
+
+  Text medzi značkami je predvolená hodnota. Ostáva v kóde zámerne: keď
+  databáza mlčí alebo klient zmeny vráti, stránka vyzerá presne ako dnes.
+
+  Atribút data-obsah je jediné, čo editačná vrstva na živom webe potrebuje,
+  aby vedela, čo sa dá prepísať a kam to uložiť.
+*/
+import { nacitajObsah, hodnota } from '../lib/obsah';
+
+interface Props {
+  kluc: string;
+  /** značka, do ktorej sa text vykreslí */
+  as?: string;
+  class?: string;
+  /** viacriadkový text (odstavce), povolí zalomenia */
+  viacriadkovy?: boolean;
+  /* Ostatné atribúty prejdú na značku. Nie je to pohodlie: časť blokov
+     nesie data-hero-el alebo data-reveal a animácie ich podľa toho hľadajú.
+     Bez prepustenia by sa po zmene na <Text> prestali hýbať. */
+  [dalsie: string]: unknown;
+}
+
+const { kluc, as: Znacka = 'span', class: trieda, viacriadkovy = false, ...zvysok } = Astro.props;
+
+const predvolene = (await Astro.slots.render('default')).trim();
+const mapa = await nacitajObsah();
+const text = hodnota(mapa, kluc, predvolene);
+---
+<Znacka class={trieda} data-obsah={kluc} data-obsah-typ="text" {...zvysok} set:html={viacriadkovy ? text.replace(/\n/g, '<br>') : text} />

@@ -185,5 +185,21 @@ const NAV = [
 <script is:inline defer src="/assets/vendor/web-vitals.js"></script>
 <script is:inline defer src="/js/vitals.js"></script>
 <slot name="scripts" />
+{/* Úprava obsahu priamo na stránke. Bežný návštevník stiahne len tento
+    krátky test: Supabase si reláciu ukladá do localStorage pod kľúčom
+    sb-<ref>-auth-token, takže bez prihlásenia sa editor vôbec nenačíta. */}
+<span id="edit-cfg" data-url={import.meta.env.PUBLIC_SUPABASE_URL} data-kluc={import.meta.env.PUBLIC_SUPABASE_ANON_KEY} hidden></span>
+<script>
+  /* Dynamický import: Astro z neho spraví samostatný súbor, ktorý sa stiahne
+     až po zavolaní. Návštevník bez relácie teda editor ani jeho závislosti
+     nesťahuje. */
+  try {
+    let prihlaseny = false;
+    for (let i = 0; i < localStorage.length; i++) {
+      if (/^sb-.*-auth-token$/.test(localStorage.key(i))) { prihlaseny = true; break; }
+    }
+    if (prihlaseny) import('../scripts/edit-obsah.js');
+  } catch (e) { /* prehliadač bez localStorage: editor sa proste nenačíta */ }
+</script>
 </body>
 </html>
