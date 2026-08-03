@@ -20,6 +20,10 @@ const otazky: FaqItem[] = [
     a: 'Odtlačok prsta vášho blízkeho a nápis podľa vášho želania. Práve odtlačok robí zo šperku kúsok, ktorý sa nedá nahradiť.',
   },
   {
+    q: 'Ako sa získava odtlačok prsta?',
+    a: 'Ak pohreb vášho blízkeho zabezpečujeme my, odtlačok snímeme sami a vy na nič nemusíte myslieť. Ak pohreb vybavovala iná služba, odtlačok nám prinesie pozostalá rodina.',
+  },
+  {
     q: 'V akých farbách si môžem vybrať?',
     a: 'Zlatá, strieborná, ružová a čierna. Prívesok nosíte na jemnej retiazke alebo na kordónovej šnúrke, náramok na čiernej šnúrke s posuvnými uzlami.',
   },
@@ -37,7 +41,7 @@ const otazky: FaqItem[] = [
   },
   {
     q: 'Ako si šperk objednám?',
-    a: 'Zavolajte na 0903 596 364 alebo napíšte na paciga@paciga.sk. Prejdeme s vami výber typu, tvaru, farby aj znenie gravíru.',
+    a: 'Osobne na ktorejkoľvek našej pobočke. Zavolajte na 0903 596 364 a dohodnite si návštevu, na mieste prejdeme výber typu, tvaru, farby aj znenie gravíru.',
   },
 ];
 
@@ -207,9 +211,9 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
       <h2 data-textreveal>O všetko sa postaráme.</h2>
       <div class="mt-12 grid grid-cols-1 gap-[22px] md:grid-cols-3">
         {[
-          { n: '01', t: 'Ozvite sa nám', p: 'Zavolajte alebo napíšte. Prejdeme s vami výber typu, tvaru, farby aj znenie nápisu.' },
-          { n: '02', t: 'Snímeme odtlačok', p: 'Odtlačok prsta vášho blízkeho zabezpečíme my. Nemusíte na nič myslieť.' },
-          { n: '03', t: 'Šperk je váš', p: 'Hotový kúsok si prevezmete na ktorejkoľvek našej pobočke alebo vám ho doručíme.' },
+          { n: '01', t: 'Príďte na pobočku', p: 'Šperk sa objednáva osobne na ktorejkoľvek našej pobočke. Na mieste prejdeme výber typu, tvaru, farby aj znenie nápisu.' },
+          { n: '02', t: 'Snímeme odtlačok', p: 'Ak pohreb zabezpečujeme my, odtlačok prsta snímeme sami. Inak nám ho prinesie pozostalá rodina.' },
+          { n: '03', t: 'Šperk je váš', p: 'Hotový kúsok si prevezmete na pobočke, na ktorej ste si ho objednali.' },
         ].map((k) => (
           <div class="rounded-[18px] border border-line bg-panel p-[26px]" data-reveal>
             <div class="text-[13px] tracking-[0.2em] text-dim">{k.n}</div>

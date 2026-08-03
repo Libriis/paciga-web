@@ -794,6 +794,10 @@ html.nav-locked body {
    panel, linku a radius tímovej sekcie, žiadny nový cudzí tvar.
    Krajné dve miniatúry kotvia kartu k hrane pásu, inak by vytiekla z
    kontajnera. Na dotyku hover neexistuje, karta sa tam nezobrazuje. */
+/* podnadpis skupiny v tíme (vedúci pobočiek) */
+.team-lead-head { margin-top: clamp(44px, 6vh, 70px); margin-bottom: 26px; }
+.team-sub { font-size: 15px; font-weight: 650; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+
 .team-more { margin-top: clamp(28px, 4vh, 44px); text-align: center; }
 .team-full { opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s ease; }
 .team-full.is-open { opacity: 1; transform: none; }
@@ -900,6 +904,20 @@ html.nav-locked body {
 .branch-tel { display: inline-block; margin-top: 14px; font-size: 22px; font-weight: 660; font-variation-settings: var(--wide); color: var(--gold); transition: color 0.3s ease; }
 .branch-tel:hover { color: var(--fg-strong); }
 .branch-hours { margin-top: 6px; margin-bottom: 18px; font-size: 16.1px; color: var(--dim); letter-spacing: 0.04em; }
+.branch-mail { margin-top: 4px; font-size: 16.1px; }
+.branch-mail a { color: var(--muted); transition: color 0.3s ease; }
+.branch-mail a:hover { color: var(--fg-strong); }
+
+/* ---- interiér pobočiek (kontakt) ---- */
+.interier { padding: clamp(70px, 10vh, 130px) 0; }
+.interier-lead { max-width: 52ch; margin-bottom: 40px; color: var(--muted); font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.7; }
+.interier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.interier-item figcaption { margin-top: 12px; font-size: 14px; letter-spacing: 0.08em; color: var(--dim); }
+.interier-video { margin-top: 22px; aspect-ratio: 16 / 6; }
+@media (max-width: 860px) {
+  .interier-grid { grid-template-columns: 1fr; }
+  .interier-video { aspect-ratio: 16 / 9; }
+}
 
 /* ---- memoriam ---- */
 .memoriam { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; }
