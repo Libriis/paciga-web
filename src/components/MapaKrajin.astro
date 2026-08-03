@@ -1,0 +1,41 @@
+---
+/*
+  Krajiny, z ktorých už Paciga zosnulých prevážala. Zoznam je z pôvodného
+  webu, nie z odhadu. Nedopĺňať krajiny, ktoré tam neboli.
+*/
+const krajiny = [
+  { nazov: 'Nemecko', kod: 'DE' },
+  { nazov: 'Rakúsko', kod: 'AT' },
+  { nazov: 'Česko', kod: 'CZ' },
+  { nazov: 'Maďarsko', kod: 'HU' },
+  { nazov: 'Chorvátsko', kod: 'HR' },
+  { nazov: 'Belgicko', kod: 'BE' },
+  { nazov: 'Holandsko', kod: 'NL' },
+  { nazov: 'Dánsko', kod: 'DK' },
+  { nazov: 'Švajčiarsko', kod: 'CH' },
+];
+---
+
+<section class="krajiny" id="krajiny">
+  <div class="container">
+    <div class="svcgroup-head">
+      <div class="eyebrow" data-reveal>Krajiny</div>
+      <h2 data-reveal>Odkiaľ sme už vozili.</h2>
+      <div class="gold-line" data-line aria-hidden="true"></div>
+    </div>
+
+    <ul class="krajiny-grid">
+      {krajiny.map((k) => (
+        <li class="krajina" data-reveal>
+          <span class="krajina-kod" aria-hidden="true">{k.kod}</span>
+          <span class="krajina-nazov">{k.nazov}</span>
+        </li>
+      ))}
+    </ul>
+
+    <p class="katalog-nota" data-reveal>
+      Zoznam nie je uzavretý. Ak je krajina iná, zavolajte nám. Overíme podmienky a povieme vám,
+      čo prevoz obnáša, skôr než sa rozhodnete.
+    </p>
+  </div>
+</section>

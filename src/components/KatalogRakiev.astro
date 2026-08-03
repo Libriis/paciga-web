@@ -1,0 +1,94 @@
+---
+/*
+  Katalóg rakiev. Dvadsať fotiek zo showroomu, filtrovateľných podľa
+  odtieňa dreva.
+
+  Filtrovanie beží cez CSS: prepínač nastaví data-filter na mriežke
+  a pravidlo v styles.css skryje karty s iným odtieňom. Bez JS teda
+  ostanú viditeľné všetky, čo je správne správanie pre katalóg.
+
+  Fotky sa naťahujú cez import.meta.glob, aby sa nemuselo dvadsať
+  importov písať ručne. eager: true je zámerné — Astro potrebuje
+  ImageMetadata už pri builde, dynamický import by vrátil Promise.
+*/
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { KATALOG_RAKIEV, ODTIENE_RAKIEV } from '../data/katalog-rakiev';
+import { KVALITA_KARTA } from '../lib/images';
+
+const fotky = import.meta.glob<{ default: ImageMetadata }>('../assets/katalog/rakvy/*.jpg', {
+  eager: true,
+});
+
+function foto(kod: string): ImageMetadata | null {
+  return fotky[`../assets/katalog/rakvy/rakva-${kod}.jpg`]?.default ?? null;
+}
+
+const nazovOdtiena = new Map(ODTIENE_RAKIEV.map((o) => [o.kluc, o.nazov]));
+
+/* Počty do prepínača, aby človek vopred videl, koľko mu filter nechá. */
+const pocty = new Map<string, number>();
+for (const r of KATALOG_RAKIEV) pocty.set(r.odtien, (pocty.get(r.odtien) ?? 0) + 1);
+---
+
+<section class="katalog" id="katalog">
+  <div class="container">
+    <div class="svcgroup-head">
+      <div class="eyebrow" data-reveal>Katalóg</div>
+      <h2 data-reveal>Dvadsať rakiev zo showroomu.</h2>
+      <div class="gold-line" data-line aria-hidden="true"></div>
+      <p class="katalog-uvod" data-reveal>
+        Fotky sú zo showroomu v Poprade. Odtieň dreva vyzerá na obrazovke vždy inak než v miestnosti,
+        preto ich berte ako predstavu, nie ako výber.
+      </p>
+    </div>
+
+    <div class="katalog-filter" data-reveal>
+      <span class="katalog-filter-label" id="rakvy-filter-label">Odtieň</span>
+      <div class="katalog-chips" role="group" aria-labelledby="rakvy-filter-label">
+        <button type="button" class="katalog-chip is-on" data-rakvy-filter="vsetky" aria-pressed="true">
+          Všetky <span class="katalog-pocet">{KATALOG_RAKIEV.length}</span>
+        </button>
+        {ODTIENE_RAKIEV.map((o) => (
+          <button type="button" class="katalog-chip" data-rakvy-filter={o.kluc} aria-pressed="false">
+            {o.nazov} <span class="katalog-pocet">{pocty.get(o.kluc) ?? 0}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* data-reveal nesie mriežka, nie jednotlivé karty: dvadsať
+        samostatných ScrollTriggerov nemá čo zlepšiť. */}
+    <div class="katalog-grid katalog-grid-rakvy" id="rakvy-grid" data-filter="vsetky" data-reveal>
+      {KATALOG_RAKIEV.map((r) => {
+        const src = foto(r.kod);
+        return src ? (
+          <figure class="katalog-karta" data-odtien={r.odtien}>
+            <span class="katalog-foto">
+              <Image
+                src={src}
+                widths={[320, 480, 640]}
+                sizes="(max-width: 620px) 44vw, (max-width: 1000px) 30vw, 22vw"
+                quality={KVALITA_KARTA}
+                alt={`Rakva ${r.kod}, ${(nazovOdtiena.get(r.odtien) ?? '').toLowerCase()}`}
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+            <figcaption class="katalog-popis">
+              <span class="katalog-kod">Rakva {r.kod}</span>
+              <span class="katalog-meta">
+                {nazovOdtiena.get(r.odtien)}{r.vystelka ? ' · s výstelkou' : ''}
+              </span>
+            </figcaption>
+          </figure>
+        ) : null;
+      })}
+    </div>
+
+    <p class="katalog-nota" data-reveal>
+      Ceny sa líšia podľa prevedenia, kovania a výstelky. Povieme vám ich pri výbere v showroome,
+      skôr než sa na čokoľvek zaviažete.
+    </p>
+  </div>
+</section>

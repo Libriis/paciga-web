@@ -234,6 +234,11 @@ main > section.situ,
 main > section.rozlucky,
 main > section.kronika,
 main > section.faq-section,
+/* detail pohrebnej služby: striedanie tónin na dlhej stránke */
+main > section.sluzba-blok.is-alt,
+main > section.sluzba-citat,
+main > section.katalog,
+main > section.flotila,
 /* 0.013 je zámerne: na tmavom to je 3 úrovne jasu, presne toľko, koľko
    mal rozdiel --bg a --bg2 predtým. Pri 0.022 to bolo 5 a hranica sa
    znovu ozvala. */
@@ -789,6 +794,10 @@ html.nav-locked body {
    panel, linku a radius tímovej sekcie, žiadny nový cudzí tvar.
    Krajné dve miniatúry kotvia kartu k hrane pásu, inak by vytiekla z
    kontajnera. Na dotyku hover neexistuje, karta sa tam nezobrazuje. */
+/* podnadpis skupiny v tíme (vedúci pobočiek) */
+.team-lead-head { margin-top: clamp(44px, 6vh, 70px); margin-bottom: 26px; }
+.team-sub { font-size: 15px; font-weight: 650; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+
 .team-more { margin-top: clamp(28px, 4vh, 44px); text-align: center; }
 .team-full { opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s ease; }
 .team-full.is-open { opacity: 1; transform: none; }
@@ -895,6 +904,20 @@ html.nav-locked body {
 .branch-tel { display: inline-block; margin-top: 14px; font-size: 22px; font-weight: 660; font-variation-settings: var(--wide); color: var(--gold); transition: color 0.3s ease; }
 .branch-tel:hover { color: var(--fg-strong); }
 .branch-hours { margin-top: 6px; margin-bottom: 18px; font-size: 16.1px; color: var(--dim); letter-spacing: 0.04em; }
+.branch-mail { margin-top: 4px; font-size: 16.1px; }
+.branch-mail a { color: var(--muted); transition: color 0.3s ease; }
+.branch-mail a:hover { color: var(--fg-strong); }
+
+/* ---- interiér pobočiek (kontakt) ---- */
+.interier { padding: clamp(70px, 10vh, 130px) 0; }
+.interier-lead { max-width: 52ch; margin-bottom: 40px; color: var(--muted); font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.7; }
+.interier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.interier-item figcaption { margin-top: 12px; font-size: 14px; letter-spacing: 0.08em; color: var(--dim); }
+.interier-video { margin-top: 22px; aspect-ratio: 16 / 6; }
+@media (max-width: 860px) {
+  .interier-grid { grid-template-columns: 1fr; }
+  .interier-video { aspect-ratio: 16 / 9; }
+}
 
 /* ---- memoriam ---- */
 .memoriam { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; }
@@ -3066,4 +3089,257 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .team-pop-role { font-size: 12px; }
   .stat-word { font-size: 13px; }
   .news-tag { font-size: 12px; }
+}
+
+/* ============================================================
+   Detail pohrebnej služby — /pohrebne-sluzby/<slug>
+   Dvanásť stránok z jednej šablóny ([slug].astro). Bloky sa striedajú
+   v dvoch tóninách, aby dlhá stránka nebola jedna plocha.
+   ============================================================ */
+.drobceky {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-shadow: 0 1px 3px rgb(var(--scrim-rgb) / 0.7);
+}
+.drobceky a { color: var(--muted); border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+.drobceky a:hover { color: var(--text); border-bottom-color: rgb(var(--fg-rgb) / 0.3); }
+.drobceky [aria-current] { color: var(--text); }
+
+.news-hero .sluzba-lead {
+  margin-top: 22px;
+  max-width: 56ch;
+  font-size: clamp(16.5px, 1.5vw, 20px);
+  line-height: 1.65;
+  color: var(--text);
+  text-shadow: 0 1px 3px rgb(var(--scrim-rgb) / 0.7), 0 6px 24px rgb(var(--scrim-rgb) / 0.6);
+}
+
+.sluzba-blok { padding: clamp(64px, 8.5vh, 110px) 0; }
+.sluzba-blok.is-alt { border-block: 1px solid var(--line); }
+.sluzba-blok .svcgroup-head { margin-bottom: 36px; }
+.sluzba-blok .svcgroup-head h2 { font-size: clamp(24px, 2.8vw, 36px); }
+
+.sluzba-text { max-width: 66ch; }
+.sluzba-text p { color: var(--muted); font-size: 18.6px; line-height: 1.75; }
+.sluzba-text p + p { margin-top: 18px; }
+.sluzba-uvod { max-width: 62ch; margin-bottom: 32px; color: var(--muted); font-size: 18px; line-height: 1.7; }
+/* Kľúč má pevnú šírku, nie min-width: pri dlhých názvoch (napr.
+   „Chladiaca kazeta MT 10") by inak každý riadok odsadil hodnotu inak
+   a stĺpec by sa rozstrapkal. Kľúč sa radšej zalomí. */
+.sluzba-fakty { max-width: 880px; }
+.sluzba-fakty .kam-fact { gap: 24px; }
+.sluzba-fakty .kam-fact-k { flex: 0 0 180px; min-width: 0; }
+.sluzba-fakty .kam-fact-v { flex: 1 1 auto; }
+
+/* citát cez celú šírku — Playfair, rovnaká tónina ako inde na webe */
+.sluzba-citat { border-block: 1px solid var(--line); padding: clamp(70px, 9vh, 120px) 0; }
+/* Šírka je v px, nie v ch: jednotka ch sa počíta z písma blockquote
+   (Archivo), nie z Playfairu na odseku, a citát tak vychádzal ako úzky
+   sedemriadkový stĺpec. */
+.sluzba-citat blockquote { max-width: 880px; margin-inline: auto; text-align: center; }
+.sluzba-citat blockquote p {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(24px, 3.4vw, 42px);
+  line-height: 1.32;
+  color: var(--text);
+}
+.sluzba-citat cite {
+  display: block;
+  margin-top: 26px;
+  font-style: normal;
+  font-size: 12.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* súvisiace služby: karty sú odkazy, preto potrebujú šípku dole */
+.suvisiace { padding: clamp(64px, 8.5vh, 110px) 0; }
+.suvisiace .first-card { display: flex; flex-direction: column; justify-content: space-between; gap: 20px; min-height: 128px; }
+.suvisiace .first-card h3 { font-size: 20px; }
+.suvisiace .katalog-nota { margin-top: 34px; }
+
+/* ============================================================
+   Katalógy — rakvy a kvety
+   Filtruje sa cez data-filter na mriežke, takže bez JS ostane
+   viditeľné všetko. Karta je figure, popis je figcaption.
+   ============================================================ */
+.katalog { border-block: 1px solid var(--line); padding: clamp(70px, 9vh, 120px) 0; }
+.katalog .svcgroup-head { margin-bottom: 30px; }
+.katalog .svcgroup-head h2 { font-size: clamp(24px, 2.8vw, 36px); }
+.katalog-uvod { margin-top: 22px; max-width: 62ch; color: var(--muted); font-size: 17.4px; line-height: 1.7; }
+
+.katalog-filter { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+.katalog-filter-label { font-size: 12.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 650; }
+.katalog-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+.katalog-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 14.5px;
+  font-weight: 560;
+  transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.katalog-chip:hover { color: var(--text); border-color: rgb(var(--fg-rgb) / 0.28); transform: translateY(-2px); }
+.katalog-chip.is-on { background: var(--fg-strong); border-color: transparent; color: var(--on-accent); }
+.katalog-pocet { font-size: 12px; opacity: 0.62; font-variant-numeric: tabular-nums; }
+.katalog-chip.is-on .katalog-pocet { opacity: 0.7; }
+
+.katalog-grid { display: grid; gap: 18px; }
+.katalog-grid-rakvy { grid-template-columns: repeat(4, 1fr); }
+.katalog-grid-kvety { grid-template-columns: repeat(4, 1fr); }
+
+.katalog-karta {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--panel);
+  transition: border-color 0.25s, transform 0.25s;
+}
+.katalog-karta:hover { border-color: rgb(var(--fg-rgb) / 0.24); transform: translateY(-3px); }
+.katalog-foto { display: block; position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: rgb(var(--scrim-rgb) / 0.6); }
+.katalog-foto img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.katalog-karta:hover .katalog-foto img { transform: scale(1.04); }
+.katalog-popis { display: flex; flex-direction: column; gap: 5px; padding: 14px 16px 16px; }
+.katalog-kod { font-size: 14.5px; font-weight: 640; color: var(--text); font-variation-settings: var(--wide); }
+.katalog-meta { font-size: 13px; color: var(--dim); }
+
+/* filtre: mriežka nesie data-filter, karta svoju skupinu */
+.katalog-grid[data-filter="svetly"] .katalog-karta:not([data-odtien="svetly"]),
+.katalog-grid[data-filter="medovy"] .katalog-karta:not([data-odtien="medovy"]),
+.katalog-grid[data-filter="mahagon"] .katalog-karta:not([data-odtien="mahagon"]),
+.katalog-grid[data-filter="zive-kytice"] .katalog-karta:not([data-skupina="zive-kytice"]),
+.katalog-grid[data-filter="zive-vence"] .katalog-karta:not([data-skupina="zive-vence"]),
+.katalog-grid[data-filter="umele-vence"] .katalog-karta:not([data-skupina="umele-vence"]) {
+  display: none;
+}
+
+/* orezanie dlhého katalógu — skript ho zapína cez data-limit */
+.katalog-karta.je-skryta { display: none; }
+.katalog-viac { display: flex; justify-content: center; margin-top: 30px; }
+
+.katalog-nota { margin-top: 30px; max-width: 62ch; color: var(--dim); font-size: 15.5px; line-height: 1.65; }
+
+/* cenník umelých vencov */
+.katalog-cennik { margin-top: 52px; max-width: 620px; }
+.katalog-cennik h3 { font-size: 20px; font-variation-settings: var(--wide); }
+.katalog-cennik-uvod { margin-top: 12px; color: var(--muted); font-size: 16px; line-height: 1.65; }
+.katalog-cennik-tabulka { margin-top: 24px; border-top: 1px solid var(--line); }
+.katalog-cennik-hlavicka,
+.katalog-cennik-riadok {
+  display: grid;
+  grid-template-columns: 1fr auto 72px;
+  gap: 18px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.katalog-cennik-hlavicka { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 650; }
+.katalog-cennik-riadok { font-size: 16px; color: var(--muted); }
+.katalog-cennik-cena { color: var(--text); font-weight: 640; font-variant-numeric: tabular-nums; }
+.katalog-cennik-pocet { text-align: right; color: var(--dim); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   Flotila — dve limuzíny
+   ============================================================ */
+.flotila { border-block: 1px solid var(--line); padding: clamp(70px, 9vh, 120px) 0; }
+.flotila-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
+.flotila-karta { border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--panel); }
+.flotila-foto { margin: 0; aspect-ratio: 3 / 2; overflow: hidden; }
+.flotila-foto img { width: 100%; height: 100%; object-fit: cover; }
+.flotila-telo { padding: 26px 26px 30px; }
+.flotila-odznak {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 650;
+}
+.flotila-telo h3 { margin-top: 16px; font-size: 24px; font-variation-settings: var(--wide); }
+.flotila-telo p { margin-top: 12px; color: var(--muted); font-size: 17.4px; line-height: 1.65; }
+.flotila-detaily { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); list-style: none; }
+.flotila-detaily li { position: relative; padding-left: 20px; color: var(--dim); font-size: 15.5px; }
+.flotila-detaily li + li { margin-top: 9px; }
+.flotila-detaily li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 1px; background: rgb(var(--fg-rgb) / 0.4); }
+
+/* ============================================================
+   Krajiny medzinárodného prevozu
+   ============================================================ */
+.krajiny { padding: clamp(64px, 8.5vh, 110px) 0; }
+.krajiny-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; list-style: none; max-width: 780px; }
+.krajina {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+.krajina-kod {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: var(--dim);
+  min-width: 26px;
+}
+.krajina-nazov { font-size: 17px; color: var(--text); font-variation-settings: var(--wide); }
+
+/* ---- responzívne ---- */
+@media (max-width: 1000px) {
+  .katalog-grid-rakvy,
+  .katalog-grid-kvety { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .flotila-grid { grid-template-columns: 1fr; }
+  .krajiny-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .katalog-grid-rakvy,
+  .katalog-grid-kvety { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .katalog-popis { padding: 12px 13px 14px; }
+  .katalog-filter { gap: 12px; }
+  .krajiny-grid { grid-template-columns: 1fr; }
+  .katalog-cennik-hlavicka,
+  .katalog-cennik-riadok { grid-template-columns: 1fr auto 52px; gap: 12px; }
+}
+
+/* mobil: čítaný text a klikacie plochy podľa štandardu webu
+   (dotyk min. 44 px, čítaný text min. 14 px, verzálkové štítky 12 px) */
+@media (max-width: 900px) {
+  .katalog-chip { min-height: 44px; font-size: 14.5px; }
+  .katalog-filter-label { font-size: 13.5px; }
+  .katalog-meta { font-size: 13.5px; }
+  .katalog-kod { font-size: 14.5px; }
+  .katalog-nota { font-size: 15px; }
+  .katalog-cennik-riadok { min-height: 44px; align-items: center; }
+  .katalog-cennik-hlavicka { font-size: 12px; }
+  .drobceky { font-size: 12.5px; }
+  .drobceky a { display: inline-flex; align-items: center; min-height: 44px; }
+  .flotila-odznak { font-size: 12px; }
+  .flotila-detaily li { font-size: 15px; }
+  .krajina-kod { font-size: 12px; }
+  .suvisiace .first-card { min-height: 0; }
+
+  /* Kľúč a hodnota pod seba. Vedľa seba by na 390 px ostalo hodnote
+     ~190 px a text by padal po dvoch slovách na riadok. */
+  .sluzba-fakty .kam-fact { flex-direction: column; gap: 8px; }
+  .sluzba-fakty .kam-fact-k { flex: none; padding-top: 0; }
+  .sluzba-fakty .kam-fact-v { font-size: 16px; }
 }

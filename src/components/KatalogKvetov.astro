@@ -1,0 +1,130 @@
+---
+/*
+  Katalóg kvetinárstva. 81 položiek v troch skupinách, umelé vence
+  s cenou a rozmerom.
+
+  Filtrovanie ide rovnako ako pri rakvách cez data-filter na mriežke,
+  aby katalóg fungoval aj bez JS. Navyše má druhú úroveň: pri umelých
+  vencoch sa dá filtrovať aj podľa veľkosti, lebo práve podľa nej sa
+  ľudia rozhodujú (rozmer venca musí sadnúť na hrob).
+*/
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { KATALOG_KVETOV, SKUPINY_KVETOV } from '../data/katalog-kvety';
+import { KVALITA_KARTA } from '../lib/images';
+
+const fotky = import.meta.glob<{ default: ImageMetadata }>('../assets/katalog/kvety/*.jpg', {
+  eager: true,
+});
+
+function foto(kod: string): ImageMetadata | null {
+  return fotky[`../assets/katalog/kvety/${kod}.jpg`]?.default ?? null;
+}
+
+const pocty = new Map<string, number>();
+for (const k of KATALOG_KVETOV) pocty.set(k.skupina, (pocty.get(k.skupina) ?? 0) + 1);
+
+/* Cenník umelých vencov: jeden riadok na dvojicu cena a rozmer.
+   Skladá sa z dát, aby sa pri zmene katalógu neprepisoval ručne. */
+const cennik = [
+  ...new Map(
+    KATALOG_KVETOV.filter((k) => k.cena != null).map((k) => [`${k.cena}-${k.rozmer}`, k]),
+  ).values(),
+]
+  .map((k) => ({
+    cena: k.cena!,
+    rozmer: k.rozmer!,
+    pocet: KATALOG_KVETOV.filter((x) => x.cena === k.cena && x.rozmer === k.rozmer).length,
+  }))
+  .sort((a, b) => a.cena - b.cena);
+
+const nazovSkupiny = new Map(SKUPINY_KVETOV.map((s) => [s.kluc, s.nazov]));
+---
+
+<section class="katalog" id="katalog">
+  <div class="container">
+    <div class="svcgroup-head">
+      <div class="eyebrow" data-reveal>Katalóg</div>
+      <h2 data-reveal>Osemdesiatjeden prevedení.</h2>
+      <div class="gold-line" data-line aria-hidden="true"></div>
+      <p class="katalog-uvod" data-reveal>
+        Vyberte si číslo z katalógu a povedzte nám ho pri objednávke. Živé kvety viažeme na deň obradu,
+        umelé vence máme skladom.
+      </p>
+    </div>
+
+    <div class="katalog-filter" data-reveal>
+      <span class="katalog-filter-label" id="kvety-filter-label">Skupina</span>
+      <div class="katalog-chips" role="group" aria-labelledby="kvety-filter-label">
+        <button type="button" class="katalog-chip is-on" data-kvety-filter="vsetky" aria-pressed="true">
+          Všetky <span class="katalog-pocet">{KATALOG_KVETOV.length}</span>
+        </button>
+        {SKUPINY_KVETOV.map((s) => (
+          <button type="button" class="katalog-chip" data-kvety-filter={s.kluc} aria-pressed="false">
+            {s.nazov} <span class="katalog-pocet">{pocty.get(s.kluc) ?? 0}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* data-reveal je zámerne na mriežke, nie na kartách: 81 samostatných
+        ScrollTriggerov je zbytočná záťaž a gsap.from() by navyše nechal
+        karty schované za tlačidlom „zobraziť viac" natrvalo priehľadné. */}
+    <div class="katalog-grid katalog-grid-kvety" id="kvety-grid" data-filter="vsetky" data-limit="24" data-reveal>
+      {KATALOG_KVETOV.map((k) => {
+        const src = foto(k.kod);
+        if (!src) return null;
+        const skupina = nazovSkupiny.get(k.skupina) ?? '';
+        return (
+          <figure class="katalog-karta" data-skupina={k.skupina}>
+            <span class="katalog-foto">
+              <Image
+                src={src}
+                widths={[320, 480, 640]}
+                sizes="(max-width: 620px) 44vw, (max-width: 1000px) 30vw, 22vw"
+                quality={KVALITA_KARTA}
+                alt={`${skupina}, vzor ${k.kod}`}
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+            <figcaption class="katalog-popis">
+              <span class="katalog-kod">{k.kod}</span>
+              <span class="katalog-meta">
+                {k.cena != null ? `${k.cena} € · ${k.rozmer} cm` : skupina}
+              </span>
+            </figcaption>
+          </figure>
+        );
+      })}
+    </div>
+
+    {/* Bez JS sa nezobrazí a katalóg ostane celý viditeľný. Text dopĺňa
+        skript podľa toho, koľko položiek práve filter necháva. */}
+    <div class="katalog-viac" hidden>
+      <button type="button" class="btn-line" id="kvety-viac">Zobraziť všetky</button>
+    </div>
+
+    <div class="katalog-cennik" data-reveal>
+      <h3>Cenník umelých vencov</h3>
+      <p class="katalog-cennik-uvod">
+        Umelé vence majú pevnú cenu podľa priemeru. Živé kvety cenník nemajú, ich cena závisí od sezóny
+        a od toho, čo je v deň obradu dostupné.
+      </p>
+      <div class="katalog-cennik-tabulka" role="table" aria-label="Cenník umelých vencov">
+        <div class="katalog-cennik-hlavicka" role="row">
+          <span role="columnheader">Priemer</span>
+          <span role="columnheader">Cena</span>
+          <span role="columnheader">Vzorov</span>
+        </div>
+        {cennik.map((r) => (
+          <div class="katalog-cennik-riadok" role="row">
+            <span role="cell">{r.rozmer} cm</span>
+            <span role="cell" class="katalog-cennik-cena">{r.cena} €</span>
+            <span role="cell" class="katalog-cennik-pocet">{r.pocet}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
