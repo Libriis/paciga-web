@@ -1,0 +1,73 @@
+---
+/*
+  Dve pohrebné limuzíny. Fotky sú z pôvodného webu, priradenie modelov
+  sedí aj podľa generácie vozidla: E 400 je moderný W213 (ocenený 2024),
+  E 270 je staršia generácia.
+*/
+import { Image } from 'astro:assets';
+import { SIRKY_KARTA, KVALITA_DETAIL } from '../lib/images';
+import e400 from '../assets/limuzina-e400.jpg';
+import e270 from '../assets/limuzina-e270.jpg';
+
+const vozidla = [
+  {
+    model: 'Mercedes-Benz E 400',
+    foto: e400,
+    alt: 'Biela pohrebná limuzína Mercedes-Benz E 400 Paciga pred pobočkou',
+    odznak: 'Ocenená 2024',
+    popis:
+      'Ocenená ako najkrajšia pohrebná limuzína na Slovensku za rok 2024. Nasadzujeme ju na obrady, kde rodina chce, aby posledná cesta vyzerala slávnostne.',
+    detaily: ['Moderná karoséria s čiernou strechou', 'Presklená zadná časť', 'Klimatizovaný priestor'],
+  },
+  {
+    model: 'Mercedes-Benz E 270',
+    foto: e270,
+    alt: 'Pohrebná limuzína Mercedes-Benz E 270 Paciga pod zasneženými Tatrami',
+    odznak: 'Klasická línia',
+    popis:
+      'Staršia generácia s klasickou siluetou pohrebného vozidla. Jazdí spoľahlivo aj v zime a v horských obciach, kde je cesta k cintorínu náročnejšia.',
+    detaily: ['Klasické prevedenie karosérie', 'Overená v horských podmienkach', 'Druhé vozidlo pre súbežné obrady'],
+  },
+];
+---
+
+<section class="flotila" id="flotila">
+  <div class="container">
+    <div class="svcgroup-head">
+      <div class="eyebrow" data-reveal>Flotila</div>
+      <h2 data-reveal>Dve limuzíny, jeden štandard.</h2>
+      <div class="gold-line" data-line aria-hidden="true"></div>
+    </div>
+
+    <div class="flotila-grid">
+      {vozidla.map((v) => (
+        <article class="flotila-karta" data-reveal>
+          <figure class="flotila-foto">
+            <Image
+              src={v.foto}
+              widths={SIRKY_KARTA}
+              sizes="(max-width: 900px) 92vw, 46vw"
+              quality={KVALITA_DETAIL}
+              alt={v.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <div class="flotila-telo">
+            <span class="flotila-odznak">{v.odznak}</span>
+            <h3>{v.model}</h3>
+            <p>{v.popis}</p>
+            <ul class="flotila-detaily">
+              {v.detaily.map((d) => <li>{d}</li>)}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="katalog-nota" data-reveal>
+      Okrem limuzín jazdíme aj zakrytými vozidlami na prevoz zosnulých. Tie na obradoch nevidno,
+      ale robia väčšinu kilometrov.
+    </p>
+  </div>
+</section>

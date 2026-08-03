@@ -1,0 +1,367 @@
+---
+/*
+  Detail jednej pohrebnej služby. Dvanásť stránok z jednej šablóny,
+  obsah je v src/data/sluzby.ts.
+
+  Fotky sa nedajú importovať dynamicky podľa reťazca zo dát — Astro
+  potrebuje ImageMetadata pri builde. Preto sa importujú všetky a dáta
+  na ne odkazujú kľúčom cez HERO_MAPA.
+*/
+import Base from '../../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { SIRKY_HERO, KVALITA_POZADIE } from '../../lib/images';
+import Faq from '../../components/Faq.astro';
+import KatalogRakiev from '../../components/KatalogRakiev.astro';
+import KatalogKvetov from '../../components/KatalogKvetov.astro';
+import Flotila from '../../components/Flotila.astro';
+import MapaKrajin from '../../components/MapaKrajin.astro';
+import { SLUZBY, odkazSluzby, type Sluzba } from '../../data/sluzby';
+
+import nosici from '../../assets/asset-01.jpg';
+import obrad from '../../assets/info-hero.jpg';
+import kostol from '../../assets/asset-10.jpg';
+import kytica from '../../assets/katalog/kvety/140-05.jpg';
+import tim from '../../assets/asset-05.jpg';
+import parte from '../../assets/parte-ilustracna.jpg';
+import flotilaFoto from '../../assets/fleet-still.jpg';
+import limuzina from '../../assets/asset-07.jpg';
+import timVozidla from '../../assets/asset-06.jpg';
+import flotilaHory from '../../assets/asset-04.jpg';
+import mesto from '../../assets/asset-03.jpg';
+import cintorin from '../../assets/cintorin.jpg';
+
+const HERO_MAPA = {
+  nosici,
+  obrad,
+  kostol,
+  kytica,
+  tim,
+  parte,
+  flotila: flotilaFoto,
+  limuzina,
+  'tim-vozidla': timVozidla,
+  'flotila-hory': flotilaHory,
+  mesto,
+  cintorin,
+} as const;
+
+export function getStaticPaths() {
+  return SLUZBY.map((sluzba) => ({ params: { slug: sluzba.slug }, props: { sluzba } }));
+}
+
+interface Props {
+  sluzba: Sluzba;
+}
+
+const { sluzba } = Astro.props;
+const hero = HERO_MAPA[sluzba.hero as keyof typeof HERO_MAPA];
+
+const suvisiace = sluzba.suvisiace.map(odkazSluzby).filter((x) => x !== null);
+
+/* Drobečková navigácia aj pre vyhľadávače. Bez nej by sa detail
+   služby tváril ako samostatná stránka bez rodiča. */
+const drobceky = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Domov', item: new URL('/', Astro.site ?? Astro.url).href },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Pohrebné služby',
+      item: new URL('/pohrebne-sluzby', Astro.site ?? Astro.url).href,
+    },
+    { '@type': 'ListItem', position: 3, name: sluzba.nazov, item: Astro.url.href },
+  ],
+};
+
+const sluzbaLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: sluzba.nazov,
+  description: sluzba.description,
+  serviceType: sluzba.nazov,
+  provider: {
+    '@type': 'FuneralHome',
+    name: 'Pohrebné a kamenárske služby Paciga, s. r. o.',
+    telephone: '+421903596364',
+    email: 'paciga@paciga.sk',
+    url: new URL('/', Astro.site ?? Astro.url).href,
+  },
+  areaServed: ['Poprad', 'Spišská Belá', 'Liptovský Mikuláš'],
+};
+---
+<Base
+  title={sluzba.title}
+  description={sluzba.description}
+  active="pohrebne-sluzby"
+  ogTitle={sluzba.ogTitle}
+  ogDescription={sluzba.ogDescription}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(drobceky)} is:inline />
+    <script type="application/ld+json" set:html={JSON.stringify(sluzbaLd)} is:inline />
+  </Fragment>
+
+  <!-- ============ HLAVIČKA ============ -->
+  <section class="news-hero has-photo">
+    <div class="nh-media" aria-hidden="true">
+      <Image
+        src={hero}
+        widths={SIRKY_HERO}
+        sizes="100vw"
+        quality={KVALITA_POZADIE}
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+    <div class="container news-hero-inner">
+      <div>
+        <nav class="drobceky" aria-label="Drobečková navigácia">
+          <a href="/pohrebne-sluzby">Pohrebné služby</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{sluzba.nazov}</span>
+        </nav>
+        <div class="eyebrow" data-reveal>{sluzba.eyebrow}</div>
+        <h1 data-textreveal>{sluzba.h1}</h1>
+        <p class="sluzba-lead" data-reveal>{sluzba.lead}</p>
+      </div>
+    </div>
+    {sluzba.chips && (
+      <div class="container news-hero-chips" data-reveal>
+        <div class="situ-row">
+          {sluzba.chips.map((ch) => (
+            <a href={ch.href} class="situ-chip">{ch.label}</a>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <!-- ============ BLOKY OBSAHU ============ -->
+  {sluzba.bloky.map((blok, i) => {
+    const pas = i % 2 === 1 ? 'sluzba-blok is-alt' : 'sluzba-blok';
+
+    if (blok.typ === 'citat') {
+      return (
+        <section class="sluzba-citat">
+          <div class="container">
+            <blockquote data-reveal>
+              <p>{blok.text}</p>
+              {blok.zdroj && <cite>{blok.zdroj}</cite>}
+            </blockquote>
+          </div>
+        </section>
+      );
+    }
+
+    return (
+      <section class={pas} id={blok.id}>
+        <div class="container">
+          {(blok.eyebrow || blok.nadpis) && (
+            <div class="svcgroup-head">
+              {blok.eyebrow && <div class="eyebrow" data-reveal>{blok.eyebrow}</div>}
+              {blok.nadpis && <h2 data-reveal>{blok.nadpis}</h2>}
+              <div class="gold-line" data-line aria-hidden="true"></div>
+            </div>
+          )}
+
+          {blok.typ === 'text' && (
+            <div class="sluzba-text">
+              {blok.odseky.map((o) => <p data-reveal>{o}</p>)}
+            </div>
+          )}
+
+          {blok.typ === 'karty' && (
+            <>
+              {blok.uvod && <p class="sluzba-uvod" data-reveal>{blok.uvod}</p>}
+              <div class="svcgrid">
+                {blok.polozky.map((p) => (
+                  <article class="first-card" data-reveal>
+                    <h3>{p.h}</h3>
+                    <p>{p.p}</p>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+
+          {blok.typ === 'kroky' && (
+            <>
+              {blok.uvod && <p class="sluzba-uvod" data-reveal>{blok.uvod}</p>}
+              <div class="kam-steps">
+                {blok.polozky.map((p, n) => (
+                  <div class="kam-step" data-reveal>
+                    <span class="kam-step-n" aria-hidden="true">{n + 1}</span>
+                    <h3>{p.h}</h3>
+                    <p>{p.p}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {blok.typ === 'fakty' && (
+            <>
+              {blok.uvod && <p class="sluzba-uvod" data-reveal>{blok.uvod}</p>}
+              <div class="sluzba-fakty">
+                {blok.polozky.map((p) => (
+                  <div class="kam-fact" data-reveal>
+                    <span class="kam-fact-k">{p.k}</span>
+                    <span class="kam-fact-v">{p.v}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+    );
+  })}
+
+  <!-- ============ ŠPECIÁLNA SEKCIA ============ -->
+  {sluzba.specialny === 'katalog-rakiev' && <KatalogRakiev />}
+  {sluzba.specialny === 'katalog-kvetov' && <KatalogKvetov />}
+  {sluzba.specialny === 'flotila' && <Flotila />}
+  {sluzba.specialny === 'mapa-krajin' && <MapaKrajin />}
+
+  <!-- ============ FAQ ============ -->
+  {sluzba.faq && sluzba.faq.length > 0 && (
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <Faq
+          items={sluzba.faq}
+          eyebrow="Časté otázky"
+          heading="Na čo sa nás pýtate"
+          note="Nenašli ste svoju otázku? Zavolajte na 0903 596 364. Zdvihneme aj v noci."
+        />
+      </div>
+    </section>
+  )}
+
+  <!-- ============ SÚVISIACE SLUŽBY ============ -->
+  {suvisiace.length > 0 && (
+    <section class="suvisiace">
+      <div class="container">
+        <div class="svcgroup-head">
+          <div class="eyebrow" data-reveal>Súvisí s tým</div>
+          <h2 data-reveal>Býva to v jednom balíku.</h2>
+          <div class="gold-line" data-line aria-hidden="true"></div>
+        </div>
+        <div class="svcgrid">
+          {suvisiace.map((s) => (
+            <a class="first-card" href={s.href} data-reveal>
+              <h3>{s.nazov}</h3>
+              <span class="fc-go">Pozrieť →</span>
+            </a>
+          ))}
+        </div>
+        <p class="katalog-nota" data-reveal>
+          <a class="btn-line sm" href="/pohrebne-sluzby">Všetky pohrebné služby →</a>
+        </p>
+      </div>
+    </section>
+  )}
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-band">
+    <div class="cta-inner">
+      <h2 data-textreveal>{sluzba.cta.nadpis}</h2>
+      <p data-reveal>{sluzba.cta.text}</p>
+      {sluzba.cta.akcia === 'tel' ? (
+        <a href="tel:0903596364" class="btn-gold btn-lg" data-reveal>NON STOP · 0903 596 364</a>
+      ) : (
+        <a href="mailto:paciga@paciga.sk" class="btn-gold btn-lg" data-reveal>paciga@paciga.sk</a>
+      )}
+    </div>
+  </section>
+
+  <!-- ============ PLÁVAJÚCA NON STOP LIŠTA ============ -->
+  <div class="callbar" id="callbar" role="complementary" aria-label="NON STOP kontakt">
+    <div class="container callbar-inner">
+      <span class="callbar-label">{sluzba.nazov}</span>
+      <a href="tel:0903596364" class="callbar-tel"><span class="dot" aria-hidden="true"></span>0903 596 364</a>
+    </div>
+  </div>
+
+<Fragment slot="scripts">
+<script is:inline>
+(function () {
+  /* plávajúca lišta po 500 px scrollu */
+  var bar = document.getElementById('callbar');
+  if (bar) {
+    var shown = false;
+    var check = function () {
+      var on = (window.scrollY || window.pageYOffset) > 500;
+      if (on !== shown) { shown = on; bar.classList.toggle('on', on); }
+    };
+    window.addEventListener('scroll', check, { passive: true });
+    check();
+  }
+
+  /* Filtre katalógov. Prepínač nastaví data-filter na mriežke,
+     samotné skrývanie rieši CSS. Bez JS ostanú viditeľné všetky položky,
+     čo je pre katalóg správne správanie.
+
+     data-limit navyše necháva pri prvom pohľade vidieť len začiatok
+     mriežky. Kvetinársky katalóg má 81 položiek a bez toho by stránka
+     narástla na desaťtisíc pixelov. */
+  function katalog(atribut, gridId, viacId) {
+    var grid = document.getElementById(gridId);
+    if (!grid) return;
+
+    var karty = [].slice.call(grid.querySelectorAll('.katalog-karta'));
+    var viac = viacId ? document.getElementById(viacId) : null;
+    var obal = viac ? viac.parentNode : null;
+    var limit = parseInt(grid.getAttribute('data-limit'), 10);
+    var vsetko = !limit;
+
+    function prekresli() {
+      /* Najprv sa zruší predošlé orezanie. Až potom sa dá čítať
+         computed display: čokoľvek, čo ostane none, skryl filter. */
+      karty.forEach(function (k) { k.classList.remove('je-skryta'); });
+      if (vsetko) {
+        if (obal) obal.hidden = true;
+        return;
+      }
+      /* Počíta sa len to, čo prejde filtrom — inak by pri úzkom filtri
+         tlačidlo sľubovalo položky, ktoré aj tak nie sú vidieť. */
+      var videne = 0;
+      var skrytych = 0;
+      karty.forEach(function (k) {
+        if (getComputedStyle(k).display === 'none') return;
+        videne++;
+        if (videne > limit) { k.classList.add('je-skryta'); skrytych++; }
+      });
+      if (obal) {
+        obal.hidden = skrytych === 0;
+        viac.textContent = 'Zobraziť zvyšných ' + skrytych;
+      }
+    }
+
+    var tlacidla = [].slice.call(document.querySelectorAll('[data-' + atribut + ']'));
+    tlacidla.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        grid.setAttribute('data-filter', btn.getAttribute('data-' + atribut));
+        tlacidla.forEach(function (b) {
+          var on = b === btn;
+          b.classList.toggle('is-on', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        prekresli();
+      });
+    });
+
+    if (viac) {
+      viac.addEventListener('click', function () { vsetko = true; prekresli(); });
+    }
+    prekresli();
+  }
+  katalog('rakvy-filter', 'rakvy-grid', null);
+  katalog('kvety-filter', 'kvety-grid', 'kvety-viac');
+})();
+</script>
+</Fragment>
+</Base>
