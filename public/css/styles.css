@@ -794,10 +794,6 @@ html.nav-locked body {
    panel, linku a radius tímovej sekcie, žiadny nový cudzí tvar.
    Krajné dve miniatúry kotvia kartu k hrane pásu, inak by vytiekla z
    kontajnera. Na dotyku hover neexistuje, karta sa tam nezobrazuje. */
-/* podnadpis skupiny v tíme (vedúci pobočiek) */
-.team-lead-head { margin-top: clamp(44px, 6vh, 70px); margin-bottom: 26px; }
-.team-sub { font-size: 15px; font-weight: 650; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
-
 .team-more { margin-top: clamp(28px, 4vh, 44px); text-align: center; }
 .team-full { opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s ease; }
 .team-full.is-open { opacity: 1; transform: none; }
@@ -907,6 +903,10 @@ html.nav-locked body {
 .branch-mail { margin-top: 4px; font-size: 16.1px; }
 .branch-mail a { color: var(--muted); transition: color 0.3s ease; }
 .branch-mail a:hover { color: var(--fg-strong); }
+/* Číslo prevádzky v riadku hodín. Veľké .branch-tel drží NON STOP linku,
+   toto je druhé číslo, takže musí byť klikateľné, ale tichšie. */
+.branch-tel-sm { color: var(--muted); border-bottom: 1px solid rgb(var(--fg-rgb) / 0.22); transition: color 0.3s ease, border-color 0.3s ease; }
+.branch-tel-sm:hover { color: var(--fg-strong); border-bottom-color: var(--gold); }
 
 /* ---- interiér pobočiek (kontakt) ---- */
 .interier { padding: clamp(70px, 10vh, 130px) 0; }
@@ -3058,6 +3058,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 
   /* ---- telefónne čísla: najdôležitejší klik na stránke ---- */
   .branch-tel,
+  .branch-tel-sm,
   .step-tel,
   .callbar-tel,
   .phone-secondary,
