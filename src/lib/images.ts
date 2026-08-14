@@ -34,6 +34,10 @@ export function lokalnyObrazok(src: string | null | undefined): ImageMetadata | 
 export const SIRKY_HERO = [480, 768, 1080, 1440, 1920];
 export const SIRKY_KARTA = [320, 480, 640, 960];
 export const SIRKY_MEDAILON = [340, 512, 768, 1024];
+/* Fotky kroniky na O nás: stĺpec vedľa osi má na desktope ~565 px
+   (kontajner 1240 − os 110, delené dvomi), pri DPR 2 teda ~1130 px.
+   Mobil 92vw pri DPR 3 pýta ~1080 px. Preto širšie kroky než KARTA. */
+export const SIRKY_KRONIKA = [480, 640, 960, 1280];
 
 /* Kvalita WebP.
    Telefón s DPR 3 si pri sizes="100vw" vypýta 1440 px variantu, takže na

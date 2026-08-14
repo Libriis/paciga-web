@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
-import { SIRKY_HERO, SIRKY_KARTA, KVALITA_POZADIE, KVALITA_KARTA } from '../lib/images';
+import { SIRKY_HERO, SIRKY_KRONIKA, KVALITA_POZADIE, KVALITA_KARTA } from '../lib/images';
 import tim from '../assets/o-nas-tim.jpg';
 import kron2016 from '../assets/kron-2016.jpg';
 import kron2018 from '../assets/kron-2018.jpg';
@@ -41,7 +41,6 @@ const nosici = [
       <div class="situ-row">
         <a href="#pribeh" class="situ-chip">Náš príbeh</a>
         <a href="#tim" class="situ-chip">Náš tím</a>
-        <a href="#prvenstva" class="situ-chip">Prvenstvá</a>
         <a href="#vozidla" class="situ-chip">Vozový park</a>
       </div>
     </div>
@@ -99,7 +98,7 @@ const nosici = [
             <p>Na výstave Slovak Funeral sme predstavili vlastnú technológiu prenosného chladenia. Ako prví v regióne.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <Image class="kron-photo" src={kron2016} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Stany Paciga s technikou pri príprave hrobového miesta" loading="lazy" decoding="async" />
+          <Image class="kron-photo" src={kron2016} widths={SIRKY_KRONIKA} sizes="(max-width: 860px) 92vw, (max-width: 1288px) 44vw, 565px" quality={KVALITA_KARTA} alt="Stany Paciga s technikou pri príprave hrobového miesta" loading="lazy" decoding="async" />
         </div>
 
         <div class="kron-item kron-flip" data-reveal>
@@ -109,7 +108,7 @@ const nosici = [
             <p>24. mája 2018 sme v Spišskej Belej nadviazali na spoločnosť Archa Belá. Sme rodinná firma a od prvého dňa staviame na tom, čo v ťažkých chvíľach rozhoduje: na ľudskosti, dôstojnosti a spoľahlivosti.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <Image class="kron-photo" src={kron2018} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Nosiči Paciga s rakvou pri kaplnke" loading="lazy" decoding="async" />
+          <Image class="kron-photo" src={kron2018} widths={SIRKY_KRONIKA} sizes="(max-width: 860px) 92vw, (max-width: 1288px) 44vw, 565px" quality={KVALITA_KARTA} alt="Nosiči Paciga s rakvou pri kaplnke" loading="lazy" decoding="async" />
         </div>
 
         <div class="kron-item" data-reveal>
@@ -119,7 +118,7 @@ const nosici = [
             <p>Zabezpečujeme kompletné pohrebné služby, kvetinovú výzdobu, prevoz zosnulých doma aj zo zahraničia a kamenárske práce od výkopu hrobu po žulový pomník.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <Image class="kron-photo" src={kron3000} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Smútočný obrad pod stanom Paciga" loading="lazy" decoding="async" />
+          <Image class="kron-photo" src={kron3000} widths={SIRKY_KRONIKA} sizes="(max-width: 860px) 92vw, (max-width: 1288px) 44vw, 565px" quality={KVALITA_KARTA} alt="Smútočný obrad pod stanom Paciga" loading="lazy" decoding="async" />
         </div>
 
         <div class="kron-item kron-flip kron-now" data-reveal>
@@ -129,7 +128,7 @@ const nosici = [
             <p>Poprad, Spišská Belá a Liptovský Mikuláš. Sme pri vás každý deň, v ktorúkoľvek hodinu. Čestne a na vysokej profesionálnej úrovni.</p>
           </div>
           <span class="kron-dot" aria-hidden="true"></span>
-          <Image class="kron-photo" src={kronDnes} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 320px" quality={KVALITA_KARTA} alt="Stan Paciga na cintoríne pod zasneženými Tatrami" loading="lazy" decoding="async" />
+          <Image class="kron-photo" src={kronDnes} widths={SIRKY_KRONIKA} sizes="(max-width: 860px) 92vw, (max-width: 1288px) 44vw, 565px" quality={KVALITA_KARTA} alt="Stan Paciga na cintoríne pod zasneženými Tatrami" loading="lazy" decoding="async" />
         </div>
       </div>
     </div>
@@ -224,62 +223,10 @@ const nosici = [
     </div>
   </section>
 
-  <!-- ============ PRVENSTVÁ ============ -->
-  <section class="prvenstva" id="prvenstva">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-textreveal>Ako prví v regióne</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-      </div>
-      <!-- Každé prvenstvo dostane vizuálny dôkaz. Poradenstvo sa zámerne fotí
-           ako miesto bez ľudí; inscenovaná konzultácia by sekcii uškodila. -->
-      <div class="pl-list">
-        <div class="ed-pair ed-tight" data-reveal>
-          <div class="ed-text">
-            <span class="pl-num">01</span>
-            <h3>Prenosné chladenie</h3>
-            <p>Vlastnú technológiu sme prvýkrát predstavili na výstave Slovak Funeral v roku 2016.</p>
-          </div>
-          <div class="photo-slot ps-32" data-photo-slot>
-            <span>Miesto pre fotografiu</span><em>Prenosné chladenie v prevádzke, detail zariadenia</em>
-          </div>
-        </div>
-        <div class="ed-pair ed-tight ed-flip" data-reveal>
-          <div class="ed-text">
-            <span class="pl-num">02</span>
-            <h3>3D vizualizácia pomníka</h3>
-            <p>Pomník uvidíte skôr, než ho začneme vyrábať.</p>
-          </div>
-          <div class="photo-slot ps-32" data-photo-slot>
-            <span>Miesto pre fotografiu</span><em>Vizualizácia pomníka na obrazovke, vedľa vzorky žuly</em>
-          </div>
-        </div>
-        <div class="ed-pair ed-tight" data-reveal>
-          <div class="ed-text">
-            <span class="pl-num">03</span>
-            <h3>Smútkové poradenstvo</h3>
-            <p>Podpora a sprevádzanie v procese smútenia.</p>
-          </div>
-          <div class="photo-slot ps-32" data-photo-slot>
-            <span>Miesto pre fotografiu</span><em>Miesto na rozhovor s rodinou: dve kreslá, stôl, mäkké svetlo. Bez ľudí</em>
-          </div>
-        </div>
-        <div class="ed-pair ed-tight ed-flip" data-reveal>
-          <div class="ed-text">
-            <span class="pl-num">04</span>
-            <h3>Medzinárodný prevoz</h3>
-            <p>Preprava zosnulých zo zahraničia vrátane všetkých dokumentov.</p>
-          </div>
-          <div class="photo-slot ps-32" data-photo-slot>
-            <span>Miesto pre fotografiu</span><em>Vozidlo pripravené na cestu, dokumenty na sedadle</em>
-          </div>
-        </div>
-      </div>
-      <p class="pl-note" data-reveal>V podtatranskom regióne sme jediným členom Asociácie pohrebných služieb na Slovensku.</p>
-    </div>
-  </section>
+  <!-- ============ FLOTILA ============
+       Sekcia „Ako prví v regióne" tu bola do 14. 8. 2026; klient ju dal
+       stiahnuť, lebo prvenstvá sa opakovali s obsahom kroniky vyššie. -->
 
-  <!-- ============ FLOTILA ============ -->
   <section class="fleetband" id="vozidla">
     <div class="fleetband-media" data-parallax aria-hidden="true">
       <span><Image src={fleetStill} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="lazy" decoding="async" /></span>

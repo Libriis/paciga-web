@@ -1814,7 +1814,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* ciele kotiev z bandu potrebujú odstup od fixného menu */
 /* #sluzby chýbalo: pri priamom vstupe s hashom (bez JS, alebo z výsledku
    vyhľadávania) skok skončil pod 82 px lištou. */
-#pribeh, #tim, #prvenstva, #vozidla, #limuzina, #sluzby { scroll-margin-top: 90px; }
+#pribeh, #tim, #vozidla, #limuzina, #sluzby { scroll-margin-top: 90px; }
 /* pravidlo "main > section[class]" maľuje sekcie transparentne — band si
    svoj nános svetla musí vybojovať špecificitou */
 main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
@@ -2589,17 +2589,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .kron-body h3 { font-size: 20px; margin-bottom: 8px; }
 .kron-body p { color: var(--muted); line-height: 1.7; max-width: 44ch; }
 
-/* ---- prvenstvá: hairline zoznam namiesto kariet ---- */
-.prvenstva { background: var(--bg); border-top: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
-.pl-list { border-top: 1px solid var(--line); }
-/* prvý riadok berie linku od .pl-list, nedvojí ju */
-.pl-list > .ed-pair:first-child { border-top: 0; }
-.pl-num { font-size: 12.5px; letter-spacing: 0.2em; font-weight: 600; color: var(--dim); }
-.pl-note { margin-top: 34px; font-size: 17.4px; color: var(--dim); max-width: 62ch; line-height: 1.7; }
-
 /* ---- editoriálne dvojice: text a fotografia vedľa seba, strany sa striedajú ----
-   Použité v O nás (príbeh + prvenstvá): tvrdenie a jeho vizuálny dôkaz
-   v jednom riadku, aby text nestál sám. */
+   Tvrdenie a jeho vizuálny dôkaz v jednom riadku, aby text nestál sám. */
 .ed-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
