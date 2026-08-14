@@ -52,6 +52,52 @@ const NAV = [
   { key: 'aktuality', href: '/aktuality', label: 'Aktuality' },
   { key: 'kontakt', href: '/kontakt', label: 'Kontakt' },
 ];
+
+/* Mega menu pod položkou Pohrebné služby: paleta všetkých 15 služieb
+   v 4 skupinách. Desktop = pás pod lištou (hover/focus, JS v main.js),
+   mobil = rozbaľovací zoznam skupín v draweri. Vzor: Rich Navigation
+   Menu (21st.dev), implementované vanilla kvôli JS rozpočtu hlavičky. */
+const SLUZBY_MEGA = [
+  {
+    skupina: 'Rozlúčka a obrad',
+    kotva: '/pohrebne-sluzby#skupina-obrad',
+    polozky: [
+      { cislo: '01', nazov: 'Rakvy', href: '/pohrebne-sluzby/rakvy' },
+      { cislo: '02', nazov: 'Rozlúčka a pochovanie', href: '/pohrebne-sluzby/rozlucka-a-pochovanie' },
+      { cislo: '03', nazov: 'Kremácia', href: '/pohrebne-sluzby/kremacia' },
+      { cislo: '04', nazov: 'Kvetinárstvo', href: '/pohrebne-sluzby/kvetinarstvo' },
+      { cislo: '05', nazov: 'Oblečenie pre zosnulého', href: '/pohrebne-sluzby/oblecenie-pre-zosnuleho' },
+      { cislo: '06', nazov: 'Spomienkové karty', href: '/pohrebne-sluzby/spomienkove-karty' },
+    ],
+  },
+  {
+    skupina: 'Prevoz a technológie',
+    kotva: '/pohrebne-sluzby#skupina-prevoz',
+    polozky: [
+      { cislo: '07', nazov: 'Prevoz zosnulých NON STOP', href: '/pohrebne-sluzby/prevoz-zosnulych' },
+      { cislo: '08', nazov: 'Medzinárodný prevoz', href: '/pohrebne-sluzby/medzinarodny-prevoz' },
+      { cislo: '09', nazov: 'Pohrebná limuzína', href: '/pohrebne-sluzby/pohrebna-limuzina' },
+      { cislo: '10', nazov: 'Prenosné chladenie', href: '/pohrebne-sluzby/prenosne-chladenie' },
+    ],
+  },
+  {
+    skupina: 'Kamenárstvo',
+    kotva: '/pohrebne-sluzby#skupina-kamenarstvo',
+    polozky: [
+      { cislo: '11', nazov: 'Kamenárske práce', href: '/kamenarstvo' },
+      { cislo: '12', nazov: '3D vizualizácia pomníka', href: '/kamenarstvo#navrh' },
+    ],
+  },
+  {
+    skupina: 'Podpora a spomienka',
+    kotva: '/pohrebne-sluzby#skupina-podpora',
+    polozky: [
+      { cislo: '13', nazov: 'Smútkové poradenstvo', href: '/pohrebne-sluzby/smutkove-poradenstvo' },
+      { cislo: '14', nazov: 'Predpríprava pohrebu', href: '/pohrebne-sluzby/predpriprava-pohrebu' },
+      { cislo: '15', nazov: 'Spomienkové šperky', href: '/sperky' },
+    ],
+  },
+];
 ---
 <!DOCTYPE html>
 <html lang="sk">
@@ -101,7 +147,33 @@ const NAV = [
       <span></span><span></span><span></span>
     </button>
     <nav class="nav-links" id="nav-links" aria-label="Hlavné menu">
-      {NAV.map((item) => (
+      {NAV.map((item) => item.key === 'pohrebne-sluzby' ? (
+        <div class="nav-item" id="nav-sluzby">
+          <a href={item.href} class:list={['nav-link', { 'is-active': item.key === active }]} id="nav-sluzby-link" aria-haspopup="true" aria-expanded="false">{item.label}</a>
+          <button class="nav-sub-toggle" id="nav-sub-toggle" type="button" aria-expanded="false" aria-controls="nav-sub" aria-label="Rozbaliť prehľad služieb"><span aria-hidden="true"></span></button>
+          <div class="megamenu" id="megamenu" aria-label="Prehľad služieb">
+            <div class="container mega-grid">
+              {SLUZBY_MEGA.map((sk) => (
+                <div class="mega-col">
+                  <a class="mega-label" href={sk.kotva}>{sk.skupina}</a>
+                  {sk.polozky.map((p) => (
+                    <a href={p.href} class="mega-link"><i>{p.cislo}</i>{p.nazov}</a>
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div class="container mega-foot">
+              <a href="/pohrebne-sluzby" class="mega-all">Prehľad všetkých 15 služieb →</a>
+              <span class="mega-note">NON STOP · 0903 596 364</span>
+            </div>
+          </div>
+          <div class="nav-sub" id="nav-sub">
+            {SLUZBY_MEGA.map((sk) => (
+              <a class="nav-sub-link" href={sk.kotva}>{sk.skupina}</a>
+            ))}
+          </div>
+        </div>
+      ) : (
         <a href={item.href} class:list={['nav-link', { 'is-active': item.key === active }]}>{item.label}</a>
       ))}
       <a href="tel:0903596364" class="nav-cta"><span class="dot"></span>NON STOP · 0903 596 364</a>

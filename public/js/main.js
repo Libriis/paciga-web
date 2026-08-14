@@ -84,6 +84,52 @@
     });
   }
 
+  /* ---------- mega menu: Pohrebné služby ----------
+     Desktop hover s odkladom zavretia: kurzor cestou z odkazu do pásu
+     opúšťa .nav-item (spodný padding lišty nie je jeho súčasťou), takže
+     okamžité zavretie by pás zhodilo. 180 ms cestu prežije. Klávesnica
+     ide mimo JS cez :focus-within v CSS. */
+  var megaItem = document.getElementById('nav-sluzby');
+  if (megaItem && nav) {
+    var megaLink = document.getElementById('nav-sluzby-link');
+    var megaTimer = null;
+    var megaMq = window.matchMedia('(hover: hover) and (min-width: 901px)');
+
+    var megaOpen = function () {
+      if (!megaMq.matches) return;
+      if (megaTimer) { clearTimeout(megaTimer); megaTimer = null; }
+      nav.classList.add('mega-open');
+      if (megaLink) megaLink.setAttribute('aria-expanded', 'true');
+    };
+    var megaClose = function (hned) {
+      if (megaTimer) { clearTimeout(megaTimer); megaTimer = null; }
+      var run = function () {
+        nav.classList.remove('mega-open');
+        if (megaLink) megaLink.setAttribute('aria-expanded', 'false');
+      };
+      if (hned) run(); else megaTimer = setTimeout(run, 180);
+    };
+
+    megaItem.addEventListener('mouseenter', megaOpen);
+    megaItem.addEventListener('mouseleave', function () { megaClose(false); });
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') megaClose(true);
+    });
+    /* klik na odkaz v páse zavrie pás hneď, nech pri kotvách nevisí nad obsahom */
+    megaItem.querySelectorAll('.megamenu a').forEach(function (a) {
+      a.addEventListener('click', function () { megaClose(true); });
+    });
+
+    /* mobil: rozbaľovací zoznam skupín v draweri */
+    var subToggle = document.getElementById('nav-sub-toggle');
+    if (subToggle) {
+      subToggle.addEventListener('click', function () {
+        var open = megaItem.classList.toggle('sub-open');
+        subToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+  }
+
   /* ---------- scene videá ----------
      Hrajú len vo viewporte (perf). Ak prehliadač blokuje autoplay
      (Firefox nastavenie), označia sa a spustia pri prvom geste užívateľa. */

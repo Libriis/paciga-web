@@ -487,6 +487,54 @@ body {
 .nav-burger { display: none; flex-direction: column; gap: 5px; padding: 12px 8px; margin-left: auto; }
 .nav-burger span { width: 24px; height: 2px; background: var(--text); transition: transform 0.3s ease, opacity 0.3s ease; }
 
+/* ---- mega menu: paleta služieb pod položkou Pohrebné služby ----
+   Desktop: pás na celú šírku pod lištou, otvára hover/focus (JS v main.js
+   drží 180 ms odklad zavretia, aby kurzor prežil cestu z odkazu do pásu).
+   Kotví na #site-nav (position: fixed), .nav-item ostáva position: static.
+   Mobil: pás je vypnutý, v draweri je rozbaľovací zoznam skupín. */
+.nav-item { display: flex; align-items: center; }
+.nav-sub-toggle { display: none; }
+.nav-sub { display: none; }
+.megamenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(12, 13, 15, 0.96);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 var(--line), 0 30px 60px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s linear 0.3s;
+}
+#site-nav.mega-open .megamenu,
+.nav-item:focus-within .megamenu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.mega-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 44px; padding: 30px 0 22px; }
+.mega-label {
+  display: block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); padding-bottom: 10px; margin-bottom: 6px; border-bottom: 1px solid var(--line);
+  transition: color 0.25s ease;
+}
+.mega-label:hover { color: var(--text); }
+.mega-link {
+  display: flex; align-items: baseline; gap: 10px; padding: 6.5px 0;
+  font-size: 14px; color: var(--muted); transition: color 0.25s ease, transform 0.3s ease;
+}
+.mega-link i { font-style: normal; font-size: 11px; color: rgb(var(--fg-rgb) / 0.35); font-variant-numeric: tabular-nums; }
+.mega-link:hover { color: var(--text); transform: translateX(4px); }
+.mega-foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; border-top: 1px solid var(--line); padding: 14px 0 16px; }
+.mega-all { font-size: 13px; color: var(--gold); }
+.mega-all:hover { text-decoration: underline; text-underline-offset: 3px; }
+.mega-note { font-size: 12px; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+
 /* ---- zámok scrollu pri otvorenom mobilnom menu ----
    Lenis má syncTouch vypnutý, takže na dotyku beží natívny scroll a
    lenis.stop() nezamkne nič — stránka pod otvoreným menu ušla. Body ide
@@ -1097,6 +1145,26 @@ html.nav-locked body {
   #site-nav.nav-open .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   #site-nav.nav-open .nav-burger span:nth-child(2) { opacity: 0; }
   #site-nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* mega menu v draweri: pás vypnutý, namiesto neho rozbaľovací zoznam skupín */
+  .megamenu { display: none; }
+  .nav-item { flex-wrap: wrap; justify-content: center; }
+  .nav-sub-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; margin-left: 2px;
+  }
+  .nav-sub-toggle span {
+    width: 9px; height: 9px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted);
+    transform: rotate(45deg) translate(-1px, -1px); transition: transform 0.3s ease;
+  }
+  .nav-item.sub-open .nav-sub-toggle span { transform: rotate(225deg) translate(-2px, -2px); }
+  .nav-sub { width: 100%; flex-direction: column; align-items: center; gap: 0; padding: 2px 0 8px; }
+  .nav-item.sub-open .nav-sub { display: flex; }
+  .nav-sub-link {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 4px 12px;
+    font-size: 15.5px; color: var(--muted); transition: color 0.25s ease;
+  }
+  .nav-sub-link:hover { color: var(--text); }
 
   .branch-grid { grid-template-columns: 1fr; }
   /* čísla na mobile: pod sebou, riadky delí hairline namiesto zvislých liniek */
