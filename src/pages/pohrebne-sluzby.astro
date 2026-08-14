@@ -9,14 +9,18 @@ import sluzbyHero from '../assets/sluzby-hero.jpg';
 import limuzina from '../assets/o-nas-limuzina.jpg';
 import fc01 from '../assets/asset-01.jpg';
 import fc04 from '../assets/asset-04.jpg';
-import fc09 from '../assets/asset-09.jpg';
 import fc08 from '../assets/asset-08.jpg';
 import rakva01 from '../assets/katalog/rakvy/rakva-01.jpg';
 import cintorinFoto from '../assets/cintorin.jpg';
 import veniecFoto from '../assets/svc-starostlivost.jpg';
-import parteFoto from '../assets/parte-ilustracna.jpg';
-import limuzinaE400 from '../assets/limuzina-e400.jpg';
 import kamenFoto from '../assets/svc-kamenarstvo.jpg';
+import oblecenieFoto from '../assets/svc-oblecenie.jpg';
+import kartyFoto from '../assets/svc-karty.jpg';
+import medzFoto from '../assets/svc-medzinarodny-prevoz.jpg';
+import limuzinaFoto from '../assets/svc-limuzina.jpg';
+import chladenieFoto from '../assets/svc-chladenie.jpg';
+import vizualizaciaFoto from '../assets/svc-3d-vizualizacia.jpg';
+import poradenstvoFoto from '../assets/svc-poradenstvo.jpg';
 
 const title = "Pohrebné služby | Paciga, pohrebné a kamenárske služby";
 const description = "Kompletné pohrebné služby Paciga: rakvy, obrad, kremácia, prevoz zosnulých NON STOP, kvetinárstvo, kamenárstvo, spomienkové šperky. Poprad, Spišská Belá, Liptovský Mikuláš.";
@@ -28,17 +32,21 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
 const fotoKarty = async (img: ImageMetadata) =>
   (await getImage({ src: img, width: 660, quality: KVALITA_KARTA, format: 'webp' })).src;
 
-const [fRakva, fObrad, fCintorin, fVeniec, fParte, fPrevoz, fMedz, fLimo, fKamen, fSperk] =
+const [fRakva, fObrad, fCintorin, fVeniec, fOblecenie, fKarty, fPrevoz, fMedz, fLimo, fChladenie, fKamen, fVizualizacia, fPoradenstvo, fSperk] =
   await Promise.all([
     fotoKarty(rakva01),
     fotoKarty(fc01),
     fotoKarty(cintorinFoto),
     fotoKarty(veniecFoto),
-    fotoKarty(parteFoto),
+    fotoKarty(oblecenieFoto),
+    fotoKarty(kartyFoto),
     fotoKarty(fc04),
-    fotoKarty(fc09),
-    fotoKarty(limuzinaE400),
+    fotoKarty(medzFoto),
+    fotoKarty(limuzinaFoto),
+    fotoKarty(chladenieFoto),
     fotoKarty(kamenFoto),
+    fotoKarty(vizualizaciaFoto),
+    fotoKarty(poradenstvoFoto),
     fotoKarty(fc08),
   ]);
 
@@ -47,24 +55,24 @@ const skupinaObrad: KartaSluzby[] = [
   { id: 'rozlucka', foto: fObrad, tag: 'Rozlúčka a obrad', nazov: 'Rozlúčka a pochovanie', popis: 'Kompletné zabezpečenie obradu vrátane prípravy miesta, výzdoby a organizácie celého priebehu.', cislo: '02', fakt: 'kompletný obrad', href: '/pohrebne-sluzby/rozlucka-a-pochovanie' },
   { id: 'kremacia', foto: fCintorin, tag: 'Rozlúčka a obrad', nazov: 'Kremácia s obradom alebo bez', popis: 'Možnosť rozlúčky, ktorá rešpektuje želania zosnulého aj pozostalých. Poradíme vám s výberom.', cislo: '03', fakt: 'poradíme s výberom', href: '/pohrebne-sluzby/kremacia' },
   { id: 'kvetinarstvo', foto: fVeniec, tag: 'Rozlúčka a obrad', nazov: 'Kvetinárstvo', popis: 'Vence, kytice a kvetinová výzdoba obradu. Osemdesiatjeden prevedení v katalógu.', cislo: '04', fakt: '81 prevedení', href: '/pohrebne-sluzby/kvetinarstvo' },
-  { id: 'oblecenie', foto: null, tag: 'Rozlúčka a obrad', nazov: 'Oblečenie pre zosnulého', popis: 'Dôstojné oblečenie a úprava zosnulého. Súčasť rozlúčky, ktorá odráža rešpekt a úctu.', cislo: '05', fakt: 'rešpekt a úcta', href: '/pohrebne-sluzby/oblecenie-pre-zosnuleho' },
-  { id: 'karty', foto: fParte, tag: 'Rozlúčka a obrad', nazov: 'Spomienkové karty', popis: 'Jedinečný spôsob, ako si uctiť pamiatku zosnulého a zdieľať spomienku s rodinou a blízkymi.', cislo: '06', fakt: 'spomienka pre rodinu', href: '/pohrebne-sluzby/spomienkove-karty' },
+  { id: 'oblecenie', foto: fOblecenie, tag: 'Rozlúčka a obrad', nazov: 'Oblečenie pre zosnulého', popis: 'Dôstojné oblečenie a úprava zosnulého. Súčasť rozlúčky, ktorá odráža rešpekt a úctu.', cislo: '05', fakt: 'rešpekt a úcta', href: '/pohrebne-sluzby/oblecenie-pre-zosnuleho' },
+  { id: 'karty', foto: fKarty, tag: 'Rozlúčka a obrad', nazov: 'Spomienkové karty', popis: 'Jedinečný spôsob, ako si uctiť pamiatku zosnulého a zdieľať spomienku s rodinou a blízkymi.', cislo: '06', fakt: 'spomienka pre rodinu', href: '/pohrebne-sluzby/spomienkove-karty' },
 ];
 
 const skupinaPrevoz: KartaSluzby[] = [
   { id: 'prevoz', foto: fPrevoz, tag: 'Prevoz a technológie', nazov: 'Prevoz zosnulých NON STOP', popis: 'Dôstojný a rýchly prevoz z bytov a nemocníc, 24 hodín denne. Dbáme na hygienické aj právne predpisy.', cislo: '07', fakt: '24 hodín denne', href: '/pohrebne-sluzby/prevoz-zosnulych' },
   { id: 'medzinarodny-prevoz', foto: fMedz, tag: 'Prevoz a technológie', nazov: 'Medzinárodný prevoz', popis: 'Preprava zosnulých zo zahraničia vrátane vybavenia všetkých dokumentov. Ako prví v regióne.', cislo: '08', fakt: 'prví v regióne', href: '/pohrebne-sluzby/medzinarodny-prevoz' },
   { id: 'pohrebna-limuzina', foto: fLimo, tag: 'Prevoz a technológie', nazov: 'Pohrebná limuzína', popis: 'Mercedes-Benz E 400, ocenený ako najkrajšia pohrebná limuzína na Slovensku za rok 2024.', cislo: '09', fakt: 'ocenená 2024', href: '/pohrebne-sluzby/pohrebna-limuzina' },
-  { id: 'chladenie', foto: null, tag: 'Prevoz a technológie', nazov: 'Prenosné chladenie', popis: 'Vlastná technológia, ktorú sme ako prví predstavili na výstave Slovak Funeral. Umožňuje dôstojnú rozlúčku aj doma.', cislo: '10', fakt: 'rozlúčka aj doma', href: '/pohrebne-sluzby/prenosne-chladenie' },
+  { id: 'chladenie', foto: fChladenie, tag: 'Prevoz a technológie', nazov: 'Prenosné chladenie', popis: 'Vlastná technológia, ktorú sme ako prví predstavili na výstave Slovak Funeral. Umožňuje dôstojnú rozlúčku aj doma.', cislo: '10', fakt: 'rozlúčka aj doma', href: '/pohrebne-sluzby/prenosne-chladenie' },
 ];
 
 const skupinaKamen: KartaSluzby[] = [
   { id: 'kamenarstvo', foto: fKamen, tag: 'Kamenárstvo', nazov: 'Kamenárske práce', popis: 'Výroba betónových hrobiek, predaj a montáž žulových pomníkov, písmo aj doplnky. Od výkopu po hotový pomník.', cislo: '11', fakt: 'od výkopu po pomník', href: '/kamenarstvo' },
-  { id: 'vizualizacia', foto: null, tag: 'Kamenárstvo', nazov: '3D vizualizácia pomníka', popis: 'Pomník uvidíte ešte pred výrobou. Ako prví v regióne pripravíme presnú 3D vizualizáciu.', cislo: '12', fakt: 'návrh pred výrobou', href: '/kamenarstvo#navrh' },
+  { id: 'vizualizacia', foto: fVizualizacia, tag: 'Kamenárstvo', nazov: '3D vizualizácia pomníka', popis: 'Pomník uvidíte ešte pred výrobou. Ako prví v regióne pripravíme presnú 3D vizualizáciu.', cislo: '12', fakt: 'návrh pred výrobou', href: '/kamenarstvo#navrh' },
 ];
 
 const skupinaPodpora: KartaSluzby[] = [
-  { id: 'poradenstvo', foto: null, tag: 'Podpora a spomienka', nazov: 'Smútkové poradenstvo', popis: 'Strata blízkeho je jedna z najťažších skúseností. Sprevádzame vás procesom smútenia, nie ste v tom sami.', cislo: '13', fakt: 'nie ste v tom sami', href: '/pohrebne-sluzby/smutkove-poradenstvo' },
+  { id: 'poradenstvo', foto: fPoradenstvo, tag: 'Podpora a spomienka', nazov: 'Smútkové poradenstvo', popis: 'Strata blízkeho je jedna z najťažších skúseností. Sprevádzame vás procesom smútenia, nie ste v tom sami.', cislo: '13', fakt: 'nie ste v tom sami', href: '/pohrebne-sluzby/smutkove-poradenstvo' },
   { id: 'predpriprava', foto: null, tag: 'Podpora a spomienka', nazov: 'Predpríprava pohrebu', popis: 'Naplánujte si poslednú rozlúčku vopred podľa vlastných predstáv a odbremeňte svojich blízkych.', cislo: '14', fakt: 'odbremení blízkych', href: '/pohrebne-sluzby/predpriprava-pohrebu' },
   { id: 'sperky', foto: fSperk, tag: 'Podpora a spomienka', nazov: 'Spomienkové šperky s odtlačkom', popis: 'Náramky a retiazky s gravírovaným odtlačkom prsta. Kúsok blízkeho človeka navždy pri vás.', cislo: '15', fakt: 'gravírovaný odtlačok', href: '/sperky' },
 ];
