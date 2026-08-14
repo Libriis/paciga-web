@@ -5,6 +5,7 @@ import { SIRKY_HERO, KVALITA_POZADIE } from '../lib/images';
 import infoHero from '../assets/info-hero.jpg';
 import Faq from '../components/Faq.astro';
 import type { FaqItem } from '../components/Faq.astro';
+import IkonaKroku from '../components/IkonaKroku.astro';
 
 const otazky: FaqItem[] = [
   {
@@ -92,6 +93,7 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
           </ul>
           <a href="tel:0903596364" class="step-tel">0903 596 364</a>
         </div>
+        <IkonaKroku typ="dom" />
       </div>
 
       <div class="step" id="nemocnica" data-reveal>
@@ -105,6 +107,7 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
           </ul>
           <a href="tel:0903596364" class="step-tel">0903 596 364</a>
         </div>
+        <IkonaKroku typ="nemocnica" />
       </div>
 
       <div class="step" id="okolnosti" data-reveal>
@@ -118,6 +121,7 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
           </ul>
           <a href="tel:0948110109" class="step-tel">0948 110 109</a>
         </div>
+        <IkonaKroku typ="otaznik" />
       </div>
 
       <div class="step" id="zahranicie" data-reveal>
@@ -127,6 +131,7 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
           <p>Príbuzných na Slovensku informuje veľvyslanectvo Slovenskej republiky v danej krajine. Prepravu zosnulého zo zahraničia zabezpečíme vrátane vybavenia všetkých potrebných dokumentov.</p>
           <a href="tel:+421903596364" class="step-tel">+421 903 596 364</a>
         </div>
+        <IkonaKroku typ="svet" />
       </div>
 
     </div>

@@ -1722,7 +1722,38 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* ---- podstránky: sprievodca pre pozostalých ---- */
 .guide { background: var(--bg); padding: clamp(135px, 18vh, 225px) 0; }
 .guide + .guide { padding-top: 0; }
-.step { display: grid; grid-template-columns: clamp(70px, 9vw, 120px) 1fr; gap: clamp(20px, 4vw, 56px); padding: clamp(40px, 6vh, 64px) 0; border-top: 1px solid var(--line); scroll-margin-top: 90px; }
+/* Tretí stĺpec je ikona. Telo dostáva minmax(0, 74ch), aby sa text držal
+   svojej miery a ikona sadla hneď za neho, nie na pravý okraj obrazovky.
+   Bez minmax(0, ...) by 1fr odmietlo zmenšiť telo pod jeho obsah a ikona
+   by na užšom okne vytlačila mriežku z kontajnera. */
+.step { display: grid; grid-template-columns: clamp(70px, 9vw, 120px) minmax(0, 74ch) 1fr; gap: clamp(20px, 4vw, 56px); padding: clamp(40px, 6vh, 64px) 0; border-top: 1px solid var(--line); scroll-margin-top: 90px; align-items: center; }
+
+/* Ikona kroku: vlasová linka, sotva viditeľná. Sprevádza text, nekričí.
+   currentColor dedí farbu textu, takže sedí do tmavej tóniny sama od seba. */
+.step-ikona {
+  width: clamp(96px, 11vw, 150px);
+  height: auto;
+  justify-self: center;
+  color: var(--text);
+  /* 0.085 bolo pri prvom pokuse tak málo, že ikona na bežnom monitore
+     zanikla. 0.18 ju nechá vidieť ako tichý vodoznak a text ju stále
+     prehlušuje. */
+  opacity: 0.18;
+  overflow: visible;
+}
+/* Odhalenie so scrollom: ikona dobehne o chlp neskôr než text kroku,
+   aby sa oko najprv chytilo nadpisu. */
+.step[data-reveal] .step-ikona { transition: opacity 0.9s ease 0.15s; }
+
+/* Na užšom okne ikona nemá kam ísť: buď by stlačila text pod jeho mieru,
+   alebo by visela nad ním ako nepochopiteľná dekorácia. Preto mizne
+   a mriežka sa vracia na dva stĺpce.
+   Pravidlo musí stáť PRED blokom @media (max-width: 560px), ktorý dáva
+   .step jeden stĺpec — inak by ho pri rovnakej špecificite prebilo. */
+@media (max-width: 900px) {
+  .step { grid-template-columns: clamp(70px, 9vw, 120px) minmax(0, 1fr); align-items: start; }
+  .step-ikona { display: none; }
+}
 .step:last-child { border-bottom: 1px solid var(--line); }
 .step-num { font-size: clamp(40px, 5vw, 68px); font-weight: 680; font-variation-settings: var(--wide); color: var(--dim); line-height: 1; }
 .step-body h3 { font-size: clamp(22px, 2.4vw, 30px); }
