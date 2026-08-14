@@ -122,7 +122,7 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
   </section>
 
   <!-- ============ INTERIÉR POBOČIEK ============
-       Reálne fotky od klienta (14.8.2026); video prehliadku ešte dodá. -->
+       Reálne fotky aj video prehliadka od klienta (14.8.2026). -->
   <section class="interier">
     <div class="container">
       <div class="section-head">
@@ -144,7 +144,12 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
           <figcaption>Liptovský Mikuláš</figcaption>
         </figure>
       </div>
-      <div class="photo-slot interier-video" data-photo-slot data-reveal><span>Miesto pre video</span><em>Krátka prehliadka interiéru pobočiek</em></div>
+      <figure class="interier-item" data-reveal>
+        {/* rovnaká mašinéria ako town videá: .scene-video hrá len vo viewporte,
+            data-poster sa dosadí lazy, preload none drží mobilné dáta na uzde */}
+        <video class="scene-video interier-video-real" src="/assets/pobocka-poprad.mp4" data-poster="/assets/poster-pobocka-poprad.webp" muted loop playsinline preload="none" aria-label="Video prehliadka pobočky Poprad"></video>
+        <figcaption>Video prehliadka · Poprad</figcaption>
+      </figure>
     </div>
   </section>
 

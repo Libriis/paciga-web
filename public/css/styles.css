@@ -964,10 +964,11 @@ html.nav-locked body {
 /* reálne fotky interiéru — height: auto ako pri kronike (<Image> píše atribút
    height, ktorý by bez neho platil namiesto aspect-ratio) */
 .interier-photo { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
-.interier-video { margin-top: 22px; aspect-ratio: 16 / 6; }
+/* video prehliadka: 16:9 zdroj orezaný do širokého pásu, na mobile plný pomer */
+.interier-video-real { margin-top: 22px; width: 100%; height: auto; aspect-ratio: 16 / 6; object-fit: cover; border-radius: 12px; display: block; }
 @media (max-width: 860px) {
   .interier-grid { grid-template-columns: 1fr; }
-  .interier-video { aspect-ratio: 16 / 9; }
+  .interier-video-real { aspect-ratio: 16 / 9; }
 }
 
 /* ---- memoriam ---- */
