@@ -2559,7 +2559,10 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .kron-body p { margin-left: auto; }
 .kron-item .photo-slot { grid-column: 3; }
 /* reálne fotky kroniky — rovnaké miesto v mriežke ako photo-slot */
-.kron-item .kron-photo { grid-column: 3; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
+/* height: auto je nutné — <Image> píše atribút height a ten by ako
+   prezentačný hint platil namiesto aspect-ratio (box by mal výšku
+   zdrojovej fotky v px, nie 4:3) */
+.kron-item .kron-photo { grid-column: 3; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
 .kron-flip .kron-photo { grid-column: 1; }
 .kron-flip .kron-body { grid-column: 3; text-align: left; }
 .kron-flip .kron-body p { margin-left: 0; margin-right: auto; }
