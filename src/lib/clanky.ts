@@ -15,16 +15,29 @@ import { CLANKY as ZALOZNE, type Clanok, bloky, type Blok } from '../data/aktual
 export type { Clanok, Blok };
 export { bloky };
 
-export type Kategoria = 'rada' | 'novinka' | 'spolupraca';
+export type Kategoria = 'prve-kroky' | 'smutok' | 'planovanie' | 'sperky' | 'zo-zivota';
 
 export const KATEGORIE: { key: Kategoria; label: Clanok['tag'] }[] = [
-  { key: 'rada', label: 'Rada' },
-  { key: 'novinka', label: 'Novinka' },
-  { key: 'spolupraca', label: 'Spolupráca' },
+  { key: 'prve-kroky', label: 'Prvé kroky' },
+  { key: 'smutok', label: 'Smútok a spomínanie' },
+  { key: 'planovanie', label: 'Plánovanie vopred' },
+  { key: 'sperky', label: 'Spomienkové šperky' },
+  { key: 'zo-zivota', label: 'Zo života Pacigy' },
 ];
 
-const stitok = (k: string): Clanok['tag'] =>
-  KATEGORIE.find((x) => x.key === k)?.label ?? 'Novinka';
+/* Kľúče z čias troch kategórií (do 14. 8. 2026). Riadky v databáze ich
+   môžu niesť, kým prebehne migracia-kategorie.sql, preto ich mapujeme. */
+const STARE_KLUCE: Record<string, Kategoria> = {
+  rada: 'prve-kroky',
+  novinka: 'zo-zivota',
+  spolupraca: 'zo-zivota',
+};
+
+const naKategoriu = (k: string): Kategoria =>
+  KATEGORIE.some((x) => x.key === k) ? (k as Kategoria) : STARE_KLUCE[k] ?? 'zo-zivota';
+
+const stitok = (k: Kategoria): Clanok['tag'] =>
+  KATEGORIE.find((x) => x.key === k)!.label;
 
 /* Mesiace v genitíve: „29. mája", nie „29. máj". Intl by pri sk-SK vrátil
    nominatív, preto vlastná tabuľka. */
@@ -51,12 +64,13 @@ function zRiadku(r: Record<string, unknown>): Clanok {
     : undefined;
 
   const iso = String(r.datum ?? '').slice(0, 10);
+  const kategoria = naKategoriu(String(r.kategoria));
   return {
     slug: String(r.slug),
     datum: slovenskyDatum(iso),
     datumIso: iso,
-    tag: stitok(String(r.kategoria)),
-    t: (r.kategoria as Kategoria) ?? 'novinka',
+    tag: stitok(kategoria),
+    t: kategoria,
     foto: String(r.foto_url ?? ''),
     fotoAlt: String(r.foto_alt ?? ''),
     titulok: String(r.titulok),

@@ -9,19 +9,24 @@ import { getClanky, maDetail } from '../lib/clanky';
 export const prerender = false;
 
 const title = "Aktuality | Paciga, pohrebné a kamenárske služby";
-const description = "Novinky pohrebnej služby Paciga: spolupráce, konferencie a praktické rady pre pozostalých.";
+const description = "Aktuality pohrebnej služby Paciga: prvé kroky po úmrtí, plánovanie vopred, spomienkové šperky a novinky z našej práce.";
 const ogTitle = "Aktuality | Paciga";
-const ogDescription = "Rady a novinky, ktoré pomáhajú: spolupráce, konferencie a praktickí sprievodcovia pre pozostalých.";
+const ogDescription = "Rady a novinky, ktoré pomáhajú: prvé kroky po úmrtí, plánovanie vopred aj spomienkové šperky.";
 
 const clanky = await getClanky();
 
+// Kategórie kopírujú obsahové piliere značky (prirucka/obsahove-piliere-paciga.md).
+// Prázdna kategória sa v chipoch neukazuje, kým do nej nepribudne prvý článok.
 const filtre = [
   { f: 'all', label: 'Všetko' },
-  { f: 'rada', label: 'Rady' },
-  { f: 'novinka', label: 'Novinky' },
-  { f: 'spolupraca', label: 'Spolupráce' },
+  { f: 'prve-kroky', label: 'Prvé kroky' },
+  { f: 'smutok', label: 'Smútok a spomínanie' },
+  { f: 'planovanie', label: 'Plánovanie vopred' },
+  { f: 'sperky', label: 'Spomienkové šperky' },
+  { f: 'zo-zivota', label: 'Zo života Pacigy' },
 ];
 const pocet = (f: string) => (f === 'all' ? clanky.length : clanky.filter((c) => c.t === f).length);
+const viditelne = filtre.filter((x) => x.f === 'all' || pocet(x.f) > 0);
 ---
 <Base title={title} description={description} active="aktuality" ogTitle={ogTitle} ogDescription={ogDescription}>
 
@@ -34,7 +39,7 @@ const pocet = (f: string) => (f === 'all' ? clanky.length : clanky.filter((c) =>
         <div class="eyebrow" data-reveal>Aktuality</div>
         <h1 data-textreveal>Rady a novinky,<br>ktoré pomáhajú.</h1>
       </div>
-      <p class="news-hero-lead" data-reveal>Čomu sa práve venujeme: novinky, spolupráce a rady, ktoré pomáhajú pozostalým aj tým, ktorí myslia dopredu.</p>
+      <p class="news-hero-lead" data-reveal>Prvé kroky po úmrtí, plánovanie vopred, spomienkové šperky a novinky z našej práce. Pre pozostalých aj pre tých, ktorí myslia dopredu.</p>
     </div>
   </section>
 
@@ -45,7 +50,7 @@ const pocet = (f: string) => (f === 'all' ? clanky.length : clanky.filter((c) =>
       <div class="news-head" data-reveal>
         <h2>Najnovšie články</h2>
         <div class="news-filters">
-          {filtre.map((x) => (
+          {viditelne.map((x) => (
             <button type="button" class:list={['news-chip', { on: x.f === 'all' }]} data-f={x.f}>
               {x.label} <small>{pocet(x.f)}</small>
             </button>

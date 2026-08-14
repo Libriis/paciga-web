@@ -16,7 +16,10 @@ create table if not exists public.clanky (
   titulok text not null check (char_length(titulok) between 1 and 200),
   -- perex: text na karte v prehľade aj v úvode článku
   perex text not null check (char_length(perex) between 1 and 600),
-  kategoria text not null default 'rada' check (kategoria in ('rada', 'novinka', 'spolupraca')),
+  -- Kategórie kopírujú obsahové piliere značky (prirucka/obsahove-piliere-paciga.md).
+  -- Do 14. 8. 2026 boli tri: rada, novinka, spolupraca; prechod rieši migracia-kategorie.sql.
+  kategoria text not null default 'prve-kroky'
+    check (kategoria in ('prve-kroky', 'smutok', 'planovanie', 'sperky', 'zo-zivota')),
   datum date not null default current_date,
   foto_url text,
   foto_alt text,

@@ -31,11 +31,11 @@ const LOGO_SIRKY = [110, 130, 220, 260];
    z 30. 7. nestratí: SIRKY_HERO/KVALITA_POZADIE a SIRKY_KARTA/KVALITA_KARTA. */
 const SSR_OBRAZKY = [
   { zdroj: 'journey-poster.jpg', nazov: 'journey-poster', sirky: [480, 768, 1080, 1440, 1920], kvalita: 58 },
-  // Zdrojové fotky kariet majú 560 px, väčšie šírky by boli duplikáty:
-  // withoutEnlargement ich nezväčší a 640 aj 960 vyjdú byte za byte rovnako.
-  { zdroj: 'svc-obrad.jpg', nazov: 'svc-obrad', sirky: [320, 480, 560], kvalita: 70 },
-  { zdroj: 'svc-starostlivost.jpg', nazov: 'svc-starostlivost', sirky: [320, 480, 560], kvalita: 70 },
-  { zdroj: 'svc-kamenarstvo.jpg', nazov: 'svc-kamenarstvo', sirky: [320, 480, 560], kvalita: 70 },
+  // Zdroje z 14. 8. 2026 majú 1413 až 1600 px (fotky klienta, štvorcový orez).
+  // 1280 pokryje kartu na mobile pri DPR 3 (92vw ≈ 400 CSS px), viac netreba.
+  { zdroj: 'svc-obrad.jpg', nazov: 'svc-obrad', sirky: [320, 480, 640, 960, 1280], kvalita: 70 },
+  { zdroj: 'svc-starostlivost.jpg', nazov: 'svc-starostlivost', sirky: [320, 480, 640, 960, 1280], kvalita: 70 },
+  { zdroj: 'svc-kamenarstvo.jpg', nazov: 'svc-kamenarstvo', sirky: [320, 480, 640, 960, 1280], kvalita: 70 },
 ];
 
 // og:image musí byť hotová adresa, Facebook si ju nepredpočíta.

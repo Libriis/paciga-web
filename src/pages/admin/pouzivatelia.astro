@@ -213,7 +213,7 @@ function vykresli() {
         <strong>${esc(u.meno || naLogin(u.email))}</strong>
         <div class="obsah-meta">
           <span>${esc(naLogin(u.email))}</span>
-          ${u.hlavny ? '<span class="stitok novinka">hlavný správca</span>' : ''}
+          ${u.hlavny ? '<span class="stitok ceka">hlavný správca</span>' : ''}
           ${u.user_id ? '' : '<span class="stitok ceka">účet ešte nevznikol</span>'}
         </div>
         <div class="user-pristupy">${stitky}</div>
