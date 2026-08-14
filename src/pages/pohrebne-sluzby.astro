@@ -1,10 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
-import { SIRKY_HERO, SIRKY_KARTA, KVALITA_POZADIE, KVALITA_KARTA, KVALITA_DETAIL } from '../lib/images';
+import { SIRKY_HERO, SIRKY_KARTA, KVALITA_POZADIE, KVALITA_KARTA } from '../lib/images';
 import sluzbyHero from '../assets/sluzby-hero.jpg';
 import limuzina from '../assets/o-nas-limuzina.jpg';
-import sperkyStudio from '../assets/sperky-studio.jpg';
 import fc01 from '../assets/asset-01.jpg';
 import fc04 from '../assets/asset-04.jpg';
 import fc09 from '../assets/asset-09.jpg';
@@ -176,22 +175,6 @@ const ogDescription = "Pätnásť služieb pod jednou strechou. Od prvého telef
       <h2 data-textreveal>Pohrebná limuzína</h2>
       <p data-reveal>Ocenená ako najkrajšia na Slovensku. Elegancia a dôstojnosť na poslednej ceste, za každého počasia.</p>
       <p data-reveal><a class="btn-line" href="/pohrebne-sluzby/pohrebna-limuzina">Pozrieť flotilu →</a></p>
-    </div>
-  </section>
-
-  <!-- ============ ŠPERKY ============ -->
-  <section class="story" id="sperky" data-seam>
-    <div class="container story-grid">
-      <div class="story-text">
-        <h2 data-textreveal>„Nikdy nezabudnem.“</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-        <p data-reveal>Odtlačok prsta blízkeho človeka gravírujeme do striebra, zlata alebo ružového zlata. Náramky a retiazky vyrábame s nápisom podľa vášho želania.</p>
-        <p data-reveal>Šperky si pozriete na každej našej pobočke. Objednávajú sa osobne, na mieste vám ukážeme celú kolekciu.</p>
-        <p data-reveal><a class="btn-line" href="/sperky">Pozrieť kolekciu →</a></p>
-      </div>
-      <figure class="story-photo" data-reveal>
-        <Image src={sperkyStudio} widths={SIRKY_KARTA} quality={KVALITA_DETAIL} sizes="(max-width: 900px) 92vw, 50vw" alt="Spomienkový náhrdelník s odtlačkom prsta a gravírovaným nápisom Láska pretrvá" loading="lazy" decoding="async" />
-      </figure>
     </div>
   </section>
 
