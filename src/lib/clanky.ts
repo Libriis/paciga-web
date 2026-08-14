@@ -22,7 +22,7 @@ export const KATEGORIE: { key: Kategoria; label: Clanok['tag'] }[] = [
   { key: 'smutok', label: 'Smútok a spomínanie' },
   { key: 'planovanie', label: 'Plánovanie vopred' },
   { key: 'sperky', label: 'Spomienkové šperky' },
-  { key: 'zo-zivota', label: 'Zo života Pacigy' },
+  { key: 'zo-zivota', label: 'Zo života Paciga' },
 ];
 
 /* Kľúče z čias troch kategórií (do 14. 8. 2026). Riadky v databáze ich

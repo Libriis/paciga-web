@@ -23,7 +23,7 @@ const filtre = [
   { f: 'smutok', label: 'Smútok a spomínanie' },
   { f: 'planovanie', label: 'Plánovanie vopred' },
   { f: 'sperky', label: 'Spomienkové šperky' },
-  { f: 'zo-zivota', label: 'Zo života Pacigy' },
+  { f: 'zo-zivota', label: 'Zo života Paciga' },
 ];
 const pocet = (f: string) => (f === 'all' ? clanky.length : clanky.filter((c) => c.t === f).length);
 const viditelne = filtre.filter((x) => x.f === 'all' || pocet(x.f) > 0);

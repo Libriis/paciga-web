@@ -6,7 +6,7 @@
 --   smutok       Smútok a spomínanie
 --   planovanie   Plánovanie vopred (predplánovanie, mýty)
 --   sperky       Spomienkové šperky
---   zo-zivota    Zo života Pacigy (novinky, spolupráce, zákulisie)
+--   zo-zivota    Zo života Paciga (novinky, spolupráce, zákulisie)
 --
 -- POZOR NA PORADIE: spustiť až PO nasadení kódu s novými kategóriami.
 -- Nový kód má prechodový alias starých kľúčov (lib/clanky.ts), takže
