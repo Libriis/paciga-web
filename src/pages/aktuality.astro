@@ -13,20 +13,10 @@ const description = "Aktuality pohrebnej služby Paciga: prvé kroky po úmrtí,
 const ogTitle = "Aktuality | Paciga";
 const ogDescription = "Rady a novinky, ktoré pomáhajú: prvé kroky po úmrtí, plánovanie vopred aj spomienkové šperky.";
 
+// Kategórie z verejných aktualít odstránené 14.8.2026 na pokyn klienta:
+// prehľad je jednoduchý chronologický zoznam bez filtrov a štítkov.
+// Pole kategoria v DB a admine ostáva, len sa nezobrazuje.
 const clanky = await getClanky();
-
-// Kategórie kopírujú obsahové piliere značky (prirucka/obsahove-piliere-paciga.md).
-// Prázdna kategória sa v chipoch neukazuje, kým do nej nepribudne prvý článok.
-const filtre = [
-  { f: 'all', label: 'Všetko' },
-  { f: 'prve-kroky', label: 'Prvé kroky' },
-  { f: 'smutok', label: 'Smútok a spomínanie' },
-  { f: 'planovanie', label: 'Plánovanie vopred' },
-  { f: 'sperky', label: 'Spomienkové šperky' },
-  { f: 'zo-zivota', label: 'Zo života Paciga' },
-];
-const pocet = (f: string) => (f === 'all' ? clanky.length : clanky.filter((c) => c.t === f).length);
-const viditelne = filtre.filter((x) => x.f === 'all' || pocet(x.f) > 0);
 ---
 <Base title={title} description={description} active="aktuality" ogTitle={ogTitle} ogDescription={ogDescription}>
 
@@ -49,21 +39,13 @@ const viditelne = filtre.filter((x) => x.f === 'all' || pocet(x.f) > 0);
 
       <div class="news-head" data-reveal>
         <h2>Najnovšie články</h2>
-        <div class="news-filters">
-          {viditelne.map((x) => (
-            <button type="button" class:list={['news-chip', { on: x.f === 'all' }]} data-f={x.f}>
-              {x.label} <small>{pocet(x.f)}</small>
-            </button>
-          ))}
-        </div>
       </div>
 
       <div class="news-grid">
         {clanky.map((c) => (
-          <article class:list={['news-card', { 'has-detail': maDetail(c) }]} data-t={c.t} data-reveal>
+          <article class:list={['news-card', { 'has-detail': maDetail(c) }]} data-reveal>
             <div class="news-photo">
               <Foto src={c.foto} alt={c.fotoAlt} widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, (max-width: 1100px) 46vw, 30vw" />
-              <span class="news-tag">{c.tag}</span>
             </div>
             <div class="news-card-body">
               {/* článok s telom: klikateľná je celá karta (stretched link) */}
@@ -83,21 +65,4 @@ const viditelne = filtre.filter((x) => x.f === 'all' || pocet(x.f) > 0);
     </div>
   </section>
 
-<Fragment slot="scripts">
-<script is:inline>
-(function () {
-  var chips = document.querySelectorAll('.news-chip');
-  chips.forEach(function (chip) {
-    chip.addEventListener('click', function () {
-      chips.forEach(function (c) { c.classList.remove('on'); });
-      chip.classList.add('on');
-      var f = chip.getAttribute('data-f');
-      document.querySelectorAll('.news-card').forEach(function (card) {
-        card.classList.toggle('hidden', f !== 'all' && card.getAttribute('data-t') !== f);
-      });
-    });
-  });
-})();
-</script>
-</Fragment>
 </Base>
