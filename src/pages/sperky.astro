@@ -8,8 +8,9 @@
 */
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
-import { getImage } from 'astro:assets';
-import { lokalnyObrazok, SIRKY_MEDAILON, KVALITA_DETAIL } from '../lib/images';
+import { Image, getImage } from 'astro:assets';
+import { lokalnyObrazok, SIRKY_MEDAILON, SIRKY_KRONIKA, KVALITA_DETAIL } from '../lib/images';
+import filipFoto from '../assets/filip-mesar.png';
 import type { FaqItem } from '../components/Faq.astro';
 
 const SIZES_SPERK = '(max-width: 900px) 92vw, 46vw';
@@ -205,14 +206,16 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
   </section>
 
   <!-- ============ FILIP MEŠÁR ============
-       Placeholder na fotku z billboardového fotenia s Filipom Mešárom.
        Zámer klienta (14.8.2026): nie „tvár kampane", ale osobný uhol
        „jeho najcennejší šperk" + zmienka o Montreale.
-       Fotku dodá klient; photo-slot drží miesto aj popis záberu. -->
+       Fotka je výrez s priehľadným pozadím (billboardové fotenie),
+       sedí na presvetlenom paneli, mramorový stôl uzemňuje spodnú hranu. -->
   <section class="py-[clamp(80px,12vh,140px)]">
     <div class="container">
       <div class="grid grid-cols-1 items-center gap-[clamp(30px,4.5vw,70px)] md:grid-cols-2">
-        <div class="photo-slot ps-43" data-photo-slot data-reveal><span>Miesto pre fotografiu</span><em>Filip Mešár so spomienkovým šperkom, záber z fotenia billboardu</em></div>
+        <div class="overflow-hidden rounded-[12px] border border-line bg-panel bg-[radial-gradient(80%_70%_at_50%_28%,rgb(241_236_224/0.07),transparent_70%)]" data-reveal>
+          <Image src={filipFoto} widths={SIRKY_KRONIKA} sizes="(max-width: 900px) 92vw, 45vw" quality={KVALITA_DETAIL} alt="Filip Mešár so spomienkovým príveskom v tvare srdca s gravírovaným odtlačkom prsta" loading="lazy" class="block h-auto w-full" />
+        </div>
         <div>
           <div class="eyebrow" data-reveal>Montreal Canadiens</div>
           <h2 data-textreveal>Filip Mešár<br>a jeho najcennejší šperk</h2>
