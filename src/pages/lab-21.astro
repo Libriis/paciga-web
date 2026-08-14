@@ -7,8 +7,26 @@
 import Base from '../layouts/Base.astro';
 import Ui21 from '../components/Ui21.astro';
 import Lab21Demo from '../components/Lab21Demo.tsx';
+import { OfferCarousel, type KartaSluzby } from '../components/ui/offer-carousel';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { KVALITA_KARTA } from '../lib/images';
+import rakva01 from '../assets/katalog/rakvy/rakva-01.jpg';
+import fc01 from '../assets/asset-01.jpg';
+import veniecFoto from '../assets/svc-starostlivost.jpg';
 
 const title = 'UI Lab 21 | Paciga (interné)';
+
+/* Offer Carousel (21st.dev) — mini vzorka; produkčné nasadenie je na /pohrebne-sluzby */
+const foto = async (img: ImageMetadata) =>
+  (await getImage({ src: img, width: 660, quality: KVALITA_KARTA, format: 'webp' })).src;
+
+const vzorka: KartaSluzby[] = [
+  { id: 'lab-rakvy', foto: await foto(rakva01), tag: 'Rozlúčka a obrad', nazov: 'Rakvy', popis: 'Dvadsať prevedení od svetlého dreva po mahagón.', cislo: '01', fakt: '20 prevedení', href: '#' },
+  { id: 'lab-rozlucka', foto: await foto(fc01), tag: 'Rozlúčka a obrad', nazov: 'Rozlúčka a pochovanie', popis: 'Kompletné zabezpečenie obradu vrátane prípravy miesta a výzdoby.', cislo: '02', fakt: 'kompletný obrad', href: '#' },
+  { id: 'lab-kvety', foto: await foto(veniecFoto), tag: 'Rozlúčka a obrad', nazov: 'Kvetinárstvo', popis: 'Vence, kytice a kvetinová výzdoba obradu.', cislo: '03', fakt: '81 prevedení', href: '#' },
+  { id: 'lab-oblecenie', foto: null, tag: 'Rozlúčka a obrad', nazov: 'Oblečenie pre zosnulého', popis: 'Dôstojné oblečenie a úprava zosnulého.', cislo: '04', fakt: 'rešpekt a úcta', href: '#' },
+];
 ---
 <Base title={title} description="Interná stránka na testovanie komponentov." active="">
   <meta slot="head" name="robots" content="noindex, nofollow" />
@@ -23,6 +41,12 @@ const title = 'UI Lab 21 | Paciga (interné)';
       <Ui21>
         <Lab21Demo client:load />
       </Ui21>
+      <div style="margin-top: 72px;">
+        <h2 style="margin-bottom: 24px;">Offer Carousel · karty služieb</h2>
+        <Ui21>
+          <OfferCarousel client:visible polozky={vzorka} />
+        </Ui21>
+      </div>
     </div>
   </section>
 </Base>
