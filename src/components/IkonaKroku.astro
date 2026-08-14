@@ -1,0 +1,88 @@
+---
+/*
+  Tichá ikona v treťom stĺpci sekcie „Prvé kroky podľa situácie".
+
+  Kreslené jednou vlasovou linkou v currentColor, aby sedeli k hairline
+  rámom a zlatej linke zvyšku webu. Priehľadnosť a veľkosť riadi CSS
+  (.step-ikona), nie tento súbor — tu je len geometria.
+
+  Kresba sa drží kruhu s polomerom 38 (a dom rovnakej optickej výšky),
+  aby všetky štyri ikony pôsobili rovnako veľké. Prvý pokus mal r=30
+  a kruhové ikony vedľa domu vyzerali ako menšie súrodenci.
+
+  vector-effect drží hrúbku linky na 1 px aj pri zväčšení cez CSS,
+  inak by sa stroke škáloval s viewBoxom a ikona by zhrubla.
+*/
+export type TypIkony = 'dom' | 'nemocnica' | 'otaznik' | 'svet';
+
+interface Props {
+  typ: TypIkony;
+}
+
+const { typ } = Astro.props;
+
+/* Popisok je len pre vývojára a pre kontrolu v zostavenom HTML. Ikony sú
+   dekorácia, čítačke ich skrýva aria-hidden, informáciu nesie nadpis. */
+const POPIS: Record<TypIkony, string> = {
+  dom: 'dom',
+  nemocnica: 'nemocnica',
+  otaznik: 'otaznik',
+  svet: 'zemegula',
+};
+---
+
+<svg
+  class="step-ikona"
+  viewBox="0 0 100 100"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  data-ikona={POPIS[typ]}
+>
+  {typ === 'dom' && (
+    <>
+      {/* strecha mierne presahuje steny, inak dom vyzerá ako krabica s klobúkom */}
+      <path d="M14 51 L50 16 L86 51" vector-effect="non-scaling-stroke" />
+      <path d="M23 44 V86 H77 V44" vector-effect="non-scaling-stroke" />
+      <path d="M41 86 V61 H59 V86" vector-effect="non-scaling-stroke" />
+    </>
+  )}
+
+  {typ === 'nemocnica' && (
+    <>
+      {/* medzinárodná značka nemocnice: H v kruhu */}
+      <circle cx="50" cy="50" r="38" vector-effect="non-scaling-stroke" />
+      <path d="M33 27 V73 M67 27 V73 M33 50 H67" vector-effect="non-scaling-stroke" />
+    </>
+  )}
+
+  {typ === 'otaznik' && (
+    <>
+      <circle cx="50" cy="50" r="38" vector-effect="non-scaling-stroke" />
+      {/* horný oblúk, driek a odsadená bodka */}
+      <path
+        d="M34 37 a16 16 0 1 1 16 17 v8"
+        vector-effect="non-scaling-stroke"
+      />
+      <circle cx="50" cy="72" r="2" fill="currentColor" stroke="none" />
+    </>
+  )}
+
+  {typ === 'svet' && (
+    <>
+      {/*
+        Zemeguľa cez elipsy, nie cez oblúkové path. Prvý pokus kreslil
+        poludníky ako dva `a` oblúky a vyšla z toho šošovka, nie glóbus:
+        oblúk s veľkým polomerom je takmer rovný a druhý bol príliš
+        vypuklý. Elipsa dá symetrický poludník sama od seba.
+      */}
+      <circle cx="50" cy="50" r="38" vector-effect="non-scaling-stroke" />
+      <ellipse cx="50" cy="50" rx="16" ry="38" vector-effect="non-scaling-stroke" />
+      <path d="M12 50 H88" vector-effect="non-scaling-stroke" />
+      <ellipse cx="50" cy="50" rx="38" ry="15" vector-effect="non-scaling-stroke" />
+    </>
+  )}
+</svg>
