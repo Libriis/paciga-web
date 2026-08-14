@@ -1,5 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { SIRKY_KARTA, KVALITA_KARTA } from '../lib/images';
+import interierPoprad from '../assets/interier-poprad.jpg';
+import interierBela from '../assets/interier-bela.jpg';
+import interierLm from '../assets/interier-lm.jpg';
 
 const title = "Kontakt | Paciga, pohrebné a kamenárske služby";
 const description = "Kontakt na pohrebnú službu Paciga. NON STOP 0903 596 364 a 0948 110 109. Pobočky Poprad, Spišská Belá a Liptovský Mikuláš.";
@@ -117,7 +122,7 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
   </section>
 
   <!-- ============ INTERIÉR POBOČIEK ============
-       Fotky a video interiéru dodá klient; sloty držia miesto a pomer strán. -->
+       Reálne fotky od klienta (14.8.2026); video prehliadku ešte dodá. -->
   <section class="interier">
     <div class="container">
       <div class="section-head">
@@ -127,15 +132,15 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
       <p class="interier-lead" data-reveal>Príďte sa poradiť osobne. V každej pobočke si v pokoji pozriete rakvy, urny, vence aj šperky.</p>
       <div class="interier-grid">
         <figure class="interier-item" data-reveal>
-          <div class="photo-slot ps-43" data-photo-slot><span>Miesto pre fotografiu</span><em>Interiér pobočky Poprad, showroom</em></div>
+          <Image class="interier-photo" src={interierPoprad} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 31vw" quality={KVALITA_KARTA} alt="Interiér pobočky Poprad: showroom s urnami, krížmi a stolom na osobné stretnutie" loading="lazy" />
           <figcaption>Poprad</figcaption>
         </figure>
         <figure class="interier-item" data-reveal>
-          <div class="photo-slot ps-43" data-photo-slot><span>Miesto pre fotografiu</span><em>Interiér pobočky Spišská Belá</em></div>
+          <Image class="interier-photo" src={interierBela} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 31vw" quality={KVALITA_KARTA} alt="Interiér pobočky Spišská Belá: showroom s rakvami a vencami" loading="lazy" />
           <figcaption>Spišská Belá</figcaption>
         </figure>
         <figure class="interier-item" data-reveal>
-          <div class="photo-slot ps-43" data-photo-slot><span>Miesto pre fotografiu</span><em>Interiér pobočky Liptovský Mikuláš</em></div>
+          <Image class="interier-photo" src={interierLm} widths={SIRKY_KARTA} sizes="(max-width: 900px) 92vw, 31vw" quality={KVALITA_KARTA} alt="Interiér pobočky Liptovský Mikuláš: recepcia a miesto na osobné stretnutie" loading="lazy" />
           <figcaption>Liptovský Mikuláš</figcaption>
         </figure>
       </div>

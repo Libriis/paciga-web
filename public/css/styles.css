@@ -961,6 +961,9 @@ html.nav-locked body {
 .interier-lead { max-width: 52ch; margin-bottom: 40px; color: var(--muted); font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.7; }
 .interier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .interier-item figcaption { margin-top: 12px; font-size: 14px; letter-spacing: 0.08em; color: var(--dim); }
+/* reálne fotky interiéru — height: auto ako pri kronike (<Image> píše atribút
+   height, ktorý by bez neho platil namiesto aspect-ratio) */
+.interier-photo { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
 .interier-video { margin-top: 22px; aspect-ratio: 16 / 6; }
 @media (max-width: 860px) {
   .interier-grid { grid-template-columns: 1fr; }
