@@ -232,21 +232,6 @@
   var lastY = 0;
   var callPill = document.getElementById('callpill');
   var mqMobile = window.matchMedia('(max-width: 700px)');
-  /* Drží niektorý úsek jazdy obrazovku? Meria sa geometricky, nie stavom
-     ScrollTriggera: na presnom vstupe do pinu aj na jeho konci hlásil trigger
-     neaktívny stav, kým jazda ešte plnila obrazovku. Test na stred viewportu
-     je pravdivý len keď pin obrazovku naozaj dominuje, takže medzi úsekmi
-     (sekcia „Čo spraviť ako prvé") sa callpill normálne vráti. */
-  var journeyPins = null;
-  function journeyOnScreen() {
-    if (!journeyPins) journeyPins = document.querySelectorAll('.journey-pin');
-    var mid = (window.innerHeight || 800) / 2;
-    for (var i = 0; i < journeyPins.length; i++) {
-      var r = journeyPins[i].getBoundingClientRect();
-      if (r.top <= mid && r.bottom >= mid) return true;
-    }
-    return false;
-  }
   /* Je na obrazovke telefón, ktorý si vie užívateľ ťuknúť priamo?
      Pill je fixný vpravo dole a na mobile prekrýval koniec stránky: v pätičke
      riadok s IČO, na službách a v informáciách presne vlastnú CTA s číslom.
@@ -270,17 +255,10 @@
   }
 
   /* telefón vždy poruke: na mobile po hero (v nav je za burgerom),
-     na desktope keď sa nav schová. Volá to aj onToggle jazdy — poradie
-     callbackov medzi triggermi nie je zaručené, takže prepočet len v scroll
-     handleri nechával pill svietiť nad stanicami na vstupe do úseku. */
+     na desktope keď sa nav schová. */
   function syncCallPill() {
     if (!callPill || !nav) return;
     var pillOn = mqMobile.matches ? lastY > 500 : nav.classList.contains('nav-hidden');
-    /* Počas jazdy pill na desktope nezobrazuj: prekrýval by stanice v spodnej
-       dráhe a v hero by stál druhý raz vedľa rovnakého CTA. Telefón je tam aj
-       tak v hero CTA, v kapitole Cesta a v závere. Na mobile pill zostáva —
-       tam je v nav schovaný za burgerom a stanice sú vypnuté. */
-    if (pillOn && !mqMobile.matches && journeyOnScreen()) pillOn = false;
     if (pillOn && telVisible > 0) pillOn = false;
     callPill.classList.toggle('on', pillOn);
   }
@@ -336,145 +314,6 @@
     .from('.eyebrow[data-hero-el]', { opacity: 0, y: 26, duration: 1.0 }, 0.45)
     .from('.hero-lead[data-hero-el]', { y: 26, duration: 1.0 }, 0.57)
     .from('.hero-actions[data-hero-el]', { opacity: 0, y: 26, duration: 1.0 }, 0.69);
-
-  /* ---------- posledná cesta: pinovaná jazda (frame scrub kreslí journey.js) ----------
-     ČASY NIŽŠIE SÚ NA OSI celej 40 s jazdy (0..1), kde švy klipov ležia na
-     0.2 / 0.4 / 0.6 / 0.8 (päť klipov po 8 s, 965 framov).
-
-     Pôvodne to bolo 46 s a klipy 8+8+6+8+8+8. Šesťsekundový tretí klip išiel
-     preč: bol to iný záber toho istého sprievodu, začínal o kus skôr v deji,
-     takže sa muž v popredí pri šve vrátil v čase a znovu prešiel k okraju.
-     Vo videe to bola tretina sekundy, pri scrube 7 px na frame to bolo dobre
-     čitateľné cúvnutie. Zarovnať dva rôzne zábery vyhodením framov sa nedá,
-     preto padol celý klip: sekvencia 1110 -> 965 framov (mobil 555 -> 482).
-
-     setupJourney je zámerne písaný na viac úsekov: cez from/to sa dá jazda
-     rozrezať na samostatné pinované sekcie a funkcia at() časy prepočíta na
-     os úseku, takže rýchlosť fadov aj poloha kapitol ostanú rovnaké.
-     Teraz beží ako jeden úsek (from 0, to 1). */
-  window.__journeyState = {};
-
-  function setupJourney(cfg) {
-    var pinEl = document.getElementById(cfg.pin);
-    if (!pinEl) return;
-    var state = window.__journeyState[cfg.key] = { p: 0, raw: 0, dest: 0 };
-    var jStations = gsap.utils.toArray(pinEl.querySelectorAll('.jhs'));
-    var jTexts = gsap.utils.toArray(pinEl.querySelectorAll('.journey-text'));
-    var jSkip = pinEl.querySelector('.jhud-skip');
-    var jhudFill = pinEl.querySelector('.jhud-fill');
-    var jhudMarker = pinEl.querySelector('.jhud-marker');
-    var jhudNow = pinEl.querySelector('.jhud-count b');
-
-    var SPAN = cfg.to - cfg.from;
-    function at(t) { return (t - cfg.from) / SPAN; }
-    function dur(d) { return d / SPAN; }
-    var bounds = cfg.bounds.map(at);
-
-    /* HUD úseku: fill, marker a stav kapitol. Voláme aj raz pred prvým
-       scrollom, inak by pri vstupe do úseku nesvietila žiadna stanica. */
-    function syncHud(p) {
-      var pct = (p * 100) + '%';
-      if (jhudFill) jhudFill.style.width = pct;
-      if (jhudMarker) jhudMarker.style.left = pct;
-      var st = 0;
-      while (st < bounds.length && p >= bounds[st]) st++;
-      for (var i = 0; i < jStations.length; i++) {
-        jStations[i].classList.toggle('on', i === st);
-        jStations[i].classList.toggle('done', i < st);
-      }
-      if (jhudNow) jhudNow.textContent = '0' + (st + 1);
-    }
-
-    var jTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: pinEl,
-        start: 'top top',
-        /* dlhá dráha = pomalé, dôstojné tempo jazdy; úsek dostane svoj podiel */
-        end: function () { return '+=' + Math.round((window.innerWidth < 701 ? 630 : 860) * SPAN) + '%'; },
-        pin: true,
-        /* scrub krátky: dlhší (1.4) robil po zastavení scrollu ~1.5 s chvost,
-           počas ktorého jazda ešte viditeľne „dochádzala" frame po frame */
-        scrub: 0.7,
-        invalidateOnRefresh: true,
-        onToggle: function () { syncCallPill(); },
-        onUpdate: function (self) {
-          state.p = self.progress;
-          /* nevyhladený progress = skutočné miesto scrollu; journey.js na ňom
-             stavia cieľ usadenia, ktorý sa počas dobiehania nehýbe */
-          state.raw = Math.min(Math.max((self.scroll() - self.start) / (self.end - self.start), 0), 1);
-          /* cieľ Lenis animácie = kde scroll naozaj SKONČÍ; dojazd jazdy mieri
-             rovno tam a pristane jedným pohybom, nie naháňaním dobiehajúceho scrollu */
-          var destPx = (lenis && typeof lenis.targetScroll === 'number') ? lenis.targetScroll : self.scroll();
-          state.dest = Math.min(Math.max((destPx - self.start) / (self.end - self.start), 0), 1);
-          syncHud(self.progress);
-          for (var t = 0; t < jTexts.length; t++) {
-            jTexts[t].classList.toggle('is-on', parseFloat(gsap.getProperty(jTexts[t], 'opacity')) > 0.5);
-          }
-          if (jSkip) jSkip.classList.toggle('on', self.progress > 0.01 && self.progress < 0.985);
-        }
-      },
-      defaults: { ease: 'none' }
-    });
-
-    /* Jednotný rytmus: po šve krátky nádych len s obrazom, text nabehne fadom
-       s miernym zdvihom, drží väčšinu scény a odchádza tesne pred ďalším švom.
-       Naraz je na obrazovke vždy len jeden text. */
-    var jtFade = dur(0.038);
-    var jtLift = dur(0.046);
-    function jtIn(el, t, d) {
-      jTl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: d ? dur(d) : jtFade }, at(t))
-         .fromTo(el.children, { y: 34 }, { y: 0, duration: jtLift, ease: 'power2.out', stagger: 0.006 }, at(t));
-    }
-    function jtOut(el, t, d) {
-      jTl.to(el, { autoAlpha: 0, duration: d ? dur(d) : jtFade }, at(t))
-         .to(el.children, { y: -30, duration: jtLift, ease: 'power2.in', stagger: 0.004 }, at(t));
-    }
-    cfg.build(jTl, jTexts, jtIn, jtOut, at, dur);
-
-    /* os timeline musí byť presne 1.0, aby čas == podiel scrollu úseku */
-    var d0 = jTl.duration();
-    if (d0 < 1) jTl.to({}, { duration: 1 - d0 }, d0);
-    syncHud(0);
-
-    /* klikateľné stanice: prelet jazdy na začiatok kapitoly */
-    jStations.forEach(function (b) {
-      b.addEventListener('click', function () {
-        var st = jTl.scrollTrigger;
-        if (!st) return;
-        var i = parseInt(b.getAttribute('data-station'), 10) || 0;
-        lenis.scrollTo(st.start + at(cfg.stationProg[i]) * (st.end - st.start), { duration: 1.6 });
-      });
-    });
-    if (jSkip) {
-      jSkip.addEventListener('click', function () {
-        var st = jTl.scrollTrigger;
-        if (!st) return;
-        lenis.scrollTo(st.end + 4, { duration: 1.4 });
-      });
-    }
-  }
-
-  /* Jazda vcelku: 5 kapitol, 5 textov. Informačný oblúk: kto sme
-     → limuzína → rozsah služieb → spomienkové šperky
-     → kde sme + kontakt. Pri from 0 / to 1 je at() aj dur() identita,
-     takže časy nižšie sú priamo na osi jazdy. */
-  setupJourney({
-    key: 'a', pin: 'journey-pin', from: 0, to: 1,
-    bounds: [0.200, 0.400, 0.600, 0.800],
-    stationProg: [0.02, 0.225, 0.425, 0.625, 0.825],
-    build: function (tl, texts, jtIn, jtOut, at, dur) {
-      /* hero drží celú scénu hmly a odíde pred švom prvého klipu */
-      tl.to(texts[0], { autoAlpha: 0, duration: dur(0.05) }, at(0.112))
-        .to(texts[0].children, { y: -34, duration: dur(0.05), ease: 'power1.in' }, at(0.129));
-      /* Päť textov na piatich klipoch. Dissolve intro→pochod beží 0.14-0.20
-         (prekrýva sa s odchodom hero textu, končí na hranici kapitol).
-         Každý text nabieha fade-inom hneď od začiatku svojej kapitoly. */
-      jtIn(texts[1], 0.200); jtOut(texts[1], 0.333);  /* starostlivosť (stan) */
-      jtIn(texts[2], 0.400); jtOut(texts[2], 0.562);  /* limuzína (pochod) */
-      jtIn(texts[3], 0.600); jtOut(texts[3], 0.751);  /* šperky */
-      jtIn(texts[4], 0.800, 0.052);                   /* záver: kraj + CTA, zostáva */
-    }
-  });
 
   /* sviečky (karty aj parte hero) rieši js/candles.js — počíta ich server */
 
@@ -774,9 +613,8 @@
 
   mm.add('(min-width: 901px)', function () {
 
-    /* POZOR: pinované triggery vytvárame v poradí dokumentu (jazda → služby → kniha),
-       inak ScrollTrigger zle započíta pin spacery predchádzajúcich sekcií.
-       Jazda (journey) sa vytvára už vyššie, pred matchMedia. */
+    /* POZOR: pinované triggery vytvárame v poradí dokumentu (služby → kniha),
+       inak ScrollTrigger zle započíta pin spacery predchádzajúcich sekcií. */
 
     /* services: pinned horizontal scroll */
     var track = document.getElementById('services-track');

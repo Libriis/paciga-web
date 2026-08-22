@@ -109,8 +109,7 @@
 }
 
 /* Sekcie ležiace na fotografii si tmavé tokeny držia lokálne (text nad
-   filmovou jazdou, subhero a album pásmi je vždy biely a scrim tmavý). */
-.journey,
+   subhero a album pásmi je vždy biely a scrim tmavý). */
 .subhero,
 .album-band,
 .fleetband {
@@ -198,7 +197,7 @@ section[data-seam] > .cta-inner { position: relative; z-index: 1; }
    Hodnoty sú v gradientoch napísané literálom, nie cez var(--fg-rgb).
    Odvodený token by sa dosadil na :root a v dennej téme by sa obrátil.
 
-   Vynechané: .journey a .subhero (ležia na fotografii), .cta-band (má
+   Vynechané: .subhero (leží na fotografii), .cta-band (má
    vlastnú žiaru zdola), .album-band a .fleetband (nie sú section). */
 /* Jedno svetlo na celý dokument, nie na každú sekciu.
 
@@ -1300,204 +1299,9 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .hero h1 .ch { display: inline-block; will-change: transform; }
 
 /* ============================================================
-   Posledná cesta — vrstvený hero, fotosekvencia, kniha, recenzie
+   Homepage — kniha, recenzie a ďalšie sekcie
    (pohyb robí kód nad statickými fotkami — žiadne video)
    ============================================================ */
-
-/* ---- posledná cesta: scrollovaná filmová jazda (frame scrub) ---- */
-.journey { position: relative; background: var(--bg); }
-.journey-pin { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
-.journey-poster,
-.journey-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  /* canvas beží v natívnom rozlíšení frames — na displej ho škáluje GPU */
-  object-fit: cover;
-}
-.journey-poster { transition: opacity 0.6s ease; z-index: 0; }
-.journey-canvas { z-index: 1; }
-.journey-shade {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(180deg, rgba(12, 13, 15, 0.4), rgba(12, 13, 15, 0.04) 38%, rgba(12, 13, 15, 0.52) 100%);
-  pointer-events: none;
-}
-.journey-fallback { display: none; }
-
-/* HUD — V1 „Rivian dráha": všetko dole. Spodný pás cez celú šírku:
-   počítadlo kapitol + skip, ruler z jemných tickov s bielym markerom
-   (ref. 21st.dev scroll-bars) a klikateľné stanice na štartoch kapitol.
-   Čisto čierno-biela, žiadny farebný akcent. */
-.jhud {
-  position: absolute;
-  left: clamp(18px, 3vw, 46px);
-  right: clamp(18px, 3vw, 46px);
-  bottom: 26px;
-  z-index: 4;
-}
-.jhud-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 14px;
-}
-.jhud-count {
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  color: var(--dim);
-  font-variant-numeric: tabular-nums;
-}
-.jhud-count b { color: var(--text); font-weight: 640; }
-/* Preskočiť príbeh — decentný únik z jazdy, viditeľný len počas pinu */
-.jhud-skip {
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--dim);
-  padding: 6px 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease, color 0.3s ease;
-}
-.jhud-skip.on { opacity: 1; pointer-events: auto; }
-.jhud-skip:hover { color: var(--text); }
-.jhud-skip:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
-/* ruler: ticky po celej šírke, prejdené zosvetlia, marker kĺže s progresom */
-.jhud-ruler {
-  position: relative;
-  height: 12px;
-  background: repeating-linear-gradient(90deg, rgb(var(--fg-rgb) / 0.16) 0 1px, transparent 1px 8px);
-}
-.jhud-fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 0%;
-  background: repeating-linear-gradient(90deg, rgb(var(--fg-rgb) / 0.85) 0 1px, transparent 1px 8px);
-  will-change: width;
-}
-.jhud-marker {
-  position: absolute;
-  left: 0%;
-  top: -5px;
-  bottom: -5px;
-  width: 1px;
-  background: var(--text);
-  box-shadow: 0 0 10px rgb(var(--fg-rgb) / 0.5);
-  transform: translateX(-0.5px);
-  will-change: left;
-}
-/* hranice kapitol (švy klipov) — vyššie ticky */
-.jhud-bound {
-  position: absolute;
-  top: -4px;
-  bottom: -4px;
-  width: 1px;
-  background: rgb(var(--fg-rgb) / 0.38);
-}
-/* stanice: štarty kapitol pod rulerom, klikateľné */
-.jhud-stations { position: relative; height: 20px; margin-top: 12px; }
-.jhs {
-  position: absolute;
-  top: 0;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 7px;
-  padding: 0;
-  font-family: inherit;
-  font-size: 10.5px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--dim);
-  white-space: nowrap;
-  transition: color 0.35s ease;
-  background: none;
-  border: 0;
-  cursor: pointer;
-}
-.jhs-num {
-  font-size: 9.5px;
-  color: rgb(var(--fg-rgb) / 0.28);
-  font-variant-numeric: tabular-nums;
-  transition: color 0.35s ease;
-}
-.jhs:hover { color: var(--muted); }
-.jhs:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 3px; }
-.jhs.done { color: var(--muted); }
-.jhs.done .jhs-num { color: rgb(var(--fg-rgb) / 0.45); }
-.jhs.on { color: var(--text); }
-.jhs.on .jhs-num { color: var(--text); }
-
-/* texty staníc */
-.journey-text {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-}
-/* lokálny scrim: tmavý gradient za textom kvôli čitateľnosti nad svetlými
-   zábermi — zhasína spolu s textom, film globálne nestmavuje */
-.journey-text::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-.jt-mid::before {
-  background: radial-gradient(60% 55% at 50% 50%, rgba(12, 13, 15, 0.55), rgba(12, 13, 15, 0.22) 55%, transparent 78%);
-}
-.jt-hero::before {
-  background: linear-gradient(100deg, rgba(12, 13, 15, 0.6), rgba(12, 13, 15, 0.22) 48%, transparent 72%);
-}
-.journey-text.is-on { pointer-events: auto; }
-.journey-text.jt-hero { opacity: 1; /* bez JS musí byť hero text viditeľný */ }
-.jt-hero h1 {
-  font-size: clamp(36.8px, 5.89vw, 84.6px);
-  line-height: 1.04;
-  font-weight: 680;
-  font-variation-settings: var(--wide);
-  letter-spacing: -0.01em;
-  max-width: 13ch;
-}
-.jt-hero h1 .line { display: block; overflow: hidden; }
-.jt-hero h1 .line > span { display: block; will-change: transform; }
-.jt-hero h1 .word { display: inline-block; white-space: nowrap; }
-.jt-hero h1 .ch { display: inline-block; will-change: transform; }
-.jt-mid { align-items: center; text-align: center; padding: 0 24px; }
-.jt-mid h2 {
-  font-size: clamp(30px, 4.6vw, 58px);
-  font-weight: 660;
-  font-variation-settings: var(--wide);
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
-  max-width: 22ch;
-}
-.jt-mid p { margin-top: 16px; color: rgb(var(--fg-rgb) / 0.82); font-size: clamp(18.6px, 1.74vw, 22.3px); max-width: 52ch; text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5); }
-.jt-mid .badge-pill { margin-bottom: 20px; }
-.jt-phone {
-  margin-top: 22px;
-  font-size: clamp(32px, 4vw, 52px);
-  font-weight: 680;
-  font-variation-settings: var(--wide);
-  color: var(--gold);
-}
-.jt-cta { margin-top: 30px; }
-@media (max-width: 700px) {
-  /* mobil: dráha ostáva (ruler + skrátený skip vľavo), stanice a počítadlo
-     preč — vpravo dole sedí široký callpill s telefónom, progres ukazuje fill */
-  .jhud { bottom: 16px; }
-  .jhud-top { justify-content: flex-start; margin-bottom: 10px; }
-  .jhud-count { display: none; }
-  .jhud-skip-tail { display: none; }
-  .jhud-stations { display: none; }
-  .jt-hero h1 { font-size: clamp(31.3px, 9.2vw, 44.2px); }
-}
 
 /* ---- quote: Google badge ---- */
 .quote-badge { display: flex; align-items: center; gap: 12px; margin-top: 22px; font-size: 13px; color: var(--dim); letter-spacing: 0.05em; }
@@ -2069,7 +1873,7 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 /* ---- parte detail: fixná fotka + tichá svieca (B3, 29. 7. 2026) ----
    Ľavý panel je position:fixed — fotka so sviecou sa nikdy nescrolluje,
    scrolluje len pravý stĺpec s informáciami. Panel leží na fotografii,
-   preto drží tmavé tokeny v oboch témach (rovnaký princíp ako .journey).
+   preto drží tmavé tokeny v oboch témach (rovnaký princíp ako .subhero).
    Kontrakt pre candles.js sa nemení: .phero[data-slug], #phero-light,
    .phero-count a trieda .lit. */
 .phero {
@@ -3027,9 +2831,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .memoriam-card .memoriam-candle::before { animation: none !important; }
   .memoriam-candle .spark { animation: none !important; opacity: 0 !important; }
   .phero-flame { animation: none !important; }
-  /* jazda: statický poster + hero text, HUD a canvas preč */
-  .journey-canvas, .jhud { display: none; }
-  .journey-text.jt-hero { opacity: 1 !important; pointer-events: auto; }
 }
 
 
@@ -3196,7 +2997,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .nav-burger { padding: 14px 8px; }
   .v3-opt { min-height: 44px; }
   .news-chip { min-height: 44px; }
-  .jhud-skip { min-height: 44px; padding-inline: 4px; }
   .sh-cta { display: inline-flex; align-items: center; min-height: 44px; }
   .rev-rating { display: inline-flex; align-items: center; min-height: 44px; }
 

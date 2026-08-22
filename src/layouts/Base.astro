@@ -14,7 +14,6 @@ interface Props {
   ogImage?: string;
   active?: string;
   mainId?: string;
-  journey?: boolean;
 }
 
 const {
@@ -25,7 +24,6 @@ const {
   ogImage = '/assets/asset-07.jpg',
   active = '',
   mainId,
-  journey = false,
 } = Astro.props;
 
 /* OG obrázok: fotky žijú v src/assets, takže pôvodná verejná cesta už na
@@ -250,7 +248,6 @@ const SLUZBY_MEGA = [
 <script is:inline src="/assets/vendor/ScrollTrigger.min.js"></script>
 <script is:inline src="/assets/vendor/lenis.min.js"></script>
 <script is:inline src="/js/main.js"></script>
-{journey && <script is:inline src="/js/journey.js"></script>}
 {/* Core Web Vitals z terénu. defer, aby nesúperili o pásmo s ničím
     dôležitým; web-vitals číta buffered záznamy, takže mu neskoré
     pripojenie LCP ani FCP neujde. Poradie drží defer. */}
