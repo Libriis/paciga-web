@@ -89,8 +89,19 @@
   --fg-strong: #ffffff;
   --on-accent: #0c0d0f;
   --nav-bg: rgb(var(--scrim-rgb)); /* solid — menu má vždy plné pozadie */
-  --muted: rgb(var(--fg-rgb) / 0.55);
-  --dim: rgb(var(--fg-rgb) / 0.35);
+  /* Krytie 0.68 a 0.50, nie 0.55 a 0.35 (22. 8. 2026). Zmerané na živom
+     webe s reálnym pozadím pod každým textom: --dim dával kontrast 3,0,
+     WCAG žiada 4,5 pre bežný text. Týkalo sa to 24 tried, spolu vyše 200
+     textov: adresy, dátumy parte, otváracie hodiny, popisy rakiev, pätička,
+     štítky nad číslami. Pre starších ľudí na telefóne, čo je cieľová
+     skupina, je to rozdiel medzi „prečítam“ a „nevidím“.
+
+     Prepočet: 0.50 dáva na najsvetlejšom paneli 4,6, na --bg 5,0. --muted
+     išlo z 0.55 na 0.68, inak by sa s --dim takmer zliali (0.55 vs 0.50)
+     a hierarchia troch odtieňov by zmizla. Rovnaké čísla sú aj v .subhero
+     a .phero, ktoré tokeny deklarujú znova (dôvod je v komentári tam). */
+  --muted: rgb(var(--fg-rgb) / 0.68);
+  --dim: rgb(var(--fg-rgb) / 0.50);
   --gold: #f5f5f5; /* akcent: biela (cierno-biela schema) */
   --gold-soft: rgb(var(--fg-rgb) / 0.55);
   --gold-dim: rgb(var(--fg-rgb) / 0.18);
@@ -133,8 +144,8 @@
      rgba(12,13,15,0.55) na tmavej fotke, spolu 15 miest na piatich stránkach.
      Pravidlo: každý nový odvodený token v :root pridaj aj sem. */
   --line: rgb(var(--fg-rgb) / 0.08);
-  --muted: rgb(var(--fg-rgb) / 0.55);
-  --dim: rgb(var(--fg-rgb) / 0.35);
+  --muted: rgb(var(--fg-rgb) / 0.68);
+  --dim: rgb(var(--fg-rgb) / 0.50);
   --gold-soft: rgb(var(--fg-rgb) / 0.55);
   --gold-dim: rgb(var(--fg-rgb) / 0.18);
   /* prepis tokenu nestačí: color sa dedí z body, kde je už prepočítaný.
@@ -483,10 +494,16 @@ body {
   opacity: 0;
   transform: translateY(10px);
   pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  /* visibility: hidden navyše k opacity 0 (22. 8. 2026). Samotná opacity
+     prvok skryje len očiam, klávesnica naň Tabom ďalej skočí a focus
+     zmizne na neviditeľnom mieste. visibility ho vyradí aj z poradia
+     Tabu. Prechod na visibility je odložený o dĺžku fade, aby sa pill
+     najprv stlmil a až potom zmizol; pri zobrazení naopak naskočí hneď. */
+  visibility: hidden;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
 }
 .callpill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--on-accent); animation: pulse 2.2s ease-in-out infinite; }
-.callpill.on { opacity: 1; transform: none; pointer-events: auto; }
+.callpill.on { opacity: 1; transform: none; pointer-events: auto; visibility: visible; transition-delay: 0s; }
 /* Vodorovné odsadenie je 10, nie 8: prúžky majú 24 px, takže 8 dávalo
    tlačidlu 40 px šírky a to je pod 44 px minimom pre dotyk. Merané 22. 8. 2026. */
 .nav-burger { display: none; flex-direction: column; gap: 5px; padding: 12px 10px; margin-left: auto; }
@@ -573,7 +590,11 @@ html.nav-locked body {
   font-weight: 660;
   max-width: 13ch;
 }
-.hero h1 .line { display: block; overflow: hidden; }
+/* overflow: hidden je kvôli intro animácii (riadok sa vysúva zdola). Pri
+   200 % zoome písma ale odsekával spodok riadka o 5 px, teda descendery
+   v „rozlúčka“ a „okolností“. Spodný padding so záporným marginom dá
+   riadku rezervu bez toho, aby sa zmenil rozostup riadkov. 22. 8. 2026. */
+.hero h1 .line { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
 .hero h1 .line > span { display: block; will-change: transform; }
 .hero-lead { margin-top: 26px; max-width: 46ch; font-size: clamp(19.8px, 1.74vw, 23.6px); color: var(--muted); }
 .hero-actions { display: flex; align-items: center; gap: 28px; margin-top: 38px; flex-wrap: wrap; }
@@ -1088,7 +1109,13 @@ picture { display: contents; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
-@media (max-width: 900px) {
+/* Burger do 1200 px, nie do 900 (22. 8. 2026). Zmerané: deväť odkazov má
+   spolu 865 px, plus logo a NON STOP tlačidlo. Lišta sa preto lámala na
+   dva riadky až do 1366 px, teda aj na bežnom notebooku 1280 a na každom
+   tablete naležato. Hlavička mala 112 px namiesto 82 a tlačila hero dole.
+   Do 1200 px ide drawer, od 1201 je miesta dosť aj s rezervou.
+   Rovnakú hranicu drží main.js (mega menu hover, GSAP matchMedia). */
+@media (max-width: 1200px) {
   .nav-links {
     position: fixed;
     inset: 0;
@@ -1119,6 +1146,25 @@ picture { display: contents; }
   .nav-links > :first-child { margin-top: auto; }
   .nav-links > :last-child { margin-bottom: auto; }
   #site-nav.nav-open .nav-links { opacity: 1; pointer-events: auto; }
+  /* Náznak, že sa drawer dá posunúť (22. 8. 2026). Na 360 px s rozbalenými
+     službami končí okno uprostred položky „Kontakt“ a NON STOP tlačidlo je
+     celé pod hranou, ale nič nehovorí, že tam niečo je. Pevný prechod do
+     pozadia na spodnej hrane to povie. Je to samostatný prvok pod drawerom,
+     nie pseudo-prvok drawera: ten scrolluje s obsahom a nedrží sa hrany.
+     Zmizne, keď je drawer zavretý. */
+  #site-nav::after {
+    content: '';
+    position: fixed;
+    left: 0; right: 0;
+    bottom: 0;
+    height: 96px;
+    background: linear-gradient(to bottom, rgb(var(--scrim-rgb) / 0), rgb(var(--scrim-rgb) / 0.92));
+    pointer-events: none;
+    z-index: 91;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  #site-nav.nav-open::after { opacity: 1; }
   /* 44 px dotyková plocha aj pri 19 px písme. Podčiarknutie aktívnej položky
      drží pri texte, inak by odskočilo na hranu paddingu. */
   /* min-width kvôli krátkym názvom: „O nás“ a „Šperky“ mali v draweri
@@ -1151,7 +1197,9 @@ picture { display: contents; }
     font-size: 15.5px; color: var(--muted); transition: color 0.25s ease;
   }
   .nav-sub-link:hover { color: var(--text); }
+}
 
+@media (max-width: 900px) {
   .branch-grid { grid-template-columns: 1fr; }
   /* čísla na mobile: pod sebou, riadky delí hairline namiesto zvislých liniek */
   .stat-strip { grid-template-columns: 1fr; gap: 0; padding-top: 0; }
@@ -1426,6 +1474,13 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* predloha skrýva druhý stĺpec pod md a tretí pod lg */
 @media (max-width: 1024px) { .rev-col:nth-child(3) { display: none; } }
 @media (max-width: 860px) { .rev-col:nth-child(2) { display: none; } }
+/* Nekonečné animácie mimo okna stoja (22. 8. 2026). Triedu .anim-off
+   nasadzuje main.js cez IntersectionObserver, keď je prvok ďalej než
+   200 px od okna. Pravidlo chytá prvok aj jeho potomkov, lebo pri rail
+   recenzií beží animácia na .rev-col > div, nie na .rev-col. Pri návrate
+   do okna sa animácia rozbehne tam, kde stála, takže skok nevidno. */
+.anim-off, .anim-off * { animation-play-state: paused !important; }
+
 @media (prefers-reduced-motion: reduce) {
   .rev-cols { max-height: none; overflow: visible; -webkit-mask-image: none; mask-image: none; }
   .rev-col > div { animation: none; }
@@ -1755,7 +1810,7 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
   --bg: #0c0d0f; --bg2: #111214;
   --text: #f5f5f5; --fg-strong: #ffffff; --gold: #f5f5f5;
   --line: rgb(var(--fg-rgb) / 0.08);
-  --muted: rgb(var(--fg-rgb) / 0.55); --dim: rgb(var(--fg-rgb) / 0.35);
+  --muted: rgb(var(--fg-rgb) / 0.68); --dim: rgb(var(--fg-rgb) / 0.50);
   --gold-soft: rgb(var(--fg-rgb) / 0.55);
   background: var(--bg2);
 }

@@ -75,12 +75,21 @@
   border-radius: 6px;
   transition: border-color 0.3s ease;
 }
+/* Focus na poliach (22. 8. 2026). Predtým outline: none a len svetlejší
+   rámik, z 8 % na 55 % bielej. Pre klávesnicu to nestačilo, audit Tabom
+   hlásil všetkých päť polí ako bez viditeľného focusu. Teraz plný biely
+   rámik plus 3 px svätožiara, to isté, čo majú FAQ a karty služieb. */
 .kond-form input:focus,
 .kond-form textarea:focus,
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: none;
-  border-color: var(--gold-soft);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgb(var(--fg-rgb) / 0.22);
+}
+.suhlas input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
 }
 .kond-form textarea,
 .contact-form textarea { resize: vertical; min-height: 130px; }

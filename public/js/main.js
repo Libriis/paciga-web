@@ -7,6 +7,25 @@
   var nav = document.getElementById('site-nav');
   var burger = document.getElementById('nav-burger');
 
+  /* ---------- nekonečné animácie len v okne ----------
+     Audit 22. 8. 2026: homepage má 22 prvkov s animation-iteration-count
+     infinite (orby, iskry a plameň sviečok, vlna log partnerov, shimmer
+     čísla). Bežali aj keď boli ďaleko mimo okna, a na telefóne to znamená
+     prekresľovanie a batériu za nič. Trieda .anim-off ich pozastaví
+     (animation-play-state: paused v styles.css) a IO ju sníma podľa toho,
+     či je prvok aspoň 200 px od okna. Prvky v hlavičke a pill sú fixné
+     a vždy v okne, tých sa to netýka. */
+  if ('IntersectionObserver' in window) {
+    var animEls = [];
+    document.querySelectorAll('.orb, .spark, .flame, .pcloud-item, .phone-primary, .kron-dot, .rev-col').forEach(function (el) { animEls.push(el); });
+    if (animEls.length) {
+      var aio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { e.target.classList.toggle('anim-off', !e.isIntersecting); });
+      }, { rootMargin: '200px 0px' });
+      animEls.forEach(function (el) { el.classList.add('anim-off'); aio.observe(el); });
+    }
+  }
+
   /* ---------- odložené postery a zdroje videí (beží aj bez GSAP) ----------
      Videá v kartách pobočiek majú preload="none", ale poster sa sťahoval
      hneď. Boli to tri fotky pod ohybom, spolu vyše 1 MB, ktoré štartovali
@@ -111,7 +130,10 @@
   if (megaItem && nav) {
     var megaLink = document.getElementById('nav-sluzby-link');
     var megaTimer = null;
-    var megaMq = window.matchMedia('(hover: hover) and (min-width: 901px)');
+    /* 1201, nie 901: drawer s burgerom ide do 1200 px (styles.css, lišta sa
+       pod tým lámala na dva riadky). Hover pás má zmysel len tam, kde je
+       vodorovná lišta, inak by sa otváral nad zavretým drawerom. */
+    var megaMq = window.matchMedia('(hover: hover) and (min-width: 1201px)');
 
     var megaOpen = function () {
       if (!megaMq.matches) return;
