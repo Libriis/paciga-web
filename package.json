@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^6.0.2",
+    "@astrojs/sitemap": "^3.7.3",
     "@astrojs/vercel": "^11.0.4",
     "@supabase/supabase-js": "^2.58.0",
     "astro": "^7.1.6",

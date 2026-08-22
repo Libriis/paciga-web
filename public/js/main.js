@@ -7,26 +7,44 @@
   var nav = document.getElementById('site-nav');
   var burger = document.getElementById('nav-burger');
 
-  /* ---------- odložené postery videí (beží aj bez GSAP) ----------
+  /* ---------- odložené postery a zdroje videí (beží aj bez GSAP) ----------
      Videá v kartách pobočiek majú preload="none", ale poster sa sťahoval
      hneď. Boli to tri fotky pod ohybom, spolu vyše 1 MB, ktoré štartovali
      v tej istej sekunde ako styles.css a font. Na Slow 4G tým dusili
      kritickú cestu: 37 kB CSS sa ťahalo 2,5 s a FCP čakal na jeho koniec.
-     Poster preto visí na data-poster a nasadí sa až keď sa karta blíži. */
-  var posterEls = document.querySelectorAll('video[data-poster]');
+     Poster preto visí na data-poster a nasadí sa až keď sa karta blíži.
+
+     Od 22. 8. 2026 to isté platí pre samotné video. Merané na iPhone
+     a Fast 4G: tri klipy miest ťahali 934 kB na karte vysokej 210 px pod
+     ohybom. Poster povie to isté za nulu navyše. Zdroj preto visí na
+     data-src a nasadzuje sa len tam, kde má zmysel: široký displej,
+     bez šetrenia dát, bez prefers-reduced-motion. Na mobile ostane
+     v karte poster a video sa nestiahne vôbec. */
+  var chceVidea = (function () {
+    if (reduced) return false;
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+    if (c.saveData) return false;
+    if (/2g/.test(c.effectiveType || '')) return false;
+    return !!(window.matchMedia && window.matchMedia('(min-width: 900px)').matches);
+  })();
+
+  var posterEls = document.querySelectorAll('video[data-poster], video[data-src]');
   if (posterEls.length) {
-    var setPoster = function (v) {
+    var nasadZdroje = function (v) {
       if (v.dataset.poster) { v.poster = v.dataset.poster; delete v.dataset.poster; }
+      /* Bez data-src sa nič nemení: video, ktoré má src priamo v HTML,
+         sa správa ako predtým. */
+      if (chceVidea && v.dataset.src) { v.src = v.dataset.src; delete v.dataset.src; }
     };
     if ('IntersectionObserver' in window) {
       var po = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { setPoster(e.target); po.unobserve(e.target); }
+          if (e.isIntersecting) { nasadZdroje(e.target); po.unobserve(e.target); }
         });
       }, { rootMargin: '400px 0px' });
       posterEls.forEach(function (v) { po.observe(v); });
     } else {
-      posterEls.forEach(setPoster);
+      posterEls.forEach(nasadZdroje);
     }
   }
 
@@ -145,10 +163,15 @@
     });
   }
 
-  if (!reduced) {
+  /* chceVidea je false na mobile a pri šetrení dát — tam sa zdroj vôbec
+     nenasadil, takže nie je čo prehrávať a celý pozorovateľ je zbytočný. */
+  if (!reduced && chceVidea) {
     if ('IntersectionObserver' in window) {
       var vio = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
+          /* Video ešte nemusí mať zdroj: poster sa nasadzuje pri 400 px,
+             prehrávanie sa spúšťa až pri 140 px, ale poradie nie je isté. */
+          if (!en.target.currentSrc && !en.target.src) return;
           if (en.isIntersecting) tryPlay(en.target);
           else en.target.pause();
         });

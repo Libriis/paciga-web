@@ -1,0 +1,70 @@
+---
+/*
+  Predgenerovaná fotka z public/assets/ssr ako <picture>: AVIF prvý,
+  WebP ako záloha.
+
+  Prečo hotové súbory a nie astro:assets: homepage má prerender = false
+  kvôli parte z databázy, takže <Image> na nej vracia runtime cestu
+  /_image?href=... a tá sa pri output: 'static' nenasadzuje. Rovnaký dôvod
+  ako pri logu a posteroch pobočiek. Varianty prekresli cez
+  scripts/staticke-obrazky.mjs.
+
+  Prečo AVIF (22. 8. 2026): svc-kamenarstvo je žula na štrku, samá šumová
+  textúra. Vo WebP q70 mal 1280w variant 400 kB, rovnako veľký svc-obrad
+  len 99 kB. Znižovanie kvality nepomohlo, AVIF áno: 221 kB. Naprieč
+  všetkými fotkami je AVIF o 35 až 45 % menší.
+
+  Pozor na layout: <picture> je inline prvok a vložil by sa medzi kontajner
+  a <img>. Percentuálna výška v pravidlách typu `.hero-media img { height:
+  100% }` by sa potom počítala voči nemu. Preto má `picture { display:
+  contents }` v styles.css — obal z rozloženia zmizne a img sa správa ako
+  priamy potomok kontajnera.
+*/
+interface Props {
+  /** názov bez šírky a prípony, napr. 'hero-tim' */
+  nazov: string;
+  /** šírky, ktoré generátor naozaj vyrobil */
+  sirky: number[];
+  /** šírka pre atribút src (záloha pre prehliadač bez srcset) */
+  zaklad: number;
+  sizes: string;
+  /** rozmery najväčšieho variantu, držia pomer strán a rezervujú miesto */
+  width: number;
+  height: number;
+  alt: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+}
+
+const {
+  nazov,
+  sirky,
+  zaklad,
+  sizes,
+  width,
+  height,
+  alt,
+  loading = 'lazy',
+  fetchpriority,
+  class: trieda,
+} = Astro.props;
+
+const set = (pripona: string) =>
+  sirky.map((w) => `/assets/ssr/${nazov}-${w}.${pripona} ${w}w`).join(', ');
+---
+<picture>
+  <source type="image/avif" srcset={set('avif')} sizes={sizes} />
+  <img
+    src={`/assets/ssr/${nazov}-${zaklad}.webp`}
+    srcset={set('webp')}
+    sizes={sizes}
+    width={width}
+    height={height}
+    alt={alt}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    decoding="async"
+    class={trieda}
+  />
+</picture>

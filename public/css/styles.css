@@ -49,22 +49,26 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 /* Playfair Display — editoriálny serif VÝHRADNE pre citáty (quote sekcie).
-   Klasický pull-quote kontrast k Archivo; V1 z výberu 21.7.2026. */
+   Klasický pull-quote kontrast k Archivo; V1 z výberu 21.7.2026.
+
+   Jeden súbor, nie dva (22. 8. 2026). Predtým to boli hotové subsety
+   z Google Fonts: latin 38 kB + latin-ext 21 kB. Citát „Od prvého
+   telefonátu po dôstojnú rozlúčku." má č aj ô, takže sa ťahali obidva
+   a /o-nas skončila na troch súboroch písma a 150,5 kB. To padá na oboch
+   pravidlách v lighthouserc.json (najviac 2 súbory, najviac 150 kB).
+
+   Presne rovnaký postup ako pri Archivo: zdroj Playfair Display
+   (OFL, variable wght 400-900), znaky orezané na strednú Európu, os
+   orezaná na 400-500, čo web reálne používa (500 v .quote-mark
+   a #quote-text, dedené 400 v .sluzba-citat). 59,5 kB v dvoch súboroch
+   -> 34 kB v jednom. Prekresli cez fonttools, postup je v README. */
 @font-face {
   font-family: 'Playfair Display';
   font-style: normal;
-  font-weight: 400 900;
+  font-weight: 400 500;
   font-display: swap;
-  src: url("../assets/playfair-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: normal;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url("../assets/playfair-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url("../assets/playfair-sk.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0100-017F, U+2000-206F, U+20AC, U+2122;
 }
 
 /* ---- tokens & reset ----
@@ -483,7 +487,9 @@ body {
 }
 .callpill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--on-accent); animation: pulse 2.2s ease-in-out infinite; }
 .callpill.on { opacity: 1; transform: none; pointer-events: auto; }
-.nav-burger { display: none; flex-direction: column; gap: 5px; padding: 12px 8px; margin-left: auto; }
+/* Vodorovné odsadenie je 10, nie 8: prúžky majú 24 px, takže 8 dávalo
+   tlačidlu 40 px šírky a to je pod 44 px minimom pre dotyk. Merané 22. 8. 2026. */
+.nav-burger { display: none; flex-direction: column; gap: 5px; padding: 12px 10px; margin-left: auto; }
 .nav-burger span { width: 24px; height: 2px; background: var(--text); transition: transform 0.3s ease, opacity 0.3s ease; }
 
 /* ---- mega menu: paleta služieb pod položkou Pohrebné služby ----
@@ -574,6 +580,13 @@ html.nav-locked body {
 /* Klasická homepage (15. 8. 2026): v hero je statická fotka, nie video. */
 .hero-media img { width: 100%; height: 100%; object-fit: cover; }
 
+/* FotoSsr.astro obaľuje obrázok do <picture> kvôli AVIF (22. 8. 2026).
+   <picture> je inline prvok, takže by sa vsunul medzi kontajner a <img>
+   a percentuálne výšky v pravidlách typu `.hero-media img { height: 100% }`
+   by sa počítali voči nemu. display: contents obal z rozloženia odstráni,
+   img sa správa ako priamy potomok kontajnera. */
+picture { display: contents; }
+
 /* ---- fotopásy homepage (limuzína, šperky) ----
    Bývalé kapitoly pinovanej jazdy ako klasická dvojica fotka + text,
    striedavo zrkadlená (.kband-flip). Výška fotky je pevná cez clamp,
@@ -603,13 +616,10 @@ html.nav-locked body {
 .quote { padding: clamp(96px, 13vh, 165px) 0; background: var(--bg); }
 .quote-inner { max-width: 880px; position: relative; }
 /* výrok v jednom bloku s číslami na O nás */
-.stats .quote-inner { margin-top: clamp(48px, 7vh, 84px); }
-/* V1 editoriálny serif (Playfair) — pull-quote kontrast k Archivo */
-.quote-mark { font-family: 'Playfair Display', Georgia, serif; font-size: 150px; line-height: 0.55; color: var(--gold-dim); font-weight: 500; margin-bottom: 30px; }
+.stats .quote-inner { margin-top: clamp(48px, 7vh, 84px); }/* V1 editoriálny serif (Playfair) — pull-quote kontrast k Archivo */
 #quote-text { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(30px, 3.9vw, 52px); line-height: 1.28; font-weight: 500; letter-spacing: 0.002em; }
 #quote-text .w { opacity: 0.14; transition: opacity 0.3s linear; }
 #quote-text .w.on { opacity: 1; }
-.quote-author { margin-top: 38px; padding-top: 18px; border-top: 1px solid var(--line); display: inline-block; min-width: 260px; font-size: 14px; color: var(--dim); letter-spacing: 0.06em; }
 
 /* ---- nonstop callout ---- */
 .nonstop { background: var(--bg2); border-block: 1px solid var(--line); }
@@ -626,7 +636,6 @@ html.nav-locked body {
 /* ---- services (pinned horizontal) ---- */
 .services { background: var(--bg); position: relative; }
 .services-pin { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding: 90px 0 60px; }
-.services-head { margin-bottom: 54px; }
 .services-track {
   display: flex;
   gap: 18px;
@@ -650,27 +659,9 @@ html.nav-locked body {
   transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .svc:hover { border-color: rgb(var(--fg-rgb) / 0.45); background: var(--panel2); transform: translateY(-6px); }
-.svc-num { font-size: 13px; font-weight: 650; letter-spacing: 0.14em; color: var(--gold); margin-bottom: auto; }
 .svc h3 { margin-top: 84px; font-size: 21px; }
 .svc p { margin-top: 10px; font-size: 18px; color: var(--muted); }
-.svc-more {
-  position: absolute;
-  left: 26px; bottom: 22px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--gold);
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
 .svc:hover .svc-more { opacity: 1; transform: none; }
-.svc-photo {
-  position: absolute; inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.35;
-  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
 .svc.has-photo::after {
   content: '';
   position: absolute; inset: 0;
@@ -678,27 +669,7 @@ html.nav-locked body {
 }
 .svc.has-photo:hover .svc-photo { opacity: 0.55; transform: scale(1.05); }
 .svc.has-photo .svc-num, .svc.has-photo h3, .svc.has-photo p, .svc.has-photo .svc-more { position: relative; z-index: 2; }
-.services-progress {
-  width: min(1240px, calc(100% - 48px));
-  margin: 48px auto 0;
-  height: 1px;
-  background: var(--line);
-}
-#services-bar { display: block; width: 100%; height: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left center; }
-
-/* ---- fleet showcase ---- */
-.fleet { position: relative; background: var(--bg); }
-.fleet-pin { position: relative; height: 100vh; height: 100svh; overflow: hidden; display: grid; place-items: center; }
-.fleet-media {
-  position: absolute; inset: 0;
-  clip-path: inset(18% 26% 18% 26% round 22px);
-  will-change: clip-path;
-}
-.fleet-media video { width: 100%; height: 112%; object-fit: cover; will-change: transform; }
-.fleet-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12, 13, 15, 0.2), rgba(12, 13, 15, 0.72) 85%); }
-.fleet-content { position: relative; z-index: 2; text-align: center; padding: 0 24px; max-width: 780px; }
-.fleet-content h2 { font-size: clamp(32px, 5vw, 62px); margin-top: 22px; }
-.fleet-content p { margin-top: 18px; color: rgb(var(--fg-rgb) / 0.75); font-size: clamp(18.6px, 1.74vw, 22.3px); max-width: 54ch; margin-inline: auto; }
+#services-bar { display: block; width: 100%; height: 100%; background: var(--gold); transform: scaleX(0); transform-origin: left center; }/* ---- fleet showcase ---- */
 .badge-pill {
   display: inline-flex;
   align-items: center;
@@ -1032,20 +1003,6 @@ html.nav-locked body {
 
 /* ---- partners marquee ---- */
 .partners { background: var(--bg); border-top: 1px solid var(--line); padding: 90px 0; }
-.partners-marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-.partners-track { display: flex; width: max-content; animation: marquee 42s linear infinite; }
-.partners-marquee:hover .partners-track { animation-play-state: paused; }
-.partners-set { display: flex; align-items: center; }
-.partners-set a {
-  font-size: clamp(18px, 2.2vw, 26px);
-  font-weight: 620;
-  font-variation-settings: var(--wide);
-  color: var(--dim);
-  margin-right: clamp(40px, 5vw, 80px);
-  white-space: nowrap;
-  transition: color 0.3s ease;
-}
-.partners-set a:hover { color: var(--gold); }
 
 /* ---- CTA band ---- */
 /* Žiara mala stred 30 % pod pásom, takže na jeho spodnej hrane bola
@@ -1164,7 +1121,9 @@ html.nav-locked body {
   #site-nav.nav-open .nav-links { opacity: 1; pointer-events: auto; }
   /* 44 px dotyková plocha aj pri 19 px písme. Podčiarknutie aktívnej položky
      drží pri texte, inak by odskočilo na hranu paddingu. */
-  .nav-link { font-size: 19px; padding: 11px 12px; background-position: left calc(100% - 11px); }
+  /* min-width kvôli krátkym názvom: „O nás“ a „Šperky“ mali v draweri
+     37 a 43 px šírky, hoci výšku 44 px spĺňali. Merané 22. 8. 2026. */
+  .nav-link { font-size: 19px; padding: 11px 12px; min-width: 44px; text-align: center; background-position: left calc(100% - 11px); }
   .nav-links .nav-cta { margin-top: 18px; padding: 13px 20px; }
   .nav-burger { display: flex; position: relative; z-index: 95; }
   /* logo ostáva nad drawerom — cesta domov z otvoreného menu */
@@ -1201,7 +1160,6 @@ html.nav-locked body {
   .stat + .stat::before { display: none; }
   .stat-num { font-size: 34px; }
   .stat-note { max-width: none; }
-  .scroll-hint { right: 22px; }
 
   /* services: no pin on mobile — native horizontal swipe */
   .services-pin { min-height: 0; padding: 90px 0; }
@@ -1215,16 +1173,12 @@ html.nav-locked body {
   }
   .services-track::-webkit-scrollbar { display: none; }
   .svc { width: 300px; scroll-snap-align: start; }
-  .services-progress { display: none; }
-
-  .fleet-media { clip-path: inset(10% 8% 10% 8% round 18px); }
 }
 
 @media (max-width: 560px) {
   .memoriam-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 36px; }
   .hero-actions { gap: 18px; }
-  .quote-mark { font-size: 90px; }
 }
 
 /* ============================================================
@@ -1296,47 +1250,11 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 /* ---- hero title chars ---- */
 .hero h1 .word { display: inline-block; white-space: nowrap; }
-.hero h1 .ch { display: inline-block; will-change: transform; }
-
-/* ============================================================
+.hero h1 .ch { display: inline-block; will-change: transform; }/* ============================================================
    Homepage — kniha, recenzie a ďalšie sekcie
    (pohyb robí kód nad statickými fotkami — žiadne video)
    ============================================================ */
-
-/* ---- quote: Google badge ---- */
-.quote-badge { display: flex; align-items: center; gap: 12px; margin-top: 22px; font-size: 13px; color: var(--dim); letter-spacing: 0.05em; }
-.quote-badge .stars { color: var(--gold); font-size: 15px; letter-spacing: 3px; }
-
-/* ---- služby: kapitolové predely ---- */
-.svc-chapter {
-  position: relative;
-  width: 300px;
-  min-height: 300px;
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 26px 30px 34px;
-  border-left: 1px solid rgb(var(--fg-rgb) / 0.4);
-  overflow: hidden;
-}
-.svc-chapter-num { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
-.svc-chapter h3 { font-size: clamp(24px, 2.2vw, 32px); font-weight: 650; font-variation-settings: var(--wide); }
-.svc-chapter p { margin-top: 10px; font-size: 17.4px; color: var(--muted); max-width: 24ch; }
-.svc-chapter-stone::before {
-  content: '';
-  position: absolute; inset: 0;
-  /* reálna fotka cintorína s pomníkmi (stlmená), nie generovaná textúra
-     POZOR: .svc-chapter-stone dnes nepoužíva žiadna stránka a cintorin.jpg
-     sa presunul do src/assets (astro:assets). Ak sa trieda vráti do hry,
-     fotku vlož ako <Image>, nie ako CSS pozadie — inak si mobil stiahne
-     desktopovú veľkosť. */
-  background-image: linear-gradient(180deg, rgba(12, 13, 15, 0.55), rgba(12, 13, 15, 0.75));
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
-}
-.svc-chapter-stone { border-radius: 18px; border: 1px solid rgb(var(--fg-rgb) / 0.25); }
+/* ---- quote: Google badge ---- *//* ---- služby: kapitolové predely ---- */
 @media (max-width: 900px) {
   /* mobil: vertikálny zoznam po kapitolách namiesto pásu */
   .services-track {
@@ -1348,9 +1266,6 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   }
   .svc { width: 100%; min-height: 0; padding: 22px 22px 52px; }
   .svc h3 { margin-top: 42px; }
-  .svc-more { opacity: 1; transform: none; }
-  .svc-chapter { width: 100%; min-height: 0; padding: 34px 4px 10px; border-left: none; border-top: 1px solid rgb(var(--fg-rgb) / 0.4); }
-  .svc-chapter-stone { padding: 34px 22px 22px; border-radius: 18px; }
 }
 
 /* ---- opustili nás: sviečka ----
@@ -1419,7 +1334,6 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 
 /* ---- recenzie (tmavá sekcia, Page Theme Lock: celá stránka dark) ---- */
 .reviews { background: var(--bg2); border-block: 1px solid var(--line); color: var(--text); padding: clamp(84px, 11vh, 150px) 0; }
-.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 
 /* ---- recenzie ako tri posúvajúce sa stĺpce (21st.dev testimonials-columns-1) ----
    Prevzaté z predlohy: hlavička max 540 px so štítkom v ráme, tri stĺpce
@@ -1518,53 +1432,18 @@ section > .container, .services-pin > .container, .services-track, .services-pro
   /* bez posunu netreba duplikát sady */
   .rev-col > div > .revcol-card[aria-hidden='true'] { display: none; }
 }
-.review {
-  margin: 0;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 30px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.review p { font-size: 19.2px; line-height: 1.65; color: rgb(var(--fg-rgb) / 0.86); }
-.review footer { font-size: 13px; letter-spacing: 0.08em; color: var(--dim); }
-@media (max-width: 900px) {
-  .reviews-grid { grid-template-columns: 1fr; }
-}
+
 
 /* ============================================================
    Podstránky — subhero, príbeh, prvenstvá, foto pás
    ============================================================ */
-.subhero { position: relative; min-height: 72vh; display: flex; align-items: flex-end; overflow: hidden; }
-.subhero-media { position: absolute; inset: 0; }
-.subhero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
-/* Fotka doznieva do PLNÉHO scrimu, nie do 0.86. Pri 0.86 zostal spodný pás
+.subhero { position: relative; min-height: 72vh; display: flex; align-items: flex-end; overflow: hidden; }/* Fotka doznieva do PLNÉHO scrimu, nie do 0.86. Pri 0.86 zostal spodný pás
    fotky svetlejší než sekcia pod ňou a na hrane bol ostrý sek. Stopy medzi
    42 % a koncom sú tri, nie jedna: jeden lineárny úsek na tej dĺžke pásikuje. */
-.subhero-shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg,
-    rgb(var(--scrim-rgb) / 0.55),
-    rgb(var(--scrim-rgb) / 0.25) 42%,
-    rgb(var(--scrim-rgb) / 0.62) 74%,
-    rgb(var(--scrim-rgb) / 0.9) 90%,
-    rgb(var(--scrim-rgb)) 100%);
-}
-.subhero-content { position: relative; z-index: 1; padding: 140px 24px 72px; }
 .subhero h1 { font-size: clamp(35px, 5.15vw, 69.9px); line-height: 1.05; font-weight: 680; font-variation-settings: var(--wide); letter-spacing: 0.018em; }
-.subhero-lead { margin-top: 20px; max-width: 52ch; color: var(--muted); font-size: clamp(18.6px, 1.74vw, 22.3px); }
 
 .story { background: var(--bg); padding: clamp(84px, 11vh, 150px) 0; }
-.story-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(40px, 6vw, 90px); align-items: center; }
-.story-text h2 { font-size: clamp(28px, 3.4vw, 44px); }
 .story-text .gold-line { margin: 22px 0 26px; }
-.story-text p { color: var(--muted); font-size: 19.2px; line-height: 1.75; }
-.story-text p + p { margin-top: 16px; }
-.story-photo { margin: 0; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); }
-.story-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .firsts { background: var(--bg2); border-block: 1px solid var(--line); padding: clamp(84px, 11vh, 150px) 0; }
 .firsts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -1598,7 +1477,6 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .fleetband-content p { margin-top: 16px; color: rgb(var(--fg-rgb) / 0.8); max-width: 46ch; font-size: 19.2px; }
 
 @media (max-width: 900px) {
-  .story-grid { grid-template-columns: 1fr; }
   .firsts-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 560px) {
@@ -1694,7 +1572,6 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 .contact-top .contact-phones { gap: clamp(24px, 3vw, 48px); margin-top: clamp(22px, 3vh, 36px); }
 .contact-top .cp-num { font-size: clamp(28px, 2.7vw, 44px); margin-top: 8px; }
 .contact-top .contact-mail { margin-top: clamp(16px, 2vh, 26px); }
-.ct-rev { margin-top: clamp(18px, 2.4vh, 30px); }
 
 .ct-form-panel {
   border: 1px solid var(--line);
@@ -1777,11 +1654,6 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .news { background: var(--bg); padding: 0 0 clamp(84px, 11vh, 150px); }
 .news-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: clamp(48px, 7vh, 76px) 0 38px; }
 .news-head h2 { font-size: clamp(24px, 2.8vw, 36px); font-weight: 650; font-variation-settings: var(--wide); letter-spacing: -0.01em; }
-.news-filters { display: flex; gap: 12px; flex-wrap: wrap; }
-.news-chip { font: inherit; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; cursor: pointer; transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease; }
-.news-chip:hover { border-color: rgb(var(--fg-rgb) / 0.4); color: var(--text); }
-.news-chip.on { background: var(--gold); color: var(--on-accent); border-color: var(--gold); }
-.news-chip small { opacity: 0.6; margin-left: 6px; font-size: inherit; }
 
 /* karty bez rámu: fotka so zaobleniami a tagom na sebe, text pod ňou */
 .news-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
@@ -2017,17 +1889,8 @@ a.first-card:hover { border-color: rgb(var(--fg-rgb) / 0.4); transform: translat
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 a.first-card:hover .fc-go { opacity: 1; transform: none; }
-.first-card.has-photo { position: relative; overflow: hidden; min-height: 220px; display: flex; flex-direction: column; justify-content: flex-end; }
-.fc-photo {
-  position: absolute; inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.32;
-  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-/* Fotka už nie je CSS pozadie, ale <img> z astro:assets — inak by mobil
+.first-card.has-photo { position: relative; overflow: hidden; min-height: 220px; display: flex; flex-direction: column; justify-content: flex-end; }/* Fotka už nie je CSS pozadie, ale <img> z astro:assets — inak by mobil
    sťahoval desktopovú veľkosť bez srcset. Vypĺňa rovnakú plochu. */
-.fc-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .first-card.has-photo::after {
   content: '';
   position: absolute; inset: 0;
@@ -2039,21 +1902,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 /* ---- Opustili nás: mesiace + rozlúčka na karte ---- */
 .memoriam-month { margin: 56px 0 26px; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
 .memoriam-month:first-child { margin-top: 0; }
-.memoriam-rozlucka { margin-top: 10px; font-size: 12.5px; line-height: 1.55; color: var(--dim); }
-
-/* ---- Aktuality: tagy a odkazy ---- */
-.news-tag {
-  display: inline-block;
-  margin-bottom: 12px;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: var(--gold-soft);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 5px 12px;
-}
+.memoriam-rozlucka { margin-top: 10px; font-size: 12.5px; line-height: 1.55; color: var(--dim); }/* ---- Aktuality: tagy a odkazy ---- */
 .news-go { display: inline-block; margin-top: 14px; font-size: 13.5px; font-weight: 600; color: var(--gold); transition: color 0.3s ease; }
 .news-go:hover { color: var(--fg-strong); }
 
@@ -2105,15 +1954,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 @media (max-width: 560px) {
   .callbar-label { display: none; }
   .callbar-inner { justify-content: center; }
-}
-
-/* ---- podstránka O nás: míľniky, ľudia, recenzie ---- */
-.milestones { margin-top: clamp(70px, 9vh, 110px); }
-.mile { display: grid; grid-template-columns: clamp(110px, 14vw, 190px) 1fr; gap: clamp(20px, 4vw, 56px); padding: clamp(36px, 5vh, 56px) 0; border-top: 1px solid var(--line); }
-.mile:last-child { border-bottom: 1px solid var(--line); }
-.mile-year { font-size: clamp(36px, 4.4vw, 60px); font-weight: 680; font-variation-settings: var(--xwide); color: var(--gold); line-height: 1; }
-.mile-body h3 { font-size: clamp(20px, 2.2vw, 26px); }
-.mile-body p { margin-top: 10px; color: var(--muted); font-size: 18.6px; line-height: 1.7; max-width: 60ch; }
+}/* ---- podstránka O nás: míľniky, ľudia, recenzie ---- */
 
 /* Mŕtve CSS odstránené: .team, .team-grid, .team-card, .team-photo,
    .team-role a .team-note z pôvodnej migrácie. Žiadna stránka tie triedy
@@ -2123,104 +1964,25 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 /* dvojstĺpcová mriežka kariet platí len v quote sekcii (O nás) —
    globálny selektor predtým prepisoval trojstĺpcovú mriežku homepage */
 .quote .reviews-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-top: clamp(50px, 7vh, 70px); }
-.review-card { border: 1px solid var(--line); border-radius: 18px; background: var(--panel); padding: 30px 28px; }
-.review-card p { color: var(--muted); font-size: 19.2px; line-height: 1.7; }
-.review-name { margin-top: 18px; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
 
 @media (max-width: 900px) {
   .team-grid { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; }
   .quote .reviews-grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 560px) {
-  .mile { grid-template-columns: 1fr; gap: 12px; }
-}
-
 /* ============================================================
    Podstránka Šperky — svetlý režim
    Apple-galéria vzory (edge-to-edge dlaždice, striedanie plátien,
    fotografia ako jediný nositeľ) na Paciga tokenoch a Archivo type.
    ============================================================ */
-.page-light {
-  --lc: #f9f9f9;               /* svetlý canvas = pozadie produktových fotiek */
-  --lc2: #f1f0ee;              /* teplý parchment na striedanie dlaždíc */
-  /* .page-light je vlastný svetlý kontext (šperky), nezávislý od data-theme,
-     preto tu ostáva literál a nie --on-accent */
-  --link-ink: #0c0d0f;
-  --lmuted: rgba(12, 13, 15, 0.6);
-  --ldim: rgba(12, 13, 15, 0.38);
-  --lline: rgba(12, 13, 15, 0.1);
-  background: var(--lc);
-  color: var(--link-ink);
-}
-.page-light #progress { background: var(--link-ink); }
-.page-light #site-nav { background: rgba(12, 13, 15, 0.92); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
 .page-light .site-footer { background: var(--bg); color: var(--text); }
-.page-light ::selection { background: var(--link-ink); color: var(--lc); }
-
-.tile { padding: clamp(126px, 18vh, 210px) 36px; text-align: center; }
-.tile-light { background: var(--lc); }
-.tile-parchment { background: var(--lc2); }
-.tile-dark { background: var(--panel); color: var(--text); }
-.tile + .tile-light + .tile-light { padding-top: 0; }
-
-.tile-eyebrow { font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ldim); font-weight: 600; margin-bottom: 18px; }
-.tile-dark .tile-eyebrow { color: var(--gold-soft); }
-.tile h1 { font-size: clamp(36.8px, 5.15vw, 69.9px); font-weight: 660; max-width: 16ch; margin-inline: auto; }
-.tile h2 { max-width: 18ch; margin-inline: auto; }
-.tile-lead { margin: 20px auto 0; max-width: 52ch; font-size: clamp(19.8px, 1.86vw, 23.6px); line-height: 1.6; color: var(--lmuted); }
-.tile-dark .tile-lead { color: var(--muted); }
-.tile-actions { display: flex; align-items: center; justify-content: center; gap: 28px; margin-top: 34px; flex-wrap: wrap; }
-.tile-media { margin: clamp(44px, 7vh, 80px) auto 0; max-width: 1080px; }
-.tile-media.narrow { max-width: 720px; }
-.tile-media img {
-  width: 100%; height: auto;
-  /* okraje fotky (biele štúdiové pozadie) mäkko splynú s plátnom */
-  -webkit-mask-image: radial-gradient(ellipse 98% 98% at 50% 50%, #000 55%, transparent 97%);
-  mask-image: radial-gradient(ellipse 98% 98% at 50% 50%, #000 55%, transparent 97%);
-}
-
-.btn-ink {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--link-ink);
-  color: var(--lc);
-  font-weight: 650;
-  font-size: 15px;
-  padding: 16px 30px;
-  border-radius: 999px;
-  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease, background 0.35s ease;
-}
-.btn-ink:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(12, 13, 15, 0.22); background: #000000; }
 .page-light .link-underline { color: var(--lmuted); }
 .page-light .link-underline:hover { color: var(--link-ink); }
 .page-light .tile-dark .link-underline { color: var(--muted); }
 .page-light .tile-dark .link-underline:hover { color: var(--text); }
-
-.sperky-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 1240px; margin: clamp(44px, 7vh, 70px) auto 0; }
-.sperky-card {
-  background: var(--lc);
-  border: 1px solid var(--lline);
-  border-radius: 18px;
-  overflow: hidden;
-  padding-bottom: 26px;
-  text-align: center;
-  transition: border-color 0.35s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.sperky-card:hover { border-color: rgba(12, 13, 15, 0.28); transform: translateY(-5px); }
-.sperky-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
-.sperky-card h3 { font-size: 19px; margin-top: 20px; padding: 0 20px; }
-.sperky-card p { margin-top: 6px; padding: 0 20px; font-size: 17.4px; color: var(--lmuted); }
-.sperky-note { margin-top: 32px; font-size: 17.4px; color: var(--ldim); }
-
-.tile-contact { margin-top: 30px; }
 .tile-contact .phone-big { display: inline-block; font-size: clamp(28px, 3.2vw, 40px); font-weight: 680; font-variation-settings: var(--wide); color: var(--text); transition: color 0.3s ease; }
 .tile-contact .phone-big:hover { color: var(--fg-strong); }
-.tile-contact .addr { margin-top: 14px; font-size: 14px; color: var(--dim); letter-spacing: 0.04em; }
 
-@media (max-width: 900px) {
-  .sperky-grid { grid-template-columns: 1fr; max-width: 440px; }
-}
+
 
 /* ============================================================
    Časté otázky — akordeón
@@ -2291,10 +2053,7 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
                 content-visibility 0.4s allow-discrete;
   }
   .faq-item[open]::details-content { block-size: auto; }
-}
-
-/* FAQ vnorené do dlaždice (Šperky) drží zarovnanie vľavo */
-.faq-tile + .tile-dark { border-top: 1px solid var(--line); }
+}/* FAQ vnorené do dlaždice (Šperky) drží zarovnanie vľavo */
 .tile .faq { text-align: left; }
 .tile .faq h2 { max-width: none; margin-inline: 0; }
 .tile .faq .faq-note { text-align: left; }
@@ -2407,20 +2166,15 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .parte-empty strong { color: var(--text); font-weight: 620; }
 .memoriam-month[hidden],
 .memoriam-grid[hidden],
-.memoriam-card[hidden] { display: none; }
-
-/* ============================================================
+.memoriam-card[hidden] { display: none; }/* ============================================================
    O nás — album prestavba
    Fotografia nesie stránku: celoplošné pásy s popisom,
    kronika rokov na zvislej osi, prvenstvá ako hairline zoznam.
    Parallax pásov ide cez data-parallax v main.js.
    ============================================================ */
-.about-intro { background: var(--bg); padding: clamp(76px, 10vh, 135px) 0; }
 /* dvojice text + fotografia idú cez celú šírku, obmedzený je len text */
 .about-intro .section-head { max-width: 780px; margin-bottom: clamp(18px, 2.6vh, 30px); }
 .about-intro .gold-line { margin: 18px 0 0; }
-.about-intro p { color: var(--muted); font-size: clamp(19.8px, 1.74vw, 22.9px); line-height: 1.75; max-width: 62ch; }
-.about-intro p + p { margin-top: 20px; }
 
 /* ---- celoplošný fotopás ---- */
 .album-band { position: relative; overflow: hidden; height: clamp(460px, 76vh, 740px); }
@@ -2452,7 +2206,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   text-shadow: 0 1px 3px rgba(12, 13, 15, 0.65), 0 6px 28px rgba(12, 13, 15, 0.75);
 }
 .album-caption h2 { font-size: clamp(26px, 3.4vw, 44px); max-width: 16ch; }
-.album-line { font-size: clamp(26px, 3.22vw, 39.7px); font-weight: 640; font-variation-settings: var(--wide); line-height: 1.2; max-width: 20ch; }
 .album-caption p:not(.album-line) { margin-top: 14px; color: rgb(var(--fg-rgb) / 0.85); max-width: 54ch; font-size: 19.2px; line-height: 1.65; }
 .album-caption .micro-label { display: block; margin-bottom: 14px; color: var(--gold-soft); }
 
@@ -2521,22 +2274,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   margin-bottom: 14px;
 }
 .kron-body h3 { font-size: 20px; margin-bottom: 8px; }
-.kron-body p { color: var(--muted); line-height: 1.7; max-width: 44ch; }
-
-/* ---- editoriálne dvojice: text a fotografia vedľa seba, strany sa striedajú ----
+.kron-body p { color: var(--muted); line-height: 1.7; max-width: 44ch; }/* ---- editoriálne dvojice: text a fotografia vedľa seba, strany sa striedajú ----
    Tvrdenie a jeho vizuálny dôkaz v jednom riadku, aby text nestál sám. */
-.ed-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(30px, 4.5vw, 70px);
-  align-items: center;
-  padding: clamp(34px, 5vh, 60px) 0;
-}
-.ed-flip .ed-text { order: 2; }
-.ed-tight { padding: clamp(24px, 3.4vh, 42px) 0; border-top: 1px solid var(--line); }
-.ed-text h3 { font-size: clamp(21px, 2.4vw, 30px); margin-top: 12px; }
-.ed-text p { color: var(--muted); line-height: 1.65; }
-.ed-text h3 + p { margin-top: 12px; }
 
 /* ---- placeholder fotografie ----
    Rám s popisom, ČO na zábere má byť; slúži aj ako shot list pri fotení.
@@ -2553,13 +2292,9 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 .photo-slot span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
 .photo-slot em { font-style: normal; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 32ch; }
-.ps-43 { aspect-ratio: 4 / 3; }
 .ps-32 { aspect-ratio: 3 / 2; }
 
-@media (max-width: 860px) {
-  /* dvojice sa skladajú pod seba; text vždy prvý, aj v prehodených riadkoch */
-  .ed-pair { grid-template-columns: 1fr; gap: 22px; padding: clamp(26px, 4vh, 40px) 0; }
-  .ed-flip .ed-text { order: 0; }
+@media (max-width: 860px) {/* dvojice sa skladajú pod seba; text vždy prvý, aj v prehodených riadkoch */
 }
 
 @media (max-width: 860px) {
@@ -2805,14 +2540,11 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .glow-ring { display: none; }
-}
-
-/* ============================================================
+}/* ============================================================
    Recenzie — jednotný komponent (Review.astro)
    card: blockquote s hairline ľavým okrajom (štýl kondolencií)
    line: jednoriadková vsuvka pod formulárom
    ============================================================ */
-.rev-aside { margin-top: clamp(44px, 7vh, 68px); }
 .rev-card { border-left: 1px solid var(--gold-dim); padding: 6px 0 6px 26px; max-width: 720px; }
 .rev-card blockquote p { font-size: 21.1px; line-height: 1.75; color: var(--text); }
 .rev-card figcaption { margin-top: 12px; font-size: 13.5px; color: var(--muted); font-weight: 600; }
@@ -2958,6 +2690,10 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+    /* min-width doplnené 22. 8. 2026: výšku 44 px mali od 30. 7., ale krátke
+       položky menu v pätičke („O nás“, „Šperky“) boli široké 37 a 43 px.
+       Odkaz je široký len ako jeho text, takže sa musí povedať aj to. */
+    min-width: 44px;
   }
   .footer-col { gap: 0; }
   .footer-social { gap: 20px; }
@@ -2978,6 +2714,29 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   }
   .memoriam-date { font-size: 14.5px; }
 
+  /* ---- e-maily v kartách pobočiek ----
+     Merané 22. 8. 2026: odkaz mal 21 px výšky. Je to inline text v odstavci,
+     takže výšku nesie riadok. inline-flex z neho spraví vlastný blok, ktorý
+     si 44 px vypýta. Odstavec okolo tým narastie, to je v poriadku. */
+  .branch-mail a,
+  .footer-mail,
+  .footer-phone {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* ---- pätnásť hashtagov nad kartami služieb ----
+     Merané 22. 8. 2026: 17 odkazov po 30 px, tesne pri sebe. Veľkosť písma
+     ostáva, rastie len dotyková plocha. Riadkovú medzeru vynulujeme, inak by
+     blok pri 44 px na riadok narástol o polovicu. */
+  .svc-tags { gap: 0 14px; line-height: 1.2; }
+  .svc-tags a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
   /* ---- telefónne čísla: najdôležitejší klik na stránke ---- */
   .branch-tel,
   .branch-tel-sm,
@@ -2994,13 +2753,13 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .callpill { font-size: 14px; }
 
   /* ---- ovládacie prvky ---- */
-  .nav-burger { padding: 14px 8px; }
+  .nav-burger { padding: 14px 10px; }
   .v3-opt { min-height: 44px; }
-  .news-chip { min-height: 44px; }
   .sh-cta { display: inline-flex; align-items: center; min-height: 44px; }
   .rev-rating { display: inline-flex; align-items: center; min-height: 44px; }
 
   /* ---- čítaný text pod 14 px ---- */
+  .kam-stele-note { font-size: 14px; }
   .news-date { font-size: 13.5px; }
   .news-go { font-size: 14.5px; }
   .fc-go { font-size: 14.5px; }
@@ -3010,7 +2769,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   /* ---- štítky, ktoré boli pod 12 px ---- */
   .team-pop-role { font-size: 12px; }
   .stat-word { font-size: 13px; }
-  .news-tag { font-size: 12px; }
 }
 
 /* ============================================================

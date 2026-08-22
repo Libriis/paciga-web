@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
-import Ui21 from '../components/Ui21.astro';
-import LogoCloudSwap from '../components/ui/logo-clouds';
 import Foto from '../components/Foto.astro';
+import FotoSsr from '../components/FotoSsr.astro';
+import Partneri from '../components/Partneri.astro';
 import Text from '../components/Text.astro';
 import PobockyKarty from '../components/PobockyKarty.astro';
 import { getParteList, inicialky, fmtKratky } from '../lib/parte';
@@ -70,7 +70,17 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
        so škálovaním. Intro animáciu nadpisu rieši main.js (#hero-title). -->
   <section class="hero" id="hero">
     <div class="hero-media">
-      <img src="/assets/ssr/hero-tim-1920.webp" srcset="/assets/ssr/hero-tim-480.webp 480w, /assets/ssr/hero-tim-768.webp 768w, /assets/ssr/hero-tim-1080.webp 1080w, /assets/ssr/hero-tim-1440.webp 1440w, /assets/ssr/hero-tim-1920.webp 1920w, /assets/ssr/hero-tim-2560.webp 2560w" sizes="100vw" width="2560" height="1707" alt="Tím Paciga v rovnošatách pri bielych pohrebných vozidlách pod Tatrami" loading="eager" fetchpriority="high" decoding="async" />
+      <FotoSsr
+        nazov="hero-tim"
+        sirky={[480, 768, 1080, 1440, 1920, 2560]}
+        zaklad={1920}
+        sizes="100vw"
+        width={2560}
+        height={1707}
+        alt="Tím Paciga v rovnošatách pri bielych pohrebných vozidlách pod Tatrami"
+        loading="eager"
+        fetchpriority="high"
+      />
     </div>
     <div class="hero-shade" aria-hidden="true"></div>
     <div class="container hero-content">
@@ -105,7 +115,10 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
           <span class="text-[13px] font-[650] tracking-[0.14em] text-gold">01</span>
           <h3 class="mt-[14px] text-[21px]">Zavolajte nám</h3>
           <p class="mt-[10px] text-soft text-[17.4px] leading-[1.65]">Kedykoľvek, aj o tretej ráno. Sme na linke nepretržite.</p>
-          <a class="inline-block mt-[14px] text-[clamp(22px,2.2vw,28px)] font-[680] text-gold [font-variation-settings:var(--wide)] transition-colors duration-300 hover:text-soft" href="tel:0903596364">0903 596 364</a>
+          {/* inline-flex a min-h-[44px], nie inline-block: veľké písmo dalo
+              odkazu len 35 px výšky a NON STOP číslo je najdôležitejší klik
+              na celom webe. Merané 22. 8. 2026. */}
+          <a class="inline-flex items-center min-h-[44px] mt-[14px] text-[clamp(22px,2.2vw,28px)] font-[680] text-gold [font-variation-settings:var(--wide)] transition-colors duration-300 hover:text-soft" href="tel:0903596364">0903 596 364</a>
         </li>
         <li class="border-t border-solid border-line min-[861px]:border-t-0 min-[861px]:pt-0 pt-[22px]" data-reveal>
           <span class="text-[13px] font-[650] tracking-[0.14em] text-gold">02</span>
@@ -159,7 +172,16 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         <a class="svc-card" href="/pohrebne-sluzby#rakvy" data-reveal>
           <h3 class="svc-card-title">Obrad<br>a preprava</h3>
           <div class="svc-card-media">
-            <img class="svc-card-photo" src="/assets/ssr/svc-obrad-640.webp" srcset="/assets/ssr/svc-obrad-320.webp 320w, /assets/ssr/svc-obrad-480.webp 480w, /assets/ssr/svc-obrad-640.webp 640w, /assets/ssr/svc-obrad-960.webp 960w, /assets/ssr/svc-obrad-1280.webp 1280w" sizes="(max-width: 900px) 92vw, 33vw" width="1280" height="1280" alt="Biela pohrebná limuzína Paciga so smútočným sprievodom" loading="lazy" decoding="async" />
+            <FotoSsr
+              class="svc-card-photo"
+              nazov="svc-obrad"
+              sirky={[320, 480, 640, 960, 1280]}
+              zaklad={640}
+              sizes="(max-width: 900px) 92vw, 33vw"
+              width={1280}
+              height={1280}
+              alt="Biela pohrebná limuzína Paciga so smútočným sprievodom"
+            />
           </div>
           <span class="svc-link">Zobraziť služby
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
@@ -169,7 +191,16 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         <a class="svc-card" href="/pohrebne-sluzby#kvetinarstvo" data-reveal>
           <h3 class="svc-card-title">Starostlivosť<br>o pozostalých</h3>
           <div class="svc-card-media">
-            <img class="svc-card-photo" src="/assets/ssr/svc-starostlivost-640.webp" srcset="/assets/ssr/svc-starostlivost-320.webp 320w, /assets/ssr/svc-starostlivost-480.webp 480w, /assets/ssr/svc-starostlivost-640.webp 640w, /assets/ssr/svc-starostlivost-960.webp 960w, /assets/ssr/svc-starostlivost-1280.webp 1280w" sizes="(max-width: 900px) 92vw, 33vw" width="1280" height="1280" alt="Personál Paciga nesie smútočný veniec v tvare srdca" loading="lazy" decoding="async" />
+            <FotoSsr
+              class="svc-card-photo"
+              nazov="svc-starostlivost"
+              sirky={[320, 480, 640, 960, 1280]}
+              zaklad={640}
+              sizes="(max-width: 900px) 92vw, 33vw"
+              width={1280}
+              height={1280}
+              alt="Personál Paciga nesie smútočný veniec v tvare srdca"
+            />
           </div>
           <span class="svc-link">Zobraziť služby
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
@@ -179,7 +210,16 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
         <a class="svc-card" id="kamenarstvo" href="/pohrebne-sluzby#kamenarstvo" data-reveal>
           <h3 class="svc-card-title">Kamenárstvo</h3>
           <div class="svc-card-media">
-            <img class="svc-card-photo" src="/assets/ssr/svc-kamenarstvo-640.webp" srcset="/assets/ssr/svc-kamenarstvo-320.webp 320w, /assets/ssr/svc-kamenarstvo-480.webp 480w, /assets/ssr/svc-kamenarstvo-640.webp 640w, /assets/ssr/svc-kamenarstvo-960.webp 960w, /assets/ssr/svc-kamenarstvo-1280.webp 1280w" sizes="(max-width: 900px) 92vw, 33vw" width="1280" height="1280" alt="Žulový pomník z kamenárstva Paciga na cintoríne" loading="lazy" decoding="async" />
+            <FotoSsr
+              class="svc-card-photo"
+              nazov="svc-kamenarstvo"
+              sirky={[320, 480, 640, 960, 1280]}
+              zaklad={640}
+              sizes="(max-width: 900px) 92vw, 33vw"
+              width={1280}
+              height={1280}
+              alt="Žulový pomník z kamenárstva Paciga na cintoríne"
+            />
           </div>
           <span class="svc-link">Zobraziť služby
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
@@ -211,7 +251,15 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
   <section class="kband" id="limuzina">
     <div class="container kband-grid">
       <div class="kband-media" data-reveal>
-        <img src="/assets/ssr/pas-limuzina-960.webp" srcset="/assets/ssr/pas-limuzina-480.webp 480w, /assets/ssr/pas-limuzina-640.webp 640w, /assets/ssr/pas-limuzina-960.webp 960w, /assets/ssr/pas-limuzina-1280.webp 1280w" sizes="(max-width: 860px) 92vw, 54vw" width="1280" height="853" alt="Biela pohrebná limuzína Mercedes-Benz Paciga pod Tatrami" loading="lazy" decoding="async" />
+        <FotoSsr
+          nazov="pas-limuzina"
+          sirky={[480, 640, 960, 1280]}
+          zaklad={960}
+          sizes="(max-width: 860px) 92vw, 54vw"
+          width={1280}
+          height={853}
+          alt="Biela pohrebná limuzína Mercedes-Benz Paciga pod Tatrami"
+        />
       </div>
       <div class="kband-body">
         <div class="badge-pill" data-reveal><Text kluc="index.jazda.ocenenie">Ocenená ako najkrajšia na Slovensku</Text></div>
@@ -227,7 +275,15 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
   <section class="kband kband-flip" id="sperky-pas">
     <div class="container kband-grid">
       <div class="kband-media" data-reveal>
-        <img src="/assets/ssr/pas-sperk-960.webp" srcset="/assets/ssr/pas-sperk-480.webp 480w, /assets/ssr/pas-sperk-640.webp 640w, /assets/ssr/pas-sperk-960.webp 960w, /assets/ssr/pas-sperk-1152.webp 1152w" sizes="(max-width: 860px) 92vw, 44vw" width="1152" height="2048" alt="Zlatý prívesok s gravírovaným odtlačkom prsta a nápisom Navždy" loading="lazy" decoding="async" />
+        <FotoSsr
+          nazov="pas-sperk"
+          sirky={[480, 640, 960, 1152]}
+          zaklad={960}
+          sizes="(max-width: 860px) 92vw, 44vw"
+          width={1152}
+          height={2048}
+          alt="Zlatý prívesok s gravírovaným odtlačkom prsta a nápisom Navždy"
+        />
       </div>
       <div class="kband-body">
         <div class="eyebrow" data-reveal>Spomienkové šperky</div>
@@ -351,19 +407,16 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
     </div>
   </section>
 
-  <!-- ============ PARTNERI — logo cloud s vlnou (21st.dev logo-clouds) ============
-       React ostrov cez Ui21; marquee nahradený statickým cloudom monogramov,
-       ktorým každých pár sekúnd prebehne wipe vlna. -->
+  <!-- ============ PARTNERI — logo cloud s vlnou ============
+       Vzor 21st.dev logo-clouds, ale bez Reactu (22. 8. 2026): ostrov ťahal
+       na homepage 116 kB JS kvôli dekoratívnej vlne. Teraz je to CSS. -->
   <section class="partners">
     <div class="container">
-      <Ui21>
-        <LogoCloudSwap
-          client:visible
-          partners={PARTNERI}
-          title="Naši partneri"
-          subtitle="Overené značky, s ktorými spolupracujeme."
-        />
-      </Ui21>
+      <Partneri
+        partners={PARTNERI}
+        title="Naši partneri"
+        subtitle="Overené značky, s ktorými spolupracujeme."
+      />
     </div>
   </section>
 

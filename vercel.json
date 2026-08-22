@@ -1,5 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "//redirects": "Hromadné presmerovania zo starého WordPressu: 391 parte, 81 kytíc, 4 kategórie. Sú tu, a nie v astro.config.mjs, lebo Astro dynamické presmerovanie odmietne, ak cieľ nenesie tie isté parametre ako zdroj. My chceme 476 adries zliať na tri prehľady, staré slugy sa totiž s novými nezhodujú. Jednotlivé stránky a články sú v src/data/presmerovania.mjs. Po prepnutí domény over, že to naozaj beží: adaptér astrojs/vercel píše vlastný config.json a vercel.json mu dopĺňa len headers a redirects.",
+  "redirects": [
+    { "source": "/opustili_ns/:path*", "destination": "/opustili-nas", "permanent": true },
+    { "source": "/kytice/:path*", "destination": "/pohrebne-sluzby/kvetinarstvo", "permanent": true },
+    { "source": "/category/:path*", "destination": "/aktuality", "permanent": true }
+  ],
+
   "headers": [
     {
       "source": "/(.*)",
@@ -10,6 +18,68 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
         { "key": "Content-Security-Policy", "value": "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" }
+      ]
+    },
+
+    {
+      "//": "Astro dáva do názvu obsahový hash (napr. Base.CJx6EJzW.css). Zmena obsahu = nový názov, takže sa tieto súbory nikdy nemusia overovať. Bez tohto pravidla dával Vercel na všetko max-age=0 a prehliadač si pri každej návšteve pýtal 304 aj na nemenné súbory.",
+      "source": "/_astro/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "//": "Písma sú self-hosted a verzované názvom (archivo-sk, nie archivo). Nová verzia = nový názov.",
+      "source": "/assets/(.*).woff2",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+
+    {
+      "//": "Ručné obrázky a videá v public/ majú stále názvy, ale scripts/staticke-obrazky.mjs ich vie prekresliť. 30 dní + stale-while-revalidate: návštevník dostane starú verziu okamžite a novú na pozadí, namiesto čakania na sieť.",
+      "source": "/assets/ssr/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/assets/vendor/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/partneri/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/clanky/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/og/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "//": "Zvyšok public/assets: logá, postery, mp4. Rovnaký režim.",
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+
+    {
+      "//": "styles.css, main.js a spol. NEMAJÚ hash v názve a menia sa každým nasadením. Dlhá platnosť by znamenala, že oprava sa k vracajúcemu sa návštevníkovi nedostane. Necháme ich overovať (304 je lacná, telo sa neposiela), ale povolíme krátke SWR okno, aby prvé vykreslenie nečakalo na sieť.",
+      "source": "/(css|js)/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=60" }
       ]
     }
   ]

@@ -1,0 +1,156 @@
+---
+/*
+  Logá partnerov — vlnový cloud, vanilla.
+
+  Predtým to bol React ostrov (logo-clouds.tsx, vzor 21st.dev LogoCloudSwap
+  s motion/react). Merané 22. 8. 2026 na iPhone a Fast 4G: ten jeden ozdobný
+  komponent stiahol na homepage 116 kB JavaScriptu (react 49 kB, client
+  57 kB, zvyšok obal). Vlna je pritom čistá dekorácia, ktorú CSS zvládne
+  bez jediného bajtu skriptu.
+
+  Rovnaký dôvod, prečo v hlavičke nie sú React ostrovy: hlavička je na každej
+  stránke a ostrov by React natiahol všade.
+
+  Animácia: každé logo raz za cyklus prebehne wipe (clip-path zľava doprava,
+  s rozostrením a poklesom krytia) a zvyšok cyklu stojí. Oneskorenie posúva
+  vlnu radom. Čísla sedia s pôvodným Reactom: wipe 0,92 s, vrchol v 40 %
+  jeho trvania, krok 0,11 s, cyklus 4,2 s.
+
+  prefers-reduced-motion vlnu vypína, zvýraznenie pri prejdení ostáva.
+*/
+export type Partner = {
+  name: string;
+  href: string;
+  /** biela silueta loga, 1x (v public/partneri) */
+  logo: string;
+  /** to isté v 2x pre retinu */
+  logo2x: string;
+  /** rozmery v CSS px, v akých sa logo kreslí (držia optickú rovnováhu radu) */
+  w: number;
+  h: number;
+};
+
+interface Props {
+  partners: Partner[];
+  title?: string;
+  subtitle?: string;
+}
+
+const { partners, title, subtitle } = Astro.props;
+---
+<div class="pcloud">
+  {(title || subtitle) && (
+    <div class="pcloud-head">
+      {title && <h2 class="pcloud-title">{title}</h2>}
+      {subtitle && <p class="pcloud-sub">{subtitle}</p>}
+    </div>
+  )}
+
+  <div class="pcloud-grid">
+    {partners.map((p, i) => (
+      <a
+        class="pcloud-item"
+        href={p.href}
+        target="_blank"
+        rel="noopener"
+        aria-label={p.name}
+        style={`--i:${i}`}
+      >
+        {/* Rozmer drží CSS premenná, nie pevná trieda: každé logo má vlastnú
+            optickú výšku a mobil celý rad zmenší cez --logo-scale. Atribúty
+            width/height sedia s 1x rozmerom, takže miesto je rezervované
+            dopredu a rad sa pri načítaní nehýbe. */}
+        <img
+          src={p.logo}
+          srcset={`${p.logo} 1x, ${p.logo2x} 2x`}
+          width={p.w}
+          height={p.h}
+          alt={p.name}
+          loading="lazy"
+          decoding="async"
+          style={`width:calc(${p.w}px * var(--logo-scale, 1));height:calc(${p.h}px * var(--logo-scale, 1))`}
+        />
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .pcloud { width: 100%; }
+
+  .pcloud-head { margin: 0 auto; max-width: 42rem; text-align: center; }
+  .pcloud-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+  }
+  .pcloud-sub { margin-top: 12px; font-size: 15.5px; color: var(--muted); }
+
+  /* Mobil má mriežku 2 v rade, nie voľné zalamovanie: logá sú rôzne široké,
+     takže flex-wrap dával rady po 2, 3 a napokon jedno osamotené. Od 640 px
+     je miesta dosť a rad sa zalomí pekne sám. */
+  .pcloud-grid {
+    margin: 40px auto 0;
+    max-width: 64rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    place-items: center;
+    column-gap: 24px;
+    row-gap: 32px;
+    --logo-scale: 0.62;
+  }
+  @media (min-width: 640px) {
+    .pcloud-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      column-gap: 44px;
+      row-gap: 36px;
+      --logo-scale: 0.82;
+    }
+  }
+  @media (min-width: 1024px) {
+    .pcloud-grid { column-gap: 48px; --logo-scale: 1; }
+  }
+
+  .pcloud-item {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    /* Logá sú na mobile zmenšené na 0,62, takže napríklad hviezda
+       Mercedesu klesla na 31 × 31 px. Odkaz si preto pýta 44 px v oboch
+       smeroch, aj keď obrázok v ňom ostáva menší. Merané 22. 8. 2026. */
+    min-width: 44px;
+    min-height: 44px;
+    opacity: 0.62;
+    animation: pcloud-wipe 4.2s linear infinite;
+    animation-delay: calc(var(--i) * 0.11s);
+    transition: transform 0.24s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.24s ease;
+  }
+  .pcloud-item:hover,
+  .pcloud-item:focus-visible {
+    transform: scale(1.07);
+    opacity: 1;
+    /* Prejdenie myšou vlnu prekryje, inak by logo pod kurzorom zablikalo. */
+    animation-play-state: paused;
+    filter: blur(0);
+  }
+
+  .pcloud-item img { display: block; }
+
+  @keyframes pcloud-wipe {
+    0%    { clip-path: inset(0 0% 0 0);   filter: blur(0px); opacity: 0.62; }
+    8.8%  { clip-path: inset(0 100% 0 0); filter: blur(8px); opacity: 0.14; }
+    21.9% { clip-path: inset(0 0% 0 0);   filter: blur(0px); opacity: 0.62; }
+    100%  { clip-path: inset(0 0% 0 0);   filter: blur(0px); opacity: 0.62; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pcloud-item { animation: none; }
+  }
+</style>

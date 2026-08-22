@@ -89,20 +89,34 @@ for (const w of LOGO_SIRKY) {
   console.log(`  logo-${w}.webp  ${info.width}x${info.height}  ${kB(info.size)}`);
 }
 
+/* AVIF popri WebP (22. 8. 2026). Dôvod: svc-kamenarstvo je žulový pomník
+   na štrku, čo je pre kodek samá šumová textúra. Vo WebP q70 mal 1280w
+   variant 400 kB, kým rovnako veľký svc-obrad len 100 kB. Znižovanie
+   kvality nepomohlo: ani q46 nešiel pod 317 kB, len fotku rozmazal.
+   AVIF ten istý záber zvládne na 221 kB pri porovnateľnej kvalite.
+   Prevodné pravidlo: AVIF je pri zhruba o 20 nižšom čísle kvality tam,
+   kde WebP pri svojom. Fallback na WebP ostáva, rozhoduje <picture>. */
+const avifKvalita = (webpKvalita) => Math.max(35, webpKvalita - 20);
+
 console.log('\nObrazky na SSR strankach:');
 mkdirSync(join(PUBLIC, 'assets', 'ssr'), { recursive: true });
 for (const o of SSR_OBRAZKY) {
   const riadok = [];
   for (const w of o.sirky) {
-    const out = join(PUBLIC, 'assets', 'ssr', `${o.nazov}-${w}.webp`);
-    const info = await sharp(join(ZDROJE, o.zdroj))
+    const zdroj = join(ZDROJE, o.zdroj);
+    const webp = await sharp(zdroj)
       .resize({ width: w, withoutEnlargement: true })
       .webp({ quality: o.kvalita })
-      .toFile(out);
-    riadok.push(`${w}=${kB(info.size)}`);
+      .toFile(join(PUBLIC, 'assets', 'ssr', `${o.nazov}-${w}.webp`));
+    const avif = await sharp(zdroj)
+      .resize({ width: w, withoutEnlargement: true })
+      .avif({ quality: avifKvalita(o.kvalita) })
+      .toFile(join(PUBLIC, 'assets', 'ssr', `${o.nazov}-${w}.avif`));
+    riadok.push(`${w}=${kB(webp.size)}/${kB(avif.size)}`);
   }
   console.log(`  ${o.nazov.padEnd(20)} ${riadok.join('  ')}`);
 }
+console.log('  (webp/avif)');
 
 /* Fotky článkov. Detail článku aj prehľad aktualít bežia ako SSR, lebo
    obsah spravuje redaktor v /admin/clanky. Komponent Foto.astro preto pre

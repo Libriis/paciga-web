@@ -404,6 +404,14 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
   .v3-opt:disabled { opacity: 0.35; cursor: not-allowed; }
   .v3-opt:disabled:hover { color: var(--muted); }
   .v3-note { margin-top: 10px; font-size: 13.5px; color: var(--dim); }
+
+  /* Čítaný text nesmie na mobile klesnúť pod 14 px (pravidlo z 30. 7. 2026).
+     Tieto tri miesta sa naň vtedy nedostali, merané 22. 8. 2026. Verzálkové
+     štítky ako .v3-label ostávajú malé, tie nesú hierarchiu, nie obsah. */
+  @media (max-width: 900px) {
+    .v3-stage-caption { font-size: 14px; }
+    .v3-note { font-size: 14px; }
+  }
 </style>
 
 <script is:inline slot="scripts">

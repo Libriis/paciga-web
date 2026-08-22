@@ -8,11 +8,21 @@
   prevádzka a platí v otváracích hodinách. Spišská Belá má len jedno
   číslo, slúži na oboje. Navigácia vedie na pobočku (firemný záznam na
   mape), nie na adresu ulice.
+
+  POZOR na dvojitý zápis: tie isté adresy, čísla a hodiny nesie aj
+  src/data/firma.ts, odkiaľ sa skladá schema.org značka pre vyhľadávače.
+  Karty sa z nej negenerujú, lebo majú navyše vlastný text („Sídlo firmy“,
+  „NON STOP aj prevádzka“), ktorý sa z dát vytiahnuť nedá. Pri zmene
+  telefónu, adresy alebo hodín uprav obe miesta.
+
+  Video je na data-src, nie na src. Zdroj nasadzuje main.js a len na
+  širokom displeji bez šetrenia dát. Na mobile ostane v karte poster
+  a tri klipy miest (934 kB) sa nestiahnu vôbec. Merané 22. 8. 2026.
 */
 ---
 <div class="branch-grid">
   <article class="branch-card" data-reveal>
-    <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-poprad.mp4" data-poster="/assets/poster-poprad.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+    <div class="branch-photo" data-parallax><span><video class="scene-video" data-src="/assets/town-poprad.mp4" data-poster="/assets/poster-poprad.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
     <div class="branch-body">
       <h3>Poprad</h3>
       <p class="branch-addr">Francisciho 3288/35<br>058 01 Poprad</p>
@@ -24,7 +34,7 @@
     </div>
   </article>
   <article class="branch-card" data-reveal>
-    <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-bela.mp4" data-poster="/assets/poster-bela.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+    <div class="branch-photo" data-parallax><span><video class="scene-video" data-src="/assets/town-bela.mp4" data-poster="/assets/poster-bela.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
     <div class="branch-body">
       <h3>Spišská Belá</h3>
       <p class="branch-addr">Letná 17<br>059 01 Spišská Belá</p>
@@ -36,7 +46,7 @@
     </div>
   </article>
   <article class="branch-card" data-reveal>
-    <div class="branch-photo" data-parallax><span><video class="scene-video" src="/assets/town-lm.mp4" data-poster="/assets/poster-lm.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
+    <div class="branch-photo" data-parallax><span><video class="scene-video" data-src="/assets/town-lm.mp4" data-poster="/assets/poster-lm.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
     <div class="branch-body">
       <h3>Liptovský Mikuláš</h3>
       <p class="branch-addr">Ester Šimerovej Martinčekovej 4506/4<br>031 01 Liptovský Mikuláš</p>
