@@ -41,16 +41,20 @@ const RECENZIE_RAIL = [
 const REV_COLS = [RECENZIE_RAIL.slice(0, 2), RECENZIE_RAIL.slice(2, 4), RECENZIE_RAIL.slice(4, 6)];
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
 
-/* partneri pre logo cloud — serializovateľné props do React ostrova */
+/* Partneri pre logo cloud — serializovateľné props do React ostrova.
+   Logá sú biele siluety v public/partneri (1x + 2x), prepočet robí
+   scripts/loga-partnerov.mjs. `w` a `h` sú rozmery v CSS px, v ktorých
+   sa logo kreslí; nie sú to rozmery súboru, ale opticky vyvážené veľkosti,
+   aby široký wordmark nepôsobil väčšie než štvorcová značka. */
 const PARTNERI = [
-  { name: 'potom.sk', href: 'https://potom.sk/' },
-  { name: 'Kvety Victor', href: 'https://kvetyvictor.sk/' },
-  { name: 'More matracov', href: 'https://more-matracov.sk/' },
-  { name: 'Reštaurácia Aréna', href: 'https://www.restauracia-arena.sk/' },
-  { name: 'Mercedes-Benz', href: 'https://www.mercedes-benz.sk/' },
-  { name: 'iZlato', href: 'https://www.izlato.sk/' },
-  { name: 'Silencia', href: 'https://silencia.sk/' },
-  { name: 'spominam.sk', href: 'https://spominam.sk/' },
+  { name: 'potom.sk', href: 'https://potom.sk/', logo: '/partneri/potom.webp', logo2x: '/partneri/potom@2x.webp', w: 185, h: 45 },
+  { name: 'Kvety Victor', href: 'https://kvetyvictor.sk/', logo: '/partneri/kvety.webp', logo2x: '/partneri/kvety@2x.webp', w: 206, h: 44 },
+  { name: 'More matracov', href: 'https://more-matracov.sk/', logo: '/partneri/matrace.webp', logo2x: '/partneri/matrace@2x.webp', w: 221, h: 58 },
+  { name: 'Reštaurácia Aréna', href: 'https://www.restauracia-arena.sk/', logo: '/partneri/arena.webp', logo2x: '/partneri/arena@2x.webp', w: 176, h: 57 },
+  { name: 'Mercedes-Benz', href: 'https://www.mercedes-benz.sk/', logo: '/partneri/mercedes.webp', logo2x: '/partneri/mercedes@2x.webp', w: 50, h: 50 },
+  { name: 'iZlato', href: 'https://www.izlato.sk/', logo: '/partneri/izlato.webp', logo2x: '/partneri/izlato@2x.webp', w: 225, h: 44 },
+  { name: 'Silencia', href: 'https://silencia.sk/', logo: '/partneri/silencia.webp', logo2x: '/partneri/silencia@2x.webp', w: 157, h: 55 },
+  { name: 'spominam.sk', href: 'https://spominam.sk/', logo: '/partneri/spominam.webp', logo2x: '/partneri/spominam@2x.webp', w: 228, h: 35 },
 ];
 
 const title = "Paciga | Pohrebné a kamenárske služby | NON STOP 24/7";

@@ -5,7 +5,13 @@
   (LogoCloudSwap), prispôsobené pre Paciga:
   - motion/react namiesto framer-motion (v repe už je motion v12)
   - žiadny LOGOS util: partneri prichádzajú ako serializovateľné props
-    z Astro ostrova (client:visible), monogram sa počíta z názvu
+    z Astro ostrova (client:visible)
+  - od 22. 8. 2026 reálne logá partnerov namiesto monogramov. Sú to biele
+    siluety (alfa kanál originálu vyplnený bielou), aby sedeli na tmavý
+    monochromatický web a navzájom sa nebili farbami. Zdroje sú stiahnuté
+    z webov partnerov, prepočet robí scripts/loga-partnerov.mjs.
+  - názov partnera sa už nevypisuje: logá sú wordmarky a text pod nimi by
+    bol druhýkrát to isté. Meno nesie aria-label a alt.
   - položky sú odkazy na weby partnerov, tokeny z tw.css (soft/gold/line)
   - prefers-reduced-motion vypína vlnu, hover zvýraznenie ostáva
 */
@@ -17,6 +23,13 @@ import { cn } from "@/lib/utils";
 export type PartnerEntry = {
   name: string;
   href: string;
+  /** biela silueta loga, 1x (v public/partneri) */
+  logo: string;
+  /** to isté v 2x pre retinu */
+  logo2x: string;
+  /** rozmery v CSS px, v akých sa logo kreslí (držia optickú rovnováhu radu) */
+  w: number;
+  h: number;
 };
 
 export type LogoCloudSwapProps = {
@@ -30,16 +43,6 @@ export type LogoCloudSwapProps = {
 
 const WIPE_DURATION = 0.92;
 const WIPE_TIMES = [0, 0.4, 1];
-
-function initials(name: string): string {
-  return name
-    .replace(/\.[a-z]{2,}$/i, "")
-    .trim()
-    .split(/[\s-]+/)
-    .slice(0, 2)
-    .map((w) => w.charAt(0).toUpperCase())
-    .join("");
-}
 
 function LogoItem({
   partner,
@@ -71,12 +74,12 @@ function LogoItem({
                 "inset(0 0% 0 0)",
               ],
               filter: ["blur(0px)", "blur(8px)", "blur(0px)"],
-              opacity: [1, 0.2, 1],
+              opacity: [0.62, 0.14, 0.62],
             }
           : {
               clipPath: "inset(0 0% 0 0)",
               filter: "blur(0px)",
-              opacity: 1,
+              opacity: 0.62,
             }
       }
       transition={
@@ -115,14 +118,25 @@ function LogoItem({
         filter: "blur(0px)",
         transition: { type: "spring", stiffness: 340, damping: 24 },
       }}
-      className="group flex w-20 shrink-0 flex-col items-center gap-2.5 no-underline sm:w-24"
+      className="flex shrink-0 items-center justify-center no-underline"
     >
-      <span className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-[13px] font-semibold tracking-wide text-soft transition-colors duration-300 group-hover:border-gold group-hover:text-gold sm:h-12 sm:w-12">
-        {initials(partner.name)}
-      </span>
-      <span className="select-none whitespace-nowrap text-[12.5px] font-medium tracking-wide text-soft transition-colors duration-300 group-hover:text-snow sm:text-[11.5px]">
-        {partner.name}
-      </span>
+      {/* Rozmer drží CSS premenná, nie utility trieda: každé logo má vlastnú
+          optickú výšku a mobil celý rad zmenší cez --logo-scale. Atribúty
+          width/height sedia s 1x rozmerom, takže miesto je rezervované
+          dopredu a rad pri načítaní nepodskočí. */}
+      <img
+        src={partner.logo}
+        srcSet={`${partner.logo} 1x, ${partner.logo2x} 2x`}
+        width={partner.w}
+        height={partner.h}
+        alt={partner.name}
+        loading="lazy"
+        decoding="async"
+        style={{
+          width: `calc(${partner.w}px * var(--logo-scale, 1))`,
+          height: `calc(${partner.h}px * var(--logo-scale, 1))`,
+        }}
+      />
     </motion.a>
   );
 }
@@ -160,21 +174,11 @@ export default function LogoCloudSwap({
       )}
 
       <div className="mx-auto mt-10 max-w-5xl">
-        <div className="hidden items-center justify-center gap-4 sm:flex sm:flex-wrap sm:gap-6 md:gap-8 lg:gap-10">
-          {partners.map((p, i) => (
-            <LogoItem
-              key={p.name}
-              partner={p}
-              index={i}
-              isWaving={waving}
-              stagger={stagger}
-              totalCount={partners.length}
-              onDone={() => setWaving(false)}
-            />
-          ))}
-        </div>
-
-        <div className="grid grid-cols-3 place-items-center gap-y-6 sm:hidden">
+        {/* Mobil má mriežku 2 v rade, nie flex-wrap: logá sú rôzne široké,
+            takže voľné zalamovanie dávalo rady po 2, 3 a napokon jedno
+            osamotené. Od sm ide flex-wrap, tam je miesta dosť a rad sa
+            zalomí pekne sám. */}
+        <div className="grid grid-cols-2 place-items-center gap-x-6 gap-y-8 [--logo-scale:0.62] sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-11 sm:gap-y-9 sm:[--logo-scale:0.82] lg:gap-x-12 lg:[--logo-scale:1]">
           {partners.map((p, i) => (
             <LogoItem
               key={p.name}
