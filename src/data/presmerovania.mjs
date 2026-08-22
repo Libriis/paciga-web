@@ -108,5 +108,7 @@ export const PRESMEROVANIA = {
      musí ísť na niečo, čo tiež má [slug]. My chceme opak, zliať 476 adries
      na tri prehľady, lebo staré slugy sa s novými nezhodujú (parte chodia
      zo Supabase, kytice sú dnes katalóg vo vnútri kvetinárstva).
-     To vie Vercel cez `:path*`, pozri redirects vo vercel.json. */
+     To vie Vercel cez `:path*`, pozri redirects vo vercel.json.
+     Vysvetlenie k celému vercel.json je vo VERCEL.md: samotný súbor
+     komentáre niesť nemôže, Vercel odmietne aj kľúč navyše. */
 };
