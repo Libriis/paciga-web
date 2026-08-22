@@ -3118,3 +3118,68 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .sluzba-fakty .kam-fact-k { flex: none; padding-top: 0; }
   .sluzba-fakty .kam-fact-v { font-size: 16px; }
 }
+
+/* ============================================================
+   Mobil: jednotný zvislý rytmus sekcií (22. 8. 2026)
+
+   Klient poslal snímku z telefónu: medzi blokmi sú veľké prázdne pásy.
+   Zmerané na 8 stránkach, 45 medzier medzi susednými sekciami: medián
+   187 px, 34 zo 45 nad 150 px, maximum 766. Na displeji vysokom 844 px
+   je to polovica obrazovky bez obsahu.
+
+   Príčina: každá sekcia má desktopový padding clamp(84px, 11vh, 150px)
+   alebo podobný, na vyše 20 miestach v CSS a v Tailwind triedach py-[...]
+   v .astro, a na mobil ide bez zmeny. Dva paddingy za sebou dajú 170 až
+   240 px. Vnútorné rozostupy (svcgroup + svcgroup, section-head) to
+   ešte zdvihnú.
+
+   Riešenie je jedno pravidlo, nie dvadsať opráv: každá sekcia v <main>
+   dostane na mobile 52 px hore aj dole. Dve sekcie za sebou = 104 px,
+   čo je na telefóne zreteľný predel bez prázdneho pásu. !important je
+   tu zámerne: bez neho by prebili Tailwind utility py-[clamp(...)]
+   (vyššia špecificita arbitrárnej hodnoty) aj spojené selektory typu
+   .branches s border-block.
+
+   Výnimky: hero sekcie, ktoré začínajú pod fixnou hlavičkou a vrchný
+   padding im drží miesto pre ňu (.hero, .news-hero, .contact-top,
+   .sperk-hero, .pravna). Tým sa mení len spodok. .guide + .guide má
+   vlastné pravidlo padding-top: 0 a to ostáva, lebo je to jeden blok
+   rozdelený do dvoch sekcií.
+   ============================================================ */
+@media (max-width: 900px) {
+  main > section,
+  main > div > section {
+    padding-top: 52px !important;
+    padding-bottom: 52px !important;
+  }
+  /* hero sekcie: vrch držia, mení sa len spodok */
+  main > section.hero,
+  main > section.news-hero,
+  main > section.contact-top,
+  main > section.sperk-hero,
+  main > section.pravna {
+    padding-top: revert !important;
+  }
+  main > section.hero { padding-bottom: 0 !important; }
+  main > section.news-hero { padding-bottom: 40px !important; }
+  /* dve guide sekcie za sebou sú jeden blok */
+  main > section.guide + section.guide { padding-top: 0 !important; }
+  /* vnútorné rozostupy skupín, ktoré by inak pribudli k paddingu */
+  .svcgroup + .svcgroup { margin-top: 48px; }
+  .section-head { margin-bottom: 36px; }
+  .memoriam-head { margin-bottom: 36px; }
+  .nonstop-inner { padding: 36px 0; }
+  .partners { padding: 52px 0 !important; }
+}
+
+/* Fotopásy s textom dole (22. 8. 2026). .subhero má min-height 72vh,
+   .fleetband 56vh, .album-band až 76vh. Na desktope sú to širokouhlé pásy,
+   na telefóne z toho bolo 500 až 600 px fotky a text až na spodku: pri
+   scrolle to pôsobilo ako prázdna diera medzi sekciami (zmerané 540 px
+   na /o-nas medzi kronikou a tímom). Na mobile stačí 52vh, fotka ostane
+   výrazná a text príde skôr. */
+@media (max-width: 900px) {
+  .subhero { min-height: 52vh; }
+  .fleetband { min-height: 46vh; }
+  .album-band { height: clamp(360px, 52vh, 480px); }
+}

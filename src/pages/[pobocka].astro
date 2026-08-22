@@ -249,7 +249,14 @@ const drobceky = {
     </div>
   </section>
 
-  <Faq items={otazky} eyebrow="Časté otázky" heading={`Na čo sa pýtajú v ${p.mestoV}`} />
+  {/* Faq.astro si obal nerobí, dáva mu ho stránka (rovnako kamenárstvo,
+      detaily služieb, pozostalí). Bez section + container sedel FAQ na
+      ľavom okraji okna bez odsadenia. Zistené na snímke 22. 8. 2026. */}
+  <section class="faq-section">
+    <div class="container">
+      <Faq items={otazky} eyebrow="Časté otázky" heading={`Na čo sa pýtajú v ${p.mestoV}`} />
+    </div>
+  </section>
 
   <!-- ============ ZÁVEREČNÁ VÝZVA ============ -->
   <section class="sluzba-blok">
