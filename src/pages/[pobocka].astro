@@ -1,0 +1,262 @@
+---
+/*
+  Stránka pobočky: /poprad, /spisska-bela, /liptovsky-mikulas.
+
+  Prečo vznikla (22. 8. 2026): starý WordPress mal pre každé mesto dve
+  stránky (/poprad aj /pohrebne-sluzby-poprad, spolu šesť) a práve tie
+  ho držali na frázach typu „pohrebné služby Poprad“. Nový web
+  samostatné stránky pobočiek nemal, všetko viedlo na /kontakt. Pri
+  firme, ktorá stojí na lokálnom vyhľadávaní, je to najdrahšia strata,
+  akú vie migrácia spôsobiť.
+
+  Adresy sú zámerne tie isté ako na starom webe (/poprad, nie
+  /pobocky/poprad). Adresa, ktorú Google roky pozná, tak neprejde
+  presmerovaním a nestratí sa na nej nič. Dlhšie varianty
+  /pohrebne-sluzby-<mesto> naň presmerujú, sú v presmerovania.mjs.
+
+  Obsah každej pobočky je iný, nie ten istý s vymeneným názvom mesta.
+  Séria skoro rovnakých stránok pre jednotlivé mestá je doorway pattern
+  a Google ním postihuje celý web, nielen tie stránky. Starý web presne
+  taký bol: tri stránky s totožným zoznamom služieb a vymeneným H1.
+  Texty sú v src/data/firma.ts aj s poznámkou, odkiaľ je ktorý údaj.
+
+  Vykanie, nie tykanie: celý zvyšok webu vyká („Zavolajte“, „Poradíme
+  vám“) a tri stránky v inom oslovení by z toho trčali. Ak sa má web
+  prehodiť na tykanie, treba prehodiť všetkých dvanásť stránok naraz.
+*/
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import type { FaqItem } from '../components/Faq.astro';
+import { SIRKY_HERO, KVALITA_POZADIE } from '../lib/images';
+import { FIRMA, POBOCKY, mapaOdkaz, type Pobocka } from '../data/firma';
+
+import interierPoprad from '../assets/interier-poprad.jpg';
+import interierBela from '../assets/interier-bela.jpg';
+import interierLm from '../assets/interier-lm.jpg';
+
+const FOTKY = {
+  poprad: interierPoprad,
+  'spisska-bela': interierBela,
+  'liptovsky-mikulas': interierLm,
+} as const;
+
+export function getStaticPaths() {
+  return POBOCKY.map((p) => ({ params: { pobocka: p.slug }, props: { p } }));
+}
+
+interface Props { p: Pobocka }
+const { p } = Astro.props as Props;
+
+const foto = FOTKY[p.slug as keyof typeof FOTKY];
+const ostatne = POBOCKY.filter((x) => x.slug !== p.slug);
+const zaklad = (Astro.site ?? new URL('/', Astro.url)).href;
+const telHref = (t: string) => 'tel:' + t.replace('+421', '0');
+const telText = (t: string) => t.replace('+421', '0').replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+
+/* Otázky sú pre každú pobočku iné a odpovedajú na ne jej vlastné údaje.
+   Spoločná trojica otázok s vymenenou odpoveďou by bola ten istý doorway
+   problém o poschodie nižšie. */
+const otazky: FaqItem[] = [
+  {
+    q: `Kedy sa dá na pobočku v ${p.mestoV} prísť?`,
+    a: p.nonstop
+      ? 'Nepretržite. Spišská Belá je sídlo firmy a ako jediná pobočka je dostupná v ktorúkoľvek hodinu, aj cez víkendy a sviatky.'
+      : `Osobne v pondelok až piatok od 8:00 do 16:00. Prevoz zosnulého ale zabezpečíme aj mimo týchto hodín, na to slúži NON STOP linka ${telText(p.telefon)}.`,
+  },
+  {
+    q: 'Čo mám priniesť na prvé stretnutie?',
+    a: 'Občiansky preukaz zosnulého a list o prehliadke mŕtveho, ak ho už máte. Ak nemáte nič, nevadí, prídite aj tak. Zvyšok dorieši smútkový poradca s vami.',
+  },
+  {
+    q: `Musím ísť práve do pobočky v ${p.mestoV}?`,
+    a: 'Nie. Všetky tri pobočky vybavia pohreb kompletne a navzájom si pomáhajú. Vyberte si tú, ktorá je vám bližšie, alebo zavolajte a prídeme za vami.',
+  },
+];
+
+/* Táto pobočka ako samostatný záznam pre vyhľadávače. @id je to isté,
+   aké jej dáva zoznam oddelení v Base.astro, takže Google vidí jeden
+   subjekt popísaný na dvoch miestach, nie dva. */
+const pobockaLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FuneralHome',
+  '@id': zaklad + '#pobocka-' + p.mesto.toLowerCase().replace(/[^a-z]+/g, '-'),
+  name: p.nazov,
+  description: p.description,
+  url: new URL('/' + p.slug, zaklad).href,
+  parentOrganization: { '@id': zaklad + '#firma' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: p.ulica,
+    postalCode: p.psc,
+    addressLocality: p.mesto,
+    addressCountry: 'SK',
+  },
+  telephone: p.telefon,
+  email: p.email,
+  areaServed: { '@type': 'City', name: p.mesto },
+  openingHoursSpecification: p.nonstop
+    ? [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], opens: '00:00', closes: '23:59' }]
+    : [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: '16:00' }],
+};
+
+const drobceky = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Domov', item: new URL('/', zaklad).href },
+    { '@type': 'ListItem', position: 2, name: 'Kontakt', item: new URL('/kontakt', zaklad).href },
+    { '@type': 'ListItem', position: 3, name: p.mesto, item: new URL('/' + p.slug, zaklad).href },
+  ],
+};
+---
+<Base
+  title={p.title}
+  description={p.description}
+  active="kontakt"
+  ogTitle={`Pohrebné služby ${p.mesto} | Paciga`}
+  ogDescription={p.lead}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(drobceky)} is:inline />
+    <script type="application/ld+json" set:html={JSON.stringify(pobockaLd)} is:inline />
+  </Fragment>
+
+  <!-- ============ HLAVIČKA ============ -->
+  <section class="news-hero has-photo">
+    <div class="nh-media" aria-hidden="true">
+      <Image src={foto} widths={SIRKY_HERO} sizes="100vw" quality={KVALITA_POZADIE} alt="" loading="eager" fetchpriority="high" decoding="async" />
+    </div>
+    <div class="container news-hero-inner">
+      <div>
+        <nav class="drobceky" aria-label="Drobečková navigácia">
+          <a href="/kontakt">Kontakt</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{p.mesto}</span>
+        </nav>
+        <div class="eyebrow" data-reveal>Pobočka {p.mesto}</div>
+        <h1 data-textreveal>Pohrebné služby<br>{p.mesto}</h1>
+        <p class="sluzba-lead" data-reveal>{p.lead}</p>
+      </div>
+    </div>
+    <div class="container news-hero-chips" data-reveal>
+      <div class="situ-row">
+        <a href={telHref(p.telefon)} class="situ-chip">Zavolať NON STOP</a>
+        <a href="#kontakt" class="situ-chip">Adresa a hodiny</a>
+        <a href={mapaOdkaz(p)} class="situ-chip" target="_blank" rel="noopener">Navigovať</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ O POBOČKE ============ -->
+  <section class="sluzba-blok">
+    <div class="container">
+      <div class="sluzba-textblok">
+        <div class="sluzba-textblok-bok">
+          <span class="sluzba-textblok-linka" data-line aria-hidden="true"></span>
+          <span class="sluzba-textblok-label" data-reveal>Pobočka {p.mesto}</span>
+        </div>
+        <div class="sluzba-textblok-telo">
+          <p class="je-lead" data-reveal>{p.oPobocke}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KONTAKT ============ -->
+  <section class="sluzba-blok is-alt" id="kontakt">
+    <div class="container">
+      <div class="svcgroup-head">
+        <div class="eyebrow" data-reveal>Kde nás nájdete</div>
+        <h2 data-reveal>{p.ulica}</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+
+      <div class="branch-grid">
+        <article class="branch-card" data-reveal>
+          <div class="branch-body">
+            <h3>Adresa</h3>
+            <p class="branch-addr">{p.ulica}<br>{p.psc} {p.mesto}</p>
+            <a class="btn-line sm" href={mapaOdkaz(p)} target="_blank" rel="noopener">Navigovať na pobočku →</a>
+          </div>
+        </article>
+
+        <article class="branch-card" data-reveal>
+          <div class="branch-body">
+            <h3>Telefón</h3>
+            <a class="branch-tel" href={telHref(p.telefon)}>{telText(p.telefon)}</a>
+            <p class="branch-hours">NON STOP prevoz zosnulých · 24/7</p>
+            {p.telefonPrevadzka && (
+              <p class="branch-hours">Prevádzka: <a class="branch-tel-sm" href={telHref(p.telefonPrevadzka)}>{telText(p.telefonPrevadzka)}</a></p>
+            )}
+          </div>
+        </article>
+
+        <article class="branch-card" data-reveal>
+          <div class="branch-body">
+            <h3>Otváracie hodiny</h3>
+            <p class="branch-addr">{p.nonstop ? 'Nepretržite, 24 hodín denne' : 'Pondelok až piatok 8:00 až 16:00'}</p>
+            <p class="branch-mail"><a href={`mailto:${p.email}`}>{p.email}</a></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ČO VYBAVÍTE PRÁVE TU ============ -->
+  <section class="sluzba-blok">
+    <div class="container">
+      <div class="svcgroup-head">
+        <div class="eyebrow" data-reveal>Na tejto pobočke</div>
+        <h2 data-reveal>Čo tu vybavíte</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="svcgrid">
+        {p.vybavite.map((v) => (
+          <article class="first-card" data-reveal>
+            <h3>{v}</h3>
+          </article>
+        ))}
+      </div>
+      {/* Medzery pred odkazmi sú tu naschvál ako &#32;. Astro zlúči zalomenie
+          riadka v šablóne a text sa zlepil na „na stránkePohrebné služby“. */}
+      <p class="sluzba-uvod" data-reveal>
+        Prehľad všetkých pätnástich služieb nájdete na stránke&#32;
+        <a class="gold-link" href="/pohrebne-sluzby">Pohrebné služby</a>. Kamenárske práce
+        a pomníky sú na stránke&#32;<a class="gold-link" href="/kamenarstvo">Kamenárstvo</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ OSTATNÉ POBOČKY ============ -->
+  <section class="sluzba-blok is-alt">
+    <div class="container">
+      <div class="svcgroup-head">
+        <div class="eyebrow" data-reveal>Ďalšie pobočky</div>
+        {/* mestoV drží len tvar „Poprade“, predložka sa dopĺňa tu. Všetky tri
+            mestá berú „v“, takže netreba vetviť. */}
+        <h2 data-reveal>Sme aj {ostatne.map((x) => 'v ' + x.mestoV).join(' a ')}</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="svcgrid">
+        {ostatne.map((x) => (
+          <a class="first-card" href={`/${x.slug}`} data-reveal>
+            <h3>{x.mesto}</h3>
+            <p>{x.ulica}, {x.psc} {x.mesto}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Faq items={otazky} eyebrow="Časté otázky" heading={`Na čo sa pýtajú v ${p.mestoV}`} />
+
+  <!-- ============ ZÁVEREČNÁ VÝZVA ============ -->
+  <section class="sluzba-blok">
+    <div class="container" style="text-align:center">
+      <h2 data-reveal>Sme pri vás, keď to najviac potrebujete</h2>
+      <p class="sluzba-uvod" data-reveal>Zavolajte kedykoľvek. Radi vám poradíme.</p>
+      <a href={telHref(FIRMA.telefon)} class="btn-gold btn-lg" data-reveal>NON STOP · {telText(FIRMA.telefon)}</a>
+    </div>
+  </section>
+</Base>

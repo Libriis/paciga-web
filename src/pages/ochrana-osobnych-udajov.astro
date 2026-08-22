@@ -1,0 +1,202 @@
+---
+/*
+  Ochrana osobných údajov.
+
+  Prečo vznikla (22. 8. 2026): starý WordPress má /ochrana-sukromia
+  v Google indexe, nový web takú stránku nemal a odkaz v pätičke bol
+  zakomentovaný, lebo texty nedodal klient.
+
+  ČO JE TU OVERENÉ Z KÓDU, nie odhadnuté:
+    - formulár na /kontakt posiela meno, telefón, e-mail a správu
+      (src/pages/api/kontakt.ts), ukladá ich Supabase
+    - kondolencia posiela meno a text (src/pages/api/kondolencia.ts)
+    - beacon výkonu posiela len LCP, CLS, INP, FCP, TTFB a typ zariadenia
+      (src/pages/api/vitals.ts), nič osobné
+    - IP adresa sa NEUKLADÁ v čitateľnej podobe. Používa sa len na
+      obmedzenie počtu odoslaní a do databázy ide ako SHA-256 odtlačok
+      so soľou (src/lib/ratelimit.ts)
+    - web NENASADZUJE žiadne cookies ani localStorage. Overené
+      prehliadačom na štyroch stránkach 22. 8. 2026: 0 cookies, prázdne
+      localStorage aj sessionStorage. Preto tu nie je cookie lišta.
+    - žiadne meracie skripty tretích strán. Žiadny Google Analytics,
+      žiadny Facebook Pixel. Von vedú len odkazy na Facebook, YouTube,
+      Google Mapy a weby partnerov.
+
+  ČO CHÝBA A MUSÍ DODAŤ KLIENT:
+    1. ako dlho sa údaje z formulárov uchovávajú
+    2. či má firma určenú zodpovednú osobu (DPO)
+    3. či beží Facebook Pixel alebo Google Ads mimo tohto webu
+  Sú v texte označené ako [DOPLNIŤ]. Kým tam sú, stránka NIE JE v mape
+  stránok (filter v astro.config.mjs) ani v pätičke a /ochrana-sukromia
+  na ňu ešte nepresmerúva. Po doplnení treba všetky tri veci zapnúť.
+
+  Toto nie je právne stanovisko. Pred zverejnením nech to prejde niekto,
+  kto za obsah zodpovedá.
+*/
+import Base from '../layouts/Base.astro';
+import { FIRMA, POBOCKY } from '../data/firma';
+
+const title = 'Ochrana osobných údajov | Paciga';
+const description =
+  'Ako Pohrebné a kamenárske služby Paciga spracúvajú osobné údaje z webu. ' +
+  'Bez cookies, bez meracích skriptov tretích strán.';
+
+const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
+---
+<Base title={title} description={description} ogTitle="Ochrana osobných údajov" ogDescription={description}>
+  <Fragment slot="head">
+    {/* Právna stránka nemá čo hľadať vo výsledkoch vyhľadávania nad
+        vlastným obsahom webu, ale musí byť dostupná a prejsť kontrolou. */}
+    <meta name="robots" content="noindex, follow" />
+  </Fragment>
+
+  <section class="pravna">
+    <div class="container">
+      <div class="eyebrow" data-reveal>Právne informácie</div>
+      <h1 data-reveal>Ochrana osobných údajov</h1>
+      <p class="pravna-lead" data-reveal>
+        Tento web nepoužíva cookies ani meracie nástroje tretích strán. Údaje od vás
+        zbierame len vtedy, keď nám ich sami napíšete do formulára.
+      </p>
+
+      <div class="pravna-telo">
+        <h2>Kto údaje spracúva</h2>
+        <p>
+          {FIRMA.pravnyNazov}, {sidlo.ulica}, {sidlo.psc} {sidlo.mesto}.<br>
+          IČO: 51 736 039, IČ DPH: {FIRMA.icDph}.<br>
+          E-mail: <a href={`mailto:${FIRMA.email}`}>{FIRMA.email}</a>,
+          telefón: <a href="tel:0903596364">0903 596 364</a>.
+        </p>
+        <p>[DOPLNIŤ: či má firma určenú zodpovednú osobu za ochranu údajov a jej kontakt.]</p>
+
+        <h2>Aké údaje zbierame</h2>
+        <h3>Kontaktný formulár</h3>
+        <p>
+          Meno, telefónne číslo, e-mail a text správy. Sú to údaje, ktoré do formulára
+          napíšete vy. Používame ich len na to, aby sme vám odpovedali a dohodli sa na
+          ďalšom postupe. Právnym základom je váš záujem o naše služby.
+        </p>
+
+        <h3>Kondolencia a spomienková sviečka</h3>
+        <p>
+          Pri kondolencii ukladáme meno, ktoré uvediete, a text odkazu. Zobrazujú sa
+          verejne pri parte. Nepíšte do kondolencie nič, čo nechcete mať verejné.
+          Zapálenie sviečky sa počíta anonymne, neukladá sa k nemu nič o vás.
+        </p>
+
+        <h3>Údaje o rýchlosti webu</h3>
+        <p>
+          Prehliadač nám posiela päť technických čísel o tom, ako rýchlo sa stránka
+          načítala, a či ide o mobil alebo počítač. Nie sú v tom žiadne osobné údaje
+          a nedá sa z nich zistiť, kto ste. Slúžia na to, aby sme web zrýchlili.
+        </p>
+
+        <h3>IP adresa</h3>
+        <p>
+          Vašu IP adresu neukladáme v čitateľnej podobe. Aby nám formuláre nezahltil
+          spam, počítame, koľkokrát bol formulár odoslaný. Do databázy pritom ide len
+          jednosmerný odtlačok IP adresy so soľou, z ktorého sa pôvodná adresa
+          nedá získať späť.
+        </p>
+
+        <h2>Cookies</h2>
+        <p>
+          Tento web nenasadzuje žiadne cookies. Ani vlastné, ani cudzie. Nemá
+          Google Analytics ani Facebook Pixel. Preto tu nenájdete lištu so súhlasom,
+          nie je čo odsúhlasovať. Prihlásenie do administrácie používa úložisko
+          prehliadača, ale to sa týka len našich zamestnancov.
+        </p>
+        <p>
+          [DOPLNIŤ: či firma používa Facebook Pixel alebo Google Ads na iných miestach,
+          napríklad v reklamách. Ak áno, patrí to sem.]
+        </p>
+
+        <h2>Komu sa údaje dostanú</h2>
+        <p>
+          Údaje z formulárov ukladáme u poskytovateľa databázy Supabase. Web beží
+          na platforme Vercel. Obaja poskytovatelia spracúvajú údaje na základe zmluvy
+          a len v rozsahu, ktorý potrebujú na prevádzku. Vaše údaje nepredávame
+          a neposkytujeme ich na reklamu.
+        </p>
+        <p>
+          Na webe sú odkazy na Facebook, YouTube, Google Mapy a weby našich partnerov.
+          Kliknutím odchádzate na cudziu stránku, ktorá má vlastné pravidlá.
+        </p>
+
+        <h2>Ako dlho ich držíme</h2>
+        <p>
+          [DOPLNIŤ: ako dlho sa uchovávajú správy z kontaktného formulára a kondolencie.
+          Bežne sa uvádza konkrétny počet mesiacov alebo rokov, prípadne „do splnenia
+          účelu“ s vysvetlením, čo to znamená.]
+        </p>
+
+        <h2>Vaše práva</h2>
+        <p>
+          Máte právo vedieť, aké údaje o vás máme, dať ich opraviť, dať ich vymazať,
+          obmedziť ich spracúvanie, preniesť ich inam alebo namietať proti spracúvaniu.
+          Stačí napísať na <a href={`mailto:${FIRMA.email}`}>{FIRMA.email}</a>
+          alebo zavolať na <a href="tel:0903596364">0903 596 364</a>.
+          Odpovieme čo najskôr.
+        </p>
+        <p>
+          Ak si myslíte, že s vašimi údajmi nakladáme nesprávne, môžete sa obrátiť na
+          Úrad na ochranu osobných údajov Slovenskej republiky.
+        </p>
+
+        <h2>Parte a fotografie</h2>
+        <p>
+          Parte zverejňujeme na žiadosť rodiny zosnulého. Meno, dátumy, fotografiu
+          aj text nám dodáva rodina a zverejňujeme len to, na čom sme sa dohodli.
+          Ak chcete parte upraviť alebo stiahnuť, ozvite sa nám a spravíme to.
+        </p>
+
+        <h2>Zmeny</h2>
+        <p>
+          Ak sa niečo zmení, upravíme túto stránku. Posledná úprava: 22. augusta 2026.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pravna { padding: clamp(120px, 16vh, 190px) 0 clamp(70px, 9vh, 110px); }
+  .pravna h1 { margin-top: 14px; font-size: clamp(32px, 4.6vw, 58px); }
+  .pravna-lead {
+    margin-top: 22px;
+    max-width: 62ch;
+    color: var(--muted);
+    font-size: clamp(18px, 1.7vw, 21px);
+    line-height: 1.6;
+  }
+  /* Čítaný text má strop na šírke riadka, nie na šírke okna: dlhé riadky
+     sa v právnom texte zle sledujú. */
+  .pravna-telo { margin-top: clamp(40px, 6vh, 64px); max-width: 68ch; }
+  .pravna-telo h2 {
+    margin-top: clamp(38px, 5vh, 56px);
+    font-size: clamp(21px, 2.2vw, 27px);
+  }
+  .pravna-telo h3 {
+    margin-top: 28px;
+    font-size: clamp(17px, 1.6vw, 19px);
+    color: var(--fg-strong);
+  }
+  .pravna-telo p {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 17.2px;
+    line-height: 1.72;
+  }
+  .pravna-telo a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+  .pravna-telo a:hover { color: var(--fg-strong); }
+
+  @media (max-width: 900px) {
+    .pravna-telo p { font-size: 16.4px; }
+    /* Odkazy vo vete tu zámerne NEDOSTÁVAJÚ 44 px ako inde na webe.
+       Sú vnorené do súvislého textu a pravidlo pre veľkosť cieľa má na
+       také odkazy výnimku: ich výšku určuje riadkovanie okolitého textu,
+       ktorý cieľom nie je. Nasilu 44 px by z každého odkazu spravilo blok
+       a rozhodilo odsek. Tlačidlá a samostatné odkazy inde na webe
+       pravidlo spĺňajú ďalej. */
+  }
+</style>

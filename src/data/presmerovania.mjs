@@ -80,17 +80,21 @@ export const PRESMEROVANIA = {
      spomienkový zoznam. */
   '/pamiatka-zosnulych': trvale('/opustili-nas'),
 
-  /* ---- POBOČKY: čaká na rozhodnutie ----
-     Starý web mal šesť stránok pre tri mestá a práve tie ho držali na
-     frázach typu „pohrebné služby Poprad“. Nový web samostatné stránky
-     pobočiek nemá. Kým nevzniknú, vedú všetky na /kontakt, kde sú adresy,
-     čísla aj hodiny všetkých troch. Ak stránky vzniknú, prepíš cieľ tu. */
-  '/poprad': trvale('/kontakt'),
-  '/pohrebne-sluzby-poprad': trvale('/kontakt'),
-  '/spisska-bela': trvale('/kontakt'),
-  '/pohrebne-sluzby-spisska-bela': trvale('/kontakt'),
-  '/liptovsky-mikulas': trvale('/kontakt'),
-  '/pohrebne-sluzby-liptovsky-mikulas': trvale('/kontakt'),
+  /* ---- POBOČKY ----
+     Starý web mal na každé mesto dve stránky a práve tie ho držali na
+     frázach typu „pohrebné služby Poprad“. Kratšie adresy (/poprad,
+     /spisska-bela, /liptovsky-mikulas) sú teraz skutočné stránky
+     v src/pages/[pobocka].astro, preto tu NIE SÚ: presmerovanie by ich
+     zatienilo a Astro by ich vôbec nevygeneroval (overené buildom
+     22. 8. 2026, stránky sa nevytvorili a v logu bolo „response body
+     was empty“).
+
+     Sem patria len dlhšie varianty, ktoré vedú na tie kratšie. Jeden
+     skok navyše je v poriadku, dôležité je, aby ani jedna z pôvodných
+     šiestich adries nekončila na 404. */
+  '/pohrebne-sluzby-poprad': trvale('/poprad'),
+  '/pohrebne-sluzby-spisska-bela': trvale('/spisska-bela'),
+  '/pohrebne-sluzby-liptovsky-mikulas': trvale('/liptovsky-mikulas'),
 
   /* ---- OCHRANA SÚKROMIA: čaká na texty od klienta ----
      Stará stránka je v indexe, nová neexistuje. Odkaz na ňu je zatiaľ

@@ -42,49 +42,137 @@ export const FIRMA = {
 };
 
 export interface Pobocka {
+  /** adresa stránky pobočky, zhoduje sa so starým webom (bez presmerovania) */
+  slug: string;
   nazov: string;
   ulica: string;
   psc: string;
   mesto: string;
+  /** mesto v 6. páde, do viet typu „v Poprade“ */
+  mestoV: string;
   telefon: string;
   /** číslo prevádzky, ak sa líši od NON STOP linky */
   telefonPrevadzka?: string;
   email: string;
   /** true = pobočka je dostupná nepretržite, nielen v otváracích hodinách */
   nonstop: boolean;
+  /* ---- obsah stránky pobočky ----
+     Každá pobočka má vlastný text, nie ten istý s vymeneným názvom mesta.
+     Nie je to opatrnosť, je to nutnosť: sériu skoro rovnakých stránok pre
+     jednotlivé mestá Google klasifikuje ako doorway pages a postihuje ňou
+     celý web, nielen tie stránky. Starý web presne to mal, tri stránky
+     s totožným zoznamom služieb a vymeneným H1.
+
+     Všetky údaje nižšie sú overené: adresy a čísla z podkladov klienta
+     z 3. 8. 2026, dátum vzniku a Archa Belá z časovej osi na /o-nas,
+     vzorky žuly v Poprade z otázok na /kamenarstvo, popisy interiérov
+     z alt textov fotiek na /kontakt. Nič sa nedomýšľa. */
+  /** jedna veta pod nadpis */
+  lead: string;
+  /** čím je práve táto pobočka iná, 2 až 3 vety */
+  oPobocke: string;
+  /** čo sa dá vybaviť práve tu, konkrétne pre túto pobočku */
+  vybavite: string[];
+  /** popis fotky interiéru */
+  fotoAlt: string;
+  /** titulok stránky a popis pre vyhľadávače */
+  title: string;
+  description: string;
 }
 
 export const POBOCKY: Pobocka[] = [
   {
+    slug: 'poprad',
     nazov: 'Paciga Poprad',
     ulica: 'Francisciho 3288/35',
     psc: '058 01',
     mesto: 'Poprad',
+    mestoV: 'Poprade',
     telefon: '+421903596364',
     telefonPrevadzka: '+421949011012',
     email: 'pacigapp@gmail.com',
     nonstop: false,
+    lead: 'Pobočka na Francisciho ulici. Pohrebné aj kamenárske služby na jednom mieste.',
+    oPobocke:
+      'V Poprade máme showroom, kde si popri rakvách, urnách a krížoch pozriete aj vzorky žuly. ' +
+      'Je to jediná pobočka, kde sa dá výber pomníka a výber rakvy vybaviť pri jednom stole. ' +
+      'Na osobné stretnutie je tu samostatné miesto, aby ste nemuseli nič riešiť postojačky.',
+    vybavite: [
+      'Výber rakvy, urny a kvetinovej výzdoby',
+      'Vzorky žuly a objednávka pomníka',
+      '3D návrh pomníka pred výrobou',
+      'Smútkové poradenstvo a predpríprava pohrebu',
+    ],
+    fotoAlt: 'Interiér pobočky Poprad: showroom s urnami, krížmi a stolom na osobné stretnutie',
+    title: 'Pohrebné služby Poprad | Paciga',
+    description:
+      'Pohrebná a kamenárska služba Paciga v Poprade, Francisciho 3288/35. ' +
+      'Showroom s rakvami, urnami a vzorkami žuly. NON STOP prevoz zosnulých 0903 596 364.',
   },
   {
+    slug: 'spisska-bela',
     nazov: 'Paciga Spišská Belá',
     ulica: 'Letná 17',
     psc: '059 01',
     mesto: 'Spišská Belá',
+    mestoV: 'Spišskej Belej',
     telefon: '+421903596364',
     email: 'info.paciga@gmail.com',
     nonstop: true,
+    lead: 'Sídlo firmy na Letnej ulici. Miesto, kde sa všetko začalo.',
+    oPobocke:
+      'Spišská Belá je sídlo firmy. 24. mája 2018 sme tu nadviazali na spoločnosť Archa Belá ' +
+      'a odvtedy odtiaľto riadime všetky tri pobočky. ' +
+      'Ako jediná je dostupná nepretržite, nielen v otváracích hodinách.',
+    vybavite: [
+      'Kompletné vybavenie pohrebu, aj mimo otváracích hodín',
+      'Výber rakvy a smútočných vencov',
+      'Medzinárodný prevoz zosnulých',
+      'Fakturačné a administratívne veci firmy',
+    ],
+    fotoAlt: 'Interiér pobočky Spišská Belá: showroom s rakvami a vencami',
+    title: 'Pohrebné služby Spišská Belá | Paciga',
+    description:
+      'Pohrebná a kamenárska služba Paciga v Spišskej Belej, Letná 17. Sídlo firmy od roku 2018, ' +
+      'dostupné nepretržite. NON STOP prevoz zosnulých 0903 596 364.',
   },
   {
+    slug: 'liptovsky-mikulas',
     nazov: 'Paciga Liptovský Mikuláš',
     ulica: 'Ester Šimerovej Martinčekovej 4506/4',
     psc: '031 01',
     mesto: 'Liptovský Mikuláš',
+    mestoV: 'Liptovskom Mikuláši',
     telefon: '+421903596364',
     telefonPrevadzka: '+421949011051',
     email: 'pacigalm@gmail.com',
     nonstop: false,
+    lead: 'Pobočka na Ester Šimerovej Martinčekovej. Najzápadnejšia z našich troch.',
+    oPobocke:
+      'Liptovský Mikuláš je naša najzápadnejšia pobočka a pokrýva Liptov. ' +
+      'Je tu recepcia a samostatné miesto na osobné stretnutie, kde v pokoji prejdeme, čo treba zariadiť. ' +
+      'Prevoz zosnulého odtiaľto zabezpečíme v ktorúkoľvek hodinu, aj keď je pobočka zatvorená.',
+    vybavite: [
+      'Kompletné vybavenie pohrebu pre Liptov',
+      'Výber rakvy, urny a kvetinovej výzdoby',
+      'Kamenárske práce a pomníky',
+      'Smútkové poradenstvo pri osobnom stretnutí',
+    ],
+    fotoAlt: 'Interiér pobočky Liptovský Mikuláš: recepcia a miesto na osobné stretnutie',
+    title: 'Pohrebné služby Liptovský Mikuláš | Paciga',
+    description:
+      'Pohrebná a kamenárska služba Paciga v Liptovskom Mikuláši, Ester Šimerovej Martinčekovej 4506/4. ' +
+      'NON STOP prevoz zosnulých 0903 596 364.',
   },
 ];
+
+/** Pobočka podľa adresy stránky. */
+export const pobockaPodlaSlug = (slug: string) => POBOCKY.find((p) => p.slug === slug);
+
+/** Odkaz na firemný záznam pobočky na mapách, nie na adresu ulice. */
+export const mapaOdkaz = (p: Pobocka) =>
+  'https://www.google.com/maps/search/?api=1&query=' +
+  encodeURIComponent('Pohrebné a kamenárske služby Paciga ' + p.mesto);
 
 const DNI = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 

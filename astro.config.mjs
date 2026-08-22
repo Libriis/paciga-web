@@ -38,7 +38,14 @@ export default defineConfig({
     sitemap({
       // Administrácia, API a lab náhľady nepatria do vyhľadávania.
       // Rovnaký zoznam ako Disallow v src/pages/robots.txt.ts.
-      filter: (stranka) => !/\/(admin|api)\/|\/lab-/.test(stranka),
+      //
+      // Ochrana osobných údajov je vonku dočasne: má v texte tri miesta
+      // označené [DOPLNIŤ], na ktoré čakáme od klienta. Keď ich doplní,
+      // vyhoď ju z tohto filtra, zruš noindex na stránke, odkomentuj odkaz
+      // v pätičke (Base.astro) a prehoď /ochrana-sukromia z /kontakt na ňu
+      // (presmerovania.mjs).
+      filter: (stranka) =>
+        !/\/(admin|api)\/|\/lab-|\/ochrana-osobnych-udajov/.test(stranka),
       // Bez lomky na konci. Musí to sedieť s <link rel="canonical">
       // v Base.astro, inak by mapa stránok ponúkala Googlu inú adresu,
       // než akú tá istá stránka označí za kanonickú. Koreň si lomku necháva.
