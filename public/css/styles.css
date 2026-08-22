@@ -2758,6 +2758,28 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .sh-cta { display: inline-flex; align-items: center; min-height: 44px; }
   .rev-rating { display: inline-flex; align-items: center; min-height: 44px; }
 
+  /* ---- rozcestníkové čipy v hlavičke ----
+     Desktopové hodnoty (padding 15px 26px, 15,5 px písmo) dávali na mobile
+     čip vysoký 57 px. Sú biele, takže na tmavej stránke sú to najjasnejšie
+     plochy na obrazovke, a keďže sa nezmestili do riadka, zalamovali sa.
+     Na /kamenarstvo z toho boli tri riadky a 194 px, teda 36 % hlavičky.
+
+     Teraz presne 44 px, čo je spodná hranica pre dotyk, ďalej sa zmenšovať
+     nesmú. Užšie odsadenie ušetrí asi 16 px na čipe, takže trojica sa
+     zmestí do jedného riadka. Písmo 15 px ostáva nad 14 px minimom.
+
+     Odsadenie 16 px, nie 18: pri 18 px chýbalo trojici na /o-nas presne
+     6 px do riadka a zalomila sa kvôli tomu na dva. 16 px jej dá 18 px
+     rezervy. Stránky s piatimi čipmi (/kamenarstvo) sa zalomia tak či tak,
+     tam ide len o to, aby riadky boli nižšie. Merané 22. 8. 2026. */
+  .situ-row { gap: 8px; }
+  .situ-chip { min-height: 44px; padding: 0 16px; font-size: 15px; }
+
+  /* Odkaz späť nad článkom mal 22 px výšky a 13,5 px písmo. Je to
+     samostatný navigačný odkaz, nie odkaz vo vete, takže výnimka pre
+     veľkosť cieľa naň neplatí. Merané 22. 8. 2026. */
+  .clanok-back { display: inline-flex; align-items: center; min-height: 44px; font-size: 14.5px; }
+
   /* ---- čítaný text pod 14 px ---- */
   .kam-stele-note { font-size: 14px; }
   .news-date { font-size: 13.5px; }
@@ -3033,7 +3055,11 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 @media (max-width: 900px) {
   .katalog-chip { min-height: 44px; font-size: 14.5px; }
   .katalog-filter-label { font-size: 13.5px; }
-  .katalog-meta { font-size: 13.5px; }
+  /* 14, nie 13,5: pri rakvách je to popis tovaru („Mahagónový odtieň“),
+     teda čítaný obsah, nie štítok. Pravidlo hovorí najmenej 14 px.
+     Ušlo to, lebo pôvodný audit meral len hlavných deväť stránok
+     a detaily služieb medzi nimi neboli. Merané 22. 8. 2026. */
+  .katalog-meta { font-size: 14px; }
   .katalog-kod { font-size: 14.5px; }
   .katalog-nota { font-size: 15px; }
   .katalog-cennik-riadok { min-height: 44px; align-items: center; }
