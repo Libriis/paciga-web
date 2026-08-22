@@ -3183,3 +3183,60 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .fleetband { min-height: 46vh; }
   .album-band { height: clamp(360px, 52vh, 480px); }
 }
+
+/* Desktop: strop medzier medzi sekciami (22. 8. 2026)
+
+   Po mobilnej oprave je medzera medzi sekciami na telefóne 104 px.
+   Na desktope 1920x1080 ostali 260 až 400 px: .guide mala padding až
+   225 px, takže medzi „04 Úmrtie v zahraničí“ a „Čo si pripraviť“ bolo
+   406 px, 37 % obrazovky. Na notebooku s výškou 768 je to polovica.
+
+   Desktop znesie väčší vzduch než mobil, preto tu nie je jedno tvrdé
+   pravidlo ako na mobile: sekcie majú zámerne rôzne rytmy. Strop je ale
+   spoločný: 120 px na stranu. Mení sa len päť miest, ktoré ho prekračovali. */
+@media (min-width: 901px) {
+  /* Strop 100 px na stranu, nie 120: aj pri 120 boli medzery 280 až 340 px,
+     lebo k paddingu pribúdajú vnútorné okraje. 100 dá medzery okolo 240,
+     čo je pri výške 1080 asi 22 %. Jedno pravidlo pre všetky sekcie v <main>, rovnako ako na mobile.
+     Špecificita: `main > section` má (0,0,2) a prehrá s každou triedou
+     typu .guide (0,1,0), hoci stojí v súbore neskôr. Preto :where() na
+     obale a [class] na sekcii: `main section[class]` dáva (0,1,1), čo
+     je viac než jedna trieda a menej než dve, takže výnimky nižšie
+     (main > section.hero = 0,1,2) stále vyhrajú. Prvý pokus menil päť
+     tried ručne a minul svcgroups, faq-section a Tailwind py-[...]. */
+  main section[class],
+  main section[id] { padding-top: clamp(72px, 9vh, 100px); padding-bottom: clamp(72px, 9vh, 100px); }
+  /* hero sekcie držia vlastný vrch (miesto pre fixnú hlavičku) */
+  main > section.hero { padding: 0; }
+  main > section.news-hero { padding-top: clamp(150px, 18vh, 200px); padding-bottom: clamp(48px, 7vh, 76px); }
+  main > section.contact-top { padding-top: clamp(98px, 11.5vh, 142px); padding-bottom: clamp(30px, 4vh, 52px); }
+  main > section.sperk-hero { padding: 0; }
+  main > section.pravna { padding-top: clamp(120px, 16vh, 190px); }
+  main > section.guide + section.guide { padding-top: 0; }
+  main > section.nonstop { padding: 0; }
+  main > section.cta-band { padding: clamp(72px, 9vh, 100px) 36px; }
+  main > section.partners { padding: clamp(64px, 8vh, 90px) 0; }
+}
+
+/* Kamenárstvo, desktop (22. 8. 2026, audit 1920x1080) */
+@media (min-width: 901px) {
+  /* Päť kariet v troch stĺpcoch nechávalo v druhom riadku prázdne tretie
+     miesto. Mriežka so šiestimi dráhami: prvý riadok 3 karty po dvoch
+     dráhach, druhý riadok 2 karty po troch. Riadky sú plné, karty v druhom
+     o polovicu širšie, čo pri dvoch kusoch obsahu neprekáža. */
+  #prace .svcgrid { grid-template-columns: repeat(6, 1fr); }
+  #prace .svcgrid .first-card { grid-column: span 2; }
+  #prace .svcgrid .first-card:nth-child(4),
+  #prace .svcgrid .first-card:nth-child(5) { grid-column: span 3; }
+
+  /* Poznámka pod vzorkami žuly mala 177 znakov na riadok cez celý
+     kontajner. Strop 70 znakov, ako majú ostatné poznámky. */
+  .kam-stones-note { max-width: 70ch; }
+}
+
+/* Pole na vlastný nápis bolo skoro neviditeľné: panel na panel, rámik
+   8 % biela. Teraz tmavšie dno (bg) a rámik 22 %, takže je jasné, že sa
+   dá písať. Platí na všetkých šírkach. */
+.kam-inscribe input { background: var(--bg); border-color: rgb(var(--fg-rgb) / 0.22); }
+.kam-inscribe input:hover { border-color: rgb(var(--fg-rgb) / 0.4); }
+.kam-inscribe input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgb(var(--fg-rgb) / 0.18); }
