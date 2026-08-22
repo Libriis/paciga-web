@@ -157,6 +157,40 @@ const sluzbaLd = {
       );
     }
 
+    /* Textový blok ide dvojstĺpcovo (editoriálny rozpad, výber klienta
+       22. 8. 2026, vzor 21st.dev Editorial Hero). Predtým to bol jeden
+       úzky stĺpec so stropom 66ch, takže pravá polovica riadku ostávala
+       prázdna a blok bez nadpisu pôsobil ako osirený odsek.
+
+       Vľavo je kotva, vpravo text. Kotvu má z čoho postaviť každý blok:
+       keď má vlastný nadpis, ide doľava on, inak sa vezme eyebrow služby,
+       ktorý v dátach už je. Vlastnú hlavičku svcgroup-head preto textový
+       blok nekreslí, mal by ju dvakrát. Mriežkové bloky (karty, kroky,
+       fakty) si ju držia ďalej, ich obsah ide cez celú šírku. */
+    if (blok.typ === 'text') {
+      const maNadpis = Boolean(blok.nadpis);
+      return (
+        <section class={pas} id={blok.id}>
+          <div class="container">
+            <div class="sluzba-textblok">
+              <div class="sluzba-textblok-bok">
+                <span class="sluzba-textblok-linka" data-line aria-hidden="true"></span>
+                <span class="sluzba-textblok-label" data-reveal>{blok.eyebrow ?? sluzba.eyebrow}</span>
+                {blok.nadpis && <h2 data-reveal>{blok.nadpis}</h2>}
+              </div>
+              <div class="sluzba-textblok-telo">
+                {blok.odseky.map((o, i) => (
+                  /* Prvý odsek väčší len tam, kde nadpis nie je: inak by
+                     pod nadpisom kričali dva prvky naraz. */
+                  <p class={!maNadpis && i === 0 ? 'je-lead' : undefined} data-reveal>{o}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
     return (
       <section class={pas} id={blok.id}>
         <div class="container">
@@ -165,12 +199,6 @@ const sluzbaLd = {
               {blok.eyebrow && <div class="eyebrow" data-reveal>{blok.eyebrow}</div>}
               {blok.nadpis && <h2 data-reveal>{blok.nadpis}</h2>}
               <div class="gold-line" data-line aria-hidden="true"></div>
-            </div>
-          )}
-
-          {blok.typ === 'text' && (
-            <div class="sluzba-text">
-              {blok.odseky.map((o) => <p data-reveal>{o}</p>)}
             </div>
           )}
 

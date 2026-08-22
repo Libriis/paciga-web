@@ -3047,9 +3047,37 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .sluzba-blok .svcgroup-head { margin-bottom: 36px; }
 .sluzba-blok .svcgroup-head h2 { font-size: clamp(24px, 2.8vw, 36px); }
 
+/* .sluzba-text = starý jednostĺpcový úvod. Šablóna služby ho už nekreslí
+   (nahradil ho .sluzba-textblok nižšie), pravidlo drží iba lab stránku
+   /lab-sluzba-uvod, kde slúži ako „stav pred". */
 .sluzba-text { max-width: 66ch; }
 .sluzba-text p { color: var(--muted); font-size: 18.6px; line-height: 1.75; }
 .sluzba-text p + p { margin-top: 18px; }
+
+/* ---- textový blok na detaile služby: editoriálny rozpad ----
+   Vzor 21st.dev „Editorial Hero" (felipemenezes098/hero-05), výber
+   klienta 22. 8. 2026. Vľavo úzka kotva (linka + štítok, prípadne nadpis
+   bloku), vpravo text. Prázdne miesto vľavo tým prestáva byť dierou
+   a číta sa ako odsadenie.
+
+   Miera riadku: text drží stĺpec mriežky (8 z 11 dielov ≈ 75 znakov pri
+   18,6 px), nie max-width. Strop v znakoch by vpravo od textu otvoril
+   druhú dieru, presne tú, ktorú tento blok rieši. */
+.sluzba-textblok { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 8fr); gap: clamp(28px, 5vw, 84px); }
+.sluzba-textblok-bok { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 10px; }
+.sluzba-textblok-linka { display: block; width: 40px; height: 1px; background: var(--gold); transform-origin: left center; }
+.sluzba-textblok-label { font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.sluzba-textblok-bok h2 { font-size: clamp(23px, 2.5vw, 32px); line-height: 1.2; }
+.sluzba-textblok-telo p { color: var(--muted); font-size: 18.6px; line-height: 1.75; }
+.sluzba-textblok-telo p + p { margin-top: 20px; }
+/* lead: odlíši úvod od bežného textu bez toho, aby pribudol nadpis */
+.sluzba-textblok-telo p.je-lead { font-size: clamp(20px, 1.95vw, 25px); line-height: 1.6; color: var(--text); }
+@media (max-width: 860px) {
+  .sluzba-textblok { grid-template-columns: 1fr; gap: 20px; }
+  /* na mobile ide kotva nad text ako riadok, zvislý stĺpec by tu bol len prázdny pás */
+  .sluzba-textblok-bok { flex-direction: row; align-items: center; flex-wrap: wrap; padding-top: 0; gap: 12px; }
+  .sluzba-textblok-bok h2 { flex-basis: 100%; }
+}
 .sluzba-uvod { max-width: 62ch; margin-bottom: 32px; color: var(--muted); font-size: 18px; line-height: 1.7; }
 /* Kľúč má pevnú šírku, nie min-width: pri dlhých názvoch (napr.
    „Chladiaca kazeta MT 10") by inak každý riadok odsadil hodnotu inak
