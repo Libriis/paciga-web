@@ -2,7 +2,10 @@
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { SIRKY_HERO, SIRKY_KRONIKA, KVALITA_POZADIE, KVALITA_KARTA } from '../lib/images';
-import tim from '../assets/o-nas-tim.jpg';
+/* Užší záber tímu: široká tímová fotka (o-nas-tim.jpg) je od 15. 8. 2026
+   hero na homepage, O nás dostáva iný záber z toho istého fotenia, nech
+   sa web neopakuje. OG náhľad ostáva široká fotka. */
+import tim from '../assets/o-nas-tim-blizko.jpg';
 import kron2016 from '../assets/kron-2016.jpg';
 import kron2018 from '../assets/kron-2018.jpg';
 import kron3000 from '../assets/kron-3000.jpg';
