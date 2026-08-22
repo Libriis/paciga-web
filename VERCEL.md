@@ -50,8 +50,20 @@ nemenia. Telo sa síce neposielalo, ale cesta tam a späť áno, a pri
 | `/assets/ssr/*`, `/assets/vendor/*`, `/partneri/*`, `/clanky/*`, `/og/*`, zvyšok `/assets/*` | 30 dní + `stale-while-revalidate` | ručné súbory so stálym názvom, ktoré `scripts/staticke-obrazky.mjs` vie prekresliť. SWR znamená, že návštevník dostane starú verziu okamžite a novú si prehliadač stiahne na pozadí. |
 | `/css/*`, `/js/*` | 0 + `must-revalidate` + krátke SWR | `styles.css` a `main.js` **nemajú hash v názve** a menia sa každým nasadením. Dlhá platnosť by znamenala, že oprava sa k vracajúcemu sa návštevníkovi nedostane. |
 
-Poradie v poli `headers` je dôležité: `/assets/ssr/*` musí byť pred
-všeobecným `/assets/*`, inak ho všeobecné pravidlo prekryje.
+## Na poradí v poli `headers` záleží, a naopak, než by človek čakal
+
+Keď na cestu sedí viac pravidiel, **vyhrá to neskoršie**. Nie to prvé
+a nie to konkrétnejšie.
+
+Overené na živom nasadení 22. 8. 2026: pravidlo `/assets/(.*).woff2`
+s platnosťou rok bolo v poli PRED všeobecným `/assets/(.*)`, a písmo
+`archivo-sk.woff2` aj tak dostalo 30 dní. Až po presunutí za všeobecné
+pravidlo dostalo rok.
+
+Preto sú výnimky zo všeobecného `/assets/*` zapísané POD ním, nie nad.
+Keď budeš pridávať ďalšiu, drž sa toho istého poradia a over si to
+na nasadení, nie lokálne. Lokálny build hlavičky nevyrába, píše ich
+až Vercel.
 
 Ak sa raz `styles.css` a `main.js` začnú hashovať pri builde, presuň ich
 do režimu `immutable` a bude to najväčšia zvyšná výhra pre vracajúcich sa
