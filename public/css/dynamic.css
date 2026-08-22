@@ -92,6 +92,40 @@
 .kond-form .btn-gold:disabled,
 .contact-form .btn-gold:disabled { opacity: 0.55; cursor: wait; }
 
+/* Súhlas so spracovaním údajov (22. 8. 2026). Formuláre ukladajú meno,
+   kontakt a text do databázy, bez súhlasu to pri migrácii na ostrú doménu
+   neprejde. Políčko, nie len veta: pri údajoch, ktoré sa ukladajú, je
+   výslovný súhlas bezpečnejší než mlčky predpokladaný.
+
+   Prebíja uppercase z .contact-form label: je to čítaná veta, nie štítok
+   poľa. Políčko má 44 px dotykovú plochu cez padding riadku, samotný
+   štvorček ostáva 20 px, väčší by pôsobil ako tlačidlo. */
+.kond-form .suhlas,
+.contact-form .suhlas {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: -6px 0 22px;
+  padding: 8px 0;
+  font-size: 14.5px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  line-height: 1.5;
+  color: var(--muted);
+  cursor: pointer;
+}
+.suhlas input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+.suhlas a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.suhlas a:hover { color: var(--gold); }
+
 /* honeypot — mimo obrazovky, boti ho vyplnia, ľudia nie */
 .hp-field { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 

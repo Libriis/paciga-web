@@ -149,23 +149,13 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
           <h2 class="svc-title" data-textreveal><span class="svc-title-grad">Všetko potrebné</span><br>pod jednou strechou</h2>
           <div class="gold-line" data-line aria-hidden="true"></div>
         </div>
-        <p class="svc-lead svc-tags" data-reveal>
-            <a href="/pohrebne-sluzby#rakvy">#rakvy</a>
-            <a href="/pohrebne-sluzby#rozlucka">#rozlúčka</a>
-            <a href="/pohrebne-sluzby#kremacia">#kremácia</a>
-            <a href="/pohrebne-sluzby#kvetinarstvo">#kvetinárstvo</a>
-            <a href="/pohrebne-sluzby#oblecenie">#oblečenie</a>
-            <a href="/pohrebne-sluzby#karty">#spomienkovékarty</a>
-            <a href="/pohrebne-sluzby#prevoz">#prevozNONSTOP</a>
-            <a href="/pohrebne-sluzby#medzinarodny-prevoz">#medzinárodnýprevoz</a>
-            <a href="/pohrebne-sluzby#limuzina">#pohrebnálimuzína</a>
-            <a href="/pohrebne-sluzby#chladenie">#chladenie</a>
-            <a href="/pohrebne-sluzby#kamenarstvo">#kamenárstvo</a>
-            <a href="/pohrebne-sluzby#vizualizacia">#3Dvizualizácia</a>
-            <a href="/pohrebne-sluzby#poradenstvo">#smútkovéporadenstvo</a>
-            <a href="/pohrebne-sluzby#predpriprava">#predpríprava</a>
-            <a href="/sperky">#spomienkovéšperky</a>
-          </p>
+        {/* Predtým tu bolo 15 hashtagov (#rakvy #rozlúčka …), jeden na každú
+            službu. Vizuálny audit 22. 8. 2026: na mobile šesť riadkov sivého
+            textu pred kartami, na desktope presne „split header“ vzor (veľký
+            nadpis vľavo, drobný text vpravo), ktorý taste-skill zakazuje.
+            Viedli na kotvy, ktoré už pokrýva mega menu v hlavičke a tlačidlo
+            pod kartami. Jedna veta povie to isté. */}
+        <Text as="p" class="svc-lead" data-reveal kluc="index.sluzby.lead">Od prvého telefonátu po pomník. Pätnásť služieb v troch oblastiach, všetko u nás.</Text>
       </div>
 
       <div class="svc-grid">
@@ -374,12 +364,15 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
   <section id="opustili" class="memoriam">
     <div class="orb" style="bottom:-18%;left:-14%" aria-hidden="true"></div>
     <div class="container">
+      {/* Tlačidlo „Všetky spomienky“ je pod mriežkou, nie vpravo od nadpisu.
+          Vizuálny audit 22. 8. 2026: odkaz plávajúci vpravo hore od nadpisu
+          je vzor, ktorý taste-skill zakazuje, a na mobile sa aj tak zalamoval
+          pod nadpis. Recenzie majú „Všetky recenzie“ tiež až pod obsahom. */}
       <div class="memoriam-head">
         <div>
           <h2 data-textreveal>Opustili nás</h2>
           <div class="gold-line" data-line aria-hidden="true"></div>
         </div>
-        <a href="/opustili-nas" class="btn-line" data-reveal>Všetky spomienky →</a>
       </div>
       <div class="memoriam-grid">
         {parteList.map((p) => (
@@ -395,6 +388,7 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
           </div>
         ))}
       </div>
+      <a href="/opustili-nas" class="btn-line svc-all" data-reveal>Všetky spomienky →</a>
     </div>
   </section>
 

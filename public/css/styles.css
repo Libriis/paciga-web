@@ -2334,13 +2334,18 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
    so zapusteným jazykom, ktorý na homepage nikde inde nie je. Teraz drží
    ten istý vzor ako ostatné sekcie: eyebrow, nadpis, gold-line. */
 /* dvojstĺpec: nadpis vľavo, hashtagy služieb vedľa neho vpravo */
+/* Jeden stĺpec, nie dva. Pôvodná mriežka dávala nadpis vľavo a pätnásť
+   hashtagov vpravo, teda „split header“ (veľký nadpis + drobný text vedľa),
+   ktorý taste-skill zakazuje. Hashtagy sú preč (22. 8. 2026), ostala jedna
+   veta a tá patrí pod nadpis, ako pri každom inom nadpise na webe. */
 .svc-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: clamp(28px, 4vw, 64px);
+  gap: 0;
   margin-bottom: clamp(30px, 4.5vh, 52px);
 }
+.svc-head .svc-lead { margin-left: 0; margin-right: 0; }
 .svc-eyebrow { margin-bottom: 16px; font-size: 14px; letter-spacing: 0.2em; }
 .svc-title {
   font-size: clamp(30px, 4.4vw, 54px);
@@ -2366,18 +2371,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   font-size: clamp(17px, 1.5vw, 19.5px);
   line-height: 1.65;
 }
-/* pätnásť služieb ako hashtagy — každý je odkaz na kotvu na stránke služieb */
-.svc-tags {
-  max-width: none;
-  margin: 6px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  line-height: 1.75;
-}
-.svc-tags a { color: var(--muted); white-space: nowrap; transition: color 0.3s ease; }
-.svc-tags a:hover, .svc-tags a:focus-visible { color: var(--gold); }
-
 /* ---- mriežka kariet (grid gap-6 mt-12 v predlohe) ---- */
 .svc-grid {
   display: grid;
@@ -2492,7 +2485,11 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .svc-card:hover .svc-link, .svc-card:focus-visible .svc-link { color: var(--gold); }
 .svc-card:hover .svc-link::after, .svc-card:focus-visible .svc-link::after { transform: scaleX(1); }
 .svc-card:hover .svc-link svg, .svc-card:focus-visible .svc-link svg { opacity: 1; transform: translate(0, 0); }
-.svc-all { display: table; margin: clamp(30px, 4.5vh, 48px) auto 0; }
+/* Vizuálny audit 22. 8. 2026: tlačidlo malo nad sebou 30 až 48 px, ale pod
+   sebou spodné odsadenie sekcie, 84 až 150 px. Na desktope preto viselo
+   v strede medzi kartami a pobočkami a pôsobilo ako začiatok ďalšej sekcie.
+   Menšia medzera hore ho pritiahne ku kartám, ku ktorým patrí. */
+.svc-all { display: table; margin: clamp(22px, 3vh, 32px) auto 0; }
 
 @media (max-width: 980px) {
   .svc-grid { grid-template-columns: 1fr 1fr; }
@@ -2721,17 +2718,6 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .branch-mail a,
   .footer-mail,
   .footer-phone {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
-
-  /* ---- pätnásť hashtagov nad kartami služieb ----
-     Merané 22. 8. 2026: 17 odkazov po 30 px, tesne pri sebe. Veľkosť písma
-     ostáva, rastie len dotyková plocha. Riadkovú medzeru vynulujeme, inak by
-     blok pri 44 px na riadok narástol o polovicu. */
-  .svc-tags { gap: 0 14px; line-height: 1.2; }
-  .svc-tags a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;

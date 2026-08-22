@@ -60,6 +60,13 @@ const ogDescription = "Sme tu. Kedykoľvek. NON STOP prevoz zosnulých, tri pobo
               <textarea name="sprava" rows="4" maxlength="4000" required></textarea>
             </label>
             <input type="text" name="web" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            {/* Súhlas je required, bez neho prehliadač formulár neodošle.
+                Odkaz vedie na stránku, ktorá má ešte noindex a čaká na
+                tri odpovede od klienta, ale existuje a je čitateľná. */}
+            <label class="suhlas">
+              <input type="checkbox" name="suhlas" required>
+              <span>Súhlasím so spracovaním údajov z tohto formulára na účel odpovede. Viac v <a href="/ochrana-osobnych-udajov">ochrane osobných údajov</a>.</span>
+            </label>
             <button type="submit" class="btn-gold">Odoslať správu</button>
             <p class="form-status" role="status" aria-live="polite"></p>
           </form>
