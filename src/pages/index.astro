@@ -7,10 +7,20 @@ import Text from '../components/Text.astro';
 import PobockyKarty from '../components/PobockyKarty.astro';
 import { getParteList, inicialky, fmtKratky } from '../lib/parte';
 import { RECENZIE, VYBER, GOOGLE_PROFIL, GOOGLE_HODNOTENIE } from '../data/recenzie';
-// Fotky tejto stránky sa neimportujú cez astro:assets. Stránka má
-// prerender = false, takže by z nich vznikli runtime cesty na obrázkovú
-// službu a tá pri output: 'static' neexistuje. Hotové varianty sú
-// v public/assets/ssr, generuje ich scripts/staticke-obrazky.mjs.
+/*
+  Klasická homepage (od 15. 8. 2026). Nahradila pinovanú filmovú jazdu
+  (canvas scrub, 965 framov). Dôvod: cieľová skupina má často staršie
+  telefóny, jazda na nich sekala, dlho sa načítavala a starší návštevník
+  nevedel, čo má robiť. Klient si klasickú verziu vybral z lab náhľadu
+  (/lab-klasik, teraz presmerovaný sem). Hero je jedna statická fotka,
+  kapitoly jazdy sú fotopásy (limuzína, šperky), všetko sa scrolluje
+  normálne. Base sa volá bez prop `journey`, journey.js sa nenačíta.
+
+  Fotky tejto stránky sa neimportujú cez astro:assets. Stránka má
+  prerender = false, takže by z nich vznikli runtime cesty na obrázkovú
+  službu a tá pri output: 'static' neexistuje. Hotové varianty sú
+  v public/assets/ssr, generuje ich scripts/staticke-obrazky.mjs.
+*/
 
 export const prerender = false;
 
@@ -47,80 +57,25 @@ const description = "Pohrebné a kamenárske služby Paciga v Poprade, Spišskej
 const ogTitle = "Paciga | Pohrebné a kamenárske služby";
 const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP prevoz zosnulých, volajte 0903 596 364.";
 ---
-<Base title={title} description={description} active="domov" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/asset-07.jpg" mainId="paci" journey>
+<Base title={title} description={description} active="domov" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/asset-07.jpg" mainId="paci">
 
-  <!-- ============ POSLEDNÁ CESTA (scrollovaná filmová jazda — frame scrub) ============ -->
-  <section class="journey" id="hero">
-    <div class="journey-pin" id="journey-pin">
-      {/* Hotové súbory, nie <Image>. Táto stránka má prerender = false kvôli
-          parte z databázy, takže <Image> na nej vracia runtime cestu na
-          obrázkovú službu, ktorá sa pri output: 'static' nenasadzuje, a poster
-          vracal 404. Šírky aj kvalita sedia s SIRKY_HERO a KVALITA_POZADIE.
-          Prekresli cez scripts/staticke-obrazky.mjs. */}
-      <img class="journey-poster" id="journey-poster" src="/assets/ssr/journey-poster-1920.webp" srcset="/assets/ssr/journey-poster-480.webp 480w, /assets/ssr/journey-poster-768.webp 768w, /assets/ssr/journey-poster-1080.webp 1080w, /assets/ssr/journey-poster-1440.webp 1440w, /assets/ssr/journey-poster-1920.webp 1920w" sizes="100vw" width="1920" height="1080" alt="Nosiči Paciga v rovnošatách nesú rakvu s kvetinovou výzdobou" loading="eager" fetchpriority="high" decoding="async" />
-      <canvas class="journey-canvas" id="journey-canvas" aria-hidden="true" data-journey="a"
-        data-frames="965" data-path="assets/journey/f-&#123;i&#125;.webp"
-        data-frames-m="482" data-path-m="assets/journey-m/f-&#123;i&#125;.webp"></canvas>
-      <div class="journey-shade" aria-hidden="true"></div>
-
-      <!-- HUD V1 „Rivian dráha": spodný pás — počítadlo + skip, ruler
-           z tickov s markerom, klikateľné stanice na štartoch kapitol -->
-      <div class="jhud">
-        <div class="jhud-top">
-          <span class="jhud-count"><b id="jhud-now">01</b> / 05</span>
-          <button type="button" class="jhud-skip" id="journey-skip">Preskočiť<span class="jhud-skip-tail">&nbsp;príbeh</span></button>
-        </div>
-        <div class="jhud-ruler" aria-hidden="true">
-          <i class="jhud-fill" id="jhud-fill"></i>
-          <span class="jhud-bound" style="left:20%"></span>
-          <span class="jhud-bound" style="left:40%"></span>
-          <span class="jhud-bound" style="left:60%"></span>
-          <span class="jhud-bound" style="left:80%"></span>
-          <i class="jhud-marker" id="jhud-marker"></i>
-        </div>
-        <div class="jhud-stations">
-          <button type="button" class="jhs" data-station="0" style="left:0%" aria-label="Prejsť na kapitolu Rozlúčka"><span class="jhs-num">01</span><span>Rozlúčka</span></button>
-          <button type="button" class="jhs" data-station="1" style="left:20%" aria-label="Prejsť na kapitolu Starostlivosť"><span class="jhs-num">02</span><span>Starostlivosť</span></button>
-          <button type="button" class="jhs" data-station="2" style="left:40%" aria-label="Prejsť na kapitolu Cesta"><span class="jhs-num">03</span><span>Cesta</span></button>
-          <button type="button" class="jhs" data-station="3" style="left:60%" aria-label="Prejsť na kapitolu Spomienka"><span class="jhs-num">04</span><span>Spomienka</span></button>
-          <button type="button" class="jhs" data-station="4" style="left:80%" aria-label="Prejsť na kapitolu Blízko vás"><span class="jhs-num">05</span><span>Blízko vás</span></button>
-        </div>
-      </div>
-
-      <!-- texty staníc (pinované nad canvasom) -->
-      <div class="journey-text jt-hero" data-jt="0">
-        <div class="container">
-          <Text as="div" class="eyebrow" data-hero-el kluc="index.hero.eyebrow">Rodinná pohrebná a kamenárska služba · od 2018</Text>
-          <h1 id="hero-title"><span class="line"><span>Dôstojná rozlúčka</span></span><span class="line"><span>za&nbsp;každých okolností.</span></span></h1>
-          <Text as="p" class="hero-lead" data-hero-el kluc="index.hero.lead">Pohrebné obrady, preprava a kamenárstvo. Sme pri vás nepretržite, každý deň v roku.</Text>
-          <div class="hero-actions" data-hero-el>
-            <a href="tel:0903596364" class="btn-gold">NON STOP · 0903 596 364</a>
-            <a href="#sluzby" class="btn-line">Naše služby →</a>
-          </div>
-        </div>
-      </div>
-      <div class="journey-text jt-mid" data-jt="1">
-        <h2>Kompletná starostlivosť<br>pod jednou strechou</h2>
-        <Text as="p" kluc="index.jazda.starostlivost">Obrad a pochovanie, kremácia, kvetinová výzdoba, spomienkové predmety aj kamenárstvo.</Text>
-      </div>
-      <div class="journey-text jt-mid" data-jt="2">
-        <div class="badge-pill"><Text kluc="index.jazda.ocenenie">Ocenená ako najkrajšia na Slovensku</Text></div>
-        <h2>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
-      </div>
-      <div class="journey-text jt-mid" data-jt="3">
-        <h2>„Nikdy nezabudnem.“</h2>
-        <Text as="p" kluc="index.jazda.sperky">Spomienkové šperky s odtlačkom prsta. Kúsok blízkeho človeka navždy.</Text>
-      </div>
-      <div class="journey-text jt-mid" data-jt="4">
-        <h2>Spod Tatier<br>Aj vo&nbsp;vašom meste</h2>
-        <Text as="p" kluc="index.jazda.pobocky">Poprad, Spišská Belá a Liptovský Mikuláš</Text>
-        <a href="tel:0903596364" class="btn-gold jt-cta">NON STOP · 0903 596 364</a>
-      </div>
+  <!-- ============ HERO: jedna statická fotka ============
+       Tímová fotka pod Tatrami (výber klienta z piatich variant, 15. 8. 2026).
+       Zdroj 2560 px z originálu fotenia, varianty až po 2560w pre displeje
+       so škálovaním. Intro animáciu nadpisu rieši main.js (#hero-title). -->
+  <section class="hero" id="hero">
+    <div class="hero-media">
+      <img src="/assets/ssr/hero-tim-1920.webp" srcset="/assets/ssr/hero-tim-480.webp 480w, /assets/ssr/hero-tim-768.webp 768w, /assets/ssr/hero-tim-1080.webp 1080w, /assets/ssr/hero-tim-1440.webp 1440w, /assets/ssr/hero-tim-1920.webp 1920w, /assets/ssr/hero-tim-2560.webp 2560w" sizes="100vw" width="2560" height="1707" alt="Tím Paciga v rovnošatách pri bielych pohrebných vozidlách pod Tatrami" loading="eager" fetchpriority="high" decoding="async" />
     </div>
-
-    <!-- reduced-motion / no-JS: kľúčové zábery pod sebou -->
-    <div class="journey-fallback" aria-hidden="true">
-      <img src="/assets/ssr/journey-poster-1920.webp" srcset="/assets/ssr/journey-poster-480.webp 480w, /assets/ssr/journey-poster-768.webp 768w, /assets/ssr/journey-poster-1080.webp 1080w, /assets/ssr/journey-poster-1440.webp 1440w, /assets/ssr/journey-poster-1920.webp 1920w" sizes="100vw" width="1920" height="1080" alt="" loading="lazy" decoding="async" />
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <Text as="div" class="eyebrow" data-hero-el kluc="index.hero.eyebrow">Rodinná pohrebná a kamenárska služba · od 2018</Text>
+      <h1 id="hero-title"><span class="line"><span>Dôstojná rozlúčka</span></span><span class="line"><span>za&nbsp;každých okolností.</span></span></h1>
+      <Text as="p" class="hero-lead" data-hero-el kluc="index.hero.lead">Pohrebné obrady, preprava a kamenárstvo. Sme pri vás nepretržite, každý deň v roku.</Text>
+      <div class="hero-actions" data-hero-el>
+        <a href="tel:0903596364" class="btn-gold">NON STOP · 0903 596 364</a>
+        <a href="#sluzby" class="btn-line">Naše služby →</a>
+      </div>
     </div>
   </section>
 
@@ -165,8 +120,7 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
   <!-- ============ SLUŽBY (21st.dev bankkroll/commerce-hero) ============
        Štruktúra predlohy 1:1: panel s nadpisom a zapusteným blokom vľavo
        hore, pod ním karty s názvom navrchu, médiom v strede a vyrezaným
-       rohom vpravo dole s kruhovou šípkou. Farby v brand tokenoch.
-       Fotky sú zatiaľ placeholdery s popisom, čo na zábere má byť. -->
+       rohom vpravo dole s kruhovou šípkou. Farby v brand tokenoch. -->
   <section id="sluzby" class="register">
     <div class="orb" style="top:4%;right:-12%" aria-hidden="true"></div>
     <div class="container">
@@ -232,6 +186,53 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
     </div>
   </section>
 
+  <!-- ============ POBOCKY ============
+       Hneď za službami na žiadosť klienta (15. 8. 2026): najprv čo vybavíme,
+       potom kde nás nájde. Zjednotené s /kontakt (14. 8. 2026): jeden
+       komponent, plné údaje vrátane mailov, čísel a otváracích hodín. -->
+  <section id="pobocky" class="branches">
+    <div class="orb" style="top:-16%;left:30%" aria-hidden="true"></div>
+    <div class="container">
+      <div class="section-head">
+        <h2 data-textreveal>Spod Tatier. Aj vo vašom meste.</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <PobockyKarty />
+    </div>
+  </section>
+
+  <!-- ============ FOTOPÁS: LIMUZÍNA ============
+       Bývalá kapitola 03 jazdy. Jedna statická fotka + text. -->
+  <section class="kband" id="limuzina">
+    <div class="container kband-grid">
+      <div class="kband-media" data-reveal>
+        <img src="/assets/ssr/pas-limuzina-960.webp" srcset="/assets/ssr/pas-limuzina-480.webp 480w, /assets/ssr/pas-limuzina-640.webp 640w, /assets/ssr/pas-limuzina-960.webp 960w, /assets/ssr/pas-limuzina-1280.webp 1280w" sizes="(max-width: 860px) 92vw, 54vw" width="1280" height="853" alt="Biela pohrebná limuzína Mercedes-Benz Paciga pod Tatrami" loading="lazy" decoding="async" />
+      </div>
+      <div class="kband-body">
+        <div class="badge-pill" data-reveal><Text kluc="index.jazda.ocenenie">Ocenená ako najkrajšia na Slovensku</Text></div>
+        <h2 data-textreveal>Pohrebná limuzína,<br>ktorá vzdáva úctu</h2>
+        <Text as="p" data-reveal kluc="index.limuzina.lead">Biely Mercedes-Benz na poslednú cestu. Pokojná jazda, ktorá vzdáva úctu vášmu blízkemu.</Text>
+        <a class="btn-line" href="/pohrebne-sluzby/pohrebna-limuzina" data-reveal>Viac o limuzíne →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOTOPÁS: SPOMIENKOVÉ ŠPERKY ============
+       Bývalá kapitola 04 jazdy. Zrkadlovo otočený, fotka na výšku. -->
+  <section class="kband kband-flip" id="sperky-pas">
+    <div class="container kband-grid">
+      <div class="kband-media" data-reveal>
+        <img src="/assets/ssr/pas-sperk-960.webp" srcset="/assets/ssr/pas-sperk-480.webp 480w, /assets/ssr/pas-sperk-640.webp 640w, /assets/ssr/pas-sperk-960.webp 960w, /assets/ssr/pas-sperk-1152.webp 1152w" sizes="(max-width: 860px) 92vw, 44vw" width="1152" height="2048" alt="Zlatý prívesok s gravírovaným odtlačkom prsta a nápisom Navždy" loading="lazy" decoding="async" />
+      </div>
+      <div class="kband-body">
+        <div class="eyebrow" data-reveal>Spomienkové šperky</div>
+        <h2 data-textreveal>„Nikdy nezabudnem.“</h2>
+        <Text as="p" data-reveal kluc="index.jazda.sperky">Spomienkové šperky s odtlačkom prsta. Kúsok blízkeho človeka navždy.</Text>
+        <a class="btn-line" href="/sperky" data-reveal>Prezrieť šperky →</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ RECENZIE (21st.dev sshahaider/testimonials-columns-1) ============
        Tri stĺpce sa nekonečne posúvajú nahor, každý iným tempom (15/19/17 s
        ako v predlohe). Namiesto profilovej fotky ide logo Google, lebo
@@ -287,20 +288,6 @@ const ogDescription = "Dôstojná rozlúčka za každých okolností. NON STOP p
       <p class="reviews-more" data-reveal>
         <a class="btn-line" href={GOOGLE_PROFIL} target="_blank" rel="noopener">Všetky recenzie na Google →</a>
       </p>
-    </div>
-  </section>
-
-  <!-- ============ POBOCKY ============ -->
-  <section id="pobocky" class="branches">
-    <div class="orb" style="top:-16%;left:30%" aria-hidden="true"></div>
-    <div class="container">
-      <div class="section-head">
-        <h2 data-textreveal>Tri pobočky, jedna rodina</h2>
-        <div class="gold-line" data-line aria-hidden="true"></div>
-      </div>
-      {/* zjednotené s /kontakt (14.8.2026): jeden komponent, plné údaje
-          vrátane mailov, prevádzkových čísel a otváracích hodín */}
-      <PobockyKarty />
     </div>
   </section>
 

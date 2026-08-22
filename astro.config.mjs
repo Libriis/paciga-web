@@ -19,6 +19,9 @@ export default defineConfig({
   // Obrázky na SSR stránkach preto riešime hotovými súbormi v public/,
   // rovnako ako postery kariet pobočiek (commit fc64033).
   adapter: vercel(),
+  // Lab náhľad klasickej homepage šiel klientovi ako odkaz (15. 8. 2026).
+  // Po schválení je to ostrá homepage, starý odkaz nech nepadne na 404.
+  redirects: { '/lab-klasik': '/' },
   // React islands pre komponenty z 21st.dev (shadcn ekosystém).
   // Tailwind je scoped cez src/styles/ui21.css — globálny preflight sa nepoužíva,
   // ručné CSS webu (styles.css) ostáva nedotknuté.

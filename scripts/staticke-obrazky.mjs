@@ -30,7 +30,14 @@ const LOGO_SIRKY = [110, 130, 220, 260];
    Šírky a kvality držia hodnoty zo src/lib/images.ts, nech sa optimalizácia
    z 30. 7. nestratí: SIRKY_HERO/KVALITA_POZADIE a SIRKY_KARTA/KVALITA_KARTA. */
 const SSR_OBRAZKY = [
-  { zdroj: 'journey-poster.jpg', nazov: 'journey-poster', sirky: [480, 768, 1080, 1440, 1920], kvalita: 58 },
+  /* Hero klasickej homepage (od 15. 8. 2026, nahradila pinovanú jazdu):
+     tímová fotka z originálu 6088 px, zmenšená na 2560 px. Má drobné detaily
+     (postavy, tráva), na ktorých q58 robila rozmaz, preto KVALITA_KARTA a
+     2560 px variant navyše pre displeje so škálovaním. */
+  { zdroj: 'o-nas-tim.jpg', nazov: 'hero-tim', sirky: [480, 768, 1080, 1440, 1920, 2560], kvalita: 70 },
+  /* Fotopásy homepage (limuzína, šperk): stĺpec vedľa textu, SIRKY_KRONIKA. */
+  { zdroj: 'svc-limuzina.jpg', nazov: 'pas-limuzina', sirky: [480, 640, 960, 1280], kvalita: 70 },
+  { zdroj: 'svc-sperky-odtlacok.jpg', nazov: 'pas-sperk', sirky: [480, 640, 960, 1152], kvalita: 80 },
   // Zdroje z 14. 8. 2026 majú 1413 až 1600 px (fotky klienta, štvorcový orez).
   // 1280 pokryje kartu na mobile pri DPR 3 (92vw ≈ 400 CSS px), viac netreba.
   { zdroj: 'svc-obrad.jpg', nazov: 'svc-obrad', sirky: [320, 480, 640, 960, 1280], kvalita: 70 },
