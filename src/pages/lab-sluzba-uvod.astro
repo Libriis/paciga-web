@@ -1,0 +1,159 @@
+---
+/*
+  Lab: úvodný textový blok na detaile služby (22. 8. 2026).
+
+  Problém: blok `typ: 'text'` na detaile služby je `.sluzba-text`
+  s max-width 66ch. Na desktope tak zaberie ľavú polovicu riadku a pravá
+  ostane prázdna. Nemá nadpis, takže pôsobí ako osirený odsek, nie ako
+  úvod. Týka sa všetkých 15 služieb.
+
+  Tri varianty na porovnanie, všetky na reálnom obsahu služby
+  „Rozlúčka a pochovanie na cintoríne". Nie je v navigácii, noindex.
+*/
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { SIRKY_KRONIKA, KVALITA_KARTA } from '../lib/images';
+import kostol from '../assets/asset-10.jpg';
+
+const EYEBROW = 'Klasický pohreb';
+const ODSEKY = [
+  'Klasický pohreb má svoj poriadok. Ten poriadok je to jediné, čoho sa pozostalí v ten deň držia, a preto na ňom záleží do minúty.',
+  'Obrad vieme pripraviť v dome smútku aj v kostole, s kňazom alebo bez neho. Rešpektujeme tradície obce aj želania rodiny. Ak si nie ste istí, ako to má prebiehať, prevedieme vás tým krok po kroku.',
+];
+---
+<Base title="Lab: úvod služby" description="Porovnanie variantov úvodného textu na detaile služby." mainId="labuvod">
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <section class="lab-hlava">
+    <div class="container">
+      <div class="eyebrow">Lab · 22. 8. 2026</div>
+      <h1>Úvodný text na detaile služby</h1>
+      <p>Tri varianty na reálnom obsahu. Dnešný stav je hore, pod ním návrhy.</p>
+    </div>
+  </section>
+
+  <!-- ============ DNEŠNÝ STAV ============ -->
+  <section class="lab-pas">
+    <div class="container"><span class="lab-stitok lab-stitok-zle">Dnes</span><span class="lab-popis">Text v ľavej polovici, pravá polovica prázdna.</span></div>
+  </section>
+  <section class="sluzba-blok">
+    <div class="container">
+      <div class="sluzba-text">
+        {ODSEKY.map((o) => <p>{o}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ A: EDITORIÁLNY ROZPAD ============
+       Vzor 21st.dev „Editorial Hero" (felipemenezes098/hero-05): úzky
+       štítok vľavo, široký text vpravo. Prázdne miesto ostáva, ale je
+       ukotvené, takže čítame odsadenie, nie dieru. Text drží jeden stĺpec,
+       čo je pre staršieho čitateľa najbezpečnejšie. -->
+  <section class="lab-pas">
+    <div class="container"><span class="lab-stitok">A</span><span class="lab-popis">Editoriálny rozpad: štítok vľavo, text vpravo</span></div>
+  </section>
+  <section class="sluzba-blok">
+    <div class="container">
+      <div class="uvod-a">
+        <div class="uvod-a-bok">
+          <span class="uvod-a-linka" aria-hidden="true"></span>
+          <span class="uvod-a-label">{EYEBROW}</span>
+        </div>
+        <div class="uvod-a-telo">
+          {ODSEKY.map((o, i) => <p class={i === 0 ? 'je-prvy' : ''}>{o}</p>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ B: VETA CEZ ŠÍRKU + STĹPCE ============
+       Prvý odsek ide veľkým písmom cez celú šírku ako tvrdenie, zvyšok
+       pod ním v dvoch stĺpcoch. Riadok je zaplnený úplne. Daň: dva úzke
+       stĺpce nútia oko vracať sa hore, čo staršiemu čitateľovi prekáža. -->
+  <section class="lab-pas">
+    <div class="container"><span class="lab-stitok">B</span><span class="lab-popis">Veta cez šírku, zvyšok v dvoch stĺpcoch</span></div>
+  </section>
+  <section class="sluzba-blok">
+    <div class="container">
+      <div class="uvod-b">
+        <p class="uvod-b-veta">{ODSEKY[0]}</p>
+        <div class="uvod-b-stlpce">
+          {ODSEKY.slice(1).map((o) => <p>{o}</p>)}
+          {/* Tretí odsek v dátach NIE JE. Bez neho by dva stĺpce rozťali
+              jeden odsek na polovicu, čo sa číta zle. Variant B teda pýta
+              nový text pre každú z 15 služieb. */}
+          <p><span class="uvod-b-novy">Nový text, treba dopísať:</span> Prevoz, dokumenty aj termín so správcom cintorína vybavíme za vás. Stačí jeden telefonát a ďalej vás vedieme krok po kroku.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ C: TEXT A FOTKA ============
+       Vpravo fotka k službe. Riadok je zaplnený obrazom, nie typografiou.
+       Daň: každá z 15 služieb potrebuje vlastnú druhú fotku a hneď nad
+       blokom už jedna fotka je (hlavička), takže strana zoťažie. -->
+  <section class="lab-pas">
+    <div class="container"><span class="lab-stitok">C</span><span class="lab-popis">Text vľavo, fotka služby vpravo</span></div>
+  </section>
+  <section class="sluzba-blok">
+    <div class="container">
+      <div class="uvod-c">
+        <div class="uvod-c-telo">
+          <span class="uvod-c-label">{EYEBROW}</span>
+          {ODSEKY.map((o) => <p>{o}</p>)}
+        </div>
+        <figure class="uvod-c-foto">
+          <Image src={kostol} widths={SIRKY_KRONIKA} sizes="(max-width: 900px) 92vw, 42vw" quality={KVALITA_KARTA}
+            alt="Smútočný obrad v kostole" loading="lazy" decoding="async" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+<style is:global>
+  /* Štýly len tejto lab stránky. */
+  #labuvod .lab-hlava { padding: clamp(120px, 16vh, 170px) 0 clamp(30px, 5vh, 50px); }
+  #labuvod .lab-hlava h1 { font-size: clamp(30px, 4vw, 50px); margin-top: 12px; }
+  #labuvod .lab-hlava p { margin-top: 12px; color: var(--muted); font-size: 17px; }
+  #labuvod .lab-pas { padding: 26px 0 0; }
+  #labuvod .lab-pas .container { display: flex; align-items: center; gap: 14px; border-top: 1px solid var(--line); padding-top: 18px; }
+  #labuvod .lab-stitok { font-size: 12px; letter-spacing: 0.14em; font-weight: 700; color: var(--bg); background: var(--text); border-radius: 999px; padding: 5px 13px; }
+  #labuvod .lab-stitok-zle { background: #6b2b2b; color: #f5f5f5; }
+  #labuvod .lab-popis { font-size: 13.5px; color: var(--dim); letter-spacing: 0.03em; }
+  #labuvod .sluzba-blok { padding: clamp(34px, 5vh, 56px) 0 clamp(48px, 7vh, 80px); }
+
+  /* ---- A: editoriálny rozpad ---- */
+  #labuvod .uvod-a { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 8fr); gap: clamp(28px, 5vw, 84px); }
+  #labuvod .uvod-a-bok { display: flex; flex-direction: column; gap: 16px; padding-top: 10px; }
+  #labuvod .uvod-a-linka { display: block; width: 40px; height: 1px; background: var(--gold); }
+  #labuvod .uvod-a-label { font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+  #labuvod .uvod-a-telo p { color: var(--muted); font-size: 18.6px; line-height: 1.75; }
+  #labuvod .uvod-a-telo p + p { margin-top: 20px; }
+  /* Prvý odsek väčší a svetlejší: rozlíši úvod od bežného textu bez toho,
+     aby pribudol nadpis. Mieru riadku drží stĺpec mriežky, nie max-width,
+     inak by vpravo od neho vznikla druhá diera. */
+  #labuvod .uvod-a-telo p.je-prvy { font-size: clamp(20px, 1.95vw, 25px); line-height: 1.6; color: var(--text); }
+
+  /* ---- B: veta cez šírku + stĺpce ---- */
+  #labuvod .uvod-b-veta { font-size: clamp(24px, 3.1vw, 40px); line-height: 1.32; color: var(--text); font-weight: 600; max-width: 26ch; }
+  #labuvod .uvod-b-stlpce { margin-top: clamp(28px, 4vh, 44px); columns: 2; column-gap: clamp(30px, 5vw, 70px); }
+  #labuvod .uvod-b-stlpce p { color: var(--muted); font-size: 17.4px; line-height: 1.72; break-inside: avoid; }
+  #labuvod .uvod-b-stlpce p + p { margin-top: 16px; }
+  #labuvod .uvod-b-novy { color: #c08a5a; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+
+  /* ---- C: text a fotka ---- */
+  #labuvod .uvod-c { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(30px, 5vw, 72px); align-items: center; }
+  #labuvod .uvod-c-label { display: block; font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 18px; }
+  #labuvod .uvod-c-telo p { color: var(--muted); font-size: 18.2px; line-height: 1.75; }
+  #labuvod .uvod-c-telo p + p { margin-top: 18px; }
+  #labuvod .uvod-c-foto { margin: 0; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); }
+  #labuvod .uvod-c-foto img { display: block; width: 100%; height: clamp(240px, 26vw, 360px); object-fit: cover; }
+
+  @media (max-width: 860px) {
+    #labuvod .uvod-a, #labuvod .uvod-c { grid-template-columns: 1fr; gap: 22px; }
+    #labuvod .uvod-a-bok { flex-direction: row; align-items: center; padding-top: 0; }
+    #labuvod .uvod-b-stlpce { columns: 1; }
+    #labuvod .uvod-a-telo p.je-prvy { max-width: none; }
+  }
+</style>
+</Base>
