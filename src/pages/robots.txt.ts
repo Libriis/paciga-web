@@ -14,9 +14,12 @@ const STAGING = `User-agent: *
 Disallow: /
 `;
 
+// Bez lomky na konci. `Disallow: /admin/` je predpona, ktorá nesadne na
+// holé /admin — a práve to je adresa, na ktorú vedie prihlásenie. Nájdené
+// auditom ASVS 5.0 L2 (23. 8. 2026). Teraz platí pre /admin aj /admin/*.
 const produkcia = (site: string) => `User-agent: *
 Allow: /
-Disallow: /admin/
+Disallow: /admin
 Disallow: /api/
 Disallow: /lab-
 

@@ -68,3 +68,19 @@ až Vercel.
 Ak sa raz `styles.css` a `main.js` začnú hashovať pri builde, presuň ich
 do režimu `immutable` a bude to najväčšia zvyšná výhra pre vracajúcich sa
 návštevníkov.
+
+## Administrácia sa nesmie cachovať a nesmie byť CORS-otvorená
+
+Pravidlá pre `/admin` a `/admin/(.*)` sú **posledné v poli**, presne preto,
+že vyhráva neskoršie. Prebíjajú všeobecné `/(.*)` a nastavujú:
+
+- `Cache-Control: private, no-store` — bez toho `/admin` chodil s
+  `public, max-age=0, must-revalidate`, čiže smel sedieť v zdieľanej
+  medzipamäti na okraji siete. Zistené auditom ASVS 5.0 L2 (23. 8. 2026).
+- `X-Robots-Tag: noindex, nofollow, noarchive` — druhá vrstva k robots.txt.
+- `Access-Control-Allow-Origin: https://www.paciga.sk` — Vercel na tieto
+  cesty sám dával `*`, takže skript na cudzej stránke vedel obsah admina
+  prečítať cez `fetch`.
+
+Dve pravidlá, nie jedno: `/admin/(.*)` nesadne na holé `/admin`.
+Rovnaká pasca ako `Disallow: /admin/` v robots.txt.
