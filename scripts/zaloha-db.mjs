@@ -223,6 +223,7 @@ const SCHEMY = [
   'schema-clanky.sql',
   'schema-ratelimit.sql',
   'schema-pristupy.sql',
+  'schema-anon-zapisy.sql',
 ];
 SCHEMY.forEach((s, i) => {
   const poradie = String(i + 1).padStart(2, "0");
