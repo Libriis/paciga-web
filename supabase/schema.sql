@@ -81,37 +81,21 @@ create trigger parte_updated_at before update on public.parte
   for each row execute function public.set_updated_at();
 
 -- ---------- funkcia: zapáliť sviečku ----------
--- security definer: anonymný návštevník nemá priamy prístup k sviecky_log
--- ani k update parte — smie len zavolať túto funkciu.
-create or replace function public.zapal_sviecku(p_slug text, p_ip_hash text)
-returns int
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  v_id uuid;
-  v_count int;
-begin
-  select id into v_id from parte where slug = p_slug and published;
-  if v_id is null then
-    return null;
-  end if;
-
-  begin
-    insert into sviecky_log (parte_id, ip_hash) values (v_id, p_ip_hash);
-  exception when unique_violation then
-    -- dnes už z tejto IP sviečka horí — vráť aktuálny počet bez navýšenia
-    select sviecky into v_count from parte where id = v_id;
-    return v_count;
-  end;
-
-  update parte set sviecky = sviecky + 1 where id = v_id returning sviecky into v_count;
-  return v_count;
-end $$;
-
-revoke all on function public.zapal_sviecku(text, text) from public;
-grant execute on function public.zapal_sviecku(text, text) to anon, authenticated;
+-- PRESUNUTÁ do supabase/schema-sviecka-podpis.sql. Nespúšťaj ju odtiaľto.
+--
+-- Dovtedy tu stála nepodpísaná verzia zapal_sviecku(p_slug, p_ip_hash),
+-- ktorá brala akýkoľvek p_ip_hash. Kto volal RPC priamo, poslal zakaždým iný
+-- hash a nafúkol počítadlo sviečok donekonečna. Opravilo sa to 23. 8. 2026
+-- podpisom (HMAC), lenže tu ostala pôvodná verzia aj s grantom pre anon.
+--
+-- Spustenie tohto súboru na produkcii by tak ochranu zmazalo: `create or
+-- replace` by vrátil nepodpísanú funkciu a `grant` by ju znova otvoril
+-- anonymnému volajúcemu. Nájdené auditom ASVS 5.0 L2 ako nález #8.
+--
+-- Poradie pri čistom nasadení:
+--   1. schema.sql (tento súbor)
+--   2. schema-sviecka-podpis.sql   <- funkcia, súkromná schéma, granty
+--   3. ostatné schema-*.sql
 
 -- ---------- RLS ----------
 alter table public.parte enable row level security;

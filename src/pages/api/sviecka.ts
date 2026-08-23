@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabase';
 import { rateLimitOk } from '../../lib/ratelimit';
 import { cudziPovod } from '../../lib/povod';
+import { zaBehu } from '../../lib/env';
 
 export const prerender = false;
 
@@ -47,11 +48,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ error: 'Priveľa požiadaviek. Skúste to prosím o chvíľu.' }, 429);
   }
 
-  const ipHash = await sha256(`${ip}|${import.meta.env.SVIECKA_SALT ?? 'paciga-sviecka'}`);
+  // zaBehu, nie import.meta.env — soľ aj kľúč sa inak vpíšu do balíka
+  // (src/lib/env.ts). Reťazec sa skladá presne ako doteraz, inak by sa
+  // rozpadlo denné rozlíšenie sviečok v sviecky_log.
+  const ipHash = await sha256(`${ip}|${zaBehu('SVIECKA_SALT') ?? 'paciga-sviecka'}`);
 
   // Bez podpisového kľúča RPC odmietne, takže radšej zrozumiteľná chyba
   // než tiché „parte sa nenašlo“. V produkcii je kľúč vždy nastavený.
-  const secret = import.meta.env.SVIECKA_RPC_SECRET;
+  const secret = zaBehu('SVIECKA_RPC_SECRET');
   if (!secret) return json({ error: 'Databáza nie je nakonfigurovaná.' }, 503);
   const sig = await hmacHex(`${slug}:${ipHash}`, secret);
 
