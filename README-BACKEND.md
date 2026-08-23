@@ -55,8 +55,12 @@ Bez nastavených env premenných web funguje ďalej — parte sa berú zo
    `supabase/schema-admin.sql` (admin identita — prepisuje admin politiky
    z predchádzajúcich troch, preto musí ísť po nich),
    `supabase/schema-clanky.sql` (aktuality; potrebuje `je_admin()` zo štvorky),
-   `supabase/schema-pristupy.sql` (právomoci používateľov — **posledná**,
-   prepisuje politiky všetkých predchádzajúcich).
+   `supabase/schema-pristupy.sql` (právomoci používateľov — prepisuje
+   politiky všetkých predchádzajúcich),
+   `supabase/schema-anon-zapisy.sql` (**posledná** — pritvrdí anonymné
+   zápisy: obmedzenia na dopyty a web_vitals, kondolencie len
+   k publikovanému parte, anon stráca právo určovať `id` a `created_at`
+   a stráca update/delete/truncate).
 3. **Authentication → Users → Add user** → e-mail + heslo pre klienta.
    Adresa sa musí zhodovať s riadkom v tabuľke `admini`, inak sa prihlásenie
    podarí, ale admin neuvidí nič. Predvyplnená je `paciga@paciga.sk`.
