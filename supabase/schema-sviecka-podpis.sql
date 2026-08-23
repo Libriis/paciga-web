@@ -8,26 +8,28 @@
 -- Poradie pri čistom nasadení: schema.sql, potom tento súbor.
 --
 -- ------------------------------------------------------------
--- STAV K 23. 8. 2026
+-- NASADENÉ NA PRODUKCII 23. 8. 2026 21:10
+-- migrácia: sviecka_bez_ticheho_prepadnutia
 -- ------------------------------------------------------------
--- Živá databáza beží STARŠÍ variant tejto funkcie. Líši sa v jednej veci:
--- keď riadok sviecka_hmac chýba, prepadne a prijme každý podpis.
+-- Predtým tu bežal variant, ktorý pri chýbajúcom riadku sviecka_hmac
+-- prepadol a prijal každý podpis. `select ... into v_secret` bez zhody
+-- nechá v_secret NULL, `extensions.hmac(text, NULL, 'sha256')` vráti NULL,
+-- takže v_expected je NULL a `p_sig <> v_expected` sa vyhodnotí na NULL.
+-- plpgsql berie NULL ako nepravdu, takže funkcia pokračovala ďalej.
 --
--- Prečo: `select ... into v_secret` bez zhody nechá v_secret NULL,
--- `extensions.hmac(text, NULL, 'sha256')` vráti NULL, takže v_expected je
--- NULL a podmienka `p_sig <> v_expected` sa vyhodnotí na NULL. plpgsql berie
--- NULL ako nepravdu, takže sa nevráti null a funkcia pokračuje ďalej.
--- Overené na živej databáze s úmyselne chýbajúcim kľúčom:
--- expected_with_missing_secret = null, guard_expr = null, vetva PREPADLA.
+-- Overené na živej databáze pred opravou, v bloku, ktorý sa sám zhodil,
+-- takže sa nič neuložilo: s úmyselne zmazaným kľúčom vrátilo volanie
+-- zapal_sviecku('anna-kicakova', 'proba-fail-open', '00') hodnotu 1.
+-- Sviečka sa teda naozaj zapálila na vymyslený podpis.
 --
--- Dnes to nie je zneužiteľné, kľúč tam je (overené: POST na
--- /rest/v1/rpc/zapal_sviecku s p_sig = "00" vráti null). Spustí sa to až pri
--- rotácii typu zmaž-a-vlož, pri čiastočnej obnove zálohy alebo pri replay
--- schémy. Vtedy by ktokoľvek vedel nafúkať počítadlo sviečok na ľubovoľnom
--- parte a nič by to nezaznamenalo.
+-- Po oprave, tie isté testy:
+--   chýbajúci kľúč   -> raise exception 'chyba riadok sviecka_hmac ...'
+--   zlý podpis       -> null
+--   správny podpis   -> 1 (funguje)
+--   živý web         -> POST /api/sviecka vrátil {"sviecky":1} bez zápisu
 --
--- Tento súbor to opravuje. Ešte NEBOL spustený na produkcii — čaká na
--- rozhodnutie. Po spustení tento odsek zmaž.
+-- Verzia spred opravy je uložená ako bod návratu:
+-- zalohy/db-2026-08-23/11-zapal-sviecku-PRED-opravou.sql
 -- ------------------------------------------------------------
 
 -- ---------- súkromná schéma pre tajomstvá ----------
