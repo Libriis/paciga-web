@@ -16,6 +16,8 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 @import 'tw-animate-css';
 
+@custom-variant dark (&:is(.dark *));
+
 /* ---- Paciga brand tokeny → Tailwind utility mená ----
    Jediný zdroj pravdy sú CSS premenné v styles.css (:root).
    Utility: bg-ink, bg-ink2, bg-panel, bg-panel2, border-line,
@@ -33,6 +35,14 @@
   --color-gold-soft: var(--gold-soft);
   --color-gold-dim: var(--gold-dim);
   --font-sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
 }
 
 /* ---- shadcn semantické tokeny → Paciga brand ----
@@ -65,6 +75,19 @@
   --input: rgba(255, 255, 255, 0.14);
   --ring: rgba(245, 245, 245, 0.4);
   --radius: 0.5rem;
+
+  /* Sidebar tokeny pre shadcn <Sidebar>. shadcn ich pri inštalácii píše na
+     :root a .dark v svetlých hodnotách — presunuté sem do ostrova, aby web
+     mimo admina nedostal cudzie premenné a aby admin dedil Paciga paletu.
+     Sidebar je o odtieň tmavší než obsah, ako vo vzore efferd. */
+  --sidebar: #08090a;
+  --sidebar-foreground: rgba(245, 245, 245, 0.72);
+  --sidebar-primary: #f5f5f5;
+  --sidebar-primary-foreground: #0c0d0f;
+  --sidebar-accent: #191b1e;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(245, 245, 245, 0.4);
 }
 
 @theme inline {
@@ -155,3 +178,4 @@
     max-width: none;
   }
 }
+
