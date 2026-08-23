@@ -1,10 +1,34 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { loadEnv } from 'vite';
 import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { PRESMEROVANIA } from './src/data/presmerovania.mjs';
+
+// Tajomstvá sa od 23. 8. 2026 čítajú za behu cez process.env (src/lib/env.ts),
+// aby ich Vite nevpísal ako hotový text do nasadeného balíka. Vite ale .env
+// načítava len do import.meta.env, takže pri `npm run dev` by process.env
+// ostal prázdny a /api/sviecka by hlásil 503. Tento plugin to dorovná —
+// a beží LEN pri dev serveri (command 'serve'), takže do buildu sa nič
+// z .env nedostane. Overené: po builde `grep -rl "$SVIECKA_SALT" .vercel dist`
+// nenájde ani jeden súbor.
+const envDoProcesu = {
+  name: 'paciga-env-do-procesu',
+  /** @param {{ command: string, mode: string }} config */
+  configResolved(config) {
+    if (config.command !== 'serve') return;
+    const env = loadEnv(config.mode, process.cwd(), '');
+    let pridane = 0;
+    for (const [kluc, hodnota] of Object.entries(env)) {
+      if (process.env[kluc] === undefined) { process.env[kluc] = hodnota; pridane++; }
+    }
+    // Vypísané zámerne: bez tejto hlášky sa ticho spustí dev server, ktorý
+    // nevidí tajomstvá, a chyba sa prejaví až ako 503 z /api/sviecka.
+    console.log(`[paciga] .env -> process.env: ${pridane} premenných (len dev)`);
+  },
+};
 
 export default defineConfig({
   // Kanonický host je www: paciga.sk robí 301 na www.paciga.sk. Z `site` sa
@@ -56,7 +80,7 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), envDoProcesu],
     resolve: {
       // motion/react si inak vie potiahnut vlastnu instanciu Reactu (useContext null)
       dedupe: ['react', 'react-dom'],

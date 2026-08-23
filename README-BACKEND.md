@@ -45,7 +45,11 @@ Bez nastavených env premenných web funguje ďalej — parte sa berú zo
 
 1. [supabase.com](https://supabase.com) → New project (región EU — Frankfurt).
 2. **SQL Editor → New query** → spusti schémy **v tomto poradí**:
-   `supabase/schema.sql` (tabuľky, politiky, sviečky, bucket, 12 parte),
+   `supabase/schema.sql` (tabuľky, politiky, bucket, 12 parte),
+   `supabase/schema-sviecka-podpis.sql` (súkromná schéma, `app_secret`
+   a podpísaná funkcia `zapal_sviecku` — od 23. 8. 2026 už nie je
+   v `schema.sql`, lebo tam bola nepodpísaná verzia a jej spustenie by
+   ochranu sviečok zmazalo aj s grantom pre `anon`),
    `supabase/schema-crm.sql` (zákazky, kontakty, checklist, dokumenty),
    `supabase/schema-vitals.sql` (Core Web Vitals z terénu),
    `supabase/schema-admin.sql` (admin identita — prepisuje admin politiky

@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { zaBehu } from './env';
 
 // Hash IP, nech sa surová adresa nikam neukladá (rovnaký princíp ako sviečky).
 async function sha256(s: string): Promise<string> {
@@ -19,7 +20,10 @@ export async function rateLimitOk(
 ): Promise<boolean> {
   if (!supabase) return true;
   try {
-    const h = await sha256(`${ip}|${import.meta.env.SVIECKA_SALT ?? 'paciga-rl'}`);
+    // zaBehu, nie import.meta.env — soľ sa inak vpíše do balíka (src/lib/env.ts).
+    // Reťazec sa skladá presne ako doteraz, inak by sa rozpadli existujúce
+    // okná v tabuľke rate_limit.
+    const h = await sha256(`${ip}|${zaBehu('SVIECKA_SALT') ?? 'paciga-rl'}`);
     const { data, error } = await supabase.rpc('rate_limit_hit', {
       p_key: `${endpoint}:${h}`,
       p_max: max,
