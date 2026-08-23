@@ -214,11 +214,9 @@ a.dash-card:hover { border-color: var(--gold-soft); }
 /* ---- ostatné ---- */
 .kond-text { font-size: 15.5px; line-height: 1.7; margin: 12px 0; white-space: pre-wrap; }
 /* Staršie stránky prepínajú viditeľnosť triedou .hidden. Pravidlo je zámerne
-   obmedzené na obsah stránky a na prihlasovací formulár. Kým platilo globálne,
-   jeho !important prebíjalo aj Tailwind varianty (sidebar má hidden md:flex),
-   takže sa v admine nezobrazil bočný panel ani drobčeková navigácia. */
-.adm-main .hidden,
-#login-wrap .hidden { display: none !important; }
+   obmedzené na obsah stránky. Kým platilo globálne, jeho !important prebíjalo
+   aj Tailwind varianty (sidebar má hidden md:flex), takže sa v admine
+   nezobrazil bočný panel ani drobčeková navigácia. */
+.adm-main .hidden { display: none !important; }
 .adm-search { width: 100%; max-width: 420px; padding: 12px 16px; font: inherit; font-size: 15px; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 20px; }
 .adm-search:focus { outline: none; border-color: var(--gold-soft); }
-#login-wrap { max-width: 420px; margin: 12vh auto 0; padding: 0 20px; }
