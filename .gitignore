@@ -7,3 +7,4 @@ dist/
 
 # docasny dial/tweak snapshot, nikdy nedeployovat
 public/dial.html
+.env*.local

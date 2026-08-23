@@ -1,14 +1,24 @@
 ---
-// Spoločný obal admin/CRM stránok: sidebar navigácia + user box + demo banner.
-// Autentifikáciu rieši skript každej stránky cez requireAuth() z admin-core.
+// Spoločný obal admin/CRM stránok. Skelet (sidebar, horná lišta, menu podľa
+// právomocí) vykresľuje React ostrov AdminShell — layout podľa vzoru
+// „Efferd Dashboard 2" z 21st.dev. Autentifikáciu naďalej rieši skript
+// každej stránky cez requireAuth() z admin-core.
+// tw.css = Tailwind v4 utility + tokeny. Admin ho potrebuje rovnako ako web:
+// skelet aj nový dashboard sú písané utility-first.
+import '../styles/tw.css';
+import AdminShell from '../components/admin/AdminShell.tsx';
 
 interface Props {
   title: string;
-  /** obsahové stránky potrebujú širší priestor pre dvojstĺpcový editor */
+  /** kľúč sekcie pre zvýraznenie položky v menu */
+  sekcia?: string;
+  /** ponechané pre staršie stránky, ktoré ešte nie sú prerobené */
   siroky?: boolean;
+  /** prerobená stránka: obsah nedostane legacy triedu .adm-main, ktorej
+      nadpisové pravidlá by prebili Tailwind typografiu ostrova */
+  nove?: boolean;
 }
-const { title, siroky = false } = Astro.props;
-
+const { title, sekcia = '', siroky = false, nove = false } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="sk">
@@ -24,33 +34,11 @@ const { title, siroky = false } = Astro.props;
 <link rel="stylesheet" href="/css/admin.css">
 <link rel="stylesheet" href="/css/admin-obsah.css">
 </head>
-<body>
-<div class="adm-shell">
-  <aside class="adm-side">
-    {/* Hotové súbory, nie <Image>. Ten dáva atribút width s pôvodnou šírkou
-        obrázka (1435 px) a CSS mu nastavuje len výšku, takže sa logo
-        roztiahlo cez celý sidebar. Rovnaké varianty používa aj web. */}
-    <a class="logo" href="/admin"><img
-      src="/assets/logo-130.webp"
-      srcset="/assets/logo-130.webp 130w, /assets/logo-260.webp 260w"
-      sizes="130px" width="130" height="46"
-      alt="Paciga" loading="eager" decoding="async" /></a>
-    <a class="adm-cta" href="/admin/zakazky?nova=1">+ Nová zákazka</a>
-    {/* Menu je zámerne prázdne. Skladá ho requireAuth() v admin-core podľa
-        právomocí prihláseného. Keby tu bol statický zoznam, na okamih by
-        blikli položky, ktoré daný používateľ vidieť nemá. */}
-    <nav class="adm-nav" aria-busy="true"></nav>
-    <div class="spacer"></div>
-    <a class="adm-weblink" href="/" target="_blank" rel="noopener">Zobraziť web →</a>
-    <div class="adm-userbox">
-      <span id="adm-user"></span>
-      <button type="button" id="adm-logout" class="adm-btn ghost sm">Odhlásiť</button>
-    </div>
-  </aside>
-  <main class:list={["adm-main", { siroky }]}>
-    <div id="demo-banner" class="adm-demo hidden"><strong>DEMO režim.</strong> Supabase zatiaľ nie je pripojené — všetko si môžeš preklikať, zmeny sa ukladajú len v tomto prehliadači. Po nastavení Supabase (README-BACKEND.md) sa systém prepne na ostré dáta sám.</div>
+<body class="adm-body">
+<AdminShell client:load titul={title} sekcia={sekcia}>
+  <div class:list={[nove ? "adm-nove" : "adm-main", { siroky: siroky && !nove }]}>
     <slot />
-  </main>
-</div>
+  </div>
+</AdminShell>
 </body>
 </html>
