@@ -11,7 +11,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Loader2 } from 'lucide-react';
-import { getClient, DEMO } from '@/scripts/admin-core.js';
+import { getClient, DEMO, bezpecnyNext } from '@/scripts/admin-core.js';
 
 type Props = {
   /** URL optimalizovanej fotky do pravého panelu (rieši ju Astro pri builde) */
@@ -50,8 +50,9 @@ export function Prihlasenie({ fotoSrc, fotoAlt }: Props) {
   const [caka, setCaka] = useState(false);
   const [chyba, setChyba] = useState('');
 
+  // ?next= nikdy nejde do location.href surové — pozri bezpecnyNext.
   const dalej = typeof location !== 'undefined'
-    ? new URLSearchParams(location.search).get('next') || '/admin'
+    ? bezpecnyNext(new URLSearchParams(location.search).get('next'))
     : '/admin';
 
   const odosli = async (e: React.FormEvent) => {

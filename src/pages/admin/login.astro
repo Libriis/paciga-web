@@ -25,9 +25,11 @@ const foto = await getImage({ src: interierLm, width: 1400, format: 'webp', qual
 <Prihlasenie client:load fotoSrc={foto.src} fotoAlt="Showroom Paciga v Liptovskom Mikuláši" />
 
 <script>
-import { getClient } from '../../scripts/admin-core.js';
+import { getClient, bezpecnyNext } from '../../scripts/admin-core.js';
 // Kto už session má, nech na prihlásení nestojí.
-const next = new URLSearchParams(location.search).get('next') || '/admin';
+// ?next= musí prejsť cez bezpecnyNext — surová hodnota v location.href je
+// otvorené presmerovanie aj XSS cez `javascript:`.
+const next = bezpecnyNext(new URLSearchParams(location.search).get('next'));
 getClient().auth.getSession().then(({ data: { session } }) => {
   if (session) location.href = next;
 });
