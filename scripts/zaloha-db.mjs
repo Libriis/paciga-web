@@ -32,8 +32,15 @@ const TABULKY = [
   { nazov: 'ukony', kluc: 'id' },
   { nazov: 'dokumenty', kluc: 'id' },
   { nazov: 'sviecky_log', kluc: null },
+  // Doplnené 23. 8. 2026: obe tabuľky nesú skutočný obsah webu a v zálohe
+  // chýbali. clanky mala v ten deň 21 riadkov, obsah je redakčný text
+  // stránok. rate_limit sa zámerne nezálohuje — sú to okná, ktoré expirujú.
+  { nazov: 'clanky', kluc: 'slug' },
+  { nazov: 'obsah', kluc: 'kluc' },
 ];
-const BUCKETY = ['parte-foto', 'dokumenty'];
+// dokumenty a obsah-foto sú dnes prázdne, ale nech tu sú — inak si ich nikto
+// nevšimne, keď sa naplnia. clanky-foto drží fotky aktualít.
+const BUCKETY = ['parte-foto', 'clanky-foto', 'obsah-foto', 'dokumenty'];
 
 const args = process.argv.slice(2);
 const chceVitals = args.includes('--vitals');
@@ -174,9 +181,10 @@ const hlavicka = `-- ===========================================================
 -- Projekt: ${base}
 -- Kluc: ${auth.service ? 'service role (uplna zaloha)' : 'ANON — ZALOHA JE NEUPLNA, RLS skryla cast dat'}
 --
--- Struktura je v gite: web/supabase/schema*.sql
--- Obnova: najprv schema.sql, schema-crm.sql, schema-vitals.sql,
--- schema-admin.sql (v tomto poradi), potom tento subor.
+-- Struktura je v gite aj v tomto priecinku ako 01- az 08-schema*.sql.
+-- Obnova: spusti ich v tom cislovanom poradi, az potom tento subor.
+-- Poradie je zavazne, schema-admin a schema-pristupy prepisuju politiky
+-- predchadzajucich.
 --
 -- user_id v tabulke admini sa zamerne nezalohuje. Po obnove vzniknu
 -- v auth.users nove identifikatory a stare by nesedeli. Doplnenie:
@@ -202,10 +210,24 @@ for (const b of BUCKETY) {
 
 // Číselný prefix nie je ozdoba. Schémy sa musia spúšťať v tomto poradí
 // a schema-admin.sql posledný, inak sa vrátia slabé admin politiky.
-const SCHEMY = ['schema.sql', 'schema-crm.sql', 'schema-vitals.sql', 'schema-admin.sql'];
+// Doplnené 23. 8. 2026. Chýbali tri schémy a nová schema-sviecka-podpis.sql.
+// Poradie je záväzné: schema-admin prepisuje politiky troch predchádzajúcich
+// a schema-pristupy prepisuje politiky všetkých. Rovnaké poradie ako
+// v README-BACKEND.md.
+const SCHEMY = [
+  'schema.sql',
+  'schema-sviecka-podpis.sql',
+  'schema-crm.sql',
+  'schema-vitals.sql',
+  'schema-admin.sql',
+  'schema-clanky.sql',
+  'schema-ratelimit.sql',
+  'schema-pristupy.sql',
+];
 SCHEMY.forEach((s, i) => {
+  const poradie = String(i + 1).padStart(2, "0");
   const z = join(KOREN, 'supabase', s);
-  if (existsSync(z)) writeFileSync(join(kam, `0${i + 1}-${s}`), readFileSync(z));
+  if (existsSync(z)) writeFileSync(join(kam, `${poradie}-${s}`), readFileSync(z));
 });
 
 console.log(`\nHotovo. ${zlyhalo ? `${zlyhalo} chyb, zalohu preverte.` : 'Bez chyb.'}`);
