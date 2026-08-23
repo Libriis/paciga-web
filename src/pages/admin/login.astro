@@ -3,11 +3,11 @@
 // Fotku do pravého panelu pripraví Astro pri builde (stránka je statická),
 // komponent dostane hotovú adresu — React ostrov si astro:assets nepýta.
 import { getImage } from 'astro:assets';
-import interierPoprad from '../../assets/interier-poprad.jpg';
+import interierLm from '../../assets/interier-lm-showroom.jpg';
 import Prihlasenie from '../../components/admin/Prihlasenie.tsx';
 import '../../styles/tw.css';
 
-const foto = await getImage({ src: interierPoprad, width: 1400, format: 'webp', quality: 72 });
+const foto = await getImage({ src: interierLm, width: 1400, format: 'webp', quality: 72 });
 ---
 <!DOCTYPE html>
 <html lang="sk">
@@ -22,7 +22,7 @@ const foto = await getImage({ src: interierPoprad, width: 1400, format: 'webp', 
 <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<Prihlasenie client:load fotoSrc={foto.src} fotoAlt="Showroom Paciga v Poprade" />
+<Prihlasenie client:load fotoSrc={foto.src} fotoAlt="Showroom Paciga v Liptovskom Mikuláši" />
 
 <script>
 import { getClient } from '../../scripts/admin-core.js';

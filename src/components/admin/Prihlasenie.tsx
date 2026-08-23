@@ -151,7 +151,9 @@ export function Prihlasenie({ fotoSrc, fotoAlt }: Props) {
       {/* Pravý panel: fotka. Na mobile sa nesťahuje vôbec. */}
       <div className="relative hidden md:block md:w-1/2">
         <img src={fotoSrc} alt={fotoAlt} className="size-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-[#0c0d0f] via-[#0c0d0f]/45 to-transparent" />
+        {/* Prechod len zjemňuje šev s ľavou polovicou a podkladá text dole.
+            Fotka showroomu je sama tmavá, silnejší závoj by ju zhasol. */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#0c0d0f] via-[#0c0d0f]/25 to-transparent" />
         <p className="absolute bottom-8 left-8 right-8 text-[14px] text-white/85">
           Ľudskosť, dôstojnosť, empatia.
         </p>
