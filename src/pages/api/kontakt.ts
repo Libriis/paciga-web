@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabase';
 import { sendEmail } from '../../lib/email';
 import { rateLimitOk } from '../../lib/ratelimit';
+import { cudziPovod } from '../../lib/povod';
 
 export const prerender = false;
 
@@ -9,6 +10,10 @@ const json = (body: object, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+  // Cudzia stránka nesmie cez prehliadač návštevníka poslať dopyt a e-mail.
+  const cudzia = cudziPovod(request);
+  if (cudzia) return cudzia;
+
   const body = await request.json().catch(() => null);
   if (!body) return json({ error: 'Neplatná požiadavka.' }, 400);
 

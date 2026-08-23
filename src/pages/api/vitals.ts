@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabase';
+import { cudziPovod } from '../../lib/povod';
 
 export const prerender = false;
 
@@ -15,6 +16,10 @@ const ZARIADENIA = ['mobile', 'desktop', 'unknown'] as const;
 const MAX: Record<string, number> = { LCP: 120000, CLS: 100, INP: 120000, FCP: 120000, TTFB: 120000 };
 
 export const POST: APIRoute = async ({ request }) => {
+  // Beacon chodí z našich stránok. Cudzí pôvod nemá čo plniť telemetriu.
+  const cudzia = cudziPovod(request);
+  if (cudzia) return cudzia;
+
   // Vstup sa validuje pred kontrolou databázy. Nezmysel má padnúť vždy,
   // nielen keď je Supabase po ruke, a dá sa to overiť aj lokálne.
 

@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabase';
 import { rateLimitOk } from '../../lib/ratelimit';
+import { cudziPovod } from '../../lib/povod';
 
 export const prerender = false;
 
@@ -27,6 +28,10 @@ async function hmacHex(sprava: string, kluc: string): Promise<string> {
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+  // Cudzia stránka nesmie cez prehliadač návštevníka zapaľovať sviečky.
+  const cudzia = cudziPovod(request);
+  if (cudzia) return cudzia;
+
   if (!supabase) return json({ error: 'Databáza nie je nakonfigurovaná.' }, 503);
 
   const body = await request.json().catch(() => null);
