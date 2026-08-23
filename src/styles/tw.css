@@ -161,6 +161,11 @@
     background: none;
   }
   [data-ui21] button { cursor: pointer; }
+  /* Bez preflightu si zoznamy nechávajú odrážky od prehliadača. V admine
+     je zoznamom aj menu v sidebare aj checklist zákazky, takže by sa pred
+     každou položkou objavila bodka. */
+  [data-ui21] ul,
+  [data-ui21] ol { list-style: none; }
   [data-ui21] img,
   [data-ui21] svg,
   [data-ui21] video {

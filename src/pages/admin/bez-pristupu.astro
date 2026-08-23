@@ -5,41 +5,13 @@
   ku ktorým sa nedostane.
 */
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import BezPristupu from '../../components/admin/BezPristupu.tsx';
 ---
-<AdminLayout title="Bez prístupu">
-
-  <h1>Zatiaľ nemáš pridelený prístup</h1>
-  <div class="adm-card" style="max-width:620px">
-    <p style="margin:0 0 14px;line-height:1.7">
-      Prihlásenie prebehlo, ale k žiadnej časti administrácie ti zatiaľ nebol
-      pridelený prístup. Ozvi sa správcovi, ktorý ti ho nastaví.
-    </p>
-    <p class="adm-hint" style="margin:0">
-      Prihlásený ako <strong id="kto">—</strong>
-    </p>
-  </div>
-
-  <div class="adm-actions" style="margin-top:22px">
-    <a class="adm-btn ghost" href="/" target="_blank" rel="noopener">Zobraziť web</a>
-    <button type="button" class="adm-btn ghost" id="odhlasit-tu">Odhlásiť sa</button>
-  </div>
+<AdminLayout title="Bez prístupu" nove>
+  <BezPristupu client:load />
 
 <script>
-import { getClient, requireAuth, mojProfil, esc } from '../../scripts/admin-core.js';
-
-const sb = getClient();
+import { requireAuth } from '../../scripts/admin-core.js';
 await requireAuth();
-
-const ja = await mojProfil();
-document.getElementById('kto').textContent = ja.meno || String(ja.email ?? '').replace(/@paciga\.sk$/, '') || '—';
-
-// Kto prístup medzitým dostal, nech tu neuviazne.
-const prve = ja.hlavny || (ja.pristupy ?? []).length;
-if (prve) location.href = '/admin';
-
-document.getElementById('odhlasit-tu').addEventListener('click', async () => {
-  await sb.auth.signOut();
-  location.href = '/admin/login';
-});
 </script>
 </AdminLayout>

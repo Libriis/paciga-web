@@ -1,5 +1,6 @@
 ---
 // Prihlásenie do administrácie / CRM.
+import '../../styles/tw.css';
 ---
 <!DOCTYPE html>
 <html lang="sk">
@@ -15,20 +16,39 @@
 <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
-<div id="login-wrap">
-  <div id="demo-banner" class="adm-demo hidden"><strong>DEMO režim.</strong> Prihlásiš sa ľubovoľným menom a heslom.</div>
-  <h1 style="font-size:clamp(26px,4vw,36px);font-weight:680;margin-bottom:26px">Administrácia<br>Paciga</h1>
-  <form id="login-form" class="adm-form">
-    <label>Prihlasovacie meno
-      <input type="text" name="login" required autocomplete="username"
-        autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="napr. paciga">
-    </label>
-    <label>Heslo
-      <input type="password" name="password" required autocomplete="current-password">
-    </label>
-    <button type="submit" class="adm-btn">Prihlásiť sa</button>
-    <p class="adm-status" id="login-status"></p>
-  </form>
+<div data-ui21 class="grid min-h-svh place-items-center bg-background px-5 py-16 font-sans text-foreground">
+  <div id="login-wrap" class="w-full max-w-sm">
+    <div class="mb-7 flex items-center gap-2.5">
+      <span class="grid size-8 place-items-center rounded-[6px] bg-primary text-[14px] font-bold text-primary-foreground">P</span>
+      <span class="text-[16px] font-semibold tracking-tight">Paciga</span>
+    </div>
+
+    <h1 class="text-xl font-semibold leading-tight tracking-tight">Administrácia</h1>
+    <p class="mt-1 text-[14px] text-muted-foreground">Prihlás sa menom, ktoré ti nastavil správca.</p>
+
+    <div id="demo-banner" class="mt-5 hidden rounded-md border border-border bg-secondary px-4 py-3 text-[13px] text-muted-foreground">
+      <strong class="font-semibold text-foreground">DEMO režim.</strong> Prihlásiš sa ľubovoľným menom a heslom.
+    </div>
+
+    <form id="login-form" class="mt-6 rounded-lg border border-border p-5">
+      <label class="block">
+        <span class="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Prihlasovacie meno</span>
+        <input type="text" name="login" required autocomplete="username"
+          autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="napr. paciga"
+          class="mt-1.5 block h-11 w-full rounded-md border border-border bg-background px-3 text-[15px] text-foreground outline-none [color-scheme:dark] focus:border-foreground/30">
+      </label>
+      <label class="mt-4 block">
+        <span class="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Heslo</span>
+        <input type="password" name="password" required autocomplete="current-password"
+          class="mt-1.5 block h-11 w-full rounded-md border border-border bg-background px-3 text-[15px] text-foreground outline-none [color-scheme:dark] focus:border-foreground/30">
+      </label>
+      <button type="submit"
+        class="mt-6 h-11 w-full rounded-md bg-primary text-[14.5px] font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+        Prihlásiť sa
+      </button>
+      <p class="mt-3 min-h-5 text-[13.5px] text-muted-foreground" id="login-status"></p>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -62,7 +82,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const f = e.target;
   const status = document.getElementById('login-status');
   status.textContent = 'Prihlasujem…';
-  status.classList.remove('err');
+  status.classList.remove('text-[#d18a8a]');
   const { error } = await sb.auth.signInWithPassword({
     email: naEmail(f.elements.login.value),
     password: f.elements.password.value,
@@ -70,7 +90,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   if (error) {
     // Zámerne nehovoríme, ktorá z dvoch hodnôt je zlá.
     status.textContent = 'Nesprávne prihlasovacie meno alebo heslo.';
-    status.classList.add('err');
+    status.classList.add('text-[#d18a8a]');
   } else {
     location.href = next;
   }

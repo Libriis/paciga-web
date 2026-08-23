@@ -246,7 +246,7 @@ export function Dashboard() {
                 <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={12}
                   tick={{ fill: 'rgba(245,245,245,0.5)', fontSize: 12 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="celkom" fill="url(#pacigaStlpec)" radius={[2, 2, 0, 0]} maxBarSize={64} />
+                <Bar isAnimationActive={false} dataKey="celkom" fill="url(#pacigaStlpec)" radius={[2, 2, 0, 0]} maxBarSize={64} />
               </BarChart>
             </ChartContainer>
           </Bunka>
@@ -268,7 +268,7 @@ export function Dashboard() {
                   tick={{ fill: 'rgba(245,245,245,0.5)', fontSize: 12 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 {POBOCKY.map((p: string) => (
-                  <Line key={p} type="stepAfter" dataKey={p} stroke={POBOCKY_FARBY[p]}
+                  <Line isAnimationActive={false} key={p} type="stepAfter" dataKey={p} stroke={POBOCKY_FARBY[p]}
                     strokeWidth={2} dot={false} activeDot={{ r: 3 }}
                     filter={`url(#ziara-${p.replace(/\s/g, '')})`} />
                 ))}
