@@ -70,6 +70,22 @@
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=60" }
       ]
+    },
+    {
+      "source": "/admin",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0, must-revalidate" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://www.paciga.sk" }
+      ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0, must-revalidate" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://www.paciga.sk" }
+      ]
     }
   ]
 }
