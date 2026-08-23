@@ -3152,16 +3152,19 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
     padding-top: 52px !important;
     padding-bottom: 52px !important;
   }
-  /* hero sekcie: vrch držia, mení sa len spodok */
-  main > section.hero,
-  main > section.news-hero,
-  main > section.contact-top,
-  main > section.sperk-hero,
-  main > section.pravna {
-    padding-top: revert !important;
-  }
-  main > section.hero { padding-bottom: 0 !important; }
-  main > section.news-hero { padding-bottom: 40px !important; }
+  /* Hero sekcie: vrchný odstup drží miesto pre fixnú hlavičku, preto sa
+     tu opakujú ich pôvodné hodnoty. POZOR: predtým tu bolo
+     `padding-top: revert !important` a to bola chyba — revert nevracia
+     hodnotu z tohto štýlu, ale hodnotu prehliadača, teda nulu. Nadpisy
+     na stránkach s .news-hero, /kontakt a právnej stránke tak na mobile
+     vyliezli pod čiernu lištu. Nahlásil klient z telefónu, 22. 8. 2026.
+     (.hero má výšku 100svh a .sperk-hero nesie odstup na dieťati .sh-left,
+     tie nulový padding sekcie neboli problém.) */
+  main > section.hero { padding-top: 0 !important; padding-bottom: 0 !important; }
+  main > section.news-hero { padding-top: clamp(150px, 18vh, 200px) !important; padding-bottom: 40px !important; }
+  main > section.contact-top { padding-top: clamp(98px, 11.5vh, 142px) !important; }
+  main > section.sperk-hero { padding-top: 0 !important; }
+  main > section.pravna { padding-top: clamp(120px, 16vh, 190px) !important; }
   /* dve guide sekcie za sebou sú jeden blok */
   main > section.guide + section.guide { padding-top: 0 !important; }
   /* vnútorné rozostupy skupín, ktoré by inak pribudli k paddingu */
@@ -3212,6 +3215,10 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   main > section.contact-top { padding-top: clamp(98px, 11.5vh, 142px); padding-bottom: clamp(30px, 4vh, 52px); }
   main > section.sperk-hero { padding: 0; }
   main > section.pravna { padding-top: clamp(120px, 16vh, 190px); }
+  /* Parte: fixná hlavička pláva nad obsahom, 150 px drží miesto pre ňu
+     aj drobčeky. Bez výnimky mu spoločné pravidlo stiahlo vrch na ~100 px
+     a štítok SMÚTOČNÉ OZNÁMENIE vyliezol 12 px pod lištu. */
+  main > section.parte-content { padding-top: 150px; }
   main > section.guide + section.guide { padding-top: 0; }
   main > section.nonstop { padding: 0; }
   main > section.cta-band { padding: clamp(72px, 9vh, 100px) 36px; }
