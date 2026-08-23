@@ -9,6 +9,29 @@ const KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 export const DEMO = !URL_ || !KEY;
 
+/* ---------- návrat po prihlásení ---------- */
+
+/** Očistí parameter ?next= na bezpečnú cestu v rámci nášho webu.
+    Bez tejto brány sa dá do location.href poslať `javascript:` (XSS na našej
+    doméne, čiže krádež admin tokenu z localStorage) alebo `//cudzi.web`
+    (otvorené presmerovanie na phishing). Preto: iba relatívna cesta, ktorá
+    po zložení s naším pôvodom zostane na našom pôvode. Všetko ostatné padá
+    na náhradu. */
+export function bezpecnyNext(surova, nahrada = '/admin') {
+  if (typeof surova !== 'string' || surova === '') return nahrada;
+  // Prehliadač berie spätné lomítko ako lomítko, tak ho normalizuj skôr,
+  // než sa rozhoduješ — inak `/\cudzi.web` prejde ako relatívna cesta.
+  const cesta = surova.replace(/\\/g, '/');
+  if (!cesta.startsWith('/') || cesta.startsWith('//')) return nahrada;
+  try {
+    const url = new URL(cesta, location.origin);
+    if (url.origin !== location.origin) return nahrada;
+    return url.pathname + url.search + url.hash;
+  } catch {
+    return nahrada;
+  }
+}
+
 /* ---------- číselníky ---------- */
 
 export const STAVY = [
