@@ -1,0 +1,83 @@
+---
+/* Sekcia „Náš tím“ z /o-nas. Od 30. 8. 2026 vypnutá (ZOBRAZ_TIM v o-nas.astro),
+   kým klient nedodá fotky tímu. Kód ostáva, po fotkách sa len prepne flag. */
+interface Props { nosici: string[] }
+const { nosici } = Astro.props;
+---
+  <!-- ============ TÍM ============
+       Odpoveď na otázku z pásu nad tým, preto tu nie je vlastný veľký nadpis.
+       Fotka vypĺňa celú kartu, dole cez ňu ide závoj a v ňom sedí meno s rolou.
+       Karta pod kurzorom ostane ostrá, ostatné dve klesnú a rozostria sa,
+       čiže tou istou mechanikou ako kapitoly služieb na homepage.
+       Vybraný variant V2 z /lab-tim.
+
+       data-reveal je zámerne na mriežke a nie na kartách: GSAP by kartám
+       zapísal opacity inline a stlmenie nezvýraznených by neprešlo. -->
+  <section class="team" id="tim" data-seam>
+    <div class="container">
+      <div class="section-head">
+        <h2 class="team-head" data-maskreveal>Náš tím</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <div class="team-grid" data-reveal>
+        <article class="team-card">
+          <div class="photo-slot team-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+          <div class="team-veil" aria-hidden="true"></div>
+          <div class="team-body">
+            <h3 class="team-name">Meno a priezvisko</h3>
+            <span class="team-role">Doplniť rolu</span>
+          </div>
+        </article>
+        <article class="team-card">
+          <div class="photo-slot team-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+          <div class="team-veil" aria-hidden="true"></div>
+          <div class="team-body">
+            <h3 class="team-name">Meno a priezvisko</h3>
+            <span class="team-role">Doplniť rolu</span>
+          </div>
+        </article>
+        <article class="team-card">
+          <div class="photo-slot team-shot" data-photo-slot><span>Miesto pre fotografiu</span><em>Portrét na výšku, neutrálne pozadie</em></div>
+          <div class="team-veil" aria-hidden="true"></div>
+          <div class="team-body">
+            <h3 class="team-name">Meno a priezvisko</h3>
+            <span class="team-role">Doplniť rolu</span>
+          </div>
+        </article>
+      </div>
+
+      {/* Sekcia „Vedúci pobočiek" tu bola od 3. 8. 2026 (žiadosť klienta),
+          9. 8. 2026 ju klient stiahol. Mená v nej boli zástupné a reálne
+          nedodal, takže radšej nič než vymyslení ľudia. Ak sa vráti, ide
+          o blok .team-lead-head plus druhú .team-grid s tromi kartami. */}
+
+      <!-- Celý tím: desať nosičov v páse miniatúr pod hlavnými kartami.
+           Pás je do kliknutia skrytý, sekcia tak drží pôvodný rytmus troch
+           kariet. Miniatúra nesie len siluetu; meno a rola žijú vo väčšej
+           karte, ktorá vystúpi nad miniatúrou pod kurzorom. Silueta je
+           dočasný placeholder, kým prídu fotografie nosičov.
+           team-full je bez data-reveal: GSAP by hidden bloku zapísal inline
+           opacity a otváranie by sa s ním bilo; fade rieši CSS trieda. -->
+      <div class="team-more" data-reveal>
+        <button type="button" class="btn-line team-toggle" id="team-toggle" aria-expanded="false" aria-controls="team-full">Zobraziť celý tím</button>
+      </div>
+      <div class="team-full" id="team-full" hidden>
+        <div class="team-mini-grid">
+          {nosici.map((meno) => (
+            <article class="team-mini" tabindex="0" aria-label={`${meno}, nosič`}>
+              <span class="team-mini-photo" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M32 30c6.6 0 12-5.4 12-12S38.6 6 32 6 20 11.4 20 18s5.4 12 12 12Zm0 7c-11.9 0-23 6-23 17.4V64h46v-9.6C55 43 43.9 37 32 37Z"/></svg>
+              </span>
+              <div class="team-mini-pop" aria-hidden="true">
+                <span class="team-pop-photo"><svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M32 30c6.6 0 12-5.4 12-12S38.6 6 32 6 20 11.4 20 18s5.4 12 12 12Zm0 7c-11.9 0-23 6-23 17.4V64h46v-9.6C55 43 43.9 37 32 37Z"/></svg></span>
+                <div class="team-pop-body">
+                  <h3 class="team-pop-name">{meno}</h3>
+                  <span class="team-pop-role">Nosič</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
