@@ -9,7 +9,7 @@ import sluzbyHero from '../assets/sluzby-hero.jpg';
 import limuzina from '../assets/o-nas-limuzina.jpg';
 import fc01 from '../assets/asset-01.jpg';
 import fc04 from '../assets/asset-04.jpg';
-import rakva01 from '../assets/katalog/rakvy/rakva-01.jpg';
+import rakvyFoto from '../assets/svc-rakvy.jpg';
 import veniecFoto from '../assets/svc-starostlivost.jpg';
 import kamenFoto from '../assets/svc-kamenarstvo.jpg';
 import kremaciaFoto from '../assets/svc-kremacia.jpg';
@@ -35,7 +35,7 @@ const fotoKarty = async (img: ImageMetadata) =>
 
 const [fRakva, fObrad, fKremacia, fVeniec, fOblecenie, fKarty, fPrevoz, fMedz, fLimo, fChladenie, fKamen, fVizualizacia, fPoradenstvo, fPredpriprava, fSperk] =
   await Promise.all([
-    fotoKarty(rakva01),
+    fotoKarty(rakvyFoto),
     fotoKarty(fc01),
     fotoKarty(kremaciaFoto),
     fotoKarty(veniecFoto),
