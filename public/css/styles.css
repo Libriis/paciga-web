@@ -1677,7 +1677,7 @@ section > .container, .services-pin > .container, .services-track, .services-pro
 /* ciele kotiev z bandu potrebujú odstup od fixného menu */
 /* #sluzby chýbalo: pri priamom vstupe s hashom (bez JS, alebo z výsledku
    vyhľadávania) skok skončil pod 82 px lištou. */
-#pribeh, #tim, #vozidla, #limuzina, #sluzby { scroll-margin-top: 90px; }
+#pribeh, #tim, #pobocky, #vozidla, #limuzina, #sluzby { scroll-margin-top: 90px; }
 /* pravidlo "main > section[class]" maľuje sekcie transparentne — band si
    svoj nános svetla musí vybojovať špecificitou */
 main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }

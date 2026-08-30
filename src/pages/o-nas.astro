@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import TimSekcia from '../components/TimSekcia.astro';
+import PobockyKarty from '../components/PobockyKarty.astro';
 import { Image } from 'astro:assets';
 import { SIRKY_HERO, SIRKY_KRONIKA, KVALITA_POZADIE, KVALITA_KARTA } from '../lib/images';
 /* Užší záber tímu: široká tímová fotka (o-nas-tim.jpg) je od 15. 8. 2026
@@ -50,6 +51,7 @@ const nosici = [
       <div class="situ-row">
         <a href="#pribeh" class="situ-chip">Náš príbeh</a>
         {ZOBRAZ_TIM && <a href="#tim" class="situ-chip">Náš tím</a>}
+        <a href="#pobocky" class="situ-chip">Naše pobočky</a>
         <a href="#vozidla" class="situ-chip">Vozový park</a>
       </div>
     </div>
@@ -158,6 +160,21 @@ const nosici = [
        Sekcia je v components/TimSekcia.astro. Od 30. 8. 2026 skrytá,
        kým nebudú fotky tímu. Zapnutie: ZOBRAZ_TIM = true vo frontmatteri. -->
   {ZOBRAZ_TIM && <TimSekcia nosici={nosici} />}
+
+  <!-- ============ POBOČKY ============
+       Od 30. 8. 2026 tu namiesto skrytého tímu: fotopás Ľudia a flotila
+       by inak išli za sebou ako dve fotky bez oddychu. Karty sú ten istý
+       komponent ako na homepage a /kontakt. Keď sa tím vráti, pobočky
+       môžu ostať pod ním. -->
+  <section id="pobocky" class="branches">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-textreveal>Naše pobočky</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <PobockyKarty />
+    </div>
+  </section>
 
   <!-- ============ FLOTILA ============
        Sekcia „Ako prví v regióne" tu bola do 14. 8. 2026; klient ju dal
