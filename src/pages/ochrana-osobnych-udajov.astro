@@ -22,13 +22,13 @@
       žiadny Facebook Pixel. Von vedú len odkazy na Facebook, YouTube,
       Google Mapy a weby partnerov.
 
-  ČO CHÝBA A MUSÍ DODAŤ KLIENT:
-    1. ako dlho sa údaje z formulárov uchovávajú
-    2. či má firma určenú zodpovednú osobu (DPO)
-    3. či beží Facebook Pixel alebo Google Ads mimo tohto webu
-  Sú v texte označené ako [DOPLNIŤ]. Kým tam sú, stránka NIE JE v mape
-  stránok (filter v astro.config.mjs) ani v pätičke a /ochrana-sukromia
-  na ňu ešte nepresmerúva. Po doplnení treba všetky tri veci zapnúť.
+  STAV PO 30. 8. 2026: placeholdery [DOPLNIŤ] sú preč, stránka je živá:
+  je v mape stránok, v pätičke a /ochrana-sukromia na ňu presmerúva.
+  Pixel: klient potvrdil, že FB ani Google pixel nemá; keď ho nasadí,
+  treba sem doplniť kapitolu a pridať cookie lištu.
+  Doba uchovávania je prevzatá zo starého webu (kým sa vybaví požiadavka
+  alebo kým káže zákon). OTVORENÉ NA KLIENTA: presné lehoty v mesiacoch
+  a či má firma zodpovednú osobu (DPO). Zatiaľ na stránke nie sú.
 
   Toto nie je právne stanovisko. Pred zverejnením nech to prejde niekto,
   kto za obsah zodpovedá.
@@ -44,12 +44,6 @@ const description =
 const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
 ---
 <Base title={title} description={description} ogTitle="Ochrana osobných údajov" ogDescription={description}>
-  <Fragment slot="head">
-    {/* Právna stránka nemá čo hľadať vo výsledkoch vyhľadávania nad
-        vlastným obsahom webu, ale musí byť dostupná a prejsť kontrolou. */}
-    <meta name="robots" content="noindex, follow" />
-  </Fragment>
-
   <section class="pravna">
     <div class="container">
       <div class="eyebrow" data-reveal>Právne informácie</div>
@@ -67,14 +61,15 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
           E-mail: <a href={`mailto:${FIRMA.email}`}>{FIRMA.email}</a>,
           telefón: <a href="tel:0903596364">0903 596 364</a>.
         </p>
-        <p>[DOPLNIŤ: či má firma určenú zodpovednú osobu za ochranu údajov a jej kontakt.]</p>
 
         <h2>Aké údaje zbierame</h2>
         <h3>Kontaktný formulár</h3>
         <p>
           Meno, telefónne číslo, e-mail a text správy. Sú to údaje, ktoré do formulára
           napíšete vy. Používame ich len na to, aby sme vám odpovedali a dohodli sa na
-          ďalšom postupe. Právnym základom je váš záujem o naše služby.
+          ďalšom postupe. Právnym základom je váš súhlas, ktorý dávate zaškrtnutím
+          políčka vo formulári, a rokovanie o našich službách pred uzavretím zmluvy.
+          Súhlas môžete kedykoľvek odvolať.
         </p>
 
         <h3>Kondolencia a spomienková sviečka</h3>
@@ -107,13 +102,14 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
           prehliadača, ale to sa týka len našich zamestnancov.
         </p>
         <p>
-          [DOPLNIŤ: či firma používa Facebook Pixel alebo Google Ads na iných miestach,
-          napríklad v reklamách. Ak áno, patrí to sem.]
+          Ak by sme v budúcnosti nasadili meracie nástroje, doplníme to na túto
+          stránku a pridáme lištu so súhlasom.
         </p>
 
         <h2>Komu sa údaje dostanú</h2>
         <p>
-          Údaje z formulárov ukladáme u poskytovateľa databázy Supabase. Web beží
+          K údajom z formulárov majú prístup len naši zamestnanci, ktorí vybavujú
+          vašu požiadavku. Ukladáme ich u poskytovateľa databázy Supabase. Web beží
           na platforme Vercel. Obaja poskytovatelia spracúvajú údaje na základe zmluvy
           a len v rozsahu, ktorý potrebujú na prevádzku. Vaše údaje nepredávame
           a neposkytujeme ich na reklamu.
@@ -125,15 +121,16 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
 
         <h2>Ako dlho ich držíme</h2>
         <p>
-          [DOPLNIŤ: ako dlho sa uchovávajú správy z kontaktného formulára a kondolencie.
-          Bežne sa uvádza konkrétny počet mesiacov alebo rokov, prípadne „do splnenia
-          účelu“ s vysvetlením, čo to znamená.]
+          Správy z kontaktného formulára držíme, len kým vybavíme vašu požiadavku,
+          alebo kým nám ich uchovanie prikazuje zákon. Potom ich mažeme.
+          Kondolencie sa zobrazujú pri parte a odstránime ich na požiadanie.
         </p>
 
         <h2>Vaše práva</h2>
         <p>
           Máte právo vedieť, aké údaje o vás máme, dať ich opraviť, dať ich vymazať,
-          obmedziť ich spracúvanie, preniesť ich inam alebo namietať proti spracúvaniu.
+          obmedziť ich spracúvanie, preniesť ich inam, namietať proti spracúvaniu
+          alebo odvolať súhlas, ktorý ste nám dali.
           Stačí napísať na <a href={`mailto:${FIRMA.email}`}>{FIRMA.email}</a>
           alebo zavolať na <a href="tel:0903596364">0903 596 364</a>.
           Odpovieme čo najskôr.
@@ -141,6 +138,13 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
         <p>
           Ak si myslíte, že s vašimi údajmi nakladáme nesprávne, môžete sa obrátiť na
           Úrad na ochranu osobných údajov Slovenskej republiky.
+        </p>
+
+        <h2>Ako údaje chránime</h2>
+        <p>
+          Robíme technické a organizačné opatrenia, aby sa údaje nestratili,
+          nezneužili a nedostali sa k nim nepovolané osoby. Formuláre chránime
+          proti spamu a prístup do administrácie majú len naši zamestnanci.
         </p>
 
         <h2>Parte a fotografie</h2>
@@ -152,7 +156,7 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
 
         <h2>Zmeny</h2>
         <p>
-          Ak sa niečo zmení, upravíme túto stránku. Posledná úprava: 22. augusta 2026.
+          Ak sa niečo zmení, upravíme túto stránku. Posledná úprava: 30. augusta 2026.
         </p>
       </div>
     </div>

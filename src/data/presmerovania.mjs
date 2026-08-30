@@ -18,8 +18,6 @@
  * OTVORENÉ, čaká na rozhodnutie (pozri komentáre nižšie):
  *   - šesť stránok pobočiek: zatiaľ vedú na /kontakt, kde sú všetky tri
  *     pobočky. Ak vzniknú samostatné stránky, prepíš cieľ.
- *   - /ochrana-sukromia/: nový web takú stránku nemá, texty nedodal klient.
- *     Zatiaľ vedie na /kontakt. Doplň, keď stránka vznikne.
  *   - jednotlivé parte a kytice: staré slugy sa s novými nezhodujú, preto
  *     idú na prehľad, nie na konkrétny záznam.
  */
@@ -96,11 +94,10 @@ export const PRESMEROVANIA = {
   '/pohrebne-sluzby-spisska-bela': trvale('/spisska-bela'),
   '/pohrebne-sluzby-liptovsky-mikulas': trvale('/liptovsky-mikulas'),
 
-  /* ---- OCHRANA SÚKROMIA: čaká na texty od klienta ----
-     Stará stránka je v indexe, nová neexistuje. Odkaz na ňu je zatiaľ
-     zakomentovaný v pätičke (Base.astro). Keď texty prídu, sprav stránku
-     /ochrana-osobnych-udajov a prepíš cieľ. */
-  '/ochrana-sukromia': trvale('/kontakt'),
+  /* ---- OCHRANA SÚKROMIA ----
+     Od 30. 8. 2026 vedie na novú stránku /ochrana-osobnych-udajov,
+     ktorá je živá (pätička, mapa stránok, bez noindexu). */
+  '/ochrana-sukromia': trvale('/ochrana-osobnych-udajov'),
 
   /* ---- hromadné (391 parte, 81 kytíc, 4 kategórie) ----
      TIETO TU NIE SÚ, sú vo vercel.json. Astro dynamické presmerovanie
