@@ -19,6 +19,19 @@ interface Props {
   nove?: boolean;
 }
 const { title, sekcia = '', siroky = false, nove = false } = Astro.props;
+
+// Brána pred prvým vykreslením. Admin stránky sú statické a session drží
+// supabase-js v localStorage pod kľúčom sb-<ref>-auth-token, server ju
+// nevidí. requireAuth() v každej stránke beží až po načítaní ostrovov,
+// takže bez session sa na sekundu ukázal celý skelet a až potom login
+// (nahlásené 30. 8. 2026 po prepnutí domény). Preto inline skript v <head>:
+// beží pred parsovaním <body>, bez tokenu presmeruje ešte pred vykreslením,
+// s tokenom odkryje stránku. Skutočné overenie tokenu ďalej robí
+// requireAuth() a hranicu dát drží RLS; toto je len proti prebliknutiu.
+// V DEMO režime (bez Supabase URL) sa brána vynechá.
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
+const ref = supabaseUrl ? new URL(supabaseUrl).hostname.split('.')[0] : '';
+const klucSession = ref ? `sb-${ref}-auth-token` : '';
 ---
 <!DOCTYPE html>
 <html lang="sk">
@@ -33,6 +46,20 @@ const { title, sekcia = '', siroky = false, nove = false } = Astro.props;
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="/css/admin.css">
 <link rel="stylesheet" href="/css/admin-obsah.css">
+<style>html:not(.adm-ok) body { visibility: hidden; }</style>
+<script is:inline define:vars={{ klucSession }}>
+  try {
+    if (klucSession && !localStorage.getItem(klucSession)) {
+      location.replace('/admin/login?next=' + encodeURIComponent(location.pathname + location.search));
+    } else {
+      document.documentElement.classList.add('adm-ok');
+    }
+  } catch (e) {
+    // localStorage nedostupný (súkromný režim, blokované úložisko):
+    // ukáž stránku, requireAuth() rozhodne.
+    document.documentElement.classList.add('adm-ok');
+  }
+</script>
 </head>
 <body class="adm-body">
 <AdminShell client:load titul={title} sekcia={sekcia}>
