@@ -311,17 +311,19 @@ const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blí
   @media (max-width: 900px) { a.sh-ci { min-height: 44px; } }
   .sh-ci svg { width: 18px; height: 18px; flex: none; }
   a.sh-ci:hover { color: var(--text); }
+  /* Mobil: fotka je široká (934x658) a panel bol vysoký a úzky, cover
+     odsekával krajné kúsky. Preto panel drží pomer fotky a ukáže ju celú. */
   .sh-photo {
-    min-height: 44vh;
+    aspect-ratio: 934 / 658;
     /* kolekcia-hero má po stranách dotiahnuté pozadie, aby sa všetkých sedem
        kúskov zmestilo do panela aj po diagonálnom reze (rozmery panela
        ostávajú nezmenené) */
-    background: #f9f9f9 url('../assets/sperky/kolekcia-hero.jpg') center / cover no-repeat;
+    background: #f9f9f9 url('../assets/sperky/kolekcia-hero.jpg') center / contain no-repeat;
   }
   @media (min-width: 900px) {
     .sperk-hero { flex-direction: row; }
     .sh-left { width: 58%; }
-    .sh-photo { width: 42%; min-height: 100%; clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%); }
+    .sh-photo { width: 42%; min-height: 100%; aspect-ratio: auto; background-size: cover; clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%); }
     :global(.js) .sh-photo { animation: shReveal 1.2s cubic-bezier(0, 0.55, 0.45, 1) both; }
   }
   @keyframes shReveal {
