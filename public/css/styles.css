@@ -2126,13 +2126,22 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .rozlucky .micro-label { display: block; margin-bottom: 18px; color: var(--gold-soft); }
 .roz-row {
   display: grid;
-  grid-template-columns: 88px 150px 1fr minmax(170px, 230px) 22px;
+  grid-template-columns: 52px 88px 150px 1fr minmax(170px, 230px) 22px;
   gap: 8px 26px;
-  align-items: baseline;
-  padding: 15px 2px;
+  align-items: center;
+  padding: 12px 2px;
   border-top: 1px solid var(--line);
 }
 .roz-row:last-child { border-bottom: 1px solid var(--line); }
+/* fotka zosnulého v riadku (30. 8. 2026): rovnaký kruh ako na kartách, menší */
+.roz-foto {
+  width: 52px; height: 52px; border-radius: 50%; overflow: hidden;
+  border: 1px solid rgb(var(--fg-rgb) / 0.35);
+  background: radial-gradient(circle at 35% 30%, #22242a, #131418);
+  display: grid; place-items: center;
+  font-size: 14px; font-weight: 650; letter-spacing: 0.04em; color: rgb(var(--fg-rgb) / 0.6);
+}
+.roz-foto img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
 .roz-den { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 650; color: var(--gold-soft); }
 .roz-kedy { font-weight: 650; font-variation-settings: var(--wide); color: var(--text); transition: color 0.3s ease; }
 .roz-kde { color: var(--muted); font-size: 14.5px; line-height: 1.5; }
@@ -2145,10 +2154,11 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .memoriam-rozlucka { color: var(--gold-soft); }
 
 @media (max-width: 800px) {
-  .roz-row { grid-template-columns: 76px 1fr 22px; }
-  .roz-kde { grid-column: 2; }
-  .roz-meno { grid-column: 2; justify-self: start; text-align: left; }
-  .roz-go { grid-row: 1; grid-column: 3; }
+  .roz-row { grid-template-columns: 48px 76px 1fr 22px; gap: 6px 14px; align-items: baseline; }
+  .roz-foto { width: 48px; height: 48px; grid-row: 1 / 4; align-self: start; }
+  .roz-kde { grid-column: 3; }
+  .roz-meno { grid-column: 3; justify-self: start; text-align: left; }
+  .roz-go { grid-row: 1; grid-column: 4; }
 }
 
 /* ============================================================

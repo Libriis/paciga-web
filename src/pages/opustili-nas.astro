@@ -61,6 +61,10 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
         <div class="rozlucky-list">
           {nadchadzajuce.map((p) => (
             <a class="roz-row" href={`/parte/${p.slug}`} data-reveal>
+              {/* fotka zosnulého (od 30. 8. 2026), bez fotky iniciály ako na kartách */}
+              <span class="roz-foto" aria-hidden="true">{p.foto_url
+                ? <Foto src={p.foto_url} widths={[220]} sizes="52px" />
+                : <span>{inicialky(p.meno)}</span>}</span>
               <span class="roz-den">{denLabel(p.rozlucka_datum!, dnes)}</span>
               <span class="roz-kedy">{fmtDenMesiac(p.rozlucka_datum)} o {p.rozlucka_cas}</span>
               <span class="roz-kde">{p.rozlucka_miesto}</span>
