@@ -3206,6 +3206,12 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   main > section.parte-content { padding-top: 150px; }
   main > section.guide + section.guide { padding-top: 0; }
   main > section.nonstop { padding: 0; }
+  /* Zdieľanie je <section> vnútri <main>, takže strop vyššie ho chytil tiež:
+     karta v článku dostala 97 px hore aj dole namiesto 30 a blok na fotke
+     parte tiež 97 px namiesto 0. Svieca, ktorá sedí tesne nad ním, tak
+     vyliezla o 100 px vyššie, na ústa portrétu. Nahlásil Tomáš 30. 8. 2026. */
+  main section.zdielanie { padding-top: 30px; padding-bottom: 30px; }
+  main section.zd-na-fotke { padding-top: 0; padding-bottom: 0; }
   main > section.cta-band { padding: clamp(72px, 9vh, 100px) 36px; }
   main > section.partners { padding: clamp(64px, 8vh, 90px) 0; }
 }
