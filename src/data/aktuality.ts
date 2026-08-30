@@ -1,7 +1,10 @@
 /*
   Aktuality — jediný zdroj pravdy pre prehľad aj pre detail článku.
 
-  Články sú prevzaté z paciga.sk (migrácia 30. 7. 2026). Text je doslovný,
+  Články sú prevzaté z paciga.sk (migrácia 30. 7. 2026).
+  Náhľadové fotky sú od 30. 8. 2026 pôvodné featured obrázky zo starého
+  WordPressu (src/assets/clanky/<slug>.jpg, stiahnuté cez curl --resolve
+  na 93.184.77.195). Po zmene spusti scripts/staticke-obrazky.mjs. Text je doslovný,
   jediná úprava je názov firmy: brand pravidlo hovorí „Paciga" bez s.r.o.
 
   Článok dostane vlastnú stránku /aktuality/<slug> len vtedy, keď má
@@ -49,8 +52,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2026-05-29',
     tag: 'Spomienkové šperky',
     t: 'sperky',
-    foto: '/assets/sperky-studio.jpg',
-    fotoAlt: 'Spomienkový prívesok v tvare srdca s gravírovaným odtlačkom prsta',
+    foto: '/assets/clanky/odtlacok-prsta-zosnuleho-na-pamiatku.jpg',
+    fotoAlt: 'Prívesky a náramky s odtlačkom prsta na bielych stojanoch',
     titulok: 'Odtlačok prsta zosnulého na pamiatku',
     text: 'Ako vzniká spomienkový šperk: od sňatia odtlačku až po gravírovanie do striebra, zlata alebo ružového zlata. Kúsok blízkeho človeka, ktorý zostáva navždy.',
     telo: [
@@ -71,8 +74,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2026-05-26',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/o-nas-tim.jpg',
-    fotoAlt: 'Tím Paciga pri pohrebných vozidlách pod Tatrami',
+    foto: '/assets/clanky/medzinarodna-konferencia-pohrebnych-sluzieb-2026.jpg',
+    fotoAlt: 'Rečník na pódiu Medzinárodnej konferencie pohrebných služieb 2026 v Bratislave',
     titulok: 'Zúčastnili sme sa Medzinárodnej konferencie pohrebných služieb na Slovensku',
     text: 'Priniesli sme si poznatky a kontakty, ktoré posúvajú naše služby ďalej. Vzdelávame sa, aby ste u nás vždy našli aktuálny štandard starostlivosti.',
     telo: [
@@ -89,8 +92,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2026-01-30',
     tag: 'Plánovanie vopred',
     t: 'planovanie',
-    foto: '/assets/sluzby-hero.jpg',
-    fotoAlt: 'Flotila vozidiel Paciga na lúke pod Tatrami',
+    foto: '/assets/clanky/viac-nez-pohrebna-sluzba.jpg',
+    fotoAlt: 'Vizuál Paciga: dotyk rúk, kríž a západ slnka',
     titulok: 'Viac než pohrebná služba: kompletné riešenie pre pozostalých',
     text: 'Od prevozu a obradu po kamenárstvo a smútkové poradenstvo. Prehľad všetkého, čo za vás vieme vybaviť, aby ste sa mohli sústrediť na rozlúčku.',
     telo: [
@@ -112,8 +115,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2026-01-14',
     tag: 'Prvé kroky',
     t: 'prve-kroky',
-    foto: '/assets/asset-11.jpg',
-    fotoAlt: 'Pohľad na mesto Poprad z výšky',
+    foto: '/assets/clanky/riesenie-pozostalosti-po-pohrebe.jpg',
+    fotoAlt: 'Podpisovanie dokumentov pri stole',
     titulok: 'Riešenie pozostalosti po pohrebe',
     text: 'Dedičské konanie, úrady, zmluvy a účty. Na koho sa obrátiť po pohrebe a s čím vám vieme pomôcť my a naši partneri.',
     telo: [
@@ -147,8 +150,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-12-11',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/cintorin.jpg',
-    fotoAlt: 'Cintorín so stanom Paciga',
+    foto: '/assets/clanky/spolupraca-so-spominam-sk.jpg',
+    fotoAlt: 'Logo portálu Spomínam.sk',
     titulok: 'Spolupráca so Spomínam.sk',
     text: 'Spájame sa s platformou Spomínam.sk, aby spomienky na blízkych zostali živé aj v digitálnom priestore.',
     telo: [
@@ -165,8 +168,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-11-26',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/asset-03.jpg',
-    fotoAlt: 'Námestie v Spišskej Belej',
+    foto: '/assets/clanky/digitalna-pomoc-po-pohrebe-potom-sk.jpg',
+    fotoAlt: 'Logo platformy Potom.sk s ilustráciou dvojice na lavičke',
     titulok: 'Digitálna pomoc po pohrebe: spolupracujeme s platformou Potom.sk',
     text: 'Potom.sk uľahčuje pozostalým vybavovanie všetkého, čo po pohrebe nasleduje. Sme radi, že našim rodinám vieme ponúknuť aj túto podporu.',
     telo: [
@@ -182,8 +185,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-10-13',
     tag: 'Prvé kroky',
     t: 'prve-kroky',
-    foto: '/assets/info-hero.jpg',
-    fotoAlt: 'Smútočný obrad pod stanom Paciga',
+    foto: '/assets/clanky/smutocne-oznamenia-fotografia-a-hudba.jpg',
+    fotoAlt: 'Husle na stole v dome smútku',
     titulok: 'Smútočné oznámenia, fotografia zosnulého a smútočná hudba',
     text: 'Praktický sprievodca prípravou parte, výberom fotografie a hudby na rozlúčku. Malé rozhodnutia, ktoré dodajú obradu osobný tón.',
     telo: [
@@ -204,8 +207,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-10-09',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/asset-05.jpg',
-    fotoAlt: 'Pohrebné vozidlo Paciga s personálom',
+    foto: '/assets/clanky/xxi-konferencia-hca-slovakia.jpg',
+    fotoAlt: 'Účastníci XXI. konferencie HCA Slovakia v sále',
     titulok: 'XXI. Konferencia HCA Slovakia',
     text: 'Boli sme pri tom: odborná konferencia o štandardoch a inováciách v pohrebníctve. Držíme krok s tým najlepším v odbore.',
     telo: [
@@ -221,8 +224,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-09-10',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/o-nas-limuzina.jpg',
-    fotoAlt: 'Biela pohrebná limuzína Paciga',
+    foto: '/assets/clanky/od-prezidenta-az-po-obycajnych-ludi.jpg',
+    fotoAlt: 'Nosiči Paciga nesú rakvu s kvetmi pred kostolom',
     titulok: 'Od prezidenta až po obyčajných ľudí: dôstojné pohrebné rozlúčky pod Tatrami',
     text: 'Nerobíme rozdiely. Rovnaká starostlivosť pre každú rodinu, od bežných rozlúčok po pohreby známych osobností.',
     telo: [
@@ -239,8 +242,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-09-05',
     tag: 'Prvé kroky',
     t: 'prve-kroky',
-    foto: '/assets/asset-01.jpg',
-    fotoAlt: 'Nosiči Paciga s rakvou a kvetinovou výzdobou',
+    foto: '/assets/clanky/kvetinova-vyzdoba-na-pohrebe.jpg',
+    fotoAlt: 'Rakvová kytica zo žltých a bielych kvetov na drevenej rakve',
     titulok: 'Kvetinová výzdoba na pohrebe',
     text: 'Rakvová kytica, vence a stuhy. Ako vybrať kvety, ktoré zdôraznia osobnosť zosnulého, a čo všetko zariadime za vás.',
     telo: [
@@ -256,8 +259,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-08-13',
     tag: 'Prvé kroky',
     t: 'prve-kroky',
-    foto: '/assets/asset-10.jpg',
-    fotoAlt: 'Kostolná veža v podtatranskej obci',
+    foto: '/assets/clanky/druh-pohrebneho-obradu.jpg',
+    fotoAlt: 'Ruka s ľaliou položená na rakve',
     titulok: 'Druh pohrebného obradu',
     text: 'Cirkevný alebo občiansky obrad. Čím sa líšia, čo zabezpečí farský úrad a čo pohrebná služba.',
     telo: [
@@ -275,8 +278,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-07-22',
     tag: 'Plánovanie vopred',
     t: 'planovanie',
-    foto: '/assets/svc-kamenarstvo.jpg',
-    fotoAlt: 'Žulové pomníky na cintoríne',
+    foto: '/assets/clanky/sposoby-pochovavania.jpg',
+    fotoAlt: 'Muž v obleku drží urnu vedľa sviečok',
     titulok: 'Spôsoby pochovávania',
     text: 'Do zeme, do hrobky alebo kremácia. Prehľad možností a toho, čo každá z nich obnáša.',
     telo: [
@@ -296,8 +299,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-07-02',
     tag: 'Prvé kroky',
     t: 'prve-kroky',
-    foto: '/assets/asset-07.jpg',
-    fotoAlt: 'Pohrebné vozidlo a dodávka Paciga',
+    foto: '/assets/clanky/vyber-pohrebnej-sluzby-a-organizacia-pohrebu.jpg',
+    fotoAlt: 'Interiér pobočky Paciga so stolom pre pozostalých a vitrínou urien',
     titulok: 'Výber pohrebnej služby a organizácia pohrebu',
     text: 'Podľa čoho si vybrať pohrebnú službu, čo si priniesť na pobočku a čo za vás vybavíme.',
     telo: [
@@ -314,8 +317,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-06-04',
     tag: 'Prvé kroky',
     t: 'prve-kroky',
-    foto: '/assets/fleet-still.jpg',
-    fotoAlt: 'Vozový park Paciga v hmle',
+    foto: '/assets/clanky/umrtie-v-zahranici.jpg',
+    fotoAlt: 'Vozidlo Paciga pred budovou cintorína v zahraničí',
     titulok: 'Úmrtie v zahraničí',
     text: 'Čo zabezpečí veľvyslanectvo, aké doklady sú potrebné a ako prebieha prevoz zosnulého na Slovensko.',
     telo: [
@@ -336,8 +339,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-05-28',
     tag: 'Prvé kroky',
     t: 'prve-kroky',
-    foto: '/assets/asset-09.jpg',
-    fotoAlt: 'Pohrebné vozidlá Paciga s personálom',
+    foto: '/assets/clanky/ako-postupovat-pri-umrti-blizkeho-cloveka.jpg',
+    fotoAlt: 'Smútiaca žena s vreckovkou',
     titulok: 'Ako postupovať pri úmrtí blízkeho človeka',
     text: 'Komu zavolať ako prvému, čo urobí obhliadajúci lekár a čo nasleduje doma aj v nemocnici.',
     telo: [
@@ -364,8 +367,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-05-09',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/asset-06.jpg',
-    fotoAlt: 'Tím Paciga pri vozidlách',
+    foto: '/assets/clanky/medzinarodna-konferencia-pohrebnych-sluzieb-2025.jpg',
+    fotoAlt: 'Sála Medzinárodnej konferencie pohrebných služieb na Slovensku 2025',
     titulok: 'Zúčastnili sme sa Medzinárodnej konferencie pohrebných služieb na Slovensku',
     text: 'Druhý ročník konferencie spojil profesionálov z celej Európy. Témou bola elektronizácia dokumentov aj repatriácia zosnulých.',
     telo: [
@@ -381,8 +384,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-04-22',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/journey-poster.jpg',
-    fotoAlt: 'Nosiči Paciga pri práci',
+    foto: '/assets/clanky/absolvovali-sme-odborne-skolenie.jpg',
+    fotoAlt: 'Účastníci odborného školenia v Lučenci pri práci s modelmi hláv',
     titulok: 'Absolvovali sme odborné školenie',
     text: 'Konzervácia, balzamovanie a rekonštrukcia tváre zosnulého. Ako jediní zo Spiša sme sa zúčastnili medzinárodného školenia v Lučenci.',
     telo: [
@@ -399,8 +402,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-04-04',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/asset-04.jpg',
-    fotoAlt: 'Biele pohrebné vozidlá Paciga pod Tatrami',
+    foto: '/assets/clanky/pohreb-nie-je-vzdy-iba-o-ciernej-farbe.jpg',
+    fotoAlt: 'Čierny stan Paciga na cintoríne pri kríži',
     titulok: 'Pohreb nie je vždy iba o čiernej farbe',
     text: 'Rozhovor o tom, prečo sú naše vozidlá biele a nie čierne. Článok vyšiel v časopise Slovenské pohrebníctvo.',
     telo: [
@@ -423,8 +426,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-01-05',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/svc-obrad.jpg',
-    fotoAlt: 'Luxusná pohrebná limuzína Paciga s personálom',
+    foto: '/assets/clanky/najkrajsie-pohrebne-vozidlo-na-slovensku.jpg',
+    fotoAlt: 'Diplom za 1. miesto v súťaži Najkrajšie pohrebné vozidlo, Lučenec 2024',
     titulok: 'Najkrajšie pohrebné vozidlo na Slovensku',
     text: 'Na zraze pohrebných vozidiel v Lučenci sme s limuzínou Mercedes-Benz E 400 získali prvé miesto.',
     telo: [
@@ -438,8 +441,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-01-05',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/kron-2016.jpg',
-    fotoAlt: 'Stany Paciga na cintoríne',
+    foto: '/assets/clanky/netradicne-ulozenie-urny.jpg',
+    fotoAlt: 'Urnová stena na cintoríne a otvorený kufor pohrebného vozidla',
     titulok: 'Netradičné uloženie urny',
     text: 'Po tridsiatich rokoch sa urna partizánskeho veliteľa vrátila z Austrálie na cintorín v Poprade-Veľkej.',
     telo: [
@@ -453,8 +456,8 @@ export const CLANKY: Clanok[] = [
     datumIso: '2025-01-05',
     tag: 'Zo života Paciga',
     t: 'zo-zivota',
-    foto: '/assets/kron-3000.jpg',
-    fotoAlt: 'Smútočný obrad pod stanom Paciga',
+    foto: '/assets/clanky/novy-obetny-stol-a-kazatelnica.jpg',
+    fotoAlt: 'Biskup pri požehnaní nového obetného stola v kostole',
     titulok: 'Nový obetný stôl a kazateľnica',
     text: 'Podieľali sme sa na obnove oltára vo Farskom kostole Obetovania Pána v Slovenskej Vsi, pod dohľadom Pamiatkového úradu.',
     telo: [

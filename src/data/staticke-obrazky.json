@@ -1,63 +1,4 @@
 {
- "/assets/asset-01.jpg": {
-  "zaklad": "asset-01",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.5023474178403755
- },
- "/assets/asset-03.jpg": {
-  "zaklad": "asset-03",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1254
-  ],
-  "pomer": 1.5
- },
- "/assets/asset-04.jpg": {
-  "zaklad": "asset-04",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.5
- },
- "/assets/asset-05.jpg": {
-  "zaklad": "asset-05",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.5
- },
- "/assets/asset-06.jpg": {
-  "zaklad": "asset-06",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.5
- },
  "/assets/asset-07.jpg": {
   "zaklad": "asset-07",
   "sirky": [
@@ -69,40 +10,6 @@
    1920
   ],
   "pomer": 1.5
- },
- "/assets/asset-09.jpg": {
-  "zaklad": "asset-09",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.5
- },
- "/assets/asset-10.jpg": {
-  "zaklad": "asset-10",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1400
-  ],
-  "pomer": 1.3333333333333333
- },
- "/assets/asset-11.jpg": {
-  "zaklad": "asset-11",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1400
-  ],
-  "pomer": 1.5005359056806002
  },
  "/assets/cintorin.jpg": {
   "zaklad": "cintorin",
@@ -116,8 +23,204 @@
   ],
   "pomer": 1.499531396438613
  },
- "/assets/fleet-still.jpg": {
-  "zaklad": "fleet-still",
+ "/assets/clanky/absolvovali-sme-odborne-skolenie.jpg": {
+  "zaklad": "clanky-absolvovali-sme-odborne-skolenie",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.3333333333333333
+ },
+ "/assets/clanky/ako-postupovat-pri-umrti-blizkeho-cloveka.jpg": {
+  "zaklad": "clanky-ako-postupovat-pri-umrti-blizkeho-cloveka",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.761467889908257
+ },
+ "/assets/clanky/digitalna-pomoc-po-pohrebe-potom-sk.jpg": {
+  "zaklad": "clanky-digitalna-pomoc-po-pohrebe-potom-sk",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1200
+  ],
+  "pomer": 1.9047619047619047
+ },
+ "/assets/clanky/druh-pohrebneho-obradu.jpg": {
+  "zaklad": "clanky-druh-pohrebneho-obradu",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1200
+  ],
+  "pomer": 1.5
+ },
+ "/assets/clanky/kvetinova-vyzdoba-na-pohrebe.jpg": {
+  "zaklad": "clanky-kvetinova-vyzdoba-na-pohrebe",
+  "sirky": [
+   320,
+   480,
+   640,
+   864
+  ],
+  "pomer": 1.35423197492163
+ },
+ "/assets/clanky/medzinarodna-konferencia-pohrebnych-sluzieb-2025.jpg": {
+  "zaklad": "clanky-medzinarodna-konferencia-pohrebnych-sluzieb-2025",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1080
+  ],
+  "pomer": 1.2857142857142858
+ },
+ "/assets/clanky/medzinarodna-konferencia-pohrebnych-sluzieb-2026.jpg": {
+  "zaklad": "clanky-medzinarodna-konferencia-pohrebnych-sluzieb-2026",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.1334120425029517
+ },
+ "/assets/clanky/najkrajsie-pohrebne-vozidlo-na-slovensku.jpg": {
+  "zaklad": "clanky-najkrajsie-pohrebne-vozidlo-na-slovensku",
+  "sirky": [
+   320,
+   480,
+   640,
+   800
+  ],
+  "pomer": 1.4234875444839858
+ },
+ "/assets/clanky/netradicne-ulozenie-urny.jpg": {
+  "zaklad": "clanky-netradicne-ulozenie-urny",
+  "sirky": [
+   320,
+   480,
+   640,
+   800
+  ],
+  "pomer": 1.3333333333333333
+ },
+ "/assets/clanky/novy-obetny-stol-a-kazatelnica.jpg": {
+  "zaklad": "clanky-novy-obetny-stol-a-kazatelnica",
+  "sirky": [
+   320,
+   480,
+   640,
+   800
+  ],
+  "pomer": 0.8
+ },
+ "/assets/clanky/od-prezidenta-az-po-obycajnych-ludi.jpg": {
+  "zaklad": "clanky-od-prezidenta-az-po-obycajnych-ludi",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1878
+  ],
+  "pomer": 0.73359375
+ },
+ "/assets/clanky/odtlacok-prsta-zosnuleho-na-pamiatku.jpg": {
+  "zaklad": "clanky-odtlacok-prsta-zosnuleho-na-pamiatku",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/clanky/pohreb-nie-je-vzdy-iba-o-ciernej-farbe.jpg": {
+  "zaklad": "clanky-pohreb-nie-je-vzdy-iba-o-ciernej-farbe",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1277
+  ],
+  "pomer": 1.500587544065805
+ },
+ "/assets/clanky/riesenie-pozostalosti-po-pohrebe.jpg": {
+  "zaklad": "clanky-riesenie-pozostalosti-po-pohrebe",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1024
+  ],
+  "pomer": 1.5585996955859969
+ },
+ "/assets/clanky/smutocne-oznamenia-fotografia-a-hudba.jpg": {
+  "zaklad": "clanky-smutocne-oznamenia-fotografia-a-hudba",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1000
+  ],
+  "pomer": 1.5037593984962405
+ },
+ "/assets/clanky/spolupraca-so-spominam-sk.jpg": {
+  "zaklad": "clanky-spolupraca-so-spominam-sk",
+  "sirky": [
+   320,
+   480,
+   640,
+   800
+  ],
+  "pomer": 1
+ },
+ "/assets/clanky/sposoby-pochovavania.jpg": {
+  "zaklad": "clanky-sposoby-pochovavania",
+  "sirky": [
+   320,
+   450
+  ],
+  "pomer": 1
+ },
+ "/assets/clanky/umrtie-v-zahranici.jpg": {
+  "zaklad": "clanky-umrtie-v-zahranici",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1474
+  ],
+  "pomer": 0.8432494279176201
+ },
+ "/assets/clanky/viac-nez-pohrebna-sluzba.jpg": {
+  "zaklad": "clanky-viac-nez-pohrebna-sluzba",
   "sirky": [
    320,
    480,
@@ -127,6 +230,30 @@
    1920
   ],
   "pomer": 1.7777777777777777
+ },
+ "/assets/clanky/vyber-pohrebnej-sluzby-a-organizacia-pohrebu.jpg": {
+  "zaklad": "clanky-vyber-pohrebnej-sluzby-a-organizacia-pohrebu",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 1.5
+ },
+ "/assets/clanky/xxi-konferencia-hca-slovakia.jpg": {
+  "zaklad": "clanky-xxi-konferencia-hca-slovakia",
+  "sirky": [
+   320,
+   480,
+   640,
+   960,
+   1440,
+   1920
+  ],
+  "pomer": 2.0168067226890756
  },
  "/assets/info-hero.jpg": {
   "zaklad": "info-hero",
@@ -139,54 +266,6 @@
    1920
   ],
   "pomer": 1.7770597738287561
- },
- "/assets/journey-poster.jpg": {
-  "zaklad": "journey-poster",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.7777777777777777
- },
- "/assets/kron-2016.jpg": {
-  "zaklad": "kron-2016",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.3333333333333333
- },
- "/assets/kron-3000.jpg": {
-  "zaklad": "kron-3000",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1920
-  ],
-  "pomer": 1.3333333333333333
- },
- "/assets/o-nas-limuzina.jpg": {
-  "zaklad": "o-nas-limuzina",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1600
-  ],
-  "pomer": 1.5009380863039399
  },
  "/assets/o-nas-tim.jpg": {
   "zaklad": "o-nas-tim",
@@ -222,17 +301,6 @@
   ],
   "pomer": 1.500682128240109
  },
- "/assets/sperky-studio.jpg": {
-  "zaklad": "sperky-studio",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1400
-  ],
-  "pomer": 1
- },
  "/assets/sperky/kolekcia.jpg": {
   "zaklad": "sperky-kolekcia",
   "sirky": [
@@ -243,28 +311,5 @@
    1400
   ],
   "pomer": 1.5005359056806002
- },
- "/assets/svc-kamenarstvo.jpg": {
-  "zaklad": "svc-kamenarstvo",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1413
-  ],
-  "pomer": 1
- },
- "/assets/svc-obrad.jpg": {
-  "zaklad": "svc-obrad",
-  "sirky": [
-   320,
-   480,
-   640,
-   960,
-   1440,
-   1600
-  ],
-  "pomer": 1
  }
 }
