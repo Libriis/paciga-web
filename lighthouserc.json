@@ -2,9 +2,9 @@
   "ci": {
     "collect": {
       "url": [
-        "https://paciga-web.vercel.app/",
-        "https://paciga-web.vercel.app/kontakt",
-        "https://paciga-web.vercel.app/sperky"
+        "https://www.paciga.sk/",
+        "https://www.paciga.sk/kontakt",
+        "https://www.paciga.sk/sperky"
       ],
       "numberOfRuns": 3
     },
