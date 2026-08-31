@@ -100,28 +100,24 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
       <section class="parte-card" data-reveal>
         <div class="parte-card-label">Posledná rozlúčka {rozluckaS}</div>
         <div class="parte-when">{fmtDlhy(p.rozlucka_datum)} o {p.rozlucka_cas}</div>
-        {/* Itinerár dňa namiesto tabuľkových riadkov (31. 8. 2026):
-            obrad a pohreb ako zastávky na zvislej linke, mapa pri každej. */}
-        <ol class="itinerar">
-          <li class="it-stop">
-            <span class="it-bod" aria-hidden="true"></span>
-            <div>
-              <span class="it-typ">Miesto obradu</span>
-              <span class="it-miesto">{p.rozlucka_miesto}</span>
-              <a class="it-mapa" href={mapUrl(p.rozlucka_miesto!)} target="_blank" rel="noopener">Zobraziť na mape →</a>
-            </div>
-          </li>
+        {/* Obe miesta vedľa seba (1. 9. 2026, vzor efferd/grid-feature-cards):
+            zvislý itinerár bol klientovi pridlhý. */}
+        <div class:list={['rz-miesta', { jedno: !p.miesto_pohrebu }]}>
+          <div class="rz-miesto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="rz-typ">Miesto obradu</span>
+            <span class="rz-nazov">{p.rozlucka_miesto}</span>
+            <a class="rz-mapa" href={mapUrl(p.rozlucka_miesto!)} target="_blank" rel="noopener">Zobraziť na mape →</a>
+          </div>
           {p.miesto_pohrebu && (
-            <li class="it-stop">
-              <span class="it-bod" aria-hidden="true"></span>
-              <div>
-                <span class="it-typ">Miesto pohrebu</span>
-                <span class="it-miesto">{p.miesto_pohrebu}</span>
-                <a class="it-mapa" href={mapUrl(p.miesto_pohrebu)} target="_blank" rel="noopener">Zobraziť na mape →</a>
-              </div>
-            </li>
+            <div class="rz-miesto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="rz-typ">Miesto pohrebu</span>
+              <span class="rz-nazov">{p.miesto_pohrebu}</span>
+              <a class="rz-mapa" href={mapUrl(p.miesto_pohrebu)} target="_blank" rel="noopener">Zobraziť na mape →</a>
+            </div>
           )}
-        </ol>
+        </div>
         {ics && (
           <div class="parte-card-actions">
             <a class="parte-pill" href={ics} download={`rozlucka-${p.slug}.ics`}>Pridať do kalendára</a>
@@ -134,24 +130,20 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
         <div class="parte-card-label">Posledná rozlúčka</div>
         <div class="parte-konala">Rozlúčka {rozluckaS} sa konala</div>
         <div class="parte-when">{fmtDlhy(p.rozlucka_datum)}</div>
-        <ol class="itinerar">
-          <li class="it-stop">
-            <span class="it-bod" aria-hidden="true"></span>
-            <div>
-              <span class="it-typ">Miesto obradu</span>
-              <span class="it-miesto">{p.rozlucka_miesto}</span>
-            </div>
-          </li>
+        <div class:list={['rz-miesta', { jedno: !p.miesto_pohrebu }]}>
+          <div class="rz-miesto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="rz-typ">Miesto obradu</span>
+            <span class="rz-nazov">{p.rozlucka_miesto}</span>
+          </div>
           {p.miesto_pohrebu && (
-            <li class="it-stop">
-              <span class="it-bod" aria-hidden="true"></span>
-              <div>
-                <span class="it-typ">Miesto pohrebu</span>
-                <span class="it-miesto">{p.miesto_pohrebu}</span>
-              </div>
-            </li>
+            <div class="rz-miesto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="rz-typ">Miesto pohrebu</span>
+              <span class="rz-nazov">{p.miesto_pohrebu}</span>
+            </div>
           )}
-        </ol>
+        </div>
       </section>
     )}
 
