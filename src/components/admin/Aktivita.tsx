@@ -1,7 +1,9 @@
 /* Aktivita administrátorov: kto sa prihlásil a čo zmenil.
-   Vidí ju iba hlavný správca — skutočnú hranicu drží RLS na tabuľke
-   aktivita (politika aktivita_hlavny_select), takže ostatným sa zoznam
-   jednoducho nenačíta a komponent to povie.
+   Prideliteľné právo 'aktivita' (hlavný správca ho má vždy) — skutočnú
+   hranicu drží RLS na tabuľke aktivita (politika aktivita_pravo_select),
+   takže ostatným sa zoznam jednoducho nenačíta a komponent to povie.
+   Mená k e-mailom vidí len hlavný správca (RLS na admini); bežnému
+   používateľovi s právom aktivita sa ukážu prihlasovacie mená.
 
    Riadky píše databázový zapisovač (supabase/schema-aktivita.sql):
    trigger na tabuľkách, ktoré admini upravujú, plus RPC zapis_prihlasenie
@@ -44,7 +46,7 @@ export function Aktivita() {
       const { data, error } = await sb.from('aktivita')
         .select('*').order('cas', { ascending: false }).limit(400);
       if (error) {
-        setChyba('Aktivitu vidí len hlavný správca.');
+        setChyba('Na aktivitu nemáš právo. Pridelí ho hlavný správca v sekcii Používatelia.');
         setRiadky([]);
         return;
       }

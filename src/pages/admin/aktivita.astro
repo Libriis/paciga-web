@@ -1,7 +1,8 @@
 ---
 /*
-  Denník aktivity. Vidí ho iba hlavný správca — skutočnú hranicu drží
-  RLS na tabuľke aktivita, komponent bez prístupu dostane prázdny zoznam.
+  Denník aktivity. Od 1. 9. 2026 je to prideliteľné právo 'aktivita'
+  (Používatelia -> zaškrtnutie); hlavný správca ho má vždy. Skutočnú
+  hranicu drží RLS na tabuľke aktivita (ma_pristup('aktivita')).
 */
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import Aktivita from '../../components/admin/Aktivita.tsx';
@@ -11,6 +12,6 @@ import Aktivita from '../../components/admin/Aktivita.tsx';
 
 <script>
 import { requireAuth } from '../../scripts/admin-core.js';
-await requireAuth();
+await requireAuth('aktivita');
 </script>
 </AdminLayout>

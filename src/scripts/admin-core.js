@@ -190,6 +190,7 @@ export const SEKCIE = [
   { key: 'navstevnost', label: 'Návštevnosť', popis: 'Kto chodí na web a odkiaľ' },
   { key: 'vitals', label: 'Rýchlosť webu', popis: 'Merania z terénu' },
   { key: 'obsah', label: 'Obsah webu', popis: 'Úprava textov a fotiek priamo na stránkach' },
+  { key: 'aktivita', label: 'Aktivita', popis: 'Denník prihlásení a zmien administrátorov' },
 ];
 
 /* Prístupy prihláseného. Načítajú sa raz za stránku.

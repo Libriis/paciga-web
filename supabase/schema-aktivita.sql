@@ -23,9 +23,13 @@ create index if not exists aktivita_cas_idx on public.aktivita (cas desc);
 
 alter table public.aktivita enable row level security;
 
+-- Od 1. 9. 2026 je citanie pridelitelne pravo 'aktivita' (migracia
+-- aktivita_pridelitelne_pravo): hlavny a '*' prejdu automaticky,
+-- ostatni podla zaskrtnutia v sekcii Pouzivatelia.
 drop policy if exists aktivita_hlavny_select on public.aktivita;
-create policy aktivita_hlavny_select on public.aktivita
-  for select to authenticated using (public.je_hlavny_admin());
+drop policy if exists aktivita_pravo_select on public.aktivita;
+create policy aktivita_pravo_select on public.aktivita
+  for select to authenticated using (public.ma_pristup('aktivita'));
 
 revoke all on public.aktivita from public, anon;
 grant select on public.aktivita to authenticated;
