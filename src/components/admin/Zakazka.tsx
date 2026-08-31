@@ -483,12 +483,12 @@ export function Zakazka() {
                   {!parte.published && <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">skryté</span>}
                 </p>
                 <p className="mt-1 text-[13px] text-muted-foreground">
-                  {parte.published ? 'Zverejnené na webe.' : 'Zatiaľ skryté — zverejniť ho vieš v sekcii Parte a dopyty.'}
+                  {parte.published ? 'Zverejnené na webe.' : 'Zatiaľ skryté — zverejniť ho vieš v sekcii Parte.'}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <OdkazTlacidlo maly href={`/parte/${parte.slug}`} target="_blank" rel="noopener">Zobraziť parte</OdkazTlacidlo>
-                <OdkazTlacidlo maly href="/admin/web">Upraviť v správe webu</OdkazTlacidlo>
+                <OdkazTlacidlo maly href="/admin/parte">Upraviť v sekcii Parte</OdkazTlacidlo>
               </div>
             </div>
           ) : (
@@ -496,7 +496,7 @@ export function Zakazka() {
               <p className="mb-3 text-[13.5px] text-muted-foreground">
                 {chybaKParte.length
                   ? `Na vytvorenie parte doplň: ${chybaKParte.join(', ')}.`
-                  : 'Z údajov zákazky sa vytvorí parte. Zverejníš ho potom v sekcii Parte a dopyty.'}
+                  : 'Z údajov zákazky sa vytvorí parte. Zverejníš ho potom v sekcii Parte.'}
               </p>
               <Tlacidlo variant="plne" maly disabled={chybaKParte.length > 0} onClick={vytvorParte}>
                 Vytvoriť parte z tejto zákazky

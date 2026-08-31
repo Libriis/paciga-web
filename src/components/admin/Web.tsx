@@ -1,6 +1,14 @@
-/* Web a parte: tri záložky — parte, kondolencie, dopyty.
-   Záložka sa dá otvoriť aj priamym odkazom /admin/web#dopyty, na to sa
-   odkazuje dashboard aj zvonček v hornej lište. */
+/* Web a parte: parte, kondolencie a dopyty.
+   Od 31. 8. 2026 to nie sú záložky v jednej stránke, ale tri samostatné
+   stránky (/admin/parte, /admin/kondolencie, /admin/dopyty) s vlastnou
+   položkou v menu. Klient chcel, aby ich obsluha videla oddelene.
+
+   Zostal jeden komponent s prepínačom `zobraz`: tri sekcie zdieľajú
+   pomocné funkcie (Karta, slugify, výpočet veku) a rozdelenie do troch
+   súborov by ich buď duplikovalo, alebo si vypýtalo štvrtý súbor.
+
+   Právomoc zostáva jedna: 'web'. Kľúč sedí s admini.pristupy a s RLS,
+   takže rozbitie na tri kľúče by si vypýtalo migráciu údajov aj politík. */
 import { useEffect, useRef, useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import FotoPole from './FotoPole';
@@ -14,11 +22,7 @@ import {
 
 type Riadok = Record<string, any>;
 
-const ZALOZKY = [
-  { key: 'parte', label: 'Parte' },
-  { key: 'kondolencie', label: 'Kondolencie' },
-  { key: 'dopyty', label: 'Dopyty' },
-];
+export type Sekcia = 'parte' | 'kondolencie' | 'dopyty';
 
 const PRAZDNE_PARTE = {
   id: '', meno: '', pohlavie: 'zena', slug: '', datum_narodenia: '', datum_umrtia: '',
@@ -60,8 +64,7 @@ function Karta({ nadpis, meta, akcie, citat, stlmene = false }: {
   );
 }
 
-export function Web() {
-  const [zalozka, setZalozka] = useState('parte');
+export function Web({ zobraz }: { zobraz: Sekcia }) {
   const [parte, setParte] = useState<Riadok[] | null>(null);
   const [kondolencie, setKondolencie] = useState<Riadok[] | null>(null);
   const [dopyty, setDopyty] = useState<Riadok[] | null>(null);
@@ -88,24 +91,13 @@ export function Web() {
     setDopyty(data || []);
   };
 
+  /* Každá stránka si sťahuje len svoju tabuľku. Predtým sa načítavali
+     všetky tri naraz, lebo boli na jednej stránke a prepínali sa záložkou. */
   useEffect(() => {
-    /* Záložku určuje aj kotva v adrese. Počúvame na hashchange, lebo odkazy
-       z dashboardu a zo zvončeka vedú na /admin/web#dopyty — keď už na tejto
-       stránke stojíš, prehliadač nič nenačítava a bez toho by sa nič nestalo. */
-    const podlaHashu = () => {
-      const hash = location.hash.slice(1);
-      if (['parte', 'kondolencie', 'dopyty'].includes(hash)) setZalozka(hash);
-    };
-    podlaHashu();
-    window.addEventListener('hashchange', podlaHashu);
-
-    nacitajParte().catch(() => setParte([]));
-    nacitajKondolencie().catch(() => setKondolencie([]));
-    nacitajDopyty().catch(() => setDopyty([]));
-  }, []);
-
-  const cakaKondolencii = (kondolencie || []).filter((k) => !k.schvalene).length;
-  const novychDopytov = (dopyty || []).filter((d) => !d.precitane).length;
+    if (zobraz === 'parte') nacitajParte().catch(() => setParte([]));
+    if (zobraz === 'kondolencie') nacitajKondolencie().catch(() => setKondolencie([]));
+    if (zobraz === 'dopyty') nacitajDopyty().catch(() => setDopyty([]));
+  }, [zobraz]);
 
   const zmen = (pole: string, hodnota: any) =>
     setFormular((f) => (f ? { ...f, [pole]: hodnota } : f));
@@ -228,33 +220,9 @@ export function Web() {
 
   /* ---------- vykreslenie ---------- */
 
-  const odznak = (key: string) =>
-    key === 'kondolencie' ? cakaKondolencii : key === 'dopyty' ? novychDopytov : 0;
-
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex gap-1 border-b border-border">
-        {ZALOZKY.map((z) => (
-          <button
-            key={z.key}
-            type="button"
-            onClick={() => { setZalozka(z.key); history.replaceState(null, '', `#${z.key}`); }}
-            className={`-mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 text-[14px] font-semibold transition-colors ${
-              zalozka === z.key
-                ? 'border-foreground text-foreground'
-                : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            {z.label}
-            {odznak(z.key) > 0 && (
-              <span className="grid min-w-5 place-items-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">
-                {odznak(z.key)}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {zalozka === 'parte' && (
+      {zobraz === 'parte' && (
         <>
           <HlavaStranky
             nadpis="Smútočné oznámenia"
@@ -417,7 +385,7 @@ export function Web() {
         </>
       )}
 
-      {zalozka === 'kondolencie' && (
+      {zobraz === 'kondolencie' && (
         <>
           <HlavaStranky nadpis="Kondolencie" popis="Odkazy od návštevníkov. Na web idú až po schválení." />
           {[
@@ -457,7 +425,7 @@ export function Web() {
         </>
       )}
 
-      {zalozka === 'dopyty' && (
+      {zobraz === 'dopyty' && (
         <>
           <HlavaStranky nadpis="Dopyty z kontaktného formulára" popis="Z dopytu sa dá jedným klikom založiť zákazka." />
           <Ramec>

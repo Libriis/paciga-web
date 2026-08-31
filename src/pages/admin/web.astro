@@ -1,12 +1,24 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
-import Web from '../../components/admin/Web.tsx';
+// Stará zlúčená stránka. Od 31. 8. 2026 sú parte, kondolencie a dopyty
+// tri samostatné stránky, táto len presmeruje. Ostáva kvôli záložkám
+// v prehliadači a starým odkazom typu /admin/web#dopyty.
+//
+// Presmerovanie je v prehliadači, nie v konfigurácii: web je `output: 'static'`
+// a `redirects` v astro.config drží zoznam pre starý WordPress. Navyše
+// kotvu (#dopyty) server nikdy nevidí, takže cieľ vie určiť len prehliadač.
 ---
-<AdminLayout title="Web a parte" sekcia="web" nove>
-  <Web client:load />
-
-<script>
-import { requireAuth } from '../../scripts/admin-core.js';
-await requireAuth('web');
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>Presmerovanie | Paciga admin</title>
+<meta name="robots" content="noindex, nofollow">
+<script is:inline>
+  var kam = { dopyty: '/admin/dopyty', kondolencie: '/admin/kondolencie' };
+  location.replace(kam[location.hash.slice(1)] || '/admin/parte');
 </script>
-</AdminLayout>
+</head>
+<body>
+<p>Presmerúvam na <a href="/admin/parte">Parte</a>.</p>
+</body>
+</html>
