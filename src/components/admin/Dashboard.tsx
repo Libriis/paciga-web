@@ -328,11 +328,11 @@ export function Dashboard() {
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                <a href="/admin/web#dopyty" className="flex items-center justify-between rounded-md border border-border px-3 py-2.5 transition-colors hover:border-foreground/25">
+                <a href="/admin/dopyty" className="flex items-center justify-between rounded-md border border-border px-3 py-2.5 transition-colors hover:border-foreground/25">
                   <span className="flex items-center gap-2 text-[14px]"><Mail className="size-4 text-muted-foreground" /> Nevybavené dopyty</span>
                   <b className="tabular-nums">{data.nevybaveneDopyty.length}</b>
                 </a>
-                <a href="/admin/web#kondolencie" className="flex items-center justify-between rounded-md border border-border px-3 py-2.5 transition-colors hover:border-foreground/25">
+                <a href="/admin/kondolencie" className="flex items-center justify-between rounded-md border border-border px-3 py-2.5 transition-colors hover:border-foreground/25">
                   <span className="flex items-center gap-2 text-[14px]"><MessageSquare className="size-4 text-muted-foreground" /> Kondolencie</span>
                   <b className="tabular-nums">{data.naSchvalenie.length}</b>
                 </a>

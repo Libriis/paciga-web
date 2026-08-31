@@ -165,7 +165,13 @@ export const ODKAZY = {
   zakazky: '/admin/zakazky',
   kontakty: '/admin/kontakty',
   statistiky: '/admin/statistiky',
-  web: '/admin/web',
+  // Parte, kondolencie a dopyty sú od 31. 8. 2026 tri stránky s jednou
+  // právomocou 'web'. Kľúč `web` ostáva a vedie na prvú z nich, lebo
+  // podľa neho hľadá requireAuth() náhradnú stránku pri chýbajúcom práve.
+  web: '/admin/parte',
+  parte: '/admin/parte',
+  kondolencie: '/admin/kondolencie',
+  dopyty: '/admin/dopyty',
   clanky: '/admin/clanky',
   vitals: '/admin/vitals',
   obsah: '/admin/obsah',
@@ -177,7 +183,7 @@ export const SEKCIE = [
   { key: 'zakazky', label: 'Zákazky', popis: 'Zákazky, úkony a doklady' },
   { key: 'kontakty', label: 'Kontakty', popis: 'Pozostalí a objednávatelia' },
   { key: 'statistiky', label: 'Štatistiky', popis: 'Grafy a porovnanie pobočiek' },
-  { key: 'web', label: 'Web a parte', popis: 'Parte, kondolencie, dopyty' },
+  { key: 'web', label: 'Parte', popis: 'Parte, kondolencie a dopyty' },
   { key: 'clanky', label: 'Aktuality', popis: 'Články na webe' },
   { key: 'vitals', label: 'Rýchlosť webu', popis: 'Merania z terénu' },
   { key: 'obsah', label: 'Obsah webu', popis: 'Úprava textov a fotiek priamo na stránkach' },

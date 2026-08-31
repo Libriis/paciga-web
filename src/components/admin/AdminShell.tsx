@@ -22,15 +22,18 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   LayoutGrid, FolderKanban, Users, ChartColumn, Newspaper, FileText,
-  PencilRuler, Gauge, ShieldCheck, Plus, ExternalLink, LogOut, Phone, Bell,
+  MessageSquare, Inbox, PencilRuler, Gauge, ShieldCheck, Plus, ExternalLink,
+  LogOut, Phone, Bell,
 } from 'lucide-react';
 import { getClient, mojProfil, maPristup, DEMO, ODKAZY } from '@/scripts/admin-core.js';
 
 type Profil = { meno: string | null; email: string | null; pristupy: string[]; hlavny: boolean };
 
-type Polozka = { key: string; label: string; href: string; ikona: typeof LayoutGrid };
+/** `pravo` je kľúč právomoci, keď sa líši od `key`. Parte, kondolencie
+    a dopyty sú tri položky menu, ale jedna právomoc ('web'). */
+type Polozka = { key: string; label: string; href: string; ikona: typeof LayoutGrid; pravo?: string };
 
-/* Osem sekcií admina rozdelených do troch skupín, ako má vzor. Poradie
+/* Sekcie admina rozdelené do troch skupín, ako má vzor. Poradie
    drží pracovný deň: najprv čo sa rieši denne, potom web, potom správa. */
 const SKUPINY: { nadpis: string; polozky: Polozka[] }[] = [
   {
@@ -45,7 +48,9 @@ const SKUPINY: { nadpis: string; polozky: Polozka[] }[] = [
   {
     nadpis: 'Web',
     polozky: [
-      { key: 'web', label: 'Parte a dopyty', href: ODKAZY.web, ikona: FileText },
+      { key: 'parte', label: 'Parte', href: ODKAZY.parte, ikona: FileText, pravo: 'web' },
+      { key: 'kondolencie', label: 'Kondolencie', href: ODKAZY.kondolencie, ikona: MessageSquare, pravo: 'web' },
+      { key: 'dopyty', label: 'Dopyty', href: ODKAZY.dopyty, ikona: Inbox, pravo: 'web' },
       { key: 'clanky', label: 'Aktuality', href: ODKAZY.clanky, ikona: Newspaper },
       { key: 'obsah', label: 'Obsah stránok', href: ODKAZY.obsah, ikona: PencilRuler },
       { key: 'vitals', label: 'Rýchlosť webu', href: ODKAZY.vitals, ikona: Gauge },
@@ -98,7 +103,7 @@ export function AdminShell({ titul, sekcia, children }: AdminShellProps) {
     .split(/[\s@.]+/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase()).join('');
 
   const odznak = (key: string) =>
-    key === 'web' ? cakajuce.dopyty + cakajuce.kondolencie : 0;
+    key === 'kondolencie' ? cakajuce.kondolencie : key === 'dopyty' ? cakajuce.dopyty : 0;
 
   return (
     <div data-ui21 className="font-sans text-foreground">
@@ -132,7 +137,7 @@ export function AdminShell({ titul, sekcia, children }: AdminShellProps) {
 
             {profil && SKUPINY.map((skupina) => {
               const viditelne = skupina.polozky.filter((p) =>
-                p.key === 'pouzivatelia' ? profil.hlavny : maPristup(profil, p.key));
+                p.key === 'pouzivatelia' ? profil.hlavny : maPristup(profil, p.pravo ?? p.key));
               if (!viditelne.length) return null;
               return (
                 <SidebarGroup key={skupina.nadpis} className="py-2">
@@ -208,7 +213,7 @@ export function AdminShell({ titul, sekcia, children }: AdminShellProps) {
 
             <div className="ml-auto flex items-center gap-2">
               <a
-                href="/admin/web#dopyty"
+                href={ODKAZY.dopyty}
                 aria-label="Čakajúce položky z webu"
                 className="relative grid size-11 place-items-center rounded-md border border-border text-muted-foreground transition-colors hover:text-foreground sm:size-8"
               >
