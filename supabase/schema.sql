@@ -23,6 +23,9 @@ create table if not exists public.parte (
   rozlucka_datum date,
   rozlucka_cas text check (rozlucka_cas is null or rozlucka_cas ~ '^\d{1,2}:\d{2}$'),
   rozlucka_miesto text,
+  -- pochovanie byva niekedy inde nez rozlucka; prazdne = web nezobrazi
+  -- (na zivej DB doplnene migraciou parte_miesto_pohrebu, 31. 8. 2026)
+  miesto_pohrebu text,
   odkaz_rodine text,
   published boolean not null default true,
   sviecky int not null default 0,

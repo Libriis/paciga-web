@@ -102,9 +102,11 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
         <div class="parte-when">{fmtDlhy(p.rozlucka_datum)} o {p.rozlucka_cas}</div>
         <div class="parte-card-rows">
           <div class="parte-card-row"><span class="k">Miesto</span><span class="v">📍 {p.rozlucka_miesto}</span></div>
+          {p.miesto_pohrebu && <div class="parte-card-row"><span class="k">Pohreb</span><span class="v">📍 {p.miesto_pohrebu}</span></div>}
         </div>
         <div class="parte-card-actions">
           <a class="parte-pill" href={mapUrl(p.rozlucka_miesto!)} target="_blank" rel="noopener">Zobraziť na mape →</a>
+          {p.miesto_pohrebu && <a class="parte-pill" href={mapUrl(p.miesto_pohrebu)} target="_blank" rel="noopener">Miesto pohrebu na mape →</a>}
           {ics && <a class="parte-pill" href={ics} download={`rozlucka-${p.slug}.ics`}>Pridať do kalendára</a>}
         </div>
       </section>
@@ -116,6 +118,7 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
         <div class="parte-when">{fmtDlhy(p.rozlucka_datum)}</div>
         <div class="parte-card-rows">
           <div class="parte-card-row"><span class="k">Miesto</span><span class="v">📍 {p.rozlucka_miesto}</span></div>
+          {p.miesto_pohrebu && <div class="parte-card-row"><span class="k">Pohreb</span><span class="v">📍 {p.miesto_pohrebu}</span></div>}
         </div>
       </section>
     )}
