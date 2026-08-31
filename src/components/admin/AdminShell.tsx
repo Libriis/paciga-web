@@ -62,7 +62,7 @@ const SKUPINY: { nadpis: string; polozky: Polozka[] }[] = [
     nadpis: 'Správa',
     polozky: [
       { key: 'pouzivatelia', label: 'Používatelia', href: '/admin/pouzivatelia', ikona: ShieldCheck, lenHlavny: true },
-      { key: 'aktivita', label: 'Aktivita', href: ODKAZY.aktivita, ikona: History, lenHlavny: true },
+      { key: 'aktivita', label: 'Aktivita', href: ODKAZY.aktivita, ikona: History },
     ],
   },
 ];
