@@ -279,6 +279,9 @@ const SLUZBY_MEGA = [
     pripojenie LCP ani FCP neujde. Poradie drží defer. */}
 <script is:inline defer src="/assets/vendor/web-vitals.js"></script>
 <script is:inline defer src="/js/vitals.js"></script>
+{/* Vlastné počítadlo návštevnosti. Jeden beacon po načítaní stránky,
+    bez cookie a bez identifikátora. Čísla vidí admin v /admin/navstevnost. */}
+<script is:inline defer src="/js/navsteva.js"></script>
 <slot name="scripts" />
 {/* Úprava obsahu priamo na stránke. Bežný návštevník stiahne len tento
     krátky test: Supabase si reláciu ukladá do localStorage pod kľúčom

@@ -173,6 +173,7 @@ export const ODKAZY = {
   kondolencie: '/admin/kondolencie',
   dopyty: '/admin/dopyty',
   clanky: '/admin/clanky',
+  navstevnost: '/admin/navstevnost',
   vitals: '/admin/vitals',
   obsah: '/admin/obsah',
 };
@@ -185,6 +186,7 @@ export const SEKCIE = [
   { key: 'statistiky', label: 'Štatistiky', popis: 'Grafy a porovnanie pobočiek' },
   { key: 'web', label: 'Parte', popis: 'Parte, kondolencie a dopyty' },
   { key: 'clanky', label: 'Aktuality', popis: 'Články na webe' },
+  { key: 'navstevnost', label: 'Návštevnosť', popis: 'Kto chodí na web a odkiaľ' },
   { key: 'vitals', label: 'Rýchlosť webu', popis: 'Merania z terénu' },
   { key: 'obsah', label: 'Obsah webu', popis: 'Úprava textov a fotiek priamo na stránkach' },
 ];

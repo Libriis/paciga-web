@@ -1,0 +1,12 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Navstevnost from '../../components/admin/Navstevnost.tsx';
+---
+<AdminLayout title="Návštevnosť" sekcia="navstevnost" nove>
+  <Navstevnost client:load />
+
+<script>
+import { requireAuth } from '../../scripts/admin-core.js';
+await requireAuth('navstevnost');
+</script>
+</AdminLayout>
