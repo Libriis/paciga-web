@@ -219,19 +219,20 @@ export function ParteFormular() {
                   value={formular.rozlucka_miesto} onChange={(e) => zmen('rozlucka_miesto', e.target.value)} />
               </Pole>
 
-              <Pole popis="Miesto pohrebu (nepovinné)">
-                <Vstup maxLength={200} placeholder="napr. cintorín vo Veľkej"
-                  value={formular.miesto_pohrebu} onChange={(e) => zmen('miesto_pohrebu', e.target.value)} />
-                <span className="mt-1 block text-[12px] text-muted-foreground">
-                  Vyplň, len keď sa pochováva inde, než je rozlúčka. Inak nechaj prázdne.
-                </span>
-              </Pole>
-
               <Pole popis="Odkaz rodine (nepovinné)" className="md:col-span-2">
                 <Textarea rows={3} maxLength={500} value={formular.odkaz_rodine}
                   onChange={(e) => zmen('odkaz_rodine', e.target.value)} />
                 <span className="mt-1 block text-[12px] text-muted-foreground">
                   Zobrazí sa namiesto štandardného textu sústrasti.
+                </span>
+              </Pole>
+              {/* V treťom stĺpci, priamo pod miestom rozlúčky — obe miesta
+                  obradu sú tak pod sebou (požiadavka klienta 31. 8. 2026). */}
+              <Pole popis="Miesto pohrebu (nepovinné)">
+                <Vstup maxLength={200} placeholder="napr. cintorín vo Veľkej"
+                  value={formular.miesto_pohrebu} onChange={(e) => zmen('miesto_pohrebu', e.target.value)} />
+                <span className="mt-1 block text-[12px] text-muted-foreground">
+                  Vyplň, len keď sa pochováva inde, než je rozlúčka. Inak nechaj prázdne.
                 </span>
               </Pole>
               <PoleSamo
