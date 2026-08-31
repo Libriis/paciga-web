@@ -1860,7 +1860,7 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .parte-verse-author { margin-top: 10px; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
 
 /* karty: rozlúčka, kondolencia */
-.parte-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 30px 28px; margin-bottom: 22px; transition: border-color 0.3s ease; }
+.parte-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 34px 30px; margin-bottom: 22px; transition: border-color 0.3s ease; }
 .parte-card:hover { border-color: rgb(var(--fg-rgb) / 0.4); }
 .parte-card-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--dim); margin-bottom: 18px; }
 .parte-konala { color: var(--muted); font-size: 17px; margin-bottom: 6px; }
@@ -3254,9 +3254,12 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   main section.zdielanie { padding-top: 30px; padding-bottom: 30px; }
   main section.zd-na-fotke { padding-top: 0; padding-bottom: 0; }
   /* Karty na parte (rozlúčka, kondolencie) sú tiež <section> v <main>,
-     strop vyššie im dával ~97 px hore aj dole NAVYŠE k vlastným 30 px.
-     Vyzeralo to ako mŕtvy pruh navrchu karty. Nahlásil Tomáš 31. 8. 2026. */
-  main section.parte-card { padding-top: 0; padding-bottom: 0; }
+     strop vyššie im dával ~97 px hore aj dole NAVYŠE k vlastným 34 px.
+     POZOR: nula tu bola chyba — selektor main section.parte-card (0,1,2)
+     prebije aj vlastný padding karty (.parte-card, 0,1,0), takže štítok
+     POSLEDNÁ ROZLÚČKA sadol na hornú hranu boxu. Nahlásil Tomáš 1. 9. 2026.
+     Preto sa tu opakuje hodnota karty, nie nula. */
+  main section.parte-card { padding-top: 34px; padding-bottom: 34px; }
   main > section.cta-band { padding: clamp(72px, 9vh, 100px) 36px; }
   main > section.partners { padding: clamp(64px, 8vh, 90px) 0; }
 }
