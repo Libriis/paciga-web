@@ -9,7 +9,7 @@
 import { useEffect, useRef, useState } from 'react';
 import FotoPole from './FotoPole';
 import {
-  Bunka, HlavaPanelu, HlavaStranky, Hlaska, Nacitavam, Pole, Prepinac,
+  Bunka, HlavaPanelu, HlavaStranky, Hlaska, Nacitavam, Pole, PoleSamo, Prepinac,
   Ramec, Textarea, Tlacidlo, OdkazTlacidlo, Vstup,
 } from './ui';
 import { getClient, zmensiFotku } from '@/scripts/admin-core.js';
@@ -41,6 +41,9 @@ export function ParteFormular() {
   const [hlaska, setHlaska] = useState('');
   const [chyba, setChyba] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  /* Vek a webová adresa sa dopĺňajú z iných polí. Kým sú zamknuté,
+     prepisujú sa samy; po odomknutí sa ich už nedotýkame. */
+  const [rucne, setRucne] = useState({ vek: false, slug: false });
 
   useEffect(() => {
     const id = new URLSearchParams(location.search).get('id');
@@ -149,7 +152,9 @@ export function ParteFormular() {
                   onChange={(e) => setFormular({
                     ...formular,
                     meno: e.target.value,
-                    slug: formular.id ? formular.slug : slugify(e.target.value),
+                    // Pri úprave existujúceho parte sa adresa nemení nikdy,
+                    // inak by prestali fungovať odkazy na už zverejnené parte.
+                    slug: formular.id || rucne.slug ? formular.slug : slugify(e.target.value),
                   })} />
               </Pole>
               <Pole popis="Pohlavie">
@@ -162,7 +167,7 @@ export function ParteFormular() {
                   onChange={(e) => setFormular({
                     ...formular,
                     datum_narodenia: e.target.value,
-                    vek: vypocitajVek(e.target.value, formular.datum_umrtia),
+                    vek: rucne.vek ? formular.vek : vypocitajVek(e.target.value, formular.datum_umrtia),
                   })} />
               </Pole>
               <Pole popis="Dátum úmrtia">
@@ -170,13 +175,20 @@ export function ParteFormular() {
                   onChange={(e) => setFormular({
                     ...formular,
                     datum_umrtia: e.target.value,
-                    vek: vypocitajVek(formular.datum_narodenia, e.target.value),
+                    vek: rucne.vek ? formular.vek : vypocitajVek(formular.datum_narodenia, e.target.value),
                   })} />
               </Pole>
-              <Pole popis="Vek (doplní sa sám)">
+              <PoleSamo
+                popis="Vek"
+                napoveda="Vypočíta sa z dátumu narodenia a úmrtia."
+                zamknute={!rucne.vek}
+                onPrepni={() => setRucne((r) => ({ ...r, vek: !r.vek }))}
+              >
                 <Vstup type="number" min={0} max={130} value={formular.vek}
+                  readOnly={!rucne.vek}
+                  className={rucne.vek ? '' : 'border-dashed'}
                   onChange={(e) => zmen('vek', e.target.value)} />
-              </Pole>
+              </PoleSamo>
 
               <Pole popis="Dátum rozlúčky">
                 <Vstup type="date" value={formular.rozlucka_datum} onChange={(e) => zmen('rozlucka_datum', e.target.value)} />
@@ -196,11 +208,19 @@ export function ParteFormular() {
                   Zobrazí sa namiesto štandardného textu sústrasti.
                 </span>
               </Pole>
-              <Pole popis="Webová adresa parte">
+              <PoleSamo
+                popis="Webová adresa parte"
+                napoveda={formular.id
+                  ? 'Nemeň ju. Odkazy na už zverejnené parte by prestali fungovať.'
+                  : 'Doplní sa sama z mena. Meň ju len pri dvoch rovnakých menách.'}
+                zamknute={!rucne.slug}
+                onPrepni={() => setRucne((r) => ({ ...r, slug: !r.slug }))}
+              >
                 <Vstup required pattern="[a-z0-9-]{1,80}" maxLength={80}
+                  readOnly={!rucne.slug}
+                  className={rucne.slug ? '' : 'border-dashed'}
                   value={formular.slug} onChange={(e) => zmen('slug', e.target.value)} />
-                <span className="mt-1 block text-[12px] text-muted-foreground">Doplní sa sama z mena.</span>
-              </Pole>
+              </PoleSamo>
 
               <div className="md:col-span-3">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">

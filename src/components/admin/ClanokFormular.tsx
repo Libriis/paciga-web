@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import FotoPole from './FotoPole';
 import EditorClanku from './EditorClanku';
 import {
-  Bunka, HlavaPanelu, HlavaStranky, Hlaska, Nacitavam, Pole,
+  Bunka, HlavaPanelu, HlavaStranky, Hlaska, Nacitavam, Pole, PoleSamo,
   Ramec, Textarea, Tlacidlo, OdkazTlacidlo, Vstup, Vyber,
 } from './ui';
 import { getClient, zmensiFotku, DEMO } from '@/scripts/admin-core.js';
@@ -48,6 +48,9 @@ export function ClanokFormular() {
   const [hlaska, setHlaska] = useState('');
   const [chyba, setChyba] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  /* Adresa clanku sa doplna z titulku. Kym je zamknuta, prepisuje sa sama;
+     po odomknuti sa jej uz nedotykame. */
+  const [rucneSlug, setRucneSlug] = useState(false);
 
   useEffect(() => {
     if (DEMO) { setFormular({ ...PRAZDNY, datum: new Date().toISOString().slice(0, 10) }); return; }
@@ -167,16 +170,23 @@ export function ClanokFormular() {
                   onChange={(e) => setFormular({
                     ...formular,
                     titulok: e.target.value,
-                    slug: formular.id ? formular.slug : naSlug(e.target.value),
+                    // Pri uprave uz zverejneneho clanku sa adresa nemeni nikdy.
+                    slug: formular.id || rucneSlug ? formular.slug : naSlug(e.target.value),
                   })} />
               </Pole>
-              <Pole popis="Adresa článku">
+              <PoleSamo
+                popis="Adresa článku"
+                napoveda={formular.id
+                  ? 'Nemeň ju. Staré odkazy na článok by prestali fungovať.'
+                  : 'Doplní sa sama z titulku.'}
+                zamknute={!rucneSlug}
+                onPrepni={() => setRucneSlug((r) => !r)}
+              >
                 <Vstup required maxLength={120} pattern="[a-z0-9-]+" placeholder="kvetinova-vyzdoba-na-pohrebe"
+                  readOnly={!rucneSlug}
+                  className={rucneSlug ? '' : 'border-dashed'}
                   value={formular.slug} onChange={(e) => zmen('slug', e.target.value)} />
-                <span className="mt-1 block text-[12px] text-muted-foreground">
-                  Po zverejnení ju už nemeň, staré odkazy by prestali fungovať.
-                </span>
-              </Pole>
+              </PoleSamo>
 
               <Pole popis="Kategória">
                 <Vyber value={formular.kategoria} onChange={(e) => zmen('kategoria', e.target.value)}>
