@@ -36,6 +36,10 @@ interface Props {
   maxMB?: number;
   /** vlastný event, ktorým admin stránka oznámi načítanie iného záznamu */
   obnovitEvent?: string;
+  /** zavolá sa, keď používateľ fotku krížikom odstráni. Bez toho rodičovský
+      formulár o odstránení nevie a pri uložení nechá starú adresu v databáze
+      (nahlásené 1. 9. 2026: zmazaná fotka avatara ostala na parte). */
+  onOdstranit?: () => void;
   /** 'sirka' pre titulné fotky článkov, 'portret' pre fotku zosnulého v krúžku */
   tvar?: 'sirka' | 'portret';
 }
@@ -48,6 +52,7 @@ export default function FotoPole({
   popis = 'Na šírku, aspoň 1200 px. Zmenší sa sama.',
   maxMB = 12,
   obnovitEvent,
+  onOdstranit,
   tvar = 'sirka',
 }: Props) {
   const [nahlad, setNahlad] = useState<string | null>(naNahlad(hodnota));
@@ -181,6 +186,7 @@ export default function FotoPole({
             setNahlad(null);
             setChyba(null);
             if (input.current) input.current.value = '';
+            onOdstranit?.();
           }}
           aria-label="Odstrániť fotku"
         >
