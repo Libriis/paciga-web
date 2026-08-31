@@ -1,0 +1,12 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ClanokFormular from '../../../components/admin/ClanokFormular.tsx';
+---
+<AdminLayout title="Aktuality" sekcia="clanky" nove>
+  <ClanokFormular client:load />
+
+<script>
+import { requireAuth } from '../../../scripts/admin-core.js';
+await requireAuth('clanky');
+</script>
+</AdminLayout>
