@@ -36,7 +36,11 @@ const wa = `https://wa.me/?text=${enc(sprava + ' ' + url)}`;
 const sms = `sms:?&body=${enc(sprava + ' ' + url)}`;
 const mail = `mailto:?subject=${enc(sprava)}&body=${enc(sprava + '\n\n' + url)}`;
 ---
-<section class:list={['zdielanie', { 'zd-na-fotke': naFotke }]} data-url={url} data-sprava={sprava} data-reveal>
+{/* Na fotke parte BEZ data-reveal: blok sedí pri spodnom okraji obrazovky,
+    pod štartovacou čiarou scroll animácie (top 88%), takže ikony by sa
+    ukázali až pri prvom scrolle. Rodina ich má vidieť hneď (31. 8. 2026).
+    V texte článku reveal ostáva, tam sa k bloku vždy scrolluje. */}
+<section class:list={['zdielanie', { 'zd-na-fotke': naFotke }]} data-url={url} data-sprava={sprava} data-reveal={naFotke ? null : ''}>
   {/* na fotke nesie blok len nadpis, popisky by tam robili hluk */}
   {!naFotke && <div class="zd-label">{label}</div>}
   <h2>{nadpis}</h2>
@@ -96,8 +100,8 @@ const mail = `mailto:?subject=${enc(sprava)}&body=${enc(sprava + '\n\n' + url)}`
       var panel = box.closest('.phero');
       if (panel) {
         /* offsetTop/offsetHeight zámerne namiesto getBoundingClientRect:
-           blok má data-reveal a GSAP ho pri načítaní posúva, takže rect by
-           vrátil polohu počas animácie a sviečka by na blok naliezala. */
+           rect by pri prípadnej animácii vrátil polohu počas pohybu a sviečka
+           by na blok naliezala. (data-reveal už blok na fotke nemá.) */
         var meraj = function () {
           panel.style.setProperty('--zd-top', Math.round(panel.offsetHeight - box.offsetTop) + 'px');
         };
