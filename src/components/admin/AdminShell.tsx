@@ -23,7 +23,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   LayoutGrid, FolderKanban, Users, ChartColumn, Newspaper, FileText,
   MessageSquare, Inbox, PencilRuler, Gauge, ShieldCheck, Plus, ExternalLink,
-  LogOut, Phone, Bell,
+  LogOut, Phone, Bell, TrendingUp,
 } from 'lucide-react';
 import { getClient, mojProfil, maPristup, DEMO, ODKAZY } from '@/scripts/admin-core.js';
 
@@ -53,6 +53,7 @@ const SKUPINY: { nadpis: string; polozky: Polozka[] }[] = [
       { key: 'dopyty', label: 'Dopyty', href: ODKAZY.dopyty, ikona: Inbox, pravo: 'web' },
       { key: 'clanky', label: 'Aktuality', href: ODKAZY.clanky, ikona: Newspaper },
       { key: 'obsah', label: 'Obsah stránok', href: ODKAZY.obsah, ikona: PencilRuler },
+      { key: 'navstevnost', label: 'Návštevnosť', href: ODKAZY.navstevnost, ikona: TrendingUp },
       { key: 'vitals', label: 'Rýchlosť webu', href: ODKAZY.vitals, ikona: Gauge },
     ],
   },
