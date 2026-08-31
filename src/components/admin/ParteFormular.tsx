@@ -87,7 +87,9 @@ export function ParteFormular() {
     setChyba(false);
     setHlaska('Ukladám…');
     try {
-      let foto_url: string | undefined;
+      /* Východisko je hodnota z formulára: null, keď fotku krížikom
+         odstránili. Nová vybraná fotka ju nižšie prepíše. */
+      let foto_url: string | null = formular.foto_url;
       const vstup = formRef.current?.elements.namedItem('foto') as HTMLInputElement | null;
       const file = vstup?.files?.[0];
       if (file) {
@@ -113,7 +115,9 @@ export function ParteFormular() {
         miesto_pohrebu: formular.miesto_pohrebu.trim() || null,
         odkaz_rodine: formular.odkaz_rodine.trim() || null,
         published: formular.published,
-        ...(foto_url ? { foto_url } : {}),
+        /* Zapisuje sa vždy, aj null. Podmienené rozbalenie tu nechávalo
+           v databáze starú fotku po jej odstránení (nahlásené 1. 9. 2026). */
+        foto_url: foto_url ?? null,
       };
 
       setHlaska('Ukladám parte…');
@@ -258,6 +262,7 @@ export function ParteFormular() {
                   tvar="portret"
                   hodnota={formular.foto_url}
                   popis="Nepovinná. Bez nej sa na webe zobrazia iniciálky."
+                  onOdstranit={() => zmen('foto_url', null)}
                 />
               </div>
             </div>

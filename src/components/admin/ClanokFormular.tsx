@@ -216,7 +216,8 @@ export function ClanokFormular() {
                 <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
                   Titulná fotka
                 </span>
-                <FotoPole name="foto" hodnota={formular.foto_url} />
+                <FotoPole name="foto" hodnota={formular.foto_url}
+                  onOdstranit={() => zmen('foto_url', null)} />
               </div>
               <Pole popis="Popis fotky">
                 <Vstup maxLength={200} placeholder="Čo je na fotke"
