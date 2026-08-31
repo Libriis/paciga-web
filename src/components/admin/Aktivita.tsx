@@ -4,6 +4,8 @@
    takže ostatným sa zoznam jednoducho nenačíta a komponent to povie.
    Mená k e-mailom vidí len hlavný správca (RLS na admini); bežnému
    používateľovi s právom aktivita sa ukážu prihlasovacie mená.
+   Záznamy hlavného správcu vidí len hlavný správca, ostatným ich
+   RLS odfiltruje (je_zaznam_hlavneho).
 
    Riadky píše databázový zapisovač (supabase/schema-aktivita.sql):
    trigger na tabuľkách, ktoré admini upravujú, plus RPC zapis_prihlasenie

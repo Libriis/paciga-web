@@ -26,10 +26,37 @@ alter table public.aktivita enable row level security;
 -- Od 1. 9. 2026 je citanie pridelitelne pravo 'aktivita' (migracia
 -- aktivita_pridelitelne_pravo): hlavny a '*' prejdu automaticky,
 -- ostatni podla zaskrtnutia v sekcii Pouzivatelia.
+-- Zaznamy hlavneho spravcu vidi len hlavny spravca (migracia
+-- aktivita_skryje_hlavneho). Pomocna funkcia je SECURITY DEFINER
+-- zamerne: bezny admin tabulku admini cez RLS neprecita a priamy
+-- poddotaz v policy by mu vratil prazdno, cize hlavneho by NEskryl.
+create or replace function public.je_zaznam_hlavneho(p_user_id uuid, p_email text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.admini a
+    where a.hlavny
+      and (
+        (p_user_id is not null and a.user_id = p_user_id)
+        or (p_email is not null and lower(a.email) = lower(p_email))
+      )
+  );
+$$;
+
+revoke all on function public.je_zaznam_hlavneho(uuid, text) from public, anon;
+grant execute on function public.je_zaznam_hlavneho(uuid, text) to authenticated;
+
 drop policy if exists aktivita_hlavny_select on public.aktivita;
 drop policy if exists aktivita_pravo_select on public.aktivita;
 create policy aktivita_pravo_select on public.aktivita
-  for select to authenticated using (public.ma_pristup('aktivita'));
+  for select to authenticated using (
+    public.ma_pristup('aktivita')
+    and (public.je_hlavny_admin() or not public.je_zaznam_hlavneho(user_id, email))
+  );
 
 revoke all on public.aktivita from public, anon;
 grant select on public.aktivita to authenticated;
