@@ -13,6 +13,8 @@ export interface Parte {
   rozlucka_datum: string | null;
   rozlucka_cas: string | null;
   rozlucka_miesto: string | null;
+  /** vyplnené len keď sa pochováva inde, než je rozlúčka */
+  miesto_pohrebu: string | null;
   odkaz_rodine: string | null;
   sviecky: number;
 }

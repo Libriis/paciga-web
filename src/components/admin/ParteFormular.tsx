@@ -19,7 +19,16 @@ const ZOZNAM = '/admin/parte';
 const PRAZDNE = {
   id: '', meno: '', pohlavie: 'zena', slug: '', datum_narodenia: '', datum_umrtia: '',
   vek: '' as string | number, rozlucka_datum: '', rozlucka_cas: '', rozlucka_miesto: '',
-  odkaz_rodine: '', published: true, foto_url: null as string | null,
+  miesto_pohrebu: '', odkaz_rodine: '', published: true, foto_url: null as string | null,
+};
+
+/* Slovenské ženské priezviská končia na dlhé á (Kičáková, Justová),
+   mužské prakticky nikdy. Odhad z posledného slova mena šetrí klik
+   a hlavne chráni pred parte v zlom rode: prvé ostré parte 31. 8. 2026
+   vyšlo v ženskom rode len preto, že prepínač ostal na predvolenej žene. */
+const odhadniPohlavie = (meno: string) => {
+  const slova = meno.trim().split(/\s+/);
+  return (slova[slova.length - 1] || '').toLowerCase().endsWith('á') ? 'zena' : 'muz';
 };
 
 const slugify = (s: string) =>
@@ -44,6 +53,8 @@ export function ParteFormular() {
   /* Vek a webová adresa sa dopĺňajú z iných polí. Kým sú zamknuté,
      prepisujú sa samy; po odomknutí sa ich už nedotýkame. */
   const [rucne, setRucne] = useState({ vek: false, slug: false });
+  /* Kým sa prepínača nikto nedotkne, pohlavie sa odhaduje z priezviska. */
+  const [pohlavieRucne, setPohlavieRucne] = useState(false);
 
   useEffect(() => {
     const id = new URLSearchParams(location.search).get('id');
@@ -58,7 +69,8 @@ export function ParteFormular() {
         id: data.id, meno: data.meno || '', pohlavie: data.pohlavie || 'zena', slug: data.slug || '',
         datum_narodenia: data.datum_narodenia || '', datum_umrtia: data.datum_umrtia || '',
         vek: data.vek ?? '', rozlucka_datum: data.rozlucka_datum || '', rozlucka_cas: data.rozlucka_cas || '',
-        rozlucka_miesto: data.rozlucka_miesto || '', odkaz_rodine: data.odkaz_rodine || '',
+        rozlucka_miesto: data.rozlucka_miesto || '', miesto_pohrebu: data.miesto_pohrebu || '',
+        odkaz_rodine: data.odkaz_rodine || '',
         published: !!data.published, foto_url: data.foto_url ?? null,
       });
     })().catch(() => setChybaNacitania('Toto parte sa nepodarilo načítať.'));
@@ -98,6 +110,7 @@ export function ParteFormular() {
         rozlucka_datum: formular.rozlucka_datum || null,
         rozlucka_cas: formular.rozlucka_cas || null,
         rozlucka_miesto: formular.rozlucka_miesto.trim() || null,
+        miesto_pohrebu: formular.miesto_pohrebu.trim() || null,
         odkaz_rodine: formular.odkaz_rodine.trim() || null,
         published: formular.published,
         ...(foto_url ? { foto_url } : {}),
@@ -155,11 +168,16 @@ export function ParteFormular() {
                     // Pri úprave existujúceho parte sa adresa nemení nikdy,
                     // inak by prestali fungovať odkazy na už zverejnené parte.
                     slug: formular.id || rucne.slug ? formular.slug : slugify(e.target.value),
+                    pohlavie: formular.id || pohlavieRucne ? formular.pohlavie : odhadniPohlavie(e.target.value),
                   })} />
               </Pole>
               <Pole popis="Pohlavie">
                 <Prepinac moznosti={[{ key: 'zena', label: 'žena' }, { key: 'muz', label: 'muž' }]}
-                  hodnota={formular.pohlavie} onZmena={(k) => zmen('pohlavie', k)} />
+                  hodnota={formular.pohlavie}
+                  onZmena={(k) => { setPohlavieRucne(true); zmen('pohlavie', k); }} />
+                <span className="mt-1 block text-[12px] text-muted-foreground">
+                  Nastaví sa podľa priezviska. Skontroluj a klikni, ak nesedí.
+                </span>
               </Pole>
 
               <Pole popis="Dátum narodenia">
@@ -199,6 +217,14 @@ export function ParteFormular() {
               <Pole popis="Miesto rozlúčky">
                 <Vstup maxLength={200} placeholder="napr. Dom smútku v Poprade"
                   value={formular.rozlucka_miesto} onChange={(e) => zmen('rozlucka_miesto', e.target.value)} />
+              </Pole>
+
+              <Pole popis="Miesto pohrebu (nepovinné)">
+                <Vstup maxLength={200} placeholder="napr. cintorín vo Veľkej"
+                  value={formular.miesto_pohrebu} onChange={(e) => zmen('miesto_pohrebu', e.target.value)} />
+                <span className="mt-1 block text-[12px] text-muted-foreground">
+                  Vyplň, len keď sa pochováva inde, než je rozlúčka. Inak nechaj prázdne.
+                </span>
               </Pole>
 
               <Pole popis="Odkaz rodine (nepovinné)" className="md:col-span-2">
