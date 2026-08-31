@@ -176,6 +176,7 @@ export const ODKAZY = {
   navstevnost: '/admin/navstevnost',
   vitals: '/admin/vitals',
   obsah: '/admin/obsah',
+  aktivita: '/admin/aktivita',
 };
 
 /** Sekcie administrácie. Kľúč sedí s hodnotou v admini.pristupy a s RLS. */

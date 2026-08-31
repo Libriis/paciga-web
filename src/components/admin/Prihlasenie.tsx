@@ -69,6 +69,11 @@ export function Prihlasenie({ fotoSrc, fotoAlt }: Props) {
       setCaka(false);
       return;
     }
+    /* Denník aktivity: Supabase na tomto projekte nedrží auth audit log
+       v databáze, tak si úspešné prihlásenie zapíšeme sami. Funkcia berie
+       identitu z auth.uid(), spoofnúť sa nedá; keď zápis zlyhá, prihlásenie
+       normálne pokračuje. */
+    await getClient().rpc('zapis_prihlasenie').then(() => {}, () => {});
     location.href = dalej;
   };
 
