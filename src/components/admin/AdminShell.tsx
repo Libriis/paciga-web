@@ -117,17 +117,24 @@ export function AdminShell({ titul, sekcia, children }: AdminShellProps) {
           </SidebarHeader>
 
           <SidebarContent className="gap-0 px-2 py-3">
-            <SidebarGroup className="pb-3 pt-0">
-              <SidebarGroupContent>
-                <a
-                  href="/admin/zakazky?nova=1"
-                  className="flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-3 text-[13.5px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  <Plus className="size-4 shrink-0" />
-                  <span className="group-data-[collapsible=icon]:hidden">Nová zákazka</span>
-                </a>
-              </SidebarGroupContent>
-            </SidebarGroup>
+            {/* Novú zákazku ponúkame len tomu, kto zákazky vôbec vidí.
+                Staré menu to tak robilo (zostavMenu v admin-core), tento
+                skelet tú kontrolu pri prepise na React stratil: obsluha
+                webu bez práva 'zakazky' na tlačidlo klikla a requireAuth
+                ju bez slova prehodilo na prvú dostupnú stránku. */}
+            {profil && maPristup(profil, 'zakazky') && (
+              <SidebarGroup className="pb-3 pt-0">
+                <SidebarGroupContent>
+                  <a
+                    href="/admin/zakazky?nova=1"
+                    className="flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-3 text-[13.5px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    <Plus className="size-4 shrink-0" />
+                    <span className="group-data-[collapsible=icon]:hidden">Nová zákazka</span>
+                  </a>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
 
             {!profil && (
               <div className="space-y-2 px-2 py-2">
