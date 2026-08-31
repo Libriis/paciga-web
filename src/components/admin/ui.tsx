@@ -3,7 +3,7 @@
    farbe rámu), ostré rohy vnútri, nadpisy 15 px, popisy 13 px, žiadna zlatá.
    Všetko sem, nech sa stránky nemusia opakovať a nerozídu sa. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Loader2, Search, X } from 'lucide-react';
+import { Loader2, Lock, LockOpen, Search, X } from 'lucide-react';
 
 /* ---------- mriežka ---------- */
 
@@ -234,6 +234,50 @@ export function Pole({ popis, children, className = '' }: { popis: string; child
       <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">{popis}</span>
       {children}
     </label>
+  );
+}
+
+/* Pole, ktoré si systém dopĺňa sám z iných údajov (vek z dvoch dátumov,
+   webová adresa z mena). Klient 31. 8. 2026: obsluha nevedela rozoznať,
+   čo má vypĺňať ona a čo vznikne samo, a do vypočítaných polí písala.
+
+   Preto sú zamknuté a označené. Odomknúť sa dajú jedným klikom, lebo
+   výnimky existujú: dve parte s rovnakým menom potrebujú inú adresu.
+   Po odomknutí sa pole prestane prepisovať, inak by ručnú hodnotu
+   zmazala najbližšia zmena dátumu alebo mena. */
+export function PoleSamo({ popis, napoveda, zamknute, onPrepni, children, className = '' }: {
+  popis: string;
+  napoveda?: string;
+  zamknute: boolean;
+  onPrepni: () => void;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`block ${className}`}>
+      {/* Hlavička musí byť presne tak vysoká ako obyčajný popis poľa v <Pole>,
+          inak sa vstupy v jednom riadku mriežky nezarovnajú (odmerané: rozdiel
+          bol 13 px). Preto rovnaký tvar ako v Pole — blok s riadkovým <span> —
+          a tlačidlo je vybraté z toku, aby výšku riadka nemenilo. */}
+      <div className="relative">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+          {popis}
+          <span className="ml-2 inline-flex translate-y-px items-center gap-1 rounded-[3px] border border-border px-1.5 py-px text-[9px] tracking-[0.12em] align-middle">
+            {zamknute ? <Lock className="size-2.5" /> : <LockOpen className="size-2.5" />}
+            samo
+          </span>
+        </span>
+        <button
+          type="button"
+          onClick={onPrepni}
+          className="absolute right-0 top-1/2 -mr-1 -translate-y-1/2 rounded px-1 py-1 text-[11.5px] font-semibold text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
+        >
+          {zamknute ? 'Upraviť ručne' : 'Nechať automaticky'}
+        </button>
+      </div>
+      <div className={zamknute ? 'opacity-60' : ''}>{children}</div>
+      {napoveda && <span className="mt-1 block text-[12px] text-muted-foreground">{napoveda}</span>}
+    </div>
   );
 }
 
