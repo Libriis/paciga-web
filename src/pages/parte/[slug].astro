@@ -100,15 +100,33 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
       <section class="parte-card" data-reveal>
         <div class="parte-card-label">Posledná rozlúčka {rozluckaS}</div>
         <div class="parte-when">{fmtDlhy(p.rozlucka_datum)} o {p.rozlucka_cas}</div>
-        <div class="parte-card-rows">
-          <div class="parte-card-row"><span class="k">Miesto obradu</span><span class="v">📍 {p.rozlucka_miesto}</span></div>
-          {p.miesto_pohrebu && <div class="parte-card-row"><span class="k">Miesto pohrebu</span><span class="v">📍 {p.miesto_pohrebu}</span></div>}
-        </div>
-        <div class="parte-card-actions">
-          <a class="parte-pill" href={mapUrl(p.rozlucka_miesto!)} target="_blank" rel="noopener">Miesto obradu na mape →</a>
-          {p.miesto_pohrebu && <a class="parte-pill" href={mapUrl(p.miesto_pohrebu)} target="_blank" rel="noopener">Miesto pohrebu na mape →</a>}
-          {ics && <a class="parte-pill" href={ics} download={`rozlucka-${p.slug}.ics`}>Pridať do kalendára</a>}
-        </div>
+        {/* Itinerár dňa namiesto tabuľkových riadkov (31. 8. 2026):
+            obrad a pohreb ako zastávky na zvislej linke, mapa pri každej. */}
+        <ol class="itinerar">
+          <li class="it-stop">
+            <span class="it-bod" aria-hidden="true"></span>
+            <div>
+              <span class="it-typ">Miesto obradu</span>
+              <span class="it-miesto">{p.rozlucka_miesto}</span>
+              <a class="it-mapa" href={mapUrl(p.rozlucka_miesto!)} target="_blank" rel="noopener">Zobraziť na mape →</a>
+            </div>
+          </li>
+          {p.miesto_pohrebu && (
+            <li class="it-stop">
+              <span class="it-bod" aria-hidden="true"></span>
+              <div>
+                <span class="it-typ">Miesto pohrebu</span>
+                <span class="it-miesto">{p.miesto_pohrebu}</span>
+                <a class="it-mapa" href={mapUrl(p.miesto_pohrebu)} target="_blank" rel="noopener">Zobraziť na mape →</a>
+              </div>
+            </li>
+          )}
+        </ol>
+        {ics && (
+          <div class="parte-card-actions">
+            <a class="parte-pill" href={ics} download={`rozlucka-${p.slug}.ics`}>Pridať do kalendára</a>
+          </div>
+        )}
       </section>
     )}
     {rozluckaKompletna && rozluckaPrebehla && (
@@ -116,10 +134,24 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
         <div class="parte-card-label">Posledná rozlúčka</div>
         <div class="parte-konala">Rozlúčka {rozluckaS} sa konala</div>
         <div class="parte-when">{fmtDlhy(p.rozlucka_datum)}</div>
-        <div class="parte-card-rows">
-          <div class="parte-card-row"><span class="k">Miesto obradu</span><span class="v">📍 {p.rozlucka_miesto}</span></div>
-          {p.miesto_pohrebu && <div class="parte-card-row"><span class="k">Miesto pohrebu</span><span class="v">📍 {p.miesto_pohrebu}</span></div>}
-        </div>
+        <ol class="itinerar">
+          <li class="it-stop">
+            <span class="it-bod" aria-hidden="true"></span>
+            <div>
+              <span class="it-typ">Miesto obradu</span>
+              <span class="it-miesto">{p.rozlucka_miesto}</span>
+            </div>
+          </li>
+          {p.miesto_pohrebu && (
+            <li class="it-stop">
+              <span class="it-bod" aria-hidden="true"></span>
+              <div>
+                <span class="it-typ">Miesto pohrebu</span>
+                <span class="it-miesto">{p.miesto_pohrebu}</span>
+              </div>
+            </li>
+          )}
+        </ol>
       </section>
     )}
 
