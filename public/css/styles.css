@@ -1877,6 +1877,29 @@ main > section.news-hero { background-color: rgb(var(--fg-rgb) / 0.03); }
 .parte-kond-list h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 650; font-variation-settings: var(--wide); margin-bottom: 28px; }
 .pcond-note { margin-top: 22px; color: var(--dim); font-size: 15px; max-width: 56ch; }
 
+/* ---- itinerár rozlúčky (31. 8. 2026) ----
+   Vzor: vertikálny stepper z 21st.dev (sean0205/stepper, 7ovr/how-it-works),
+   prepísaný do vlastného CSS stránky. Obrad a pohreb sú dve zastávky dňa
+   na jednej zvislej linke; pri jedinej zastávke sa linka nekreslí. */
+.itinerar { list-style: none; margin: 26px 0 0; padding: 0; }
+.it-stop { position: relative; padding: 0 0 28px 36px; }
+.it-stop:last-child { padding-bottom: 0; }
+.it-stop:not(:last-child)::before {
+  content: ''; position: absolute; left: 7px; top: 22px; bottom: 4px;
+  width: 1px; background: var(--line);
+}
+.it-bod {
+  position: absolute; left: 0; top: 5px; width: 15px; height: 15px;
+  border-radius: 50%; border: 1px solid var(--gold); background: var(--gold);
+  box-shadow: 0 0 0 4px rgb(var(--fg-rgb) / 0.06);
+}
+/* druhá zastávka: prázdny krúžok, cieľ cesty */
+.it-stop + .it-stop .it-bod { background: transparent; }
+.it-typ { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
+.it-miesto { display: block; font-size: 17.5px; margin-top: 5px; line-height: 1.45; }
+.it-mapa { display: inline-block; margin-top: 8px; font-size: 13.5px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; transition: color 0.3s ease; }
+.it-mapa:hover { color: var(--text); }
+
 /* footer beží v plnej šírke: pri doscrollovaní sa nasunie ponad fixný
    panel s fotkou (z-index nad panelom, nepriehľadné pozadie má vlastné) */
 #parte-main .site-footer { position: relative; z-index: 6; }
@@ -3222,6 +3245,10 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
      vyliezla o 100 px vyššie, na ústa portrétu. Nahlásil Tomáš 30. 8. 2026. */
   main section.zdielanie { padding-top: 30px; padding-bottom: 30px; }
   main section.zd-na-fotke { padding-top: 0; padding-bottom: 0; }
+  /* Karty na parte (rozlúčka, kondolencie) sú tiež <section> v <main>,
+     strop vyššie im dával ~97 px hore aj dole NAVYŠE k vlastným 30 px.
+     Vyzeralo to ako mŕtvy pruh navrchu karty. Nahlásil Tomáš 31. 8. 2026. */
+  main section.parte-card { padding-top: 0; padding-bottom: 0; }
   main > section.cta-band { padding: clamp(72px, 9vh, 100px) 36px; }
   main > section.partners { padding: clamp(64px, 8vh, 90px) 0; }
 }

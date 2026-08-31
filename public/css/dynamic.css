@@ -94,7 +94,7 @@
 .kond-form textarea,
 .contact-form textarea { resize: vertical; min-height: 130px; }
 
-.kond-form-note { font-size: 18px; color: var(--muted); margin: -14px 0 30px; line-height: 1.6; }
+.kond-form-note { font-size: 15.5px; color: var(--muted); margin: -10px 0 26px; line-height: 1.6; max-width: 58ch; }
 
 .kond-form .btn-gold,
 .contact-form .btn-gold { border: 0; cursor: pointer; font: inherit; font-weight: 650; }
