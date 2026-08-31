@@ -19,6 +19,7 @@ import {
 } from './ui';
 import {
   getClient, fmtD, fmtDT, vytvorZakazku, noveCisloZakazky, uuid, inicialky,
+  mojProfil, maPristup,
 } from '@/scripts/admin-core.js';
 
 type Riadok = Record<string, any>;
@@ -54,6 +55,10 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
   const [parte, setParte] = useState<Riadok[] | null>(null);
   const [kondolencie, setKondolencie] = useState<Riadok[] | null>(null);
   const [dopyty, setDopyty] = useState<Riadok[] | null>(null);
+  /* Zakladanie zákazky z dopytu ponúkame len tomu, kto na zákazky právo má.
+     Bez neho zápis aj tak zastaví RLS a používateľ dostane len chybovú
+     hlášku. Predvolene false, nech tlačidlo neprebliskne pred načítaním. */
+  const [mozeZakazky, setMozeZakazky] = useState(false);
 
   const nacitajParte = async () => {
     const { data, error } = await getClient().from('parte').select('*')
@@ -76,7 +81,12 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
   useEffect(() => {
     if (zobraz === 'parte') nacitajParte().catch(() => setParte([]));
     if (zobraz === 'kondolencie') nacitajKondolencie().catch(() => setKondolencie([]));
-    if (zobraz === 'dopyty') nacitajDopyty().catch(() => setDopyty([]));
+    if (zobraz === 'dopyty') {
+      nacitajDopyty().catch(() => setDopyty([]));
+      mojProfil()
+        .then((p: any) => setMozeZakazky(maPristup(p, 'zakazky')))
+        .catch(() => setMozeZakazky(false));
+    }
   }, [zobraz]);
 
   /* ---------- parte ---------- */
@@ -236,7 +246,12 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
 
       {zobraz === 'dopyty' && (
         <>
-          <HlavaStranky nadpis="Dopyty z kontaktného formulára" popis="Z dopytu sa dá jedným klikom založiť zákazka." />
+          <HlavaStranky
+            nadpis="Dopyty z kontaktného formulára"
+            popis={mozeZakazky
+              ? 'Z dopytu sa dá jedným klikom založiť zákazka.'
+              : 'Vybavené dopyty si označ, nech vieš, čo je hotové.'}
+          />
           <Ramec>
             {dopyty === null ? (
               <Bunka><Nacitavam /></Bunka>
@@ -257,7 +272,9 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
                       {d.email && <a href={`mailto:${d.email}`} className="hover:text-foreground">{d.email}</a>}
                     </>}
                     akcie={<>
-                      <Tlacidlo maly variant="plne" onClick={() => dopytNaZakazku(d)}>Vytvoriť zákazku</Tlacidlo>
+                      {mozeZakazky && (
+                        <Tlacidlo maly variant="plne" onClick={() => dopytNaZakazku(d)}>Vytvoriť zákazku</Tlacidlo>
+                      )}
                       <Tlacidlo maly onClick={() => oznacDopyt(d, !d.precitane)}>
                         {d.precitane ? 'Vrátiť medzi nové' : 'Označiť vybavené'}
                       </Tlacidlo>
