@@ -22,16 +22,17 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   LayoutGrid, FolderKanban, Users, ChartColumn, Newspaper, FileText,
-  MessageSquare, Inbox, PencilRuler, Gauge, ShieldCheck, Plus, ExternalLink,
-  LogOut, Phone, Bell, TrendingUp,
+  MessageSquare, Inbox, PencilRuler, Gauge, ShieldCheck, History, Plus,
+  ExternalLink, LogOut, Phone, Bell, TrendingUp,
 } from 'lucide-react';
 import { getClient, mojProfil, maPristup, DEMO, ODKAZY } from '@/scripts/admin-core.js';
 
 type Profil = { meno: string | null; email: string | null; pristupy: string[]; hlavny: boolean };
 
 /** `pravo` je kľúč právomoci, keď sa líši od `key`. Parte, kondolencie
-    a dopyty sú tri položky menu, ale jedna právomoc ('web'). */
-type Polozka = { key: string; label: string; href: string; ikona: typeof LayoutGrid; pravo?: string };
+    a dopyty sú tri položky menu, ale jedna právomoc ('web').
+    `lenHlavny` položky vidí iba hlavný správca. */
+type Polozka = { key: string; label: string; href: string; ikona: typeof LayoutGrid; pravo?: string; lenHlavny?: boolean };
 
 /* Sekcie admina rozdelené do troch skupín, ako má vzor. Poradie
    drží pracovný deň: najprv čo sa rieši denne, potom web, potom správa. */
@@ -60,7 +61,8 @@ const SKUPINY: { nadpis: string; polozky: Polozka[] }[] = [
   {
     nadpis: 'Správa',
     polozky: [
-      { key: 'pouzivatelia', label: 'Používatelia', href: '/admin/pouzivatelia', ikona: ShieldCheck },
+      { key: 'pouzivatelia', label: 'Používatelia', href: '/admin/pouzivatelia', ikona: ShieldCheck, lenHlavny: true },
+      { key: 'aktivita', label: 'Aktivita', href: ODKAZY.aktivita, ikona: History, lenHlavny: true },
     ],
   },
 ];
@@ -145,7 +147,7 @@ export function AdminShell({ titul, sekcia, children }: AdminShellProps) {
 
             {profil && SKUPINY.map((skupina) => {
               const viditelne = skupina.polozky.filter((p) =>
-                p.key === 'pouzivatelia' ? profil.hlavny : maPristup(profil, p.pravo ?? p.key));
+                p.lenHlavny ? profil.hlavny : maPristup(profil, p.pravo ?? p.key));
               if (!viditelne.length) return null;
               return (
                 <SidebarGroup key={skupina.nadpis} className="py-2">

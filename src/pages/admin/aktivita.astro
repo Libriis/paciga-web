@@ -1,0 +1,16 @@
+---
+/*
+  Denník aktivity. Vidí ho iba hlavný správca — skutočnú hranicu drží
+  RLS na tabuľke aktivita, komponent bez prístupu dostane prázdny zoznam.
+*/
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Aktivita from '../../components/admin/Aktivita.tsx';
+---
+<AdminLayout title="Aktivita" sekcia="aktivita" nove>
+  <Aktivita client:load />
+
+<script>
+import { requireAuth } from '../../scripts/admin-core.js';
+await requireAuth();
+</script>
+</AdminLayout>
