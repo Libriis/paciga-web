@@ -1,0 +1,12 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ParteFormular from '../../../components/admin/ParteFormular.tsx';
+---
+<AdminLayout title="Parte" sekcia="parte" nove>
+  <ParteFormular client:load />
+
+<script>
+import { requireAuth } from '../../../scripts/admin-core.js';
+await requireAuth('web');
+</script>
+</AdminLayout>

@@ -1,19 +1,22 @@
-/* Aktuality: zoznam článkov a ich editor.
-   Telo článku a titulná fotka sú samostatné ostrovy (EditorClanku, FotoPole).
-   Oba sú neriadené, preto ich pri prepnutí článku remountujeme cez `key`. */
-import { useEffect, useRef, useState } from 'react';
-import { Plus, X } from 'lucide-react';
-import FotoPole from './FotoPole';
-import EditorClanku from './EditorClanku';
+/* Aktuality: zoznam článkov.
+   Od 31. 8. 2026 sa článok zakladá a upravuje na vlastnej stránke
+   (/admin/clanky/upravit, komponent ClanokFormular). Tu je len zoznam,
+   tlačidlá z neho odkazujú von. Predtým sa editor otváral nad zoznamom
+   a pod formulárom bolo vidieť všetky ostatné články. */
+import { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
 import {
-  Bunka, HlavaPanelu, HlavaStranky, Hlaska, Nacitavam, Pole, Prazdno,
-  Ramec, Stitok, Textarea, Tlacidlo, OdkazTlacidlo, Vstup, Vyber,
+  Bunka, HlavaPanelu, HlavaStranky, Hlaska, Nacitavam, Prazdno,
+  Ramec, Stitok, Tlacidlo, OdkazTlacidlo,
 } from './ui';
-import { getClient, zmensiFotku, DEMO } from '@/scripts/admin-core.js';
+import { getClient, DEMO } from '@/scripts/admin-core.js';
 import { CLANKY as STARE } from '@/data/aktuality';
 import staticke from '@/data/staticke-obrazky.json';
 
 type Clanok = Record<string, any>;
+
+/** Stránka, na ktorej sa článok zakladá a upravuje. */
+const FORMULAR = '/admin/clanky/upravit';
 
 const KATEGORIE: Record<string, string> = {
   'prve-kroky': 'Prvé kroky',
@@ -23,26 +26,11 @@ const KATEGORIE: Record<string, string> = {
   'zo-zivota': 'Zo života Paciga',
 };
 
-const PRAZDNY = {
-  id: '', titulok: '', slug: '', kategoria: 'prve-kroky', datum: '', published: 'true',
-  perex: '', foto_alt: '', telo: '', foto_url: null as string | null,
-  cta_nadpis: '', cta_text: '', cta_odkaz: '', cta_odkaz_text: '',
-};
-
-/** Titulok na adresu článku: bez diakritiky, malé písmená, spojovníky. */
-const naSlug = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120);
-
 const fmtDatum = (iso: string) => {
   const M = ['jan', 'feb', 'mar', 'apr', 'máj', 'jún', 'júl', 'aug', 'sep', 'okt', 'nov', 'dec'];
   const [r, m, d] = String(iso).slice(0, 10).split('-').map(Number);
   return r ? `${d}. ${M[m - 1]} ${r}` : '—';
 };
-
-/* Textarea drží odstavce oddelené prázdnym riadkom, databáza pole reťazcov. */
-const naPole = (t: string) => t.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
-const zPola = (p: unknown) => (Array.isArray(p) ? p : []).join('\n\n');
 
 /* Importované články majú foto_url na '/assets/nieco.jpg'. Tá cesta od
    presunu fotiek do src/assets vracia 404, web si ju prekladá cez mapu.
@@ -57,13 +45,10 @@ function naNahlad(url: string | null) {
 
 export function Clanky() {
   const [clanky, setClanky] = useState<Clanok[] | null>(DEMO ? [] : null);
-  const [formular, setFormular] = useState<typeof PRAZDNY | null>(null);
-  const [uklada, setUklada] = useState(false);
   const [hlaska, setHlaska] = useState('');
   const [chyba, setChyba] = useState(false);
   const [importuje, setImportuje] = useState(false);
   const [importHlaska, setImportHlaska] = useState('');
-  const formRef = useRef<HTMLFormElement>(null);
 
   const nacitaj = async () => {
     const { data, error } = await getClient().from('clanky').select('*').order('datum', { ascending: false });
@@ -77,82 +62,6 @@ export function Clanky() {
   };
 
   useEffect(() => { if (!DEMO) nacitaj().catch(() => setClanky([])); }, []);
-
-  const zmen = (pole: string, hodnota: any) =>
-    setFormular((f) => (f ? { ...f, [pole]: hodnota } : f));
-
-  const otvor = (c?: Clanok) => {
-    setHlaska('');
-    setChyba(false);
-    setFormular(c
-      ? {
-          id: c.id, titulok: c.titulok || '', slug: c.slug || '',
-          kategoria: c.kategoria || 'prve-kroky',
-          datum: c.datum ? String(c.datum).slice(0, 10) : '',
-          published: String(c.published ?? true),
-          perex: c.perex || '', foto_alt: c.foto_alt || '', telo: zPola(c.telo),
-          foto_url: c.foto_url ?? null,
-          cta_nadpis: c.cta_nadpis || '', cta_text: c.cta_text || '',
-          cta_odkaz: c.cta_odkaz || '', cta_odkaz_text: c.cta_odkaz_text || '',
-        }
-      : { ...PRAZDNY, datum: new Date().toISOString().slice(0, 10) });
-  };
-
-  const uloz = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formular) return;
-    const sb = getClient();
-    setUklada(true);
-    setChyba(false);
-    setHlaska('Ukladám…');
-    try {
-      let foto_url = formular.foto_url;
-      const vstup = formRef.current?.elements.namedItem('foto') as HTMLInputElement | null;
-      const file = vstup?.files?.[0];
-      if (file) {
-        setHlaska('Nahrávam fotku…');
-        const blob = await zmensiFotku(file, 1600);
-        const cesta = `${formular.slug}-${Date.now()}.webp`;
-        const { error: upErr } = await sb.storage.from('clanky-foto')
-          .upload(cesta, blob, { contentType: 'image/webp' });
-        if (upErr) throw new Error('Fotku sa nepodarilo nahrať: ' + upErr.message);
-        foto_url = sb.storage.from('clanky-foto').getPublicUrl(cesta).data.publicUrl;
-      }
-
-      // Telo je neriadená textarea vnútri editora, čítame ho z formulára.
-      const telo = (formRef.current?.elements.namedItem('telo') as HTMLTextAreaElement | null)?.value ?? formular.telo;
-
-      const zaznam = {
-        slug: formular.slug.trim(),
-        titulok: formular.titulok.trim(),
-        perex: formular.perex.trim(),
-        kategoria: formular.kategoria,
-        datum: formular.datum,
-        foto_url: foto_url ?? null,
-        foto_alt: formular.foto_alt.trim() || null,
-        telo: naPole(telo),
-        cta_nadpis: formular.cta_nadpis.trim() || null,
-        cta_text: formular.cta_text.trim() || null,
-        cta_odkaz: formular.cta_odkaz.trim() || null,
-        cta_odkaz_text: formular.cta_odkaz_text.trim() || null,
-        published: formular.published === 'true',
-      };
-
-      const { error } = formular.id
-        ? await sb.from('clanky').update(zaznam).eq('id', formular.id)
-        : await sb.from('clanky').insert(zaznam);
-      if (error) throw error;
-
-      setFormular(null);
-      setHlaska('');
-      await nacitaj();
-    } catch (err: any) {
-      setHlaska(err?.message || 'Uloženie zlyhalo.');
-      setChyba(true);
-    } finally {
-      setUklada(false);
-    }
-  };
 
   const zmaz = async (c: Clanok) => {
     if (!confirm(`Naozaj zmazať článok „${c.titulok}"? Táto akcia sa nedá vrátiť.`)) return;
@@ -199,126 +108,11 @@ export function Clanky() {
         nadpis="Aktuality"
         popis="Články na webe, ich fotky a výzvy na konci."
         akcie={
-          <Tlacidlo variant="plne" onClick={() => otvor()}>
+          <OdkazTlacidlo variant="plne" href={FORMULAR}>
             <Plus className="size-4" /> Nový článok
-          </Tlacidlo>
+          </OdkazTlacidlo>
         }
       />
-
-      {formular && (
-        <Ramec>
-          <Bunka>
-            <form ref={formRef} onSubmit={uloz}>
-              <HlavaPanelu
-                nadpis={formular.id ? 'Úprava článku' : 'Nový článok'}
-                vpravo={
-                  <button type="button" onClick={() => setFormular(null)} aria-label="Zavrieť"
-                    className="grid size-8 place-items-center rounded-md text-muted-foreground hover:text-foreground">
-                    <X className="size-4" />
-                  </button>
-                }
-              />
-
-              <div className="grid gap-4 md:grid-cols-3">
-                <Pole popis="Titulok" className="md:col-span-2">
-                  <Vstup required maxLength={200} placeholder="napr. Kvetinová výzdoba na pohrebe"
-                    value={formular.titulok}
-                    onChange={(e) => setFormular({
-                      ...formular,
-                      titulok: e.target.value,
-                      slug: formular.id ? formular.slug : naSlug(e.target.value),
-                    })} />
-                </Pole>
-                <Pole popis="Adresa článku">
-                  <Vstup required maxLength={120} pattern="[a-z0-9-]+" placeholder="kvetinova-vyzdoba-na-pohrebe"
-                    value={formular.slug} onChange={(e) => zmen('slug', e.target.value)} />
-                  <span className="mt-1 block text-[12px] text-muted-foreground">
-                    Po zverejnení ju už nemeň, staré odkazy by prestali fungovať.
-                  </span>
-                </Pole>
-
-                <Pole popis="Kategória">
-                  <Vyber value={formular.kategoria} onChange={(e) => zmen('kategoria', e.target.value)}>
-                    {Object.entries(KATEGORIE).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                  </Vyber>
-                </Pole>
-                <Pole popis="Dátum">
-                  <Vstup type="date" required value={formular.datum} onChange={(e) => zmen('datum', e.target.value)} />
-                </Pole>
-                <Pole popis="Stav">
-                  <Vyber value={formular.published} onChange={(e) => zmen('published', e.target.value)}>
-                    <option value="true">Zverejnený</option>
-                    <option value="false">Koncept</option>
-                  </Vyber>
-                </Pole>
-
-                <Pole popis="Perex" className="md:col-span-3">
-                  <Textarea rows={3} required maxLength={600}
-                    placeholder="Dve až tri vety, ktoré uvidí čitateľ na karte v prehľade."
-                    value={formular.perex} onChange={(e) => zmen('perex', e.target.value)} />
-                  <span className="mt-1 block text-[12px] text-muted-foreground">
-                    {formular.perex.length} / 600 znakov
-                  </span>
-                </Pole>
-
-                <div className="md:col-span-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-                    Titulná fotka
-                  </span>
-                  <FotoPole key={`foto-${formular.id || 'novy'}`} name="foto" hodnota={formular.foto_url} />
-                </div>
-                <Pole popis="Popis fotky">
-                  <Vstup maxLength={200} placeholder="Čo je na fotke"
-                    value={formular.foto_alt} onChange={(e) => zmen('foto_alt', e.target.value)} />
-                  <span className="mt-1 block text-[12px] text-muted-foreground">
-                    Prečítajú ho čítačky obrazovky a vyhľadávače.
-                  </span>
-                </Pole>
-              </div>
-
-              <div className="mt-6">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-                  Text článku
-                </span>
-                <EditorClanku key={`telo-${formular.id || 'novy'}`} name="telo" hodnota={formular.telo} />
-              </div>
-
-              <details className="mt-5">
-                <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-                  Výzva na konci článku
-                </summary>
-                <p className="mb-3 mt-2 text-[12.5px] text-muted-foreground">
-                  Keď necháš prázdne, článok skončí bez výzvy.
-                </p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Pole popis="Nadpis výzvy" className="md:col-span-2">
-                    <Vstup maxLength={200} placeholder="Napíš nám. Radi ti poradíme."
-                      value={formular.cta_nadpis} onChange={(e) => zmen('cta_nadpis', e.target.value)} />
-                  </Pole>
-                  <Pole popis="Text výzvy" className="md:col-span-2">
-                    <Textarea rows={2} maxLength={400} value={formular.cta_text}
-                      onChange={(e) => zmen('cta_text', e.target.value)} />
-                  </Pole>
-                  <Pole popis="Odkaz">
-                    <Vstup maxLength={200} placeholder="/kontakt"
-                      value={formular.cta_odkaz} onChange={(e) => zmen('cta_odkaz', e.target.value)} />
-                  </Pole>
-                  <Pole popis="Text odkazu">
-                    <Vstup maxLength={120} placeholder="Kontakt a pobočky"
-                      value={formular.cta_odkaz_text} onChange={(e) => zmen('cta_odkaz_text', e.target.value)} />
-                  </Pole>
-                </div>
-              </details>
-
-              <div className="mt-6 flex flex-wrap gap-2 border-t border-border pt-5">
-                <Tlacidlo type="submit" variant="plne" cakaj={uklada}>Uložiť</Tlacidlo>
-                <Tlacidlo type="button" onClick={() => setFormular(null)}>Zrušiť</Tlacidlo>
-              </div>
-              <Hlaska text={hlaska} chyba={chyba} />
-            </form>
-          </Bunka>
-        </Ramec>
-      )}
 
       <Ramec>
         {clanky === null ? (
@@ -346,7 +140,7 @@ export function Clanky() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <OdkazTlacidlo maly href={`/aktuality/${c.slug}`} target="_blank" rel="noopener">Zobraziť</OdkazTlacidlo>
-                    <Tlacidlo maly onClick={() => otvor(c)}>Upraviť</Tlacidlo>
+                    <OdkazTlacidlo maly href={`${FORMULAR}?id=${c.id}`}>Upraviť</OdkazTlacidlo>
                     <Tlacidlo maly variant="nebezpecne" onClick={() => zmaz(c)}>Zmazať</Tlacidlo>
                   </div>
                 </div>
@@ -355,6 +149,8 @@ export function Clanky() {
           </div>
         )}
       </Ramec>
+
+      <Hlaska text={hlaska} chyba={chyba} />
 
       {clanky !== null && clanky.length === 0 && (
         <Ramec>

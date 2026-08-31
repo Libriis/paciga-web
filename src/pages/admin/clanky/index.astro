@@ -1,0 +1,12 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import Clanky from '../../../components/admin/Clanky.tsx';
+---
+<AdminLayout title="Aktuality" sekcia="clanky" nove>
+  <Clanky client:load />
+
+<script>
+import { requireAuth } from '../../../scripts/admin-core.js';
+await requireAuth('clanky');
+</script>
+</AdminLayout>

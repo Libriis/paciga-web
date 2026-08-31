@@ -1,12 +1,12 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
-import Web from '../../components/admin/Web.tsx';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import Web from '../../../components/admin/Web.tsx';
 ---
 <AdminLayout title="Parte" sekcia="parte" nove>
   <Web client:load zobraz="parte" />
 
 <script>
-import { requireAuth } from '../../scripts/admin-core.js';
+import { requireAuth } from '../../../scripts/admin-core.js';
 // Právomoc je stále jedna ('web'), hoci stránky sú tri. Kľúč sedí
 // s admini.pristupy a s RLS, tak ho nerozbíjame.
 await requireAuth('web');
