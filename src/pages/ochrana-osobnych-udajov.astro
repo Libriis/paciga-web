@@ -15,17 +15,19 @@
     - IP adresa sa NEUKLADÁ v čitateľnej podobe. Používa sa len na
       obmedzenie počtu odoslaní a do databázy ide ako SHA-256 odtlačok
       so soľou (src/lib/ratelimit.ts)
-    - web NENASADZUJE žiadne cookies ani localStorage. Overené
-      prehliadačom na štyroch stránkach 22. 8. 2026: 0 cookies, prázdne
-      localStorage aj sessionStorage. Preto tu nie je cookie lišta.
-    - žiadne meracie skripty tretích strán. Žiadny Google Analytics,
-      žiadny Facebook Pixel. Von vedú len odkazy na Facebook, YouTube,
+    - od 1. 9. 2026 má web cookie lištu a Google Tag Manager
+      (GTM-K6GK3MN5, dodal marketér e-mailom). gtm.js sa načíta AŽ PO
+      súhlase, Consent Mode v2 štartuje so všetkým zamietnutým — logika
+      v Base.astro. Bez súhlasu web nenasadzuje žiadne meracie cookies;
+      jediný zápis je voľba v localStorage (kľúč paciga-cookies).
+    - žiadny Facebook Pixel. Von vedú len odkazy na Facebook, YouTube,
       Google Mapy a weby partnerov.
 
   STAV PO 30. 8. 2026: placeholdery [DOPLNIŤ] sú preč, stránka je živá:
   je v mape stránok, v pätičke a /ochrana-sukromia na ňu presmerúva.
-  Pixel: klient potvrdil, že FB ani Google pixel nemá; keď ho nasadí,
-  treba sem doplniť kapitolu a pridať cookie lištu.
+  OTVORENÉ PO 1. 9. 2026: marketér zatiaľ nepovedal, ktoré tagy v GTM
+  kontajneri pobežia (Analytics? Ads?). Keď to potvrdí, spresniť
+  kapitolu Cookies o konkrétne nástroje a ich cookies.
   Doba uchovávania je prevzatá zo starého webu (kým sa vybaví požiadavka
   alebo kým káže zákon). OTVORENÉ NA KLIENTA: presné lehoty v mesiacoch
   a či má firma zodpovednú osobu (DPO). Zatiaľ na stránke nie sú.
@@ -39,7 +41,7 @@ import { FIRMA, POBOCKY } from '../data/firma';
 const title = 'Ochrana osobných údajov | Paciga';
 const description =
   'Ako Pohrebné a kamenárske služby Paciga spracúvajú osobné údaje z webu. ' +
-  'Bez cookies, bez meracích skriptov tretích strán.';
+  'Meracie cookies len s vaším súhlasom.';
 
 const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
 ---
@@ -49,7 +51,7 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
       <div class="eyebrow" data-reveal>Právne informácie</div>
       <h1 data-reveal>Ochrana osobných údajov</h1>
       <p class="pravna-lead" data-reveal>
-        Tento web nepoužíva cookies ani meracie nástroje tretích strán. Údaje od vás
+        Meracie nástroje zapíname len s vaším súhlasom. Údaje od vás
         zbierame len vtedy, keď nám ich sami napíšete do formulára.
       </p>
 
@@ -94,16 +96,24 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
           nedá získať späť.
         </p>
 
-        <h2>Cookies</h2>
+        <h2>Cookies a meranie návštevnosti</h2>
         <p>
-          Tento web nenasadzuje žiadne cookies. Ani vlastné, ani cudzie. Nemá
-          Google Analytics ani Facebook Pixel. Preto tu nenájdete lištu so súhlasom,
-          nie je čo odsúhlasovať. Prihlásenie do administrácie používa úložisko
-          prehliadača, ale to sa týka len našich zamestnancov.
+          Web používa Google Tag Manager, nástroj spoločnosti Google na meranie
+          návštevnosti. Spustí sa len vtedy, keď to na lište povolíte. Kým súhlas
+          nedáte, web nenasadzuje žiadne meracie cookies a na Google z neho
+          neodchádza nič.
         </p>
         <p>
-          Ak by sme v budúcnosti nasadili meracie nástroje, doplníme to na túto
-          stránku a pridáme lištu so súhlasom.
+          Po súhlase môže Google uložiť cookies, ktoré počítajú návštevy
+          a merajú, odkiaľ ľudia na web prichádzajú. Pomáha nám to zlepšovať
+          web a informácie pre pozostalých.
+        </p>
+        <p>
+          Vašu voľbu si web pamätá v úložisku prehliadača, aby sa lišta nepýtala
+          znova. Zmeniť ju môžete kedykoľvek cez Nastavenia cookies v pätičke.
+          Keď súhlas odvoláte, meracie cookies zmažeme. Prihlásenie do
+          administrácie používa úložisko prehliadača, ale to sa týka len
+          našich zamestnancov.
         </p>
 
         <h2>Komu sa údaje dostanú</h2>
@@ -111,8 +121,9 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
           K údajom z formulárov majú prístup len naši zamestnanci, ktorí vybavujú
           vašu požiadavku. Ukladáme ich u poskytovateľa databázy Supabase. Web beží
           na platforme Vercel. Obaja poskytovatelia spracúvajú údaje na základe zmluvy
-          a len v rozsahu, ktorý potrebujú na prevádzku. Vaše údaje nepredávame
-          a neposkytujeme ich na reklamu.
+          a len v rozsahu, ktorý potrebujú na prevádzku. Ak povolíte meracie
+          cookies, technické údaje o vašej návšteve spracúva aj Google.
+          Vaše údaje nepredávame.
         </p>
         <p>
           Na webe sú odkazy na Facebook, YouTube, Google Mapy a weby našich partnerov.
@@ -156,7 +167,7 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
 
         <h2>Zmeny</h2>
         <p>
-          Ak sa niečo zmení, upravíme túto stránku. Posledná úprava: 30. augusta 2026.
+          Ak sa niečo zmení, upravíme túto stránku. Posledná úprava: 1. septembra 2026.
         </p>
       </div>
     </div>

@@ -3285,3 +3285,63 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
 .kam-inscribe input { background: var(--bg); border-color: rgb(var(--fg-rgb) / 0.22); }
 .kam-inscribe input:hover { border-color: rgb(var(--fg-rgb) / 0.4); }
 .kam-inscribe input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgb(var(--fg-rgb) / 0.18); }
+
+/* ============================================================
+   Cookie lišta (1. 9. 2026)
+
+   Karta vľavo dole; callpill sedí vpravo dole, preto max-width drží
+   kartu pri ľavom okraji a na desktope sa neprekrývajú. Na mobile ide
+   karta cez celú šírku a callpill prekryje — lišta je dočasná, po
+   voľbe zmizne. Zobrazovanie riadi skript v Base.astro cez [hidden]. */
+#cookie-lista {
+  position: fixed;
+  left: clamp(16px, 2.5vw, 32px);
+  right: clamp(16px, 2.5vw, 32px);
+  bottom: calc(clamp(16px, 3vh, 28px) + env(safe-area-inset-bottom));
+  z-index: 120;
+  max-width: 440px;
+  background: var(--bg2);
+  border: 1px solid rgb(var(--fg-rgb) / 0.14);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+#cookie-lista h2 { margin: 0; font-size: 16px; }
+#cookie-lista p { margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+#cookie-lista p a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+#cookie-lista p a:hover { color: var(--fg-strong); }
+.cookie-akcie { display: flex; gap: 10px; margin-top: 14px; }
+/* Obe tlačidlá rovnako veľké a rovnako viditeľné: opticky potlačené
+   odmietnutie by robilo súhlas neslobodným. Líšia sa len výplňou. */
+.cookie-akcie button {
+  flex: 1 1 0;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 640;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+#cookie-ano { background: var(--gold); color: var(--on-accent); border: 1px solid var(--gold); }
+#cookie-ano:hover { background: var(--fg-strong); border-color: var(--fg-strong); }
+#cookie-nie { background: transparent; color: var(--text); border: 1px solid rgb(var(--fg-rgb) / 0.35); }
+#cookie-nie:hover { color: var(--fg-strong); border-color: var(--fg-strong); }
+
+/* Nastavenia cookies v pätičke: tlačidlo v šate odkazu, aby sedelo
+   medzi susedné odkazy. Na mobile drží 44 px dotykovú výšku ako ony. */
+.footer-legal button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--dim);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.footer-legal button:hover { color: var(--text); }
+@media (max-width: 900px) {
+  .footer-legal button { display: inline-flex; align-items: center; min-height: 44px; }
+}

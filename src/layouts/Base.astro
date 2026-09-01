@@ -257,10 +257,10 @@ const SLUZBY_MEGA = [
         <span>© 2026 Pohrebné a kamenárske služby Paciga, s. r. o. · IČO: 51 736 039 · IČ DPH: SK2120765900 · OR Okresného súdu Prešov, oddiel Sro, vložka č. 36429/P</span>
         <span class="footer-legal">
           <a href={GOOGLE_PROFIL} target="_blank" rel="noopener">Recenzie na Google</a>
-          {/* Samostatná stránka /cookies netreba: web nenasadzuje žiadne cookies
-              ani localStorage (overené prehliadačom, 0 záznamov na štyroch
-              stránkach). Cookies má vlastnú kapitolu v ochrane osobných údajov. */}
           <a href="/ochrana-osobnych-udajov">Ochrana osobných údajov</a>
+          {/* Odvolanie súhlasu musí byť rovnako ľahké ako jeho udelenie,
+              preto vstup do cookie lišty stojí v pätičke každej stránky. */}
+          <button type="button" id="cookies-otvorit">Nastavenia cookies</button>
         </span>
       </div>
     </div>
@@ -269,6 +269,23 @@ const SLUZBY_MEGA = [
   </footer>
 
 </main>
+
+{/* Cookie lišta. Karta vľavo dole, aby sa nebila s callpill vpravo.
+    Meracie nástroje (Google Tag Manager) sa smú spustiť až po súhlase,
+    logika je v skripte cookie súhlasu nižšie. Obe tlačidlá majú rovnakú
+    veľkosť: odmietnutie nesmie byť opticky potlačené. */}
+<div id="cookie-lista" role="dialog" aria-modal="false" aria-labelledby="cookie-nadpis" hidden>
+  <h2 id="cookie-nadpis">Súkromie na tomto webe</h2>
+  <p>
+    Radi by sme anonymne merali návštevnosť, aby sme web zlepšovali.
+    Meracie nástroje sa zapnú až po vašom súhlase a voľbu môžete kedykoľvek
+    zmeniť v pätičke. Viac v <a href="/ochrana-osobnych-udajov">ochrane osobných údajov</a>.
+  </p>
+  <div class="cookie-akcie">
+    <button type="button" id="cookie-nie">Odmietnuť</button>
+    <button type="button" id="cookie-ano">Súhlasím</button>
+  </div>
+</div>
 
 <script is:inline src="/assets/vendor/gsap.min.js"></script>
 <script is:inline src="/assets/vendor/ScrollTrigger.min.js"></script>
@@ -282,6 +299,86 @@ const SLUZBY_MEGA = [
 {/* Vlastné počítadlo návštevnosti. Jeden beacon po načítaní stránky,
     bez cookie a bez identifikátora. Čísla vidí admin v /admin/navstevnost. */}
 <script is:inline defer src="/js/navsteva.js"></script>
+<script is:inline>
+/* Cookie súhlas + Google Tag Manager (GTM-K6GK3MN5, dodal marketér 1. 9. 2026).
+   Právny režim: Consent Mode v2 štartuje so všetkým zamietnutým a samotný
+   gtm.js sa načíta AŽ PO súhlase. Bez súhlasu z webu na Google neodíde nič.
+   Noscript iframe z návodu Googlu tu zámerne nie je: spustil by sa bez súhlasu.
+   Voľba sa drží v localStorage (kľúč paciga-cookies) — je to nutný záznam
+   o voľbe, nie meranie, preto naň súhlas netreba. */
+(function () {
+  var KLUC = 'paciga-cookies';
+  var GTM = 'GTM-K6GK3MN5';
+  var lista = document.getElementById('cookie-lista');
+  var bezi = false;
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+
+  function volba() {
+    try { return (JSON.parse(localStorage.getItem(KLUC)) || {}).volba || ''; }
+    catch (e) { return ''; }
+  }
+  function uloz(v) {
+    try { localStorage.setItem(KLUC, JSON.stringify({ volba: v, kedy: new Date().toISOString() })); }
+    catch (e) { /* prehliadač bez localStorage: voľba platí len pre túto stránku */ }
+  }
+
+  function zapni() {
+    gtag('consent', 'update', {
+      ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
+      analytics_storage: 'granted'
+    });
+    if (bezi) return;
+    bezi = true;
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0], j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', GTM);
+  }
+
+  function vypni() {
+    gtag('consent', 'update', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied'
+    });
+    /* Po odvolaní súhlasu upraceme cookies, ktoré Google stihol nasadiť. */
+    document.cookie.split(';').forEach(function (c) {
+      var meno = c.split('=')[0].trim();
+      if (/^(_ga|_gid|_gat|_gcl)/.test(meno)) {
+        document.cookie = meno + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.paciga.sk';
+        document.cookie = meno + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+      }
+    });
+  }
+
+  document.getElementById('cookie-ano').addEventListener('click', function () {
+    uloz('ano'); zapni(); lista.hidden = true;
+  });
+  document.getElementById('cookie-nie').addEventListener('click', function () {
+    uloz('nie'); vypni(); lista.hidden = true;
+  });
+  var otvorit = document.getElementById('cookies-otvorit');
+  if (otvorit) otvorit.addEventListener('click', function () { lista.hidden = false; });
+
+  var v = volba();
+  if (v === 'ano') zapni();
+  else if (v !== 'nie') lista.hidden = false;
+})();
+</script>
 <slot name="scripts" />
 {/* Úprava obsahu priamo na stránke. Bežný návštevník stiahne len tento
     krátky test: Supabase si reláciu ukladá do localStorage pod kľúčom
