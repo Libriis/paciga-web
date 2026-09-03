@@ -23,7 +23,13 @@
       body: JSON.stringify({ slug: slug })
     })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d && typeof d.sviecky === 'number' && onCount) onCount(d.sviecky); })
+      .then(function (d) {
+        if (!d || typeof d.sviecky !== 'number') return;
+        if (onCount) onCount(d.sviecky);
+        /* Konverzia pre GTM až keď server sviečku zarátal (helper z konverzie.js). */
+        if (window.pgUdalost) window.pgUdalost('sviecka_zapalena', { slug: slug });
+        else (window.dataLayer = window.dataLayer || []).push({ event: 'sviecka_zapalena', stranka: location.pathname, slug: slug });
+      })
       .catch(function () {});
   }
 
