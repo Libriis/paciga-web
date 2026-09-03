@@ -299,6 +299,10 @@ const SLUZBY_MEGA = [
 {/* Vlastné počítadlo návštevnosti. Jeden beacon po načítaní stránky,
     bez cookie a bez identifikátora. Čísla vidí admin v /admin/navstevnost. */}
 <script is:inline defer src="/js/navsteva.js"></script>
+{/* Konverzie pre Google Tag Manager: kliky na telefón a e-mail, zdieľanie,
+    odoslané formuláre, sviečky. Skript len pushuje do dataLayer; či niečo
+    odíde na Google, riadi súhlas v skripte nižšie. Zoznam v GTM-UDALOSTI.md. */}
+<script is:inline defer src="/js/konverzie.js"></script>
 <script is:inline>
 /* Cookie súhlas + Google Tag Manager (GTM-K6GK3MN5, dodal marketér 1. 9. 2026).
    Právny režim: Consent Mode v2 štartuje so všetkým zamietnutým a samotný
