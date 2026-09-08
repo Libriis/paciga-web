@@ -8,6 +8,7 @@ Web paciga.sk posiela do `window.dataLayer` tieto udalosti. Kód: `public/js/kon
 | --- | --- | --- |
 | `telefon_klik` | klik na odkaz `tel:` kdekoľvek na webe | `cislo` (napr. 0903596364), `miesto` (id alebo trieda odkazu: nav-cta, callpill, footer-phone, btn-gold, branch-tel, step-tel, cp-num, callbar-tel, phone-primary...), `stranka` |
 | `email_klik` | klik na odkaz `mailto:` | `miesto`, `stranka` |
+| `formular_zacaty` | prvý fokus do poľa formulára (raz za formulár a načítanie stránky) | `formular` (dopyt alebo kondolencia), `slug` (len pri kondolencii), `stranka` |
 | `dopyt_odoslany` | kontaktný formulár na /kontakt prešiel serverom (odpoveď 2xx) | `stranka` |
 | `kondolencia_odoslana` | kondolencia pri parte prešla serverom | `slug` (slug parte), `stranka` |
 | `sviecka_zapalena` | server zarátal zapálenú sviečku | `slug`, `stranka` |
@@ -21,6 +22,10 @@ Google Ads konverzie (primárne, optimalizuje sa na ne):
 
 1. `telefon_klik` – hovor z webu. Najdôležitejšia konverzia pre pohrebnú službu.
 2. `dopyt_odoslany` – správa cez formulár.
+
+Google Ads sekundárne (len na sledovanie, nie na optimalizáciu):
+
+- `formular_zacaty` s parametrom `formular` = dopyt – pre existujúcu akciu „Gads - form start“. Rovnaká udalosť s `formular` = kondolencia do Ads nepatrí.
 
 Google Analytics 4 udalosti (sekundárne, len na sledovanie):
 

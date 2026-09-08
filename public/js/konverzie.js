@@ -7,6 +7,7 @@
      telefon_klik          klik na odkaz tel:            cislo, miesto
      email_klik            klik na odkaz mailto:         miesto
      zdielanie_klik        zdieľanie parte alebo článku  kanal
+     formular_zacaty       prvý fokus do poľa formulára  formular, slug
      dopyt_odoslany        kontaktný formulár prešiel    (forms.js)
      kondolencia_odoslana  kondolencia prešla            slug (forms.js)
      sviecka_zapalena      server sviečku zarátal        slug (candles.js)
@@ -38,6 +39,23 @@
     var t = el.getAttribute('class') || '';
     return t.split(/\s+/)[0] || 'odkaz';
   }
+
+  /* Začatie formulára (pre Ads akciu „form start"): prvý fokus do poľa
+     kontaktného formulára alebo kondolencie. Raz za formulár a načítanie
+     stránky. Pole honeypot (hp-field) nepočítame, tam klikajú len roboty. */
+  var zacate = {};
+  document.addEventListener('focusin', function (e) {
+    var t = e.target;
+    if (!t || !t.closest || !t.matches || !t.matches('input, textarea, select')) return;
+    if (t.classList.contains('hp-field')) return;
+    var form = t.closest('form#kontakt-form, form#kondolencia-form');
+    if (!form || zacate[form.id]) return;
+    zacate[form.id] = true;
+    udalost('formular_zacaty', {
+      formular: form.id === 'kontakt-form' ? 'dopyt' : 'kondolencia',
+      slug: form.getAttribute('data-slug') || undefined
+    });
+  }, true);
 
   /* Jedno delegované počúvanie na celý dokument. Capture fáza, aby klik
      zachytil aj vtedy, keď iný skript zastaví bublanie. */
