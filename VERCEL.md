@@ -12,8 +12,36 @@ Adaptér `@astrojs/vercel` si píše vlastný `.vercel/output/config.json`.
 
 ## redirects
 
+### Lomka na konci (prvé pravidlo, `/:cesta+/`)
+
+WordPress dával lomku na koniec každej adresy, takže Google má v indexe
+`paciga.sk/rakvy/`, nie `paciga.sk/rakvy`. Pravidlo zapísané ako `/rakvy`
+ten tvar nechytí. Od prepnutia domény 30. 8. 2026 tak všetky staré adresy
+vracali 404 — overené na živom webe 14. 9. 2026: `/rakvy` dalo 301,
+`/rakvy/` dalo 404.
+
+Prvé pravidlo v poli preto lomku odstrihne (308) a až potom sa chytia
+ostatné. Platí na všetko, nielen na adresy v zozname. Koreň `/` nechytá,
+vzor `:cesta+` potrebuje aspoň jednu časť cesty, takže slučka nevznikne.
+Živé stránky, ktoré predtým odpovedali na oba tvary, teraz majú jeden
+kanonický bez lomky — rovnako ako `<link rel="canonical">` a mapa stránok.
+
+Overené na náhľadovom nasadení `fix/stare-adresy-lomka`: `/rakvy/` končí
+dvoma skokmi na `/pohrebne-sluzby/rakvy` (200), `/` zostáva na 200 bez
+presmerovania.
+
+Dve cesty, ktoré NEFUNGUJÚ a netreba ich skúšať znova:
+
+- duplicitné kľúče s lomkou v `src/data/presmerovania.mjs`. Astro lomku
+  normalizuje a vyrobí ten istý `^/rakvy$` dvakrát.
+- `trailingSlash: 'never'` v `astro.config.mjs`. Adaptér to do
+  `.vercel/output/config.json` vôbec nezapíše.
+
+### Tri hromadné pravidlá
+
 Tri hromadné pravidlá zo starého WordPressu: 391 parte, 81 kytíc,
-4 kategórie, spolu 476 adries.
+4 kategórie, spolu 476 adries. Vzor je `(.*)`, nie `:path*`, aby chytil
+aj holý tvar `/opustili_ns` aj `/opustili_ns/nieco/`.
 
 Sú tu, a nie v `astro.config.mjs`, lebo Astro dynamické presmerovanie
 odmietne, keď cieľ nenesie tie isté parametre ako zdroj: `/old/[slug]`
