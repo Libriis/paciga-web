@@ -1,9 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/opustili_ns/:path*", "destination": "/opustili-nas", "permanent": true },
-    { "source": "/kytice/:path*", "destination": "/pohrebne-sluzby/kvetinarstvo", "permanent": true },
-    { "source": "/category/:path*", "destination": "/aktuality", "permanent": true }
+    { "source": "/:cesta+/", "destination": "/:cesta+", "permanent": true },
+    { "source": "/opustili_ns(.*)", "destination": "/opustili-nas", "permanent": true },
+    { "source": "/kytice(.*)", "destination": "/pohrebne-sluzby/kvetinarstvo", "permanent": true },
+    { "source": "/category(.*)", "destination": "/aktuality", "permanent": true }
   ],
   "headers": [
     {
