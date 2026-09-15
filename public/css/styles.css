@@ -959,6 +959,10 @@ picture { display: contents; }
 .branch-card:hover .branch-photo span { filter: saturate(0.85) brightness(0.85); }
 .branch-body { padding: 26px 26px 30px; }
 .branch-body h3 { font-size: 24px; }
+/* Názov mesta je od 15. 9. 2026 odkaz na stránku pobočky. Farbu si berie
+   z nadpisu, aby karta vyzerala rovnako ako predtým. */
+.branch-body h3 a { color: inherit; transition: color 0.3s ease; }
+.branch-body h3 a:hover { color: var(--gold); }
 .branch-addr { margin-top: 12px; color: var(--muted); font-size: 18.6px; }
 .branch-tel { display: inline-block; margin-top: 14px; font-size: 22px; font-weight: 660; font-variation-settings: var(--wide); color: var(--gold); transition: color 0.3s ease; }
 .branch-tel:hover { color: var(--fg-strong); }
@@ -1073,6 +1077,13 @@ picture { display: contents; }
 .footer-dim { color: var(--dim); font-size: 13px; }
 .footer-map { font-size: 13px !important; color: var(--dim) !important; }
 .footer-map:hover { color: var(--gold) !important; }
+/* Odkaz na stránku pobočky v stĺpci adries (pridané 15. 9. 2026).
+   !important je nutné z rovnakého dôvodu ako pri .footer-map: pravidlo
+   .footer-col a je trieda plus typ, teda špecifickejšie než samotná trieda.
+   Veľkosť 14,5 px sedí so zvyškom pätičky a drží mobilné minimum 14 px,
+   takže mobilná výnimka netreba. */
+.footer-branch { font-size: 14.5px !important; color: var(--muted) !important; }
+.footer-branch:hover { color: var(--gold) !important; }
 .addresses span { color: var(--muted); font-size: 14px; line-height: 1.55; }
 .footer-bottom { border-top: 1px solid var(--line); padding: 22px 0; }
 .footer-bottom .container { font-size: 16.1px; color: var(--dim); }
@@ -2779,7 +2790,8 @@ a.first-card:hover .fc-go { opacity: 1; transform: none; }
   .footer-map { font-size: 14.5px !important; }
   .footer-social a { font-size: 14.5px; }
   .footer-dim { font-size: 14px; }
-  /* adresy nie sú odkazy, len text — mapový odkaz pod nimi si berie výšku sám */
+  /* Samotná adresa je text, odkazy pod ňou (pobočka, mapa) si výšku 44 px
+     berú z pravidla .footer-col a vyššie v tomto bloku. */
   .footer-col.addresses span { padding-bottom: 4px; }
 
   /* ---- odkazy pri parte a spomienkach ---- */

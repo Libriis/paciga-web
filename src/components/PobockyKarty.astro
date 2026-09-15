@@ -15,6 +15,11 @@
   „NON STOP aj prevádzka“), ktorý sa z dát vytiahnuť nedá. Pri zmene
   telefónu, adresy alebo hodín uprav obe miesta.
 
+  Názov mesta je od 15. 9. 2026 odkaz na stránku pobočky (/poprad,
+  /spisska-bela, /liptovsky-mikulas). Karty sú na domovskej stránke aj
+  na /kontakt, takže tým pribudli dve ďalšie stránky, ktoré na pobočky
+  odkazujú. Zvyšok rieši pätička v Base.astro.
+
   Video je na data-src, nie na src. Zdroj nasadzuje main.js a len na
   širokom displeji bez šetrenia dát. Na mobile ostane v karte poster
   a tri klipy miest (934 kB) sa nestiahnu vôbec. Merané 22. 8. 2026.
@@ -24,7 +29,7 @@
   <article class="branch-card" data-reveal>
     <div class="branch-photo" data-parallax><span><video class="scene-video" data-src="/assets/town-poprad.mp4" data-poster="/assets/poster-poprad.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
     <div class="branch-body">
-      <h3>Poprad</h3>
+      <h3><a href="/poprad">Poprad</a></h3>
       <p class="branch-addr">Francisciho 3288/35<br>058 01 Poprad</p>
       <a class="branch-tel" href="tel:0903596364">0903 596 364</a>
       <p class="branch-hours">NON STOP · 24/7</p>
@@ -36,7 +41,7 @@
   <article class="branch-card" data-reveal>
     <div class="branch-photo" data-parallax><span><video class="scene-video" data-src="/assets/town-bela.mp4" data-poster="/assets/poster-bela.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
     <div class="branch-body">
-      <h3>Spišská Belá</h3>
+      <h3><a href="/spisska-bela">Spišská Belá</a></h3>
       <p class="branch-addr">Letná 17<br>059 01 Spišská Belá</p>
       <a class="branch-tel" href="tel:0903596364">0903 596 364</a>
       <p class="branch-hours">NON STOP aj prevádzka · 24/7</p>
@@ -48,7 +53,7 @@
   <article class="branch-card" data-reveal>
     <div class="branch-photo" data-parallax><span><video class="scene-video" data-src="/assets/town-lm.mp4" data-poster="/assets/poster-lm.webp" muted loop playsinline preload="none" aria-hidden="true"></video></span></div>
     <div class="branch-body">
-      <h3>Liptovský Mikuláš</h3>
+      <h3><a href="/liptovsky-mikulas">Liptovský Mikuláš</a></h3>
       <p class="branch-addr">Ester Šimerovej Martinčekovej 4506/4<br>031 01 Liptovský Mikuláš</p>
       <a class="branch-tel" href="tel:0903596364">0903 596 364</a>
       <p class="branch-hours">NON STOP · 24/7</p>
