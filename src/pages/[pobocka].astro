@@ -62,7 +62,7 @@ const otazky: FaqItem[] = [
     q: `Kedy sa dá na pobočku v ${p.mestoV} prísť?`,
     a: p.nonstop
       ? 'Nepretržite. Spišská Belá je sídlo firmy a ako jediná pobočka je dostupná v ktorúkoľvek hodinu, aj cez víkendy a sviatky.'
-      : `Osobne v pondelok až piatok od 8:00 do 16:00. Prevoz zosnulého ale zabezpečíme aj mimo týchto hodín, na to slúži NON STOP linka ${telText(p.telefon)}.`,
+      : `Osobne v pondelok až piatok od 8:00 do ${p.zatvara}. Prevoz zosnulého ale zabezpečíme aj mimo týchto hodín, na to slúži NON STOP linka ${telText(p.telefon)}.`,
   },
   {
     q: 'Čo mám priniesť na prvé stretnutie?',
@@ -97,7 +97,7 @@ const pobockaLd = {
   areaServed: { '@type': 'City', name: p.mesto },
   openingHoursSpecification: p.nonstop
     ? [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], opens: '00:00', closes: '23:59' }]
-    : [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: '16:00' }],
+    : [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: p.zatvara }],
 };
 
 const drobceky = {
@@ -195,7 +195,7 @@ const drobceky = {
         <article class="branch-card" data-reveal>
           <div class="branch-body">
             <h3>Otváracie hodiny</h3>
-            <p class="branch-addr">{p.nonstop ? 'Nepretržite, 24 hodín denne' : 'Pondelok až piatok 8:00 až 16:00'}</p>
+            <p class="branch-addr">{p.nonstop ? 'Nepretržite, 24 hodín denne' : `Pondelok až piatok 8:00 až ${p.zatvara}`}</p>
             <p class="branch-mail"><a href={`mailto:${p.email}`}>{p.email}</a></p>
           </div>
         </article>
