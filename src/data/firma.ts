@@ -59,6 +59,8 @@ export interface Pobocka {
   email: string;
   /** true = pobočka je dostupná nepretržite, nielen v otváracích hodinách */
   nonstop: boolean;
+  /** kedy kancelária v pondelok až piatok zatvára, HH:MM (otvára vždy 8:00) */
+  zatvara: string;
   /* ---- obsah stránky pobočky ----
      Každá pobočka má vlastný text, nie ten istý s vymeneným názvom mesta.
      Nie je to opatrnosť, je to nutnosť: sériu skoro rovnakých stránok pre
@@ -95,6 +97,7 @@ export const POBOCKY: Pobocka[] = [
     telefonPrevadzka: '+421949011012',
     email: 'pacigapp@gmail.com',
     nonstop: false,
+    zatvara: '16:00',
     lead: 'Pobočka na Francisciho ulici. Pohrebné aj kamenárske služby na jednom mieste.',
     oPobocke:
       'V Poprade máme showroom, kde si popri rakvách, urnách a krížoch pozriete aj vzorky žuly. ' +
@@ -122,6 +125,7 @@ export const POBOCKY: Pobocka[] = [
     telefon: '+421903596364',
     email: 'info.paciga@gmail.com',
     nonstop: true,
+    zatvara: '16:00',
     lead: 'Sídlo firmy na Letnej ulici. Miesto, kde sa všetko začalo.',
     oPobocke:
       'Spišská Belá je sídlo firmy. 24. mája 2018 sme tu nadviazali na spoločnosť Archa Belá ' +
@@ -150,6 +154,7 @@ export const POBOCKY: Pobocka[] = [
     telefonPrevadzka: '+421949011051',
     email: 'pacigalm@gmail.com',
     nonstop: false,
+    zatvara: '16:30',
     lead: 'Pobočka na Ester Šimerovej Martinčekovej. Najzápadnejšia z našich troch.',
     oPobocke:
       'Liptovský Mikuláš je naša najzápadnejšia pobočka a pokrýva Liptov. ' +
@@ -189,8 +194,9 @@ function adresa(p: Pobocka) {
   };
 }
 
-/* Kancelária má Po až Pi 8:00 až 16:00. Spišská Belá je dostupná
-   nepretržite, tam ide sedem dní od polnoci do polnoci. */
+/* Kancelária má Po až Pi od 8:00, zatvára podľa pobočky (LM 16:30,
+   ostatné 16:00, pole zatvara). Spišská Belá je dostupná nepretržite,
+   tam ide sedem dní od polnoci do polnoci. */
 function hodiny(p: Pobocka) {
   if (p.nonstop) {
     return [
@@ -207,7 +213,7 @@ function hodiny(p: Pobocka) {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: DNI,
       opens: '08:00',
-      closes: '16:00',
+      closes: p.zatvara,
     },
   ];
 }
