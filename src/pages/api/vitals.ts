@@ -15,6 +15,28 @@ const ZARIADENIA = ['mobile', 'desktop', 'unknown'] as const;
 // beriem len hodnoty, ktoré vedia vzniknúť v prehliadači.
 const MAX: Record<string, number> = { LCP: 120000, CLS: 100, INP: 120000, FCP: 120000, TTFB: 120000 };
 
+// Jeden beacon nesie metriky jedného zobrazenia, teda najviac päť.
+// Rezerva pre prípad, že web-vitals niektorú ohlási znova.
+const MAX_METRIK = 10;
+
+type Metrika = { metrika: string; hodnota: number; rating: string; navigacia: string | null };
+
+/** Overí jednu metriku. Vráti hotovú časť riadku, alebo text chyby. */
+function overMetriku(m: unknown): Metrika | string {
+  if (!m || typeof m !== 'object') return 'Neplatná metrika.';
+  const o = m as Record<string, unknown>;
+  const metrika = String(o.metrika ?? '');
+  const rating = String(o.rating ?? '');
+  const hodnota = Number(o.hodnota);
+
+  if (!METRIKY.includes(metrika as typeof METRIKY[number])) return 'Neplatná metrika.';
+  if (!RATINGY.includes(rating as typeof RATINGY[number])) return 'Neplatný rating.';
+  if (!Number.isFinite(hodnota) || hodnota < 0 || hodnota > MAX[metrika]) return 'Neplatná hodnota.';
+
+  const navigacia = typeof o.navigacia === 'string' ? o.navigacia.slice(0, 20) : null;
+  return { metrika, hodnota, rating, navigacia };
+}
+
 export const POST: APIRoute = async ({ request }) => {
   // Beacon chodí z našich stránok. Cudzí pôvod nemá čo plniť telemetriu.
   const cudzia = cudziPovod(request);
@@ -30,31 +52,32 @@ export const POST: APIRoute = async ({ request }) => {
   try { b = JSON.parse(raw); } catch { return json({ error: 'Neplatná požiadavka.' }, 400); }
   if (!b || typeof b !== 'object') return json({ error: 'Neplatná požiadavka.' }, 400);
 
-  const metrika = String(b.metrika ?? '');
-  const rating = String(b.rating ?? '');
-  const hodnota = Number(b.hodnota);
-  const cesta = String(b.cesta ?? '');
+  // Od 18. 9. 2026 nesie beacon všetky metriky zobrazenia v poli `metriky`.
+  // Jedna metrika priamo v tele je starý formát. vitals.js má krátku cache
+  // (max-age=0 a SWR 60 s), takže ho prehliadač môže ešte chvíľu posielať.
+  // Prijímame oba.
+  const polozky: unknown[] = Array.isArray(b.metriky) ? b.metriky : [b];
+  if (polozky.length === 0 || polozky.length > MAX_METRIK) return json({ error: 'Neplatná požiadavka.' }, 400);
 
-  if (!METRIKY.includes(metrika as typeof METRIKY[number])) return json({ error: 'Neplatná metrika.' }, 400);
-  if (!RATINGY.includes(rating as typeof RATINGY[number])) return json({ error: 'Neplatný rating.' }, 400);
-  if (!Number.isFinite(hodnota) || hodnota < 0 || hodnota > MAX[metrika]) return json({ error: 'Neplatná hodnota.' }, 400);
+  // Neplatnú metriku zahodíme a zvyšok uložíme. Jedna odľahlá hodnota
+  // (napríklad TTFB nad strop) nesmie vziať so sebou ostatné, rovnako ako
+  // keď chodila každá zvlášť. 400 len vtedy, keď neprejde ani jedna.
+  const overene = polozky.map(overMetriku);
+  const platne = overene.filter((v): v is Metrika => typeof v !== 'string');
+  if (platne.length === 0) return json({ error: overene[0] as string }, 400);
+
+  const cesta = String(b.cesta ?? '');
   if (!/^\/[\w\-/]{0,199}$/.test(cesta)) return json({ error: 'Neplatná cesta.' }, 400);
 
-  const zariadenie = String(b.zariadenie ?? 'unknown');
+  const zariadenieRaw = String(b.zariadenie ?? 'unknown');
+  const zariadenie = ZARIADENIA.includes(zariadenieRaw as typeof ZARIADENIA[number]) ? zariadenieRaw : 'unknown';
   const siet = typeof b.siet === 'string' ? b.siet.slice(0, 20) : null;
-  const navigacia = typeof b.navigacia === 'string' ? b.navigacia.slice(0, 20) : null;
 
   if (!supabase) return json({ error: 'Databáza nie je nakonfigurovaná.' }, 503);
 
-  const { error } = await supabase.from('web_vitals').insert({
-    metrika,
-    hodnota,
-    rating,
-    cesta,
-    zariadenie: ZARIADENIA.includes(zariadenie as typeof ZARIADENIA[number]) ? zariadenie : 'unknown',
-    siet,
-    navigacia,
-  });
+  const { error } = await supabase.from('web_vitals').insert(
+    platne.map((m) => ({ ...m, cesta, zariadenie, siet })),
+  );
 
   // Telemetria nesmie nikdy rušiť návštevníka. Aj pri chybe vraciame 204.
   if (error) console.error('[vitals]', error.message);
