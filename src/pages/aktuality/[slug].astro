@@ -30,6 +30,7 @@ const jsonld = JSON.stringify({
   '@type': 'Article',
   headline: c.titulok,
   datePublished: c.datumIso,
+  dateModified: c.upravenoIso ?? c.datumIso,
   image: new URL(c.foto, Astro.site ?? Astro.url).href,
   author: { '@type': 'Organization', name: 'Paciga' },
   publisher: { '@type': 'Organization', name: 'Paciga', url: 'https://www.paciga.sk' },

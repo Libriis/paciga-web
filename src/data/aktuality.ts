@@ -21,6 +21,9 @@ export interface Clanok {
   datum: string;
   /** ISO dátum pre <time> a schema.org */
   datumIso: string;
+  /** ISO dátum poslednej úpravy v administrácii (dateModified). Chýba pri
+      článkoch z tohto súboru, tie sa od migrácie nemenili. */
+  upravenoIso?: string;
   tag: 'Prvé kroky' | 'Smútok a spomínanie' | 'Plánovanie vopred' | 'Spomienkové šperky' | 'Zo života Paciga';
   /** kľúč filtra na prehľade */
   t: 'prve-kroky' | 'smutok' | 'planovanie' | 'sperky' | 'zo-zivota';

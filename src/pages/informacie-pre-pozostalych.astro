@@ -42,12 +42,36 @@ const otazky: FaqItem[] = [
   },
 ];
 
+/* Dátum poslednej vecnej zmeny textu. Stránka nesie údaje, ktoré mení
+   zákon (príspevok na pohreb 200 eur), a vyhľadávač aj AI asistent podľa
+   dátumu posudzujú, či je informácia ešte platná. Preto je viditeľný pod
+   nadpisom a zároveň v schema ako dateModified. Prepíš ho pri zmene faktov,
+   pri zmene vzhľadu nie. Posledné fakty: stretnutie s klientom 3. 8. 2026. */
+const AKTUALIZOVANE = { iso: '2026-08-03', text: '3. augusta 2026' };
+
 const title = "Informácie pre pozostalých | Paciga, pohrebné a kamenárske služby";
 const description = "Čo robiť pri úmrtí blízkeho doma, v nemocnici, za nejasných okolností alebo v zahraničí. Aké dokumenty pripraviť a ako požiadať o príspevok na pohreb. NON STOP 0903 596 364.";
 const ogTitle = "Informácie pre pozostalých | Paciga";
 const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok za krokom.";
+
+const zaklad = Astro.site ?? Astro.url;
+const strankaLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  url: new URL('/informacie-pre-pozostalych', zaklad).href,
+  name: 'Čo robiť, keď zomrie blízky človek',
+  description,
+  inLanguage: 'sk-SK',
+  dateModified: AKTUALIZOVANE.iso,
+  isPartOf: { '@id': new URL('/', zaklad).href + '#web' },
+  publisher: { '@id': new URL('/', zaklad).href + '#firma' },
+};
 ---
 <Base title={title} description={description} active="informacie-pre-pozostalych" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/info-hero.jpg">
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(strankaLd)} is:inline />
+  </Fragment>
 
 
 
@@ -60,6 +84,9 @@ const ogDescription = "Čo robiť, keď zomrie blízky človek. Pokojne a krok z
       <div>
         <div class="eyebrow" data-reveal>Informácie pre pozostalých</div>
         <h1 data-textreveal>Čo robiť, keď zomrie<br>blízky človek</h1>
+        <div class="clanok-meta" data-reveal>
+          <span>Aktualizované <time datetime={AKTUALIZOVANE.iso}>{AKTUALIZOVANE.text}</time></span>
+        </div>
       </div>
     </div>
     <div class="container news-hero-chips" data-reveal>

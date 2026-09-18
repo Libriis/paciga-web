@@ -30,8 +30,11 @@ export const FIRMA = {
   zalozena: '2018',
   telefon: '+421903596364',
   email: 'paciga@paciga.sk',
+  /* sameAs v schema. Každý profil tu je ďalší dôkaz pre vyhľadávače aj AI
+     asistentov, že ide o tú istú firmu. Instagram doplnený 18. 9. 2026. */
   socialne: [
     'https://www.facebook.com/pakspaciga/',
+    'https://www.instagram.com/paciga.sk/',
     'https://www.youtube.com/@PacigaPohrebneSluzby',
   ],
   popis:
