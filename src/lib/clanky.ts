@@ -64,11 +64,16 @@ function zRiadku(r: Record<string, unknown>): Clanok {
     : undefined;
 
   const iso = String(r.datum ?? '').slice(0, 10);
+  /* updated_at posúva trigger pri každej úprave. Dátum článku si však
+     redaktor môže nastaviť dopredu, a úprava pred dátumom vydania by
+     v schema pôsobila ako chyba. Preto neskorší z dvoch. */
+  const upravene = String(r.updated_at ?? '').slice(0, 10);
   const kategoria = naKategoriu(String(r.kategoria));
   return {
     slug: String(r.slug),
     datum: slovenskyDatum(iso),
     datumIso: iso,
+    upravenoIso: upravene > iso ? upravene : iso,
     tag: stitok(kategoria),
     t: kategoria,
     foto: String(r.foto_url ?? ''),
