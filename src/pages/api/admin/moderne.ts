@@ -7,15 +7,16 @@
 
    GET ?cursor=…          stránka zoznamu pohrebov (polia parte)
    GET ?id=…              detail jedného pohrebu (aj pohlavie)
+   GET ?id=…&foto=1       portrét zosnulého (len decease_photo, nič iné)
 
-   Fotky z MP cez tento most nejdú. Dôvod je v src/lib/moderne.ts.
+   Portrét sa nikdy nepoužije sám. Prečo, je v src/lib/moderne.ts.
 
    Prístup: hlavička Authorization: Bearer <access_token zo Supabase>.
    Token overí Supabase a ma_pristup('web') rozhodne, či môže na parte.
    Cookies sa tu nepoužívajú, takže cudzia stránka nemá čo zneužiť (CSRF). */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { ChybaMp, detailPohrebu, zoznamPohrebov } from '../../../lib/moderne';
+import { ChybaMp, detailPohrebu, portret, zoznamPohrebov } from '../../../lib/moderne';
 import { ID_MP } from '../../../lib/moderne-mapa';
 
 export const prerender = false;
@@ -57,6 +58,12 @@ export const GET: APIRoute = async ({ request, url }) => {
   try {
     if (id !== null) {
       if (!ID_MP.test(id)) return json({ error: 'Neplatné ID pohrebu.' }, 400);
+      if (url.searchParams.get('foto') === '1') {
+        const { data, typ } = await portret(id);
+        return new Response(data, {
+          headers: { 'Content-Type': typ, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' },
+        });
+      }
       return json(await detailPohrebu(id));
     }
     if (kurzor !== null && (kurzor.length < 1 || kurzor.length > 512)) {

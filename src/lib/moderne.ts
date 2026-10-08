@@ -7,13 +7,14 @@
    API je len na čítanie. Dokumentácia a OpenAPI: h:/ws/paciga/API-moderne.
    Limit MP: 120 požiadaviek za minútu na integráciu.
 
-   FOTKY Z MP SA NEŤAHAJÚ, a to zámerne. MP nemá portrét zosnulého.
-   Overené 8. 10. 2026 na 40 pohreboch so skupinou photos:read: fotky majú
-   ID decease_photo, grave_before_ceremony, grave_ceremony,
-   grave_after_ceremony, grave_exterier_N, grave_damage_N, grave_hole_photo
-   a hole_photo. decease_photo NIE JE portrét, je to fotka tela pri
-   prevzatí. Na parte nesmie ísť nikdy, ani do skrytého konceptu. Fotku
-   na parte pridáva obsluha ručne vo formulári, ako doteraz. */
+   PORTRÉT: MP má naň miesto decease_photo v skupine photos:read („Portrét,
+   hrob a obrad"). Fotky tela majú v MP vlastné miesta v citlivej skupine
+   (death_photo, take_remains_photo, deceased_takeover_photo_N…) a k tým
+   kľúč prístup mať nemá. Overené 8. 10. 2026 na 400 pohreboch.
+   POZOR: v ten istý deň bola na mieste portrétu jedného pohrebu fotka
+   tela, obsluha ju tam nahrala omylom. Preto sa portrét NIKDY nepreberá
+   sám. Admin ho ukáže ako náhľad a použije ho, len keď ho človek
+   zaškrtne (ParteSync). */
 import { zaBehu } from './env';
 import { ID_MP, mapujPohreb, type MpPohreb, type Snimka } from './moderne-mapa';
 
@@ -42,7 +43,7 @@ async function volaj(cesta: string): Promise<Response> {
   let r: Response;
   try {
     r = await fetch(BASE + cesta, {
-      headers: { Authorization: `Bearer ${kluc}`, Accept: 'application/json' },
+      headers: { Authorization: `Bearer ${kluc}`, Accept: 'application/json, image/*' },
       // Presmerovanie by mohlo odniesť kľúč inam. MP žiadne nerobí.
       redirect: 'error',
       signal: AbortSignal.timeout(15_000),
@@ -68,6 +69,39 @@ export async function zoznamPohrebov(kurzor: string | null, limit = 50) {
     .filter((p) => ID_MP.test(p.id))
     .map((p) => ({ id: p.id, snimka: mapujPohreb(p), variant: p.funeral_variant || null }));
   return { polozky, dalsi: j.nextCursor };
+}
+
+const PORTRET = 'decease_photo';
+/** Vercel funkcia nepustí odpoveď nad 4,5 MB. Väčšiu fotku pridá obsluha ručne. */
+const MAX_FOTKA = 4_000_000;
+
+/** Typ obrázka podľa prvých bajtov. Hlavičke z MP neveríme a SVG nechceme,
+    lebo môže niesť skript. */
+function typObrazka(b: Uint8Array): string | null {
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return 'image/png';
+  if (b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) return 'image/gif';
+  const ascii = (od: number, n: number) => String.fromCharCode(...b.subarray(od, od + n));
+  if (ascii(0, 4) === 'RIFF' && ascii(8, 4) === 'WEBP') return 'image/webp';
+  return null;
+}
+
+/** Portrét zosnulého z MP, len ten. Iné fotky (hrob, obrad) cez nás nejdú.
+    Zmenšuje ho až prehliadač, rovnako ako fotku vo formulári parte. */
+export async function portret(id: string): Promise<{ data: Uint8Array; typ: string }> {
+  const zoznam = await volaj(`/funerals/${id}/files`);
+  const j = await zoznam.json() as { items: { id: string; category: string }[] };
+  if (!j.items.some((f) => f.id === PORTRET && f.category === 'photo')) {
+    throw new ChybaMp(404, 'V Modernom pohrebníctve nie je portrét.');
+  }
+  const r = await volaj(`/funerals/${id}/files/${PORTRET}`);
+  const prilis = 'Portrét v Modernom pohrebníctve je priveľký. Pridaj fotku ručne.';
+  if (Number(r.headers.get('content-length')) > MAX_FOTKA) throw new ChybaMp(413, prilis);
+  const data = new Uint8Array(await r.arrayBuffer());
+  if (data.byteLength > MAX_FOTKA) throw new ChybaMp(413, prilis);
+  const typ = typObrazka(data);
+  if (!typ) throw new ChybaMp(422, 'Portrét v Modernom pohrebníctve nie je obrázok.');
+  return { data, typ };
 }
 
 /** Detail pohrebu: polia parte (s pohlavím, ak ho MP pošle).

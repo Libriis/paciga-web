@@ -11,15 +11,18 @@
      sa už nemení nikdy.
    - Parte, ktoré už niekto pridal ručne (rovnaké meno a deň úmrtia),
      sa nezakladá druhýkrát.
+   - Portrét z MP sa nepoužije sám. Po zaškrtnutí pohrebu sa ukáže náhľad
+     a fotka ide na parte, len keď obsluha zaškrtne „Použiť túto fotku".
+     8. 10. 2026 bola na mieste portrétu v MP fotka tela (src/lib/moderne.ts).
 
    Do databázy zapisuje prehliadač pod prihlásením obsluhy, ako zvyšok
    adminu. Server (/api/admin/moderne) len drží kľúč k MP a prekladá. */
-import { useEffect, useState } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import {
   Bunka, HlavaStranky, Hlaska, Nacitavam, OdkazTlacidlo, Prazdno, Ramec, Stitok, Tlacidlo,
 } from './ui';
-import { getClient, fmtD } from '@/scripts/admin-core.js';
+import { getClient, fmtD, zmensiFotku } from '@/scripts/admin-core.js';
 import {
   menoNaPorovnanie, slugify, zlucZmeny, zmenenyVMp, type Snimka,
 } from '@/lib/moderne-mapa';
@@ -33,15 +36,23 @@ const MAX_NARAZ = 20;
 type Polozka = { id: string; snimka: Snimka; variant: string | null };
 type Prepojenie = {
   mp_id: string; parte_id: string; snimka: Partial<Snimka>;
-  parte: { id: string; published: boolean } | null;
+  parte: { id: string; published: boolean; foto_url: string | null } | null;
 };
 type Stav =
   | { druh: 'nove' }
-  | { druh: 'koncept'; parteId: string; zmenene: boolean }
+  | { druh: 'koncept'; parteId: string; zmenene: boolean; maFotku: boolean }
   | { druh: 'zverejnene'; parteId: string }
   | { druh: 'rucne'; parteId: string }
   | { druh: 'bez-umrtia' };
 type Vysledok = { chyba: boolean; text: string; parteId?: string };
+type Fotka =
+  | { stav: 'nacitavam' }
+  | { stav: 'ok'; blob: Blob; url: string }
+  | { stav: 'nie'; text: string };
+
+/** Portrét má zmysel hľadať len pri novom parte a pri koncepte bez fotky. */
+const chceFotku = (st: Stav | undefined) =>
+  st?.druh === 'nove' || (st?.druh === 'koncept' && !st.maFotku);
 
 const NAZVY_POLI: Record<string, string> = {
   meno: 'meno', pohlavie: 'pohlavie', datum_narodenia: 'narodenie', datum_umrtia: 'úmrtie',
@@ -78,12 +89,21 @@ async function volnySlug(meno: string, datumUmrtia: string) {
   return volny;
 }
 
-/* Fotka z MP sa nepreberá: MP portrét nemá, jeho decease_photo je fotka
-   tela (podrobne v src/lib/moderne.ts). Fotku pridá obsluha vo formulári. */
+/** Zmenší portrét na 900 px WebP ako formulár a nahrá ho k parte. */
+async function nahrajFotku(fotka: Blob, slug: string) {
+  const sb = getClient();
+  const webp = await zmensiFotku(fotka, 900);
+  const cesta = `${slug}-${Date.now()}.webp`;
+  const { error } = await sb.storage.from('parte-foto').upload(cesta, webp, { contentType: 'image/webp' });
+  if (error) throw new Error('Fotku sa nepodarilo nahrať: ' + error.message);
+  return sb.storage.from('parte-foto').getPublicUrl(cesta).data.publicUrl as string;
+}
+
 type Detail = { snimka: Snimka };
 
-/** Spracuje jeden pohreb: založí nové skryté parte alebo aktualizuje koncept. */
-async function spracuj(mpId: string): Promise<Vysledok> {
+/** Spracuje jeden pohreb: založí nové skryté parte alebo aktualizuje koncept.
+    `fotka` je portrét, ktorý obsluha videla a zaškrtla. Inak null. */
+async function spracuj(mpId: string, fotka: Blob | null): Promise<Vysledok> {
   const sb = getClient();
   const detail = await apiJson<Detail>(`?id=${mpId}`);
   const nova = detail.snimka;
@@ -100,7 +120,9 @@ async function spracuj(mpId: string): Promise<Vysledok> {
     if (parte.published) {
       return { chyba: false, text: 'Parte je zverejnené, nemením ho.', parteId: parte.id };
     }
-    const zmeny = zlucZmeny(parte, link.snimka || {}, nova);
+    const zmeny: Record<string, unknown> = zlucZmeny(parte, link.snimka || {}, nova);
+    // Fotku, ktorú už parte má, nikdy neprepisujeme.
+    if (fotka && !parte.foto_url) zmeny.foto_url = await nahrajFotku(fotka, parte.slug);
     if (Object.keys(zmeny).length) {
       const { error } = await sb.from('parte').update(zmeny).eq('id', parte.id);
       if (error) throw new Error(error.message);
@@ -108,7 +130,7 @@ async function spracuj(mpId: string): Promise<Vysledok> {
     const { error: se } = await sb.from('parte_moderne')
       .update({ snimka: nova, synchronizovane_at: new Date().toISOString() }).eq('mp_id', mpId);
     if (se) throw new Error(se.message);
-    const polia = Object.keys(zmeny).map((k) => NAZVY_POLI[k] || k);
+    const polia = Object.keys(zmeny).map((k) => (k === 'foto_url' ? 'fotka' : NAZVY_POLI[k] || k));
     return {
       chyba: false,
       parteId: parte.id,
@@ -116,13 +138,14 @@ async function spracuj(mpId: string): Promise<Vysledok> {
     };
   }
 
-  // Nové parte. Najprv voľná adresa, potom záznam, nakoniec prepojenie.
+  // Nové parte. Najprv voľná adresa a fotka, potom záznam, nakoniec prepojenie.
   const slug = await volnySlug(nova.meno, nova.datum_umrtia);
+  const foto_url = fotka ? await nahrajFotku(fotka, slug) : null;
 
   const { data: nove, error: ie } = await sb.from('parte').insert({
     ...nova,
     slug,
-    foto_url: null,
+    foto_url,
     odkaz_rodine: null,
     // Nikdy nie true. Zverejnenie je ručné rozhodnutie obsluhy.
     published: false,
@@ -140,7 +163,7 @@ async function spracuj(mpId: string): Promise<Vysledok> {
   return {
     chyba: false,
     parteId: nove.id,
-    text: 'Vytvorené ako skryté. Fotku pridaj ručne.',
+    text: foto_url ? 'Vytvorené ako skryté, s fotkou z MP.' : 'Vytvorené ako skryté, bez fotky.',
   };
 }
 
@@ -154,6 +177,44 @@ export function ParteSync() {
   const [nacitavaDalsie, setNacitavaDalsie] = useState(false);
   const [bezi, setBezi] = useState(false);
   const [hlaska, setHlaska] = useState('');
+  /* Náhľady portrétov z MP a tie, ktoré obsluha potvrdila. Predvolene
+     nepotvrdené: fotka ide na parte len po vedomom kliknutí. */
+  const [fotky, setFotky] = useState<Record<string, Fotka>>({});
+  const [pouzitFotku, setPouzitFotku] = useState<Set<string>>(new Set());
+  const nacitavane = useRef(new Set<string>());
+  const urlky = useRef<string[]>([]);
+
+  useEffect(() => () => { urlky.current.forEach((u) => URL.revokeObjectURL(u)); }, []);
+
+  /* Portrét sa sťahuje až po zaškrtnutí pohrebu, jeden po druhom.
+     MP pustí len 30 stiahnutí za minútu. */
+  useEffect(() => {
+    const chybajuce = [...vybrane].filter((id) => chceFotku(stavy[id]) && !fotky[id] && !nacitavane.current.has(id));
+    if (!chybajuce.length) return;
+    chybajuce.forEach((id) => nacitavane.current.add(id));
+    setFotky((f) => ({ ...f, ...Object.fromEntries(chybajuce.map((id) => [id, { stav: 'nacitavam' } as Fotka])) }));
+    (async () => {
+      for (const id of chybajuce) {
+        let fotka: Fotka;
+        try {
+          const r = await api(`?id=${id}&foto=1`);
+          if (r.ok) {
+            const blob = await r.blob();
+            const url = URL.createObjectURL(blob);
+            urlky.current.push(url);
+            fotka = { stav: 'ok', blob, url };
+          } else {
+            const j = await r.json().catch(() => null);
+            fotka = { stav: 'nie', text: j?.error || 'Portrét sa nepodarilo načítať.' };
+          }
+        } catch (e: any) {
+          fotka = { stav: 'nie', text: e?.message || 'Portrét sa nepodarilo načítať.' };
+        }
+        nacitavane.current.delete(id);
+        setFotky((f) => ({ ...f, [id]: fotka }));
+      }
+    })();
+  }, [vybrane, stavy, fotky]);
 
   /** Stav každého pohrebu podľa databázy webu. */
   const zistiStavy = async (zoznam: Polozka[]) => {
@@ -161,7 +222,7 @@ export function ParteSync() {
     const ids = zoznam.map((p) => p.id);
     const datumy = [...new Set(zoznam.map((p) => p.snimka.datum_umrtia).filter(Boolean))];
     const [{ data: linky, error: le }, { data: parte, error: pe }] = await Promise.all([
-      sb.from('parte_moderne').select('mp_id, parte_id, snimka, parte(id, published)').in('mp_id', ids),
+      sb.from('parte_moderne').select('mp_id, parte_id, snimka, parte(id, published, foto_url)').in('mp_id', ids),
       sb.from('parte').select('id, meno, datum_umrtia').in('datum_umrtia', datumy),
     ]);
     if (le || pe) throw new Error((le || pe)!.message);
@@ -174,7 +235,7 @@ export function ParteSync() {
       if (l?.parte) {
         s[p.id] = l.parte.published
           ? { druh: 'zverejnene', parteId: l.parte_id }
-          : { druh: 'koncept', parteId: l.parte_id, zmenene: zmenenyVMp(l.snimka, p.snimka) };
+          : { druh: 'koncept', parteId: l.parte_id, zmenene: zmenenyVMp(l.snimka, p.snimka), maFotku: !!l.parte.foto_url };
         continue;
       }
       if (!p.snimka.datum_umrtia) { s[p.id] = { druh: 'bez-umrtia' }; continue; }
@@ -226,7 +287,9 @@ export function ParteSync() {
     for (const [i, p] of zoznam.entries()) {
       setHlaska(`Spracúvam ${i + 1} z ${zoznam.length}: ${p.snimka.meno}…`);
       let v: Vysledok;
-      try { v = await spracuj(p.id); } catch (e: any) { v = { chyba: true, text: e?.message || 'Nepodarilo sa.' }; }
+      const f = fotky[p.id];
+      const fotka = pouzitFotku.has(p.id) && f?.stav === 'ok' ? f.blob : null;
+      try { v = await spracuj(p.id, fotka); } catch (e: any) { v = { chyba: true, text: e?.message || 'Nepodarilo sa.' }; }
       if (!v.chyba) ok++;
       setVysledky((r) => ({ ...r, [p.id]: v }));
     }
@@ -236,6 +299,7 @@ export function ParteSync() {
       setStavy((s) => ({ ...s, ...noveStavy }));
     } catch { /* stavy ostanú staré, výsledok je pri riadku */ }
     setVybrane(new Set());
+    setPouzitFotku(new Set());
     setHlaska(`Hotovo: ${ok} z ${zoznam.length}. Nové parte sú skryté. Skontroluj ich a zverejni v zozname parte.`);
     setBezi(false);
   };
@@ -290,29 +354,62 @@ export function ParteSync() {
               const s = p.snimka;
               const v = vysledky[p.id];
               const parteId = v?.parteId || (st && 'parteId' in st ? st.parteId : undefined);
+              const f = fotky[p.id];
               return (
-                <label key={p.id}
-                  className={`flex flex-wrap items-center gap-4 bg-background p-4 ${daSaVybrat(st) ? 'cursor-pointer' : 'opacity-60'}`}>
-                  <input type="checkbox" className="size-4 shrink-0 accent-white"
-                    disabled={!daSaVybrat(st) || bezi}
-                    checked={vybrane.has(p.id)} onChange={() => prepni(p.id)} />
-                  <div className="min-w-40 flex-1">
-                    <p className="text-[14.5px] font-semibold">{s.meno || 'Bez mena'}</p>
-                    <p className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-muted-foreground">
-                      {stitok(st)}
-                      {s.datum_umrtia && <span>† {fmtD(s.datum_umrtia)}</span>}
-                      {s.rozlucka_datum
-                        ? <span>rozlúčka {fmtD(s.rozlucka_datum)}{s.rozlucka_cas ? ` o ${s.rozlucka_cas}` : ''}{s.rozlucka_miesto ? `, ${s.rozlucka_miesto}` : ''}</span>
-                        : <span>rozlúčka zatiaľ bez termínu</span>}
-                    </p>
-                    {v && (
-                      <p className={`mt-1.5 text-[13px] ${v.chyba ? 'text-[#d18a8a]' : 'text-[#6bbf8a]'}`}>{v.text}</p>
+                <div key={p.id} className={`bg-background p-4 ${daSaVybrat(st) ? '' : 'opacity-60'}`}>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <label className={`flex min-w-40 flex-1 items-center gap-4 ${daSaVybrat(st) ? 'cursor-pointer' : ''}`}>
+                      <input type="checkbox" className="size-4 shrink-0 accent-white"
+                        disabled={!daSaVybrat(st) || bezi}
+                        checked={vybrane.has(p.id)} onChange={() => prepni(p.id)} />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[14.5px] font-semibold">{s.meno || 'Bez mena'}</p>
+                        <p className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-muted-foreground">
+                          {stitok(st)}
+                          {s.datum_umrtia && <span>† {fmtD(s.datum_umrtia)}</span>}
+                          {s.rozlucka_datum
+                            ? <span>rozlúčka {fmtD(s.rozlucka_datum)}{s.rozlucka_cas ? ` o ${s.rozlucka_cas}` : ''}{s.rozlucka_miesto ? `, ${s.rozlucka_miesto}` : ''}</span>
+                            : <span>rozlúčka zatiaľ bez termínu</span>}
+                        </p>
+                        {v && (
+                          <p className={`mt-1.5 text-[13px] ${v.chyba ? 'text-[#d18a8a]' : 'text-[#6bbf8a]'}`}>{v.text}</p>
+                        )}
+                      </div>
+                    </label>
+                    {parteId && (
+                      <OdkazTlacidlo maly href={`${FORMULAR}?id=${parteId}`}>Otvoriť parte</OdkazTlacidlo>
                     )}
                   </div>
-                  {parteId && (
-                    <OdkazTlacidlo maly href={`${FORMULAR}?id=${parteId}`}>Otvoriť parte</OdkazTlacidlo>
+
+                  {vybrane.has(p.id) && chceFotku(st) && f && (
+                    <div className="mt-3 flex items-center gap-4 pl-8 text-[13px] text-muted-foreground">
+                      {f.stav === 'nacitavam' && (
+                        <span className="flex items-center gap-2"><Loader2 className="size-3.5 animate-spin" /> Hľadám portrét v MP…</span>
+                      )}
+                      {f.stav === 'nie' && <span>{f.text} Fotku pridaj ručne.</span>}
+                      {f.stav === 'ok' && (
+                        <>
+                          <img src={f.url} alt="Portrét z Moderného pohrebníctva"
+                            className="size-20 shrink-0 rounded-md border border-border object-cover" />
+                          <label className="flex cursor-pointer items-start gap-2">
+                            <input type="checkbox" className="mt-0.5 size-4 shrink-0 accent-white"
+                              disabled={bezi}
+                              checked={pouzitFotku.has(p.id)}
+                              onChange={() => setPouzitFotku((u) => {
+                                const n = new Set(u);
+                                if (n.has(p.id)) n.delete(p.id); else n.add(p.id);
+                                return n;
+                              })} />
+                            <span>
+                              <span className="font-semibold text-foreground">Použiť túto fotku na parte</span>
+                              <span className="block text-[12.5px]">Zaškrtni, len keď je to portrét zosnulého.</span>
+                            </span>
+                          </label>
+                        </>
+                      )}
+                    </div>
                   )}
-                </label>
+                </div>
               );
             })}
             {dalsi && (
