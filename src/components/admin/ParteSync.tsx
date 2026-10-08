@@ -20,7 +20,7 @@
    Do databázy zapisuje prehliadač pod prihlásením obsluhy, ako zvyšok
    adminu. Server (/api/admin/moderne) len drží kľúč k MP a prekladá. */
 import { useEffect, useRef, useState } from 'react';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { ImageOff, Loader2, RefreshCw } from 'lucide-react';
 import {
   Bunka, HlavaStranky, Hlaska, Nacitavam, OdkazTlacidlo, Prazdno, Ramec, Stitok, Tlacidlo,
 } from './ui';
@@ -188,10 +188,16 @@ export function ParteSync() {
 
   useEffect(() => () => { urlky.current.forEach((u) => URL.revokeObjectURL(u)); }, []);
 
-  /* Portrét sa sťahuje až po zaškrtnutí pohrebu, jeden po druhom.
-     MP pustí len 30 stiahnutí za minútu. */
+  /** Zväčšený portrét: tu ho obsluha posúdi a rozhodne, či ho použije. */
+  const [zvacsena, setZvacsena] = useState<string | null>(null);
+
+  /* Portrét sa sťahuje sám pri každom pohrebe, ktorý ho môže dostať
+     (nové parte, koncept bez fotky), jeden po druhom. Klient chcel vidieť
+     fotky rovno v zozname (8. 10. 2026). MP pustí len 30 stiahnutí za
+     minútu, preto pauza medzi fotkami a pri 429 čakanie podľa Retry-After. */
   useEffect(() => {
-    const chybajuce = [...vybrane].filter((id) => chceFotku(stavy[id]) && !fotky[id] && !nacitavane.current.has(id));
+    const chybajuce = (polozky || []).map((p) => p.id)
+      .filter((id) => chceFotku(stavy[id]) && !fotky[id] && !nacitavane.current.has(id));
     if (!chybajuce.length) return;
     chybajuce.forEach((id) => nacitavane.current.add(id));
     setFotky((f) => ({ ...f, ...Object.fromEntries(chybajuce.map((id) => [id, { stav: 'nacitavam' } as Fotka])) }));
@@ -199,7 +205,11 @@ export function ParteSync() {
       for (const id of chybajuce) {
         let fotka: Fotka;
         try {
-          const r = await api(`?id=${id}&foto=1`);
+          let r = await api(`?id=${id}&foto=1`);
+          while (r.status === 429) {
+            await new Promise((ok) => setTimeout(ok, (Number(r.headers.get('retry-after')) || 30) * 1000));
+            r = await api(`?id=${id}&foto=1`);
+          }
           if (r.ok) {
             const blob = await r.blob();
             const url = URL.createObjectURL(blob);
@@ -214,9 +224,21 @@ export function ParteSync() {
         }
         nacitavane.current.delete(id);
         setFotky((f) => ({ ...f, [id]: fotka }));
+        await new Promise((ok) => setTimeout(ok, 2100));
       }
     })();
-  }, [vybrane, stavy, fotky]);
+  }, [polozky, stavy, fotky]);
+
+  /** Potvrdenie fotky zároveň vyberie pohreb. Bez neho by fotka nemala kam ísť. */
+  const prepniFotku = (id: string) => {
+    const zapnut = !pouzitFotku.has(id);
+    setPouzitFotku((u) => {
+      const n = new Set(u);
+      if (zapnut) n.add(id); else n.delete(id);
+      return n;
+    });
+    if (zapnut) setVybrane((v) => new Set(v).add(id));
+  };
 
   /** Stav každého pohrebu podľa databázy webu. */
   const zistiStavy = async (zoznam: Polozka[]) => {
@@ -302,6 +324,7 @@ export function ParteSync() {
     } catch { /* stavy ostanú staré, výsledok je pri riadku */ }
     setVybrane(new Set());
     setPouzitFotku(new Set());
+    setZvacsena(null);
     setHlaska(`Hotovo: ${ok} z ${zoznam.length}. Nové parte sú skryté. Skontroluj ich a zverejni v zozname parte.`);
     setBezi(false);
   };
@@ -347,7 +370,8 @@ export function ParteSync() {
           <div className="grid grid-cols-1 gap-px bg-border">
             <div className="flex flex-wrap items-center justify-between gap-3 bg-background p-4">
               <p className="text-[13px] text-muted-foreground">
-                Najnovšie pohreby sú hore. {privela && `Naraz najviac ${MAX_NARAZ}, odznač ${pocet - MAX_NARAZ}.`}
+                Najnovšie pohreby sú hore. Klikni na fotku, zväčší sa. Na parte ide len fotka, ktorú potvrdíš.
+                {privela && ` Naraz najviac ${MAX_NARAZ}, odznač ${pocet - MAX_NARAZ}.`}
               </p>
               {akcia}
             </div>
@@ -357,14 +381,33 @@ export function ParteSync() {
               const v = vysledky[p.id];
               const parteId = v?.parteId || (st && 'parteId' in st ? st.parteId : undefined);
               const f = fotky[p.id];
+              const policko = `mp-${p.id}`;
+              const otvorena = zvacsena === p.id && f?.stav === 'ok';
               return (
                 <div key={p.id} className={`bg-background p-4 ${daSaVybrat(st) ? '' : 'opacity-60'}`}>
                   <div className="flex flex-wrap items-center gap-4">
-                    <label className={`flex min-w-40 flex-1 items-center gap-4 ${daSaVybrat(st) ? 'cursor-pointer' : ''}`}>
-                      <input type="checkbox" className="size-4 shrink-0 accent-white"
-                        disabled={!daSaVybrat(st) || bezi}
-                        checked={vybrane.has(p.id)} onChange={() => prepni(p.id)} />
-                      <div className="min-w-0 flex-1">
+                    <input id={policko} type="checkbox" className="size-4 shrink-0 accent-white"
+                      disabled={!daSaVybrat(st) || bezi}
+                      checked={vybrane.has(p.id)} onChange={() => prepni(p.id)} />
+                    {chceFotku(st) ? (
+                      <button type="button"
+                        disabled={f?.stav !== 'ok'}
+                        onClick={() => setZvacsena(otvorena ? null : p.id)}
+                        title={f?.stav === 'ok' ? (otvorena ? 'Zmenšiť' : 'Zväčšiť a posúdiť portrét')
+                          : f?.stav === 'nie' ? f.text : 'Hľadám portrét v MP…'}
+                        aria-label={f?.stav === 'ok' ? 'Zväčšiť portrét z MP' : 'Portrét z MP nie je'}
+                        className={`grid size-12 shrink-0 place-items-center overflow-hidden rounded-md border text-muted-foreground enabled:cursor-zoom-in enabled:hover:border-foreground/40 ${otvorena ? 'border-foreground/60' : 'border-border'}`}>
+                        {!f || f.stav === 'nacitavam'
+                          ? <Loader2 className="size-4 animate-spin" />
+                          : f.stav === 'ok'
+                            ? <img src={f.url} alt="" className="size-full object-cover" />
+                            : <ImageOff className="size-4" />}
+                      </button>
+                    ) : (
+                      <span className="size-12 shrink-0" aria-hidden="true" />
+                    )}
+                    <label htmlFor={policko} className={`min-w-40 flex-1 ${daSaVybrat(st) ? 'cursor-pointer' : ''}`}>
+                      <div className="min-w-0">
                         <p className="text-[14.5px] font-semibold">{s.meno || 'Bez mena'}</p>
                         <p className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-muted-foreground">
                           {stitok(st)}
@@ -383,33 +426,36 @@ export function ParteSync() {
                     )}
                   </div>
 
-                  {vybrane.has(p.id) && chceFotku(st) && f && (
-                    <div className="mt-3 flex items-center gap-4 pl-8 text-[13px] text-muted-foreground">
-                      {f.stav === 'nacitavam' && (
-                        <span className="flex items-center gap-2"><Loader2 className="size-3.5 animate-spin" /> Hľadám portrét v MP…</span>
+                  {/* Posúdenie fotky: zväčšená fotka a rozhodnutie. Ukáže sa po
+                      kliknutí na fotku alebo po zaškrtnutí pohrebu. */}
+                  {chceFotku(st) && f?.stav === 'ok' && (otvorena || vybrane.has(p.id)) && (
+                    <div className="mt-3 flex flex-wrap items-start gap-4 pl-24 text-[13px] text-muted-foreground">
+                      {otvorena && (
+                        <img src={f.url} alt="Portrét z Moderného pohrebníctva"
+                          className="max-h-80 max-w-full rounded-md border border-border object-contain" />
                       )}
-                      {f.stav === 'nie' && <span>{f.text} Fotku pridaj ručne.</span>}
-                      {f.stav === 'ok' && (
-                        <>
-                          <img src={f.url} alt="Portrét z Moderného pohrebníctva"
-                            className="size-20 shrink-0 rounded-md border border-border object-cover" />
-                          <label className="flex cursor-pointer items-start gap-2">
-                            <input type="checkbox" className="mt-0.5 size-4 shrink-0 accent-white"
-                              disabled={bezi}
-                              checked={pouzitFotku.has(p.id)}
-                              onChange={() => setPouzitFotku((u) => {
-                                const n = new Set(u);
-                                if (n.has(p.id)) n.delete(p.id); else n.add(p.id);
-                                return n;
-                              })} />
-                            <span>
-                              <span className="font-semibold text-foreground">Použiť túto fotku na parte</span>
-                              <span className="block text-[12.5px]">Zaškrtni, len keď je to portrét zosnulého.</span>
-                            </span>
-                          </label>
-                        </>
-                      )}
+                      <div>
+                        <label className="flex cursor-pointer items-start gap-2">
+                          <input type="checkbox" className="mt-0.5 size-4 shrink-0 accent-white"
+                            disabled={bezi}
+                            checked={pouzitFotku.has(p.id)}
+                            onChange={() => prepniFotku(p.id)} />
+                          <span>
+                            <span className="font-semibold text-foreground">Použiť túto fotku na parte</span>
+                            <span className="block text-[12.5px]">Zaškrtni, len keď je to portrét zosnulého.</span>
+                          </span>
+                        </label>
+                        {!otvorena && (
+                          <button type="button" onClick={() => setZvacsena(p.id)}
+                            className="ml-6 mt-1 min-h-11 text-[12.5px] underline underline-offset-2 hover:text-foreground">
+                            Zväčšiť fotku
+                          </button>
+                        )}
+                      </div>
                     </div>
+                  )}
+                  {chceFotku(st) && f?.stav === 'nie' && vybrane.has(p.id) && (
+                    <p className="mt-2 pl-24 text-[13px] text-muted-foreground">{f.text} Fotku pridaj ručne.</p>
                   )}
                 </div>
               );
