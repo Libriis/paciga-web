@@ -26,7 +26,8 @@ import {
 
 const ZOZNAM = '/admin/parte';
 const FORMULAR = '/admin/parte/upravit';
-/** MP pustí 120 požiadaviek za minútu. Jeden pohreb ich stojí do štyroch. */
+/** MP pustí 120 požiadaviek za minútu. Jeden pohreb stojí jednu (detail),
+    strop drží aj čas čakania obsluhy na rozumnej miere. */
 const MAX_NARAZ = 20;
 
 type Polozka = { id: string; snimka: Snimka; variant: string | null };
@@ -45,7 +46,7 @@ type Vysledok = { chyba: boolean; text: string; parteId?: string };
 const NAZVY_POLI: Record<string, string> = {
   meno: 'meno', pohlavie: 'pohlavie', datum_narodenia: 'narodenie', datum_umrtia: 'úmrtie',
   vek: 'vek', rozlucka_datum: 'deň rozlúčky', rozlucka_cas: 'čas rozlúčky',
-  rozlucka_miesto: 'miesto rozlúčky', miesto_pohrebu: 'miesto pohrebu', foto_url: 'fotka',
+  rozlucka_miesto: 'miesto rozlúčky', miesto_pohrebu: 'miesto pohrebu',
 };
 
 async function api(parametre: string): Promise<Response> {
@@ -77,30 +78,9 @@ async function volnySlug(meno: string, datumUmrtia: string) {
   return volny;
 }
 
-/** Stiahne portrét cez náš server a nahrá ho do úložiska parte. */
-async function nahrajPortret(mpId: string, fotoId: string, slug: string) {
-  const r = await api(`?id=${mpId}&foto=${encodeURIComponent(fotoId)}`);
-  if (!r.ok) {
-    const j = await r.json().catch(() => null);
-    throw new Error(j?.error || 'Fotku sa nepodarilo stiahnuť.');
-  }
-  const blob = await r.blob();
-  const sb = getClient();
-  const cesta = `${slug}-${Date.now()}.webp`;
-  const { error } = await sb.storage.from('parte-foto').upload(cesta, blob, { contentType: 'image/webp' });
-  if (error) throw new Error('Fotku sa nepodarilo nahrať: ' + error.message);
-  return sb.storage.from('parte-foto').getPublicUrl(cesta).data.publicUrl as string;
-}
-
-type Detail = {
-  snimka: Snimka; foto: 'ok' | 'bez-opravnenia' | 'nenajdena'; fotoId: string | null;
-};
-
-const POZNAMKA_FOTKY: Record<Detail['foto'], string> = {
-  ok: '',
-  'bez-opravnenia': ' Fotka nie: kľúč k MP nemá oprávnenie na fotky.',
-  nenajdena: ' Fotka nie: v MP nie je portrét.',
-};
+/* Fotka z MP sa nepreberá: MP portrét nemá, jeho decease_photo je fotka
+   tela (podrobne v src/lib/moderne.ts). Fotku pridá obsluha vo formulári. */
+type Detail = { snimka: Snimka };
 
 /** Spracuje jeden pohreb: založí nové skryté parte alebo aktualizuje koncept. */
 async function spracuj(mpId: string): Promise<Vysledok> {
@@ -120,13 +100,7 @@ async function spracuj(mpId: string): Promise<Vysledok> {
     if (parte.published) {
       return { chyba: false, text: 'Parte je zverejnené, nemením ho.', parteId: parte.id };
     }
-    const zmeny: Record<string, unknown> = zlucZmeny(parte, link.snimka || {}, nova);
-    let poznamka = '';
-    if (!parte.foto_url && detail.foto === 'ok' && detail.fotoId) {
-      zmeny.foto_url = await nahrajPortret(mpId, detail.fotoId, parte.slug);
-    } else if (!parte.foto_url) {
-      poznamka = POZNAMKA_FOTKY[detail.foto];
-    }
+    const zmeny = zlucZmeny(parte, link.snimka || {}, nova);
     if (Object.keys(zmeny).length) {
       const { error } = await sb.from('parte').update(zmeny).eq('id', parte.id);
       if (error) throw new Error(error.message);
@@ -138,19 +112,17 @@ async function spracuj(mpId: string): Promise<Vysledok> {
     return {
       chyba: false,
       parteId: parte.id,
-      text: (polia.length ? `Aktualizované: ${polia.join(', ')}.` : 'Bez zmien.') + poznamka,
+      text: polia.length ? `Aktualizované: ${polia.join(', ')}.` : 'Bez zmien.',
     };
   }
 
-  // Nové parte. Najprv adresa a fotka, potom záznam, nakoniec prepojenie.
+  // Nové parte. Najprv voľná adresa, potom záznam, nakoniec prepojenie.
   const slug = await volnySlug(nova.meno, nova.datum_umrtia);
-  let foto_url: string | null = null;
-  if (detail.foto === 'ok' && detail.fotoId) foto_url = await nahrajPortret(mpId, detail.fotoId, slug);
 
   const { data: nove, error: ie } = await sb.from('parte').insert({
     ...nova,
     slug,
-    foto_url,
+    foto_url: null,
     odkaz_rodine: null,
     // Nikdy nie true. Zverejnenie je ručné rozhodnutie obsluhy.
     published: false,
@@ -168,7 +140,7 @@ async function spracuj(mpId: string): Promise<Vysledok> {
   return {
     chyba: false,
     parteId: nove.id,
-    text: 'Vytvorené ako skryté.' + (foto_url ? ' S fotkou.' : POZNAMKA_FOTKY[detail.foto]),
+    text: 'Vytvorené ako skryté. Fotku pridaj ručne.',
   };
 }
 

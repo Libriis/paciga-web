@@ -6,15 +6,16 @@
    aktivity tak vidia skutočného človeka.
 
    GET ?cursor=…          stránka zoznamu pohrebov (polia parte)
-   GET ?id=…              detail jedného pohrebu (aj pohlavie a stav portrétu)
-   GET ?id=…&foto=…       portrét zmenšený na 900 px WebP
+   GET ?id=…              detail jedného pohrebu (aj pohlavie)
+
+   Fotky z MP cez tento most nejdú. Dôvod je v src/lib/moderne.ts.
 
    Prístup: hlavička Authorization: Bearer <access_token zo Supabase>.
    Token overí Supabase a ma_pristup('web') rozhodne, či môže na parte.
    Cookies sa tu nepoužívajú, takže cudzia stránka nemá čo zneužiť (CSRF). */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
-import { ChybaMp, detailPohrebu, portretWebp, zoznamPohrebov } from '../../../lib/moderne';
+import { ChybaMp, detailPohrebu, zoznamPohrebov } from '../../../lib/moderne';
 import { ID_MP } from '../../../lib/moderne-mapa';
 
 export const prerender = false;
@@ -51,19 +52,11 @@ export const GET: APIRoute = async ({ request, url }) => {
   if (zamietnute) return zamietnute;
 
   const id = url.searchParams.get('id');
-  const foto = url.searchParams.get('foto');
   const kurzor = url.searchParams.get('cursor');
 
   try {
     if (id !== null) {
       if (!ID_MP.test(id)) return json({ error: 'Neplatné ID pohrebu.' }, 400);
-      if (foto !== null) {
-        if (!/^[\w.-]{1,100}$/.test(foto)) return json({ error: 'Neplatné ID fotky.' }, 400);
-        const webp = await portretWebp(id, foto);
-        return new Response(webp, {
-          headers: { 'Content-Type': 'image/webp', 'Cache-Control': 'no-store' },
-        });
-      }
       return json(await detailPohrebu(id));
     }
     if (kurzor !== null && (kurzor.length < 1 || kurzor.length > 512)) {
