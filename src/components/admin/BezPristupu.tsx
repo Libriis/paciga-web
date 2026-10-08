@@ -3,7 +3,7 @@
    ku ktorým sa nedostane. */
 import { useEffect, useState } from 'react';
 import { Bunka, HlavaStranky, Ramec, Tlacidlo, OdkazTlacidlo } from './ui';
-import { getClient, mojProfil } from '@/scripts/admin-core.js';
+import { getClient, mojProfil, maPristup, SEKCIE } from '@/scripts/admin-core.js';
 
 export function BezPristupu() {
   const [kto, setKto] = useState('—');
@@ -11,8 +11,11 @@ export function BezPristupu() {
   useEffect(() => {
     (async () => {
       const ja = await mojProfil();
-      // Kto prístup medzitým dostal, nech tu neuviazne.
-      if (ja.hlavny || (ja.pristupy ?? []).length) { location.href = '/admin'; return; }
+      // Kto prístup medzitým dostal, nech tu neuviazne. Počíta sa len právo
+      // s vlastnou stránkou: samotné 'moderne' (menu: false) by posielalo
+      // dokola medzi /admin a touto stránkou.
+      const maStranku = SEKCIE.some((s: { key: string; menu?: boolean }) => s.menu !== false && maPristup(ja, s.key));
+      if (maStranku) { location.href = '/admin'; return; }
       setKto(ja.meno || String(ja.email ?? '').replace(/@paciga\.sk$/, '') || '—');
     })().catch(() => {});
   }, []);
