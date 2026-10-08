@@ -13,7 +13,7 @@
    Právomoc zostáva jedna: 'web'. Kľúč sedí s admini.pristupy a s RLS,
    takže rozbitie na tri kľúče by si vypýtalo migráciu údajov aj politík. */
 import { useEffect, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 import {
   Bunka, HlavaStranky, Nacitavam, Prazdno, Ramec, Stitok, Tlacidlo, OdkazTlacidlo,
 } from './ui';
@@ -28,6 +28,8 @@ export type Sekcia = 'parte' | 'kondolencie' | 'dopyty';
 
 /** Stránka, na ktorej sa parte zakladá a upravuje. */
 const FORMULAR_PARTE = '/admin/parte/upravit';
+/** Natiahnutie parte z Moderného pohrebníctva (ParteSync). */
+const SYNCHRONIZACIA = '/admin/parte/synchronizovat';
 
 const sviec = (n: number) => `${n} ${n === 1 ? 'sviečka' : n < 5 ? 'sviečky' : 'sviečok'}`;
 
@@ -158,11 +160,14 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
           <HlavaStranky
             nadpis="Smútočné oznámenia"
             popis="Parte na webe, ich fotky a termíny rozlúčky."
-            akcie={
+            akcie={<>
+              <OdkazTlacidlo href={SYNCHRONIZACIA}>
+                <RefreshCw className="size-4" /> Synchronizovať z MP
+              </OdkazTlacidlo>
               <OdkazTlacidlo variant="plne" href={FORMULAR_PARTE}>
                 <Plus className="size-4" /> Pridať parte
               </OdkazTlacidlo>
-            }
+            </>}
           />
 
           <Ramec>

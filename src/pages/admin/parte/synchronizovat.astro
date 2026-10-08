@@ -1,0 +1,12 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ParteSync from '../../../components/admin/ParteSync.tsx';
+---
+<AdminLayout title="Synchronizácia parte" sekcia="parte" nove>
+  <ParteSync client:load />
+
+<script>
+import { requireAuth } from '../../../scripts/admin-core.js';
+await requireAuth('web');
+</script>
+</AdminLayout>
