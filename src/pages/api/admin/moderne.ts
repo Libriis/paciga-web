@@ -12,7 +12,8 @@
    Portrét sa nikdy nepoužije sám. Prečo, je v src/lib/moderne.ts.
 
    Prístup: hlavička Authorization: Bearer <access_token zo Supabase>.
-   Token overí Supabase a ma_pristup('web') rozhodne, či môže na parte.
+   Token overí Supabase a ma_pristup('web') + ma_pristup('moderne') rozhodnú,
+   či smie synchronizovať.
    Cookies sa tu nepoužívajú, takže cudzia stránka nemá čo zneužiť (CSRF). */
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
@@ -42,9 +43,15 @@ async function overPristup(request: Request): Promise<Response | null> {
   });
   // Neplatný alebo vypršaný token PostgREST odmietne chybou. Anon funkciu
   // ma_pristup volať nesmie vôbec (revoke v schema-pristupy.sql).
-  const { data, error } = await sb.rpc('ma_pristup', { p_sekcia: 'web' });
-  if (error) return json({ error: 'Prihlásenie vypršalo. Obnov stránku.' }, 401);
-  if (data !== true) return json({ error: 'Na parte nemáš právo.' }, 403);
+  // Treba dve práva: 'web' (zápis parte cez RLS) a 'moderne' (od 8. 10. 2026
+  // klient určuje, kto smie synchronizovať; prideľuje sa v Používateľoch).
+  const [web, moderne] = await Promise.all([
+    sb.rpc('ma_pristup', { p_sekcia: 'web' }),
+    sb.rpc('ma_pristup', { p_sekcia: 'moderne' }),
+  ]);
+  if (web.error || moderne.error) return json({ error: 'Prihlásenie vypršalo. Obnov stránku.' }, 401);
+  if (web.data !== true) return json({ error: 'Na parte nemáš právo.' }, 403);
+  if (moderne.data !== true) return json({ error: 'Na synchronizáciu z Moderného pohrebníctva nemáš právo.' }, 403);
   return null;
 }
 

@@ -61,6 +61,9 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
      Bez neho zápis aj tak zastaví RLS a používateľ dostane len chybovú
      hlášku. Predvolene false, nech tlačidlo neprebliskne pred načítaním. */
   const [mozeZakazky, setMozeZakazky] = useState(false);
+  /* Synchronizáciu z MP ponúkame len tomu, kto má právo 'moderne'
+     (prideľuje hlavný správca v Používateľoch). Predvolene false. */
+  const [mozeSync, setMozeSync] = useState(false);
 
   const nacitajParte = async () => {
     const { data, error } = await getClient().from('parte').select('*')
@@ -81,7 +84,12 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
   /* Každá stránka si sťahuje len svoju tabuľku. Predtým sa načítavali
      všetky tri naraz, lebo boli na jednej stránke a prepínali sa záložkou. */
   useEffect(() => {
-    if (zobraz === 'parte') nacitajParte().catch(() => setParte([]));
+    if (zobraz === 'parte') {
+      nacitajParte().catch(() => setParte([]));
+      mojProfil()
+        .then((p: any) => setMozeSync(maPristup(p, 'moderne')))
+        .catch(() => setMozeSync(false));
+    }
     if (zobraz === 'kondolencie') nacitajKondolencie().catch(() => setKondolencie([]));
     if (zobraz === 'dopyty') {
       nacitajDopyty().catch(() => setDopyty([]));
@@ -161,9 +169,11 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
             nadpis="Smútočné oznámenia"
             popis="Parte na webe, ich fotky a termíny rozlúčky."
             akcie={<>
-              <OdkazTlacidlo href={SYNCHRONIZACIA}>
-                <RefreshCw className="size-4" /> Synchronizovať z MP
-              </OdkazTlacidlo>
+              {mozeSync && (
+                <OdkazTlacidlo href={SYNCHRONIZACIA}>
+                  <RefreshCw className="size-4" /> Synchronizovať z MP
+                </OdkazTlacidlo>
+              )}
               <OdkazTlacidlo variant="plne" href={FORMULAR_PARTE}>
                 <Plus className="size-4" /> Pridať parte
               </OdkazTlacidlo>

@@ -179,13 +179,18 @@ export const ODKAZY = {
   aktivita: '/admin/aktivita',
 };
 
-/** Sekcie administrácie. Kľúč sedí s hodnotou v admini.pristupy a s RLS. */
+/** Sekcie administrácie. Kľúč sedí s hodnotou v admini.pristupy a s RLS.
+    `menu: false` je právo bez vlastnej stránky v menu: len odomkne akciu
+    inde a nesmie slúžiť ako náhradná stránka v requireAuth(). */
 export const SEKCIE = [
   { key: 'dashboard', label: 'Dashboard', popis: 'Prehľad a najbližšie udalosti' },
   { key: 'zakazky', label: 'Zákazky', popis: 'Zákazky, úkony a doklady' },
   { key: 'kontakty', label: 'Kontakty', popis: 'Pozostalí a objednávatelia' },
   { key: 'statistiky', label: 'Štatistiky', popis: 'Grafy a porovnanie pobočiek' },
   { key: 'web', label: 'Parte', popis: 'Parte, kondolencie a dopyty' },
+  // Od 8. 10. 2026. Klient chce sám určiť, kto smie naťahovať parte z MP.
+  // Kontroluje ho aj server (/api/admin/moderne), nielen tlačidlo.
+  { key: 'moderne', label: 'Synchronizácia z MP', popis: 'Natiahnuť parte z Moderného pohrebníctva. Potrebuje aj Parte.', menu: false },
   { key: 'clanky', label: 'Aktuality', popis: 'Články na webe' },
   { key: 'navstevnost', label: 'Návštevnosť', popis: 'Kto chodí na web a odkiaľ' },
   { key: 'vitals', label: 'Rýchlosť webu', popis: 'Merania z terénu' },
@@ -223,7 +228,7 @@ function zostavMenu(profil) {
   const nav = document.querySelector('.adm-nav');
   if (!nav) return;
 
-  const polozky = SEKCIE.filter((s) => maPristup(profil, s.key));
+  const polozky = SEKCIE.filter((s) => s.menu !== false && maPristup(profil, s.key));
   if (profil.hlavny) polozky.push({ key: 'pouzivatelia', label: 'Používatelia' });
 
   const tu = location.pathname.replace(/\/$/, '') || '/admin';
@@ -253,7 +258,7 @@ export async function requireAuth(sekcia) {
   zostavMenu(profil);
 
   if (sekcia && !maPristup(profil, sekcia)) {
-    const prva = SEKCIE.find((s) => maPristup(profil, s.key));
+    const prva = SEKCIE.find((s) => s.menu !== false && maPristup(profil, s.key));
     location.href = prva ? ODKAZY[prva.key] : '/admin/bez-pristupu';
     return new Promise(() => {});
   }

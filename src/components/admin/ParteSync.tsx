@@ -5,6 +5,8 @@
    človek ručne v zozname parte, lebo niektoré rodiny parte na webe nechcú.
 
    Pravidlá (dohodnuté 8. 10. 2026):
+   - Synchronizovať smie len ten, kto má právo 'web' aj 'moderne'
+     („Synchronizácia z MP" v Používateľoch). Overuje to aj server.
    - Obsluha vyberá, nič sa nenaťahuje samo.
    - Skrytý koncept sa pri ďalšej synchronizácii aktualizuje, ale len v
      poliach, ktoré nikto ručne neopravil (zlucZmeny). Zverejnené parte

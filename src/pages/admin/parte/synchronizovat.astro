@@ -6,7 +6,10 @@ import ParteSync from '../../../components/admin/ParteSync.tsx';
   <ParteSync client:load />
 
 <script>
-import { requireAuth } from '../../../scripts/admin-core.js';
+import { requireAuth, mojProfil, maPristup } from '../../../scripts/admin-core.js';
+// Dve práva: 'web' (parte) a 'moderne' (synchronizácia, od 8. 10. 2026).
+// Bez 'moderne' späť na zoznam parte. Server to aj tak odmietne sám.
 await requireAuth('web');
+if (!maPristup(await mojProfil(), 'moderne')) location.replace('/admin/parte');
 </script>
 </AdminLayout>
