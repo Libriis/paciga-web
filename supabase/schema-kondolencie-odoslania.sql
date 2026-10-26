@@ -37,7 +37,9 @@ create policy kondolencie_odoslania_insert on public.kondolencie_odoslania
   for insert to authenticated
   with check (public.ma_pristup('web') and odoslal = auth.uid());
 
-revoke all on public.kondolencie_odoslania from public, anon;
+-- Supabase dava novym tabulkam v public vsetky prava pre authenticated,
+-- aj TRUNCATE, na ktory RLS neplati. Preto revoke aj z authenticated.
+revoke all on public.kondolencie_odoslania from public, anon, authenticated;
 grant select, insert on public.kondolencie_odoslania to authenticated;
 
 -- ---------- dennik aktivity ----------
