@@ -64,7 +64,7 @@ async function overPristup(request: Request): Promise<Pristup | Response> {
 async function nacitaj(sb: SupabaseClient, id: string) {
   const [p, k, c] = await Promise.all([
     sb.from('parte')
-      .select('meno, slug, datum_narodenia, datum_umrtia, foto_url, published, sviecky')
+      .select('meno, slug, pohlavie, datum_narodenia, datum_umrtia, vek, foto_url, published, sviecky')
       .eq('id', id).maybeSingle(),
     sb.from('kondolencie')
       .select('meno, odkaz, created_at')
