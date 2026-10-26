@@ -25,10 +25,13 @@ const CO: Record<string, string> = {
   kontakty: 'kontakt',
   zakazky: 'zákazku',
   admini: 'používateľa',
+  // „Marcel poslal kondolencie pozostalým „Ján Novák"" (schema-kondolencie-odoslania.sql)
+  kondolencie_odoslania: 'kondolencie pozostalým',
 };
 
 const TON: Record<string, 'hotovo' | 'ticho' | 'ceka' | 'skryte'> = {
   'vytvoril': 'hotovo',
+  'poslal': 'hotovo',
   'upravil': 'ticho',
   'zmazal': 'skryte',
   'prihlásil sa': 'ceka',

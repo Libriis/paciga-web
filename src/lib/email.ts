@@ -31,3 +31,38 @@ export async function sendEmail(opts: {
     return false;
   }
 }
+
+export type SpravaResend = {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  reply_to?: string;
+};
+
+/**
+ * Viac e-mailov jedným volaním (Resend batch, max 100). Na rozdiel od
+ * sendEmail tu výsledok záleží: obsluha musí vedieť, či e-mail odišiel.
+ * Resend celú dávku buď prijme, alebo odmietne, takže polovičné
+ * odoslanie nehrozí. Vracia chybu ako text, null = odoslané.
+ */
+export async function sendBatch(spravy: SpravaResend[]): Promise<string | null> {
+  const key = zaBehu('RESEND_API_KEY');
+  if (!key) return 'Odosielanie e-mailov nie je nastavené (chýba RESEND_API_KEY).';
+
+  try {
+    const res = await fetch('https://api.resend.com/emails/batch', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(spravy),
+    });
+    if (res.ok) return null;
+    const j = await res.json().catch(() => null);
+    console.error('[resend batch]', res.status, j);
+    return `Resend e-mail odmietol (${res.status}${j?.message ? `: ${j.message}` : ''}).`;
+  } catch (e) {
+    console.error('[resend batch]', e);
+    return 'Nepodarilo sa spojiť so službou Resend.';
+  }
+}
