@@ -10,6 +10,10 @@
     - formulár na /kontakt posiela meno, telefón, e-mail a správu
       (src/pages/api/kontakt.ts), ukladá ich Supabase
     - kondolencia posiela meno a text (src/pages/api/kondolencia.ts)
+    - od 26. 10. 2026 vie admin poslať schválené kondolencie rodine
+      e-mailom cez Resend (src/pages/api/admin/kondolencie-pozostalym.ts).
+      Adresy pozostalých a čas odoslania ostávajú v tabuľke
+      kondolencie_odoslania, kým sa nevymaže parte (on delete cascade)
     - beacon výkonu posiela len LCP, CLS, INP, FCP, TTFB a typ zariadenia
       (src/pages/api/vitals.ts), nič osobné
     - IP adresa sa NEUKLADÁ v čitateľnej podobe. Používa sa len na
@@ -80,6 +84,12 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
           verejne pri parte. Nepíšte do kondolencie nič, čo nechcete mať verejné.
           Zapálenie sviečky sa počíta anonymne, neukladá sa k nemu nič o vás.
         </p>
+        <p>
+          Schválené kondolencie môžeme po pohrebe poslať e-mailom rodine zosnulého.
+          E-mailové adresy nám na to dáva rodina pri vybavovaní pohrebu. Uchovávame ich
+          spolu s časom odoslania, aby sme kondolencie neposlali dvakrát. Zmažeme ich
+          spolu s parte, alebo skôr, keď o to požiadate.
+        </p>
 
         <h3>Údaje o rýchlosti webu</h3>
         <p>
@@ -120,8 +130,9 @@ const sidlo = POBOCKY.find((p) => p.nonstop) ?? POBOCKY[0];
         <p>
           K údajom z formulárov majú prístup len naši zamestnanci, ktorí vybavujú
           vašu požiadavku. Ukladáme ich u poskytovateľa databázy Supabase. Web beží
-          na platforme Vercel. Obaja poskytovatelia spracúvajú údaje na základe zmluvy
-          a len v rozsahu, ktorý potrebujú na prevádzku. Ak povolíte meracie
+          na platforme Vercel. E-maily z webu odosiela služba Resend. Všetci traja
+          poskytovatelia spracúvajú údaje na základe zmluvy a len v rozsahu, ktorý
+          potrebujú na prevádzku. Ak povolíte meracie
           cookies, technické údaje o vašej návšteve spracúva aj Google.
           Vaše údaje nepredávame.
         </p>

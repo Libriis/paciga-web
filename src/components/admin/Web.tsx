@@ -30,6 +30,8 @@ export type Sekcia = 'parte' | 'kondolencie' | 'dopyty';
 const FORMULAR_PARTE = '/admin/parte/upravit';
 /** Natiahnutie parte z Moderného pohrebníctva (ParteSync). */
 const SYNCHRONIZACIA = '/admin/parte/synchronizovat';
+/** E-mail so schválenými kondolenciami pre rodinu (KondolenciePozostalym). */
+const KONDOLENCIE_RODINE = '/admin/parte/kondolencie-pozostalym';
 
 const sviec = (n: number) => `${n} ${n === 1 ? 'sviečka' : n < 5 ? 'sviečky' : 'sviečok'}`;
 
@@ -208,6 +210,7 @@ export function Web({ zobraz }: { zobraz: Sekcia }) {
                     <div className="flex flex-wrap gap-2">
                       <OdkazTlacidlo maly href={`/parte/${p.slug}`} target="_blank" rel="noopener">Zobraziť</OdkazTlacidlo>
                       <OdkazTlacidlo maly href={`${FORMULAR_PARTE}?id=${p.id}`}>Upraviť</OdkazTlacidlo>
+                      <OdkazTlacidlo maly href={`${KONDOLENCIE_RODINE}?id=${p.id}`}>Kondolencie rodine</OdkazTlacidlo>
                       <Tlacidlo maly onClick={() => prepniZverejnenie(p)}>{p.published ? 'Skryť' : 'Zverejniť'}</Tlacidlo>
                       <Tlacidlo maly variant="nebezpecne" onClick={() => vymazParte(p)}>Vymazať</Tlacidlo>
                     </div>

@@ -34,6 +34,7 @@ prehliadači) — dá sa ladiť a predviesť klientovi bez databázy.
 | Parte stránky | `/parte/[slug]` | server render, OG tagy pre Facebook, JSON-LD |
 | Sviečky | tlačidlo na kartách a parte | `/api/sviecka`, 1 sviečka / IP / deň |
 | Kondolencie | formulár na parte | `/api/kondolencia` → čaká na schválenie v admine |
+| Kondolencie pozostalým | `/admin/parte` → Kondolencie rodine | `/api/admin/kondolencie-pozostalym` → schválené kondolencie e-mailom cez Resend, záznam v `kondolencie_odoslania` |
 | Kontaktný formulár | `/kontakt` | `/api/kontakt` → uloží do DB + e-mail cez Resend |
 
 Bez nastavených env premenných web funguje ďalej — parte sa berú zo

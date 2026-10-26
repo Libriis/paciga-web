@@ -1,0 +1,12 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import KondolenciePozostalym from '../../../components/admin/KondolenciePozostalym.tsx';
+---
+<AdminLayout title="Kondolencie pozostalým" sekcia="parte" nove>
+  <KondolenciePozostalym client:load />
+
+<script>
+import { requireAuth } from '../../../scripts/admin-core.js';
+await requireAuth('web');
+</script>
+</AdminLayout>
