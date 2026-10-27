@@ -77,13 +77,11 @@ const tvar = (n: number, [jeden, par, vela]: [string, string, string]) =>
 export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
   const muz = p.pohlavie === 'muz';
   const predmet = `Kondolencie k parte: ${p.meno}`;
-  /* Texty prešli humanizerom (27. 10. 2026): úvod hovorí o ľuďoch, nie o webe,
-     a namiesto „bez úprav" povie, že kondolencie sú tak, ako ich ľudia napísali.
-     Po oslovení „Dobrý deň," pokračuje veta malým písmenom. */
-  const uvod = `ľudia, ktorí ${muz ? 'naňho' : 'na ňu'} spomínajú, nechali pri parte na našom webe kondolencie. `
-    + 'Posielame vám ich všetky, presne tak, ako ich napísali.';
-  const nahlad = uvod.charAt(0).toUpperCase() + uvod.slice(1);
-  const naWebe = 'Parte aj kondolencie ostávajú na webe. Ak niekto napíše ďalšiu kondolenciu, nájdete ju tam.';
+  /* Pozdrav a úvodná veta sú od 27. 10. 2026 preč (prianie usera): pred
+     kondolenciami stojí len veľký nadpis. Skrytý náhľad v zozname e-mailov
+     preto ukáže len počty, bez vety. */
+  const nahlad = `${kondolencie.length} ${tvar(kondolencie.length, ['kondolencia', 'kondolencie', 'kondolencií'])}`
+    + (p.sviecky > 0 ? ` · ${p.sviecky} ${tvar(p.sviecky, ['zapálená sviečka', 'zapálené sviečky', 'zapálených sviečok'])}` : '');
   const udaje: [string, string][] = [
     ...(p.datum_narodenia ? [[muz ? 'Narodil sa' : 'Narodila sa', datumDlhy(p.datum_narodenia)] as [string, string]] : []),
     [muz ? 'Zomrel' : 'Zomrela', datumDlhy(p.datum_umrtia)],
@@ -96,14 +94,12 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
   /* ---------- text ---------- */
 
   const text = [
-    'KONDOLENCIE',
     p.meno,
     ...udaje.map(([k, v]) => `${k}: ${v}`),
     `Kondolencie: ${kondolencie.length}`,
     ...(p.sviecky > 0 ? [`Zapálené sviečky: ${p.sviecky}`] : []),
     '',
-    'Dobrý deň,',
-    uvod,
+    'KONDOLENCIE',
     '',
     ...kondolencie.flatMap((k, i) => [
       `--- ${dvaCisla(i + 1)} / ${dvaCisla(kondolencie.length)}`,
@@ -113,7 +109,7 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
     ]),
     '---',
     '',
-    ...(odkazParte ? [naWebe, odkazParte, ''] : []),
+    ...(odkazParte ? [`Parte: ${odkazParte}`, ''] : []),
     'Úprimnú sústrasť.',
     'Pohrebné služby Paciga',
     '',
@@ -165,7 +161,6 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
 
   const tlacidlo = odkazParte ? `
           <tr><td class="px" align="center" style="border-top:${linka};padding:36px 48px;">
-            <p style="margin:0 0 18px;font-family:${sans};font-size:15px;line-height:1.6;color:${t.mekky};">${esc(naWebe)}</p>
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
               <td bgcolor="${t.tlacidlo}" style="border-radius:6px;">
                 <a href="${esc(odkazParte)}" style="display:inline-block;padding:13px 28px;font-family:${sans};font-size:14px;font-weight:600;letter-spacing:0.02em;color:${t.tlacidloText};text-decoration:none;">Otvoriť parte</a>
@@ -203,7 +198,6 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
       </td></tr>
 
       <tr><td align="center" class="hlava" style="padding:48px 48px 40px;">
-        <p style="margin:0 0 28px;${stitok}">Kondolencie</p>
         ${fotka}
         <h1 class="meno" style="margin:0;font-family:${sans};font-size:34px;line-height:1.15;font-weight:500;letter-spacing:-0.01em;color:${t.text};">${esc(p.meno)}</h1>
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:26px auto 0;width:100%;max-width:320px;">
@@ -211,12 +205,9 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
         </table>
       </td></tr>
 ${statistika}
-      <tr><td class="px" style="padding:36px 48px 34px;font-family:${sans};font-size:16px;line-height:1.7;color:${t.mekky};">
-        <p style="margin:0 0 12px;color:${t.text};">Dobrý deň,</p>
-        <p style="margin:0;">${esc(uvod)}</p>
+      <tr><td class="px" align="center" style="padding:46px 48px 32px;">
+        <h2 style="margin:0;padding-left:0.3em;font-family:${sans};font-size:22px;line-height:1.2;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:${t.text};">Kondolencie</h2>
       </td></tr>
-
-      <tr><td class="px" style="padding:0 48px 14px;"><p style="margin:0;${stitok}">Slová od blízkych a známych</p></td></tr>
       <tr><td style="padding:0;border-top:${linka};" bgcolor="${t.bunka}">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 ${karty}
