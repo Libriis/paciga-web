@@ -74,26 +74,16 @@ const dvaCisla = (n: number) => String(n).padStart(2, '0');
 const tvar = (n: number, [jeden, par, vela]: [string, string, string]) =>
   n === 1 ? jeden : n < 5 ? par : vela;
 
-function vetaPocet(n: number) {
-  if (n === 1) return 'Je to jedna kondolencia.';
-  if (n < 5) return `Sú to ${n} kondolencie.`;
-  return `Je to ${n} kondolencií.`;
-}
-
-function vetaSviecky(n: number) {
-  if (n <= 0) return '';
-  const co = n === 1 ? 'jednu spomienkovú sviečku'
-    : n < 5 ? `${n} spomienkové sviečky`
-    : `${n} spomienkových sviečok`;
-  return `Pri parte k tomu zapálili ${co}.`;
-}
-
 export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
   const muz = p.pohlavie === 'muz';
   const predmet = `Kondolencie k parte: ${p.meno}`;
-  const uvod = 'posielame vám kondolencie, ktoré ľudia napísali pri parte na webe paciga.sk. Sú to ich vlastné slová, bez úprav.';
-  /* Len do textovej verzie. V HTML sú počty v riadku s číslami. */
-  const pocet = [vetaPocet(kondolencie.length), vetaSviecky(p.sviecky)].filter(Boolean).join(' ');
+  /* Texty prešli humanizerom (27. 10. 2026): úvod hovorí o ľuďoch, nie o webe,
+     a namiesto „bez úprav" povie, že kondolencie sú tak, ako ich ľudia napísali.
+     Po oslovení „Dobrý deň," pokračuje veta malým písmenom. */
+  const uvod = `ľudia, ktorí ${muz ? 'naňho' : 'na ňu'} spomínajú, nechali pri parte na našom webe kondolencie. `
+    + 'Posielame vám ich všetky, presne tak, ako ich napísali.';
+  const nahlad = uvod.charAt(0).toUpperCase() + uvod.slice(1);
+  const naWebe = 'Parte aj kondolencie ostávajú na webe. Ak niekto napíše ďalšiu kondolenciu, nájdete ju tam.';
   const udaje: [string, string][] = [
     ...(p.datum_narodenia ? [[muz ? 'Narodil sa' : 'Narodila sa', datumDlhy(p.datum_narodenia)] as [string, string]] : []),
     [muz ? 'Zomrel' : 'Zomrela', datumDlhy(p.datum_umrtia)],
@@ -109,10 +99,11 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
     'KONDOLENCIE',
     p.meno,
     ...udaje.map(([k, v]) => `${k}: ${v}`),
+    `Kondolencie: ${kondolencie.length}`,
+    ...(p.sviecky > 0 ? [`Zapálené sviečky: ${p.sviecky}`] : []),
     '',
     'Dobrý deň,',
     uvod,
-    pocet,
     '',
     ...kondolencie.flatMap((k, i) => [
       `--- ${dvaCisla(i + 1)} / ${dvaCisla(kondolencie.length)}`,
@@ -122,7 +113,7 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
     ]),
     '---',
     '',
-    ...(odkazParte ? ['Parte aj kondolencie zostávajú na webe:', odkazParte, ''] : []),
+    ...(odkazParte ? [naWebe, odkazParte, ''] : []),
     'Úprimnú sústrasť.',
     'Pohrebné služby Paciga',
     '',
@@ -174,7 +165,7 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
 
   const tlacidlo = odkazParte ? `
           <tr><td class="px" align="center" style="border-top:${linka};padding:36px 48px;">
-            <p style="margin:0 0 18px;font-family:${sans};font-size:15px;line-height:1.6;color:${t.mekky};">Parte aj kondolencie zostávajú na webe.</p>
+            <p style="margin:0 0 18px;font-family:${sans};font-size:15px;line-height:1.6;color:${t.mekky};">${esc(naWebe)}</p>
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
               <td bgcolor="${t.tlacidlo}" style="border-radius:6px;">
                 <a href="${esc(odkazParte)}" style="display:inline-block;padding:13px 28px;font-family:${sans};font-size:14px;font-weight:600;letter-spacing:0.02em;color:${t.tlacidloText};text-decoration:none;">Otvoriť parte</a>
@@ -202,7 +193,7 @@ export function zostavEmail(p: ParteEmail, kondolencie: KondolenciaEmail[]) {
 </style>
 </head>
 <body style="margin:0;padding:0;background:${t.pozadie};" bgcolor="${t.pozadie}">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(uvod)}</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(nahlad)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${t.pozadie}" style="background:${t.pozadie};">
   <tr><td align="center" style="padding:32px 12px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${t.panel}" style="max-width:600px;background:${t.panel};border:${linka};">
