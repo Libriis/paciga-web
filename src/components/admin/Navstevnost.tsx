@@ -37,7 +37,22 @@ const ZDROJE: Record<string, string> = {
   youtube: 'YouTube',
   email: 'E-mail',
   ine: 'Iné stránky',
+  qr: 'QR kód',
 };
+
+/* Skeny QR kódu zapisuje server ako cestu /qr so zdrojom „priamo“
+   (stĺpec zdroj iné hodnoty nepustí). Tu ich z „priamo“ vyberieme do
+   vlastného riadku a /qr skryjeme zo stránok, nie je to stránka. */
+function soSkenmi(zdroje: Zdroj[], skeny: number): Zdroj[] {
+  if (!skeny) return zdroje;
+  const out = zdroje
+    .map((r) => r.zdroj === 'priamo'
+      ? { ...r, navstevy: Number(r.navstevy) - skeny, zobrazenia: Number(r.zobrazenia) - skeny }
+      : r)
+    .filter((r) => Number(r.navstevy) > 0 || Number(r.zobrazenia) > 0);
+  out.push({ zdroj: 'qr', navstevy: skeny, zobrazenia: skeny });
+  return out.sort((a, b) => Number(b.navstevy) - Number(a.navstevy));
+}
 
 const KRAJINY: Record<string, string> = {
   SK: 'Slovensko', CZ: 'Česko', AT: 'Rakúsko', DE: 'Nemecko', HU: 'Maďarsko',
@@ -103,19 +118,22 @@ export function Navstevnost() {
       const dni = Number(obdobie);
       /* Agregáciu robí databáza, nie prehliadač. Sťahovať desaťtisíce
          riadkov len na to, aby sme z nich zrátali graf, nemá zmysel. */
-      const [denne, stranky, zdroje, krajiny, suhrn] = await Promise.all([
+      const od = new Date(Date.now() - dni * 86400000).toISOString();
+      const [denne, stranky, zdroje, krajiny, suhrn, skeny] = await Promise.all([
         sb.rpc('navstevnost_denne', { dni }),
-        sb.rpc('navstevnost_stranky', { dni, pocet: 30 }),
+        sb.rpc('navstevnost_stranky', { dni, pocet: 31 }),
         sb.rpc('navstevnost_zdroje', { dni }),
         sb.rpc('navstevnost_krajiny', { dni }),
         sb.rpc('navstevnost_suhrn', { dni }),
+        // len počet, bez sťahovania riadkov
+        sb.from('navstevy').select('id', { count: 'exact', head: true }).eq('cesta', '/qr').gte('created_at', od),
       ]);
       if (!zivy) return;
       const s = Array.isArray(suhrn.data) ? suhrn.data[0] : suhrn.data;
       setData({
         denne: (denne.data as Denny[]) || [],
-        stranky: (stranky.data as Stranka[]) || [],
-        zdroje: (zdroje.data as Zdroj[]) || [],
+        stranky: ((stranky.data as Stranka[]) || []).filter((r) => r.cesta !== '/qr').slice(0, 30),
+        zdroje: soSkenmi((zdroje.data as Zdroj[]) || [], skeny.count || 0),
         krajiny: (krajiny.data as Krajina[]) || [],
         suhrn: (s as Suhrn) || null,
       });

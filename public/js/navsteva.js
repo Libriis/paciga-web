@@ -42,6 +42,19 @@
     else sessionStorage.setItem('pg_bol_tu', '1');
   } catch (e) { /* prehliadač bez sessionStorage: rátame ako novú */ }
 
+  /* Príchod z QR kódu už zapísal server na /qr ako novú návštevu.
+     Tu je to len zobrazenie a parameter z adresy upraceme. */
+  try {
+    var hladanie = new URLSearchParams(location.search);
+    if (hladanie.get('z') === 'qr') {
+      nova = false;
+      sessionStorage.setItem('pg_bol_tu', '1');
+      hladanie.delete('z');
+      var zvysok = hladanie.toString();
+      history.replaceState(history.state, '', location.pathname + (zvysok ? '?' + zvysok : '') + location.hash);
+    }
+  } catch (e) { /* starý prehliadač: nanajvýš jedna návšteva navyše */ }
+
   /* Z odkazovača len doména. Celá adresa by mohla niesť cudzie parametre
      a tie do našej databázy nepatria. */
   var odkazovac = null;

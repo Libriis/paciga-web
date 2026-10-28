@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabase';
 import { cudziPovod } from '../../lib/povod';
+import { ROBOT } from '../../lib/robot';
 
 export const prerender = false;
 
@@ -27,11 +28,6 @@ function zatried(odkazovac: string | null): string {
   for (const [vzor, zdroj] of ZDROJE) if (vzor.test(odkazovac)) return zdroj;
   return 'ine';
 }
-
-/* Roboty, ktoré spúšťajú JavaScript (náhľady odkazov, monitoring, časť
-   crawlerov). Bez tohto filtra by nám do návštevnosti tiekli stroje.
-   Bežné crawlery sem nedôjdu, tie JavaScript nepustia vôbec. */
-const ROBOT = /bot|crawl|spider|slurp|headless|preview|lighthouse|pagespeed|monitor|uptime|curl|wget|python|scrapy|facebookexternalhit|whatsapp|telegram|discord|vercel-screenshot/i;
 
 export const POST: APIRoute = async ({ request }) => {
   // Beacon chodí z našich stránok. Cudzí pôvod nemá čo plniť telemetriu.
