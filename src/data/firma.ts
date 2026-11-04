@@ -243,6 +243,9 @@ export function firmaLd(zaklad: string) {
     vatID: FIRMA.icDph,
     identifier: FIRMA.ico,
     image: new URL('/og/asset-07.jpg', zaklad).href,
+    /* Logo pre Google (panel firmy). Biele logo na tmavom pozadí,
+       lebo samotné biele logo by na bielom podklade Googlu zmizlo. */
+    logo: new URL('/logo.png', zaklad).href,
     sameAs: FIRMA.socialne,
     address: adresa(POBOCKY[1]), // sídlo firmy je Spišská Belá
     areaServed: POBOCKY.map((p) => ({ '@type': 'City', name: p.mesto })),
