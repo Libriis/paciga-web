@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Foto from '../../components/Foto.astro';
 import Zdielanie from '../../components/Zdielanie.astro';
-import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl, dnesnyDatum } from '../../lib/parte';
+import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl, dnesnyDatum, posunBratislava } from '../../lib/parte';
 
 export const prerender = false;
 
@@ -41,7 +41,7 @@ const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Event',
   name: `Posledná rozlúčka: ${p.meno}`,
-  startDate: `${p.rozlucka_datum}T${p.rozlucka_cas}:00+02:00`,
+  startDate: `${p.rozlucka_datum.slice(0, 10)}T${p.rozlucka_cas.slice(0, 5)}:00${posunBratislava(p.rozlucka_datum)}`,
   eventStatus: 'https://schema.org/EventScheduled',
   location: { '@type': 'Place', name: p.rozlucka_miesto },
   organizer: { '@type': 'Organization', name: 'Paciga', url: 'https://www.paciga.sk' },

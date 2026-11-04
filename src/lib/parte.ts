@@ -111,6 +111,21 @@ export function dnesnyDatum(): string {
   return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Bratislava' });
 }
 
+/**
+ * Posun slovenského času voči UTC v daný deň: „+01:00" v zime, „+02:00" v lete.
+ * Natvrdo zapísané +02:00 posúvalo zimné rozlúčky v schema.org o hodinu.
+ * Poludnie UTC je bezpečne mimo nočnej zmeny času.
+ */
+export function posunBratislava(datumIso: string): string {
+  const den = new Date(`${datumIso.slice(0, 10)}T12:00:00Z`);
+  if (Number.isNaN(den.getTime())) return '+01:00';
+  const cast = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Bratislava', timeZoneName: 'longOffset' })
+    .formatToParts(den)
+    .find((c) => c.type === 'timeZoneName')?.value;
+  const posun = cast?.replace('GMT', '');
+  return posun && /^[+-]\d\d:\d\d$/.test(posun) ? posun : '+01:00';
+}
+
 /** „Dnes" / „Zajtra" / názov dňa — návestie pre pás najbližších rozlúčok. */
 export function denLabel(iso: string, dnes: string): string {
   const den = iso.slice(0, 10);
@@ -156,6 +171,8 @@ export function icsDataUrl(p: Parte): string | null {
     'PRODID:-//Paciga//Parte//SK',
     'BEGIN:VEVENT',
     `UID:${p.slug}@paciga.sk`,
+    // DTSTAMP je podľa RFC 5545 povinný. Bez neho ho niektoré kalendáre odmietnu.
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`,
     `DTSTART:${start}`,
     `DTEND:${end}`,
     `SUMMARY:Posledna rozlucka: ${p.meno}`,

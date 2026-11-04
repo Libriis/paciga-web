@@ -65,6 +65,9 @@ export default defineConfig({
       //
       filter: (stranka) =>
         !/\/(admin|api)\/|\/lab-/.test(stranka),
+      // Parte a články z databázy sa vykresľujú až na požiadanie, preto ich
+      // táto integrácia nevidí. Dodáva ich src/pages/sitemap-obsah.xml.ts.
+      customSitemaps: ['https://www.paciga.sk/sitemap-obsah.xml'],
       // Bez lomky na konci. Musí to sedieť s <link rel="canonical">
       // v Base.astro, inak by mapa stránok ponúkala Googlu inú adresu,
       // než akú tá istá stránka označí za kanonickú. Koreň si lomku necháva.
