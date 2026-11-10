@@ -10,7 +10,7 @@ import Foto from '../../components/Foto.astro';
 import { SIRKY_HERO, verejnyObrazok } from '../../lib/images';
 import { drobcekyLd } from '../../data/firma';
 import Zdielanie from '../../components/Zdielanie.astro';
-import { getClanok, ostatneClanky, bloky, maDetail } from '../../lib/clanky';
+import { getClanok, ostatneClanky, bloky, maDetail, sOdkazmi } from '../../lib/clanky';
 
 /* Články spravuje redaktor v /admin/clanky, takže zoznam adries nie je
    pri builde známy. Predtým tu bol getStaticPaths a nový článok by dostal
@@ -69,8 +69,8 @@ const drobceky = JSON.stringify(drobcekyLd((Astro.site ?? Astro.url).href, [['Do
     <p class="clanok-lead" data-reveal>{c.text}</p>
     {bloky(c.telo!).map((b) =>
       b.typ === 'h' ? <h2 data-reveal>{b.text}</h2>
-      : b.typ === 'ul' ? <ul class="clanok-zoznam" data-reveal>{b.polozky.map((p) => <li>{p}</li>)}</ul>
-      : <p data-reveal>{b.text}</p>
+      : b.typ === 'ul' ? <ul class="clanok-zoznam" data-reveal>{b.polozky.map((p) => <li>{sOdkazmi(p).map((x) => typeof x === 'string' ? x : <a class="gold-link" href={x.href} rel={x.href.startsWith('http') ? 'noopener' : undefined}>{x.text}</a>)}</li>)}</ul>
+      : <p data-reveal>{sOdkazmi(b.text).map((x) => typeof x === 'string' ? x : <a class="gold-link" href={x.href} rel={x.href.startsWith('http') ? 'noopener' : undefined}>{x.text}</a>)}</p>
     )}
 
     <Zdielanie url={new URL(`/aktuality/${c.slug}`, Astro.site ?? Astro.url).href} titulok={c.titulok} typ="clanok" />
