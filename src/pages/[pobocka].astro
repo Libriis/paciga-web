@@ -24,6 +24,8 @@
   vám“) a tri stránky v inom oslovení by z toho trčali. Ak sa má web
   prehodiť na tykanie, treba prehodiť všetkých dvanásť stránok naraz.
 */
+import ParteZPobocky from '../components/ParteZPobocky.astro';
+const MESTO_Z: Record<string, string> = { poprad: 'z Popradu', 'spisska-bela': 'zo Spišskej Belej', 'liptovsky-mikulas': 'z Liptovského Mikuláša' };
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
@@ -231,6 +233,22 @@ const drobceky = {
         a pomníky sú na stránke&#32;<a class="gold-link" href="/kamenarstvo">Kamenárstvo</a>. Zosnulého prevezieme
         kedykoľvek, aj v noci:&#32;<a class="gold-link" href="/pohrebne-sluzby/prevoz-zosnulych">Prevoz zosnulých NON STOP</a>.
       </p>
+    </div>
+  </section>
+
+  <!-- ============ PARTE Z OKOLIA (SEO, 10. 11. 2026) ============
+       Server island: stránka je predgenerovaná, zoznam parte sa načíta aktuálny.
+       Záloha je ten istý zoznam z času buildu, aby ho Google videl v HTML. -->
+  <section class="sluzba-blok">
+    <div class="container">
+      <div class="svcgroup-head">
+        <div class="eyebrow" data-reveal>Parte</div>
+        <h2 data-reveal>Parte {MESTO_Z[p.slug]} a okolia</h2>
+        <div class="gold-line" data-line aria-hidden="true"></div>
+      </div>
+      <ParteZPobocky server:defer pobocka={p.slug} mestoZ={MESTO_Z[p.slug]}>
+        <ParteZPobocky slot="fallback" pobocka={p.slug} mestoZ={MESTO_Z[p.slug]} />
+      </ParteZPobocky>
     </div>
   </section>
 

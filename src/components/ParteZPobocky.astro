@@ -1,0 +1,39 @@
+---
+/*
+  Posledné parte z okolia pobočky (SEO, oprava Parte, 10. 11. 2026).
+  Na stránke pobočky beží ako server island (server:defer), takže zoznam je
+  vždy aktuálny, hoci samotná stránka je predgenerovaná. Ten istý komponent
+  bez server:defer slúži ako záloha v HTML z času buildu.
+  Pobočka parte sa odvodzuje z miesta rozlúčky (src/lib/obce.ts).
+*/
+import { getParteList, fmtKratky } from '../lib/parte';
+import { obecZMiesta, type PobockaSlug } from '../lib/obce';
+
+interface Props { pobocka: PobockaSlug; mestoZ: string; pocet?: number }
+const { pobocka, mestoZ, pocet = 6 } = Astro.props;
+
+let parte: Awaited<ReturnType<typeof getParteList>> = [];
+try { parte = await getParteList(); } catch { parte = []; }
+const moje = parte
+  .map((p) => ({ p, o: obecZMiesta(p.rozlucka_miesto) }))
+  .filter((x) => x.o?.pobocka === pobocka)
+  .slice(0, pocet);
+
+// Odpoveď ostrova smie CDN držať 5 minút (pri predgenerovanej zálohe sa hlavička ignoruje).
+if (!Astro.isPrerendered) Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+---
+{moje.length > 0 && (
+  <div class="parte-pobocky">
+    <div class="svcgrid">
+      {moje.map(({ p, o }) => (
+        <a class="first-card" href={`/parte/${p.slug}`}>
+          <h3>{p.meno}</h3>
+          <p>† {fmtKratky(p.datum_umrtia)}{o ? ` · ${o.obec}` : ''}</p>
+        </a>
+      ))}
+    </div>
+    <p class="sluzba-uvod parte-pobocky-dalsie">
+      Všetky smútočné oznámenia {mestoZ} a okolia nájdete v zozname&#32;<a class="gold-link" href="/opustili-nas">Parte a smútočné oznámenia</a>.
+    </p>
+  </div>
+)}

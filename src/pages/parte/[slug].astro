@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Foto from '../../components/Foto.astro';
 import Zdielanie from '../../components/Zdielanie.astro';
+import { obecZMiesta } from '../../lib/obce';
 import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl, dnesnyDatum, posunBratislava } from '../../lib/parte';
 
 export const prerender = false;
@@ -41,8 +42,16 @@ const rozluckaVeta = rozluckaKompletna
     : `Posledná rozlúčka ${fmtDlhy(p.rozlucka_datum)} o ${p.rozlucka_cas}, ${p.rozlucka_miesto}.`
   : '';
 
-const title = `${p.meno} | Opustili nás | Paciga`;
-const description = `Smútočné oznámenie: ${p.meno}, ${zomrel} ${fmtDlhy(p.datum_umrtia)}${p.vek ? ` vo veku ${vekText}` : ''}.${rozluckaVeta ? ' ' + rozluckaVeta : ''}`;
+/* Názov a popis s obcou (SEO, oprava Parte, 10. 11. 2026). Ľudia hľadajú
+   „parte“ a meno s obcou. Popis nesie miesto rozlúčky aj po pohrebe. */
+const obec = obecZMiesta(p.rozlucka_miesto)?.obec;
+const title = obec ? `Parte ${p.meno}, ${obec} | Paciga` : `Parte ${p.meno} | Paciga`;
+const rozluckaPopis = rozluckaKompletna
+  ? rozluckaPrebehla
+    ? `Posledná rozlúčka sa konala ${fmtDlhy(p.rozlucka_datum)}, ${p.rozlucka_miesto}.`
+    : rozluckaVeta
+  : '';
+const description = `Parte: ${p.meno}, ${zomrel} ${fmtDlhy(p.datum_umrtia)}${p.vek ? ` vo veku ${vekText}` : ''}.${rozluckaPopis ? ' ' + rozluckaPopis : ''}`;
 const ogDescription = rozluckaVeta
   ? `${rozluckaVeta.replace(/\.$/, '')}. S úctou, pohrebná služba Paciga.`
   : 'S úctou, pohrebná služba Paciga.';
