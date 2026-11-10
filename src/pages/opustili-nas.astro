@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
+import { obecZMiesta } from '../lib/obce';
 import { getParteList, inicialky, fmtKratky, fmtDenMesiac, mesiacLabel, dnesnyDatum, denLabel, maNadchadzajucuRozlucku } from '../lib/parte';
 import type { Parte } from '../lib/parte';
 
@@ -35,8 +36,7 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
   <section class="news-hero">
     <div class="container news-hero-inner">
       <div>
-        <div class="eyebrow" data-reveal>Opustili nás</div>
-        <h1 data-textreveal>So spomienkou<br>a úctou.</h1>
+        <h1 data-textreveal><span class="eyebrow h1-tema">Parte a smútočné oznámenia</span>So spomienkou<br>a úctou.</h1>
       </div>
       <div data-reveal>
         <p class="news-hero-lead">Spomíname na tých, ktorých sme vyprevadili na poslednej ceste. Zapáľte im sviečku, plamienok zostane svietiť pri ich mene.</p>
@@ -93,7 +93,7 @@ const description = 'Smútočné oznámenia pohrebnej služby Paciga. So spomien
                     ? <Foto src={p.foto_url} widths={[220, 440]} sizes="(max-width: 560px) 92vw, 260px" />
                     : <span>{inicialky(p.meno)}</span>}</div>
                   <h3>{p.meno}</h3>
-                  <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}</div>
+                  <div class="memoriam-date">† {fmtKratky(p.datum_umrtia)}{obecZMiesta(p.rozlucka_miesto) && ` · ${obecZMiesta(p.rozlucka_miesto)!.obec}`}</div>
                   {maNadchadzajucuRozlucku(p, dnes) && (
                     <div class="memoriam-rozlucka">Rozlúčka {fmtDenMesiac(p.rozlucka_datum)} o {p.rozlucka_cas}<br>{p.rozlucka_miesto}</div>
                   )}

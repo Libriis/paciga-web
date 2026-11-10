@@ -112,7 +112,8 @@ export function ParteFormular() {
         rozlucka_datum: formular.rozlucka_datum || null,
         rozlucka_cas: formular.rozlucka_cas || null,
         rozlucka_miesto: formular.rozlucka_miesto.trim() || null,
-        miesto_pohrebu: formular.miesto_pohrebu.trim() || null,
+        /* Miesto pohrebu len keď je iné než miesto obradu (audit 4. 11. 2026: 13 parte malo obe rovnaké). */
+        miesto_pohrebu: formular.miesto_pohrebu.trim() && formular.miesto_pohrebu.trim() !== formular.rozlucka_miesto.trim() ? formular.miesto_pohrebu.trim() : null,
         odkaz_rodine: formular.odkaz_rodine.trim() || null,
         published: formular.published,
         /* Zapisuje sa vždy, aj null. Podmienené rozbalenie tu nechávalo
