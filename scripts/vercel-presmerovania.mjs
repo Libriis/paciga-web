@@ -32,6 +32,9 @@ const redirects = [
   r('/opustili_ns/:slug', '/parte/:slug'),
 
   // Search Console 10. 11. 2026: ďalšie staré tvary adries.
+  // Parte na koreni starého webu. Vercel na chybovej ceste (404) presmerovať nedovolí,
+  // preto po jednom. Z 17 takých adries v Search Console má parte v databáze len táto.
+  r('/jozef-mikusiak', '/parte/jozef-mikusiak'),
   r('/opustili-nas/:slug/', '/parte/:slug'),
   r('/opustili-nas/:slug', '/parte/:slug'),
   r('/pohrebne_sluzby/spomienkove-sperky-s-odtlackom(.*)', '/sperky'),

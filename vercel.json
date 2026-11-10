@@ -58,6 +58,11 @@
       "permanent": true
     },
     {
+      "source": "/jozef-mikusiak",
+      "destination": "/parte/jozef-mikusiak",
+      "permanent": true
+    },
+    {
       "source": "/opustili-nas/:slug/",
       "destination": "/parte/:slug",
       "permanent": true

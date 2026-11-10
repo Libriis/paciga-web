@@ -2,8 +2,9 @@
 /* Vlastná chybová stránka v dizajne webu (SEO fáza 3, 10. 11. 2026).
    Beží za behu, aby sa na ňu dalo prepísať aj z dynamických stránok
    (Astro.rewrite('/404') pri neznámom článku).
-   Presmerovanie starých parte na koreni (/jozef-mikusiak) je v middleware.ts:
-   Astro na tejto stránke vždy vynúti stav 404, aj pri Astro.redirect. */
+   Presmerovať odtiaľto nejde: Vercel na chybovej ceste vynúti stav 404 aj pri
+   Astro.redirect a aj z middleware (overené 10. 11. 2026). Staré adresy patria
+   do scripts/vercel-presmerovania.mjs. */
 import StrankaNenajdena from '../components/StrankaNenajdena.astro';
 export const prerender = false;
 Astro.response.status = 404;
