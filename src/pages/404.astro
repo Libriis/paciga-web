@@ -10,7 +10,10 @@ import StrankaNenajdena from '../components/StrankaNenajdena.astro';
 import { getParteBySlug } from '../lib/parte';
 export const prerender = false;
 
-const cesta = Astro.url.pathname.replace(/^\/+|\/+$/g, '');
+// Pôvodná adresa: pri rewrite a pri 404 z Vercelu môže Astro.url ukazovať na /404.
+const povodna = (Astro as any).originPathname || Astro.url.pathname;
+const cesta = povodna.replace(/^\/+|\/+$/g, '');
+Astro.response.headers.set('x-paciga-404', `${Astro.url.pathname} | ${(Astro as any).originPathname ?? '-'} | ${Astro.request.url}`);
 if (/^[a-z0-9]+(-[a-z0-9]+)+$/.test(cesta)) {
   try {
     if (await getParteBySlug(cesta)) return Astro.redirect('/parte/' + cesta, 301);
