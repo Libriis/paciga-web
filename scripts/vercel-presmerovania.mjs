@@ -31,6 +31,14 @@ const redirects = [
   r('/opustili_ns/:slug/', '/parte/:slug'),
   r('/opustili_ns/:slug', '/parte/:slug'),
 
+  // Search Console 10. 11. 2026: ďalšie staré tvary adries.
+  r('/opustili-nas/:slug/', '/parte/:slug'),
+  r('/opustili-nas/:slug', '/parte/:slug'),
+  r('/pohrebne_sluzby/spomienkove-sperky-s-odtlackom(.*)', '/sperky'),
+  r('/spomienkove-sperky-s-(.*)', '/sperky'),
+  r('/pohrebne_sluzby(.*)', '/pohrebne-sluzby'),
+  r('/:rok(\\d{4})/:mesiac(\\d{2})/:den(\\d{2})(.*)', '/aktuality'),
+
   // Kategórie starého webu: tri boli kvety, štvrtá („bez kategórie“) články.
   r('/category/ziadna-kategoria(.*)', '/aktuality'),
   r('/category(.*)', '/pohrebne-sluzby/kvetinarstvo'),

@@ -58,6 +58,36 @@
       "permanent": true
     },
     {
+      "source": "/opustili-nas/:slug/",
+      "destination": "/parte/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/opustili-nas/:slug",
+      "destination": "/parte/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/pohrebne_sluzby/spomienkove-sperky-s-odtlackom(.*)",
+      "destination": "/sperky",
+      "permanent": true
+    },
+    {
+      "source": "/spomienkove-sperky-s-(.*)",
+      "destination": "/sperky",
+      "permanent": true
+    },
+    {
+      "source": "/pohrebne_sluzby(.*)",
+      "destination": "/pohrebne-sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/:rok(\\d{4})/:mesiac(\\d{2})/:den(\\d{2})(.*)",
+      "destination": "/aktuality",
+      "permanent": true
+    },
+    {
       "source": "/category/ziadna-kategoria(.*)",
       "destination": "/aktuality",
       "permanent": true

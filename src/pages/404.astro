@@ -1,9 +1,21 @@
 ---
 /* Vlastná chybová stránka v dizajne webu (SEO fáza 3, 10. 11. 2026).
    Beží za behu, aby sa na ňu dalo prepísať aj z dynamických stránok
-   (Astro.rewrite('/404') pri neznámom článku). */
+   (Astro.rewrite('/404') pri neznámom článku).
+
+   Starý WordPress mal niektoré parte priamo na koreni (/jozef-mikusiak).
+   Ak je adresa jedno slovo a parte s takou adresou existuje, presmeruje sa
+   natrvalo na /parte/<slug> (Search Console, 10. 11. 2026). */
 import StrankaNenajdena from '../components/StrankaNenajdena.astro';
+import { getParteBySlug } from '../lib/parte';
 export const prerender = false;
+
+const cesta = Astro.url.pathname.replace(/^\/+|\/+$/g, '');
+if (/^[a-z0-9]+(-[a-z0-9]+)+$/.test(cesta)) {
+  try {
+    if (await getParteBySlug(cesta)) return Astro.redirect('/parte/' + cesta, 301);
+  } catch { /* výpadok databázy: ukáž bežnú 404 */ }
+}
 Astro.response.status = 404;
 ---
 <StrankaNenajdena
