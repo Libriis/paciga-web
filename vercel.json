@@ -1,92 +1,460 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/:cesta+/", "destination": "/:cesta+", "permanent": true },
-    { "source": "/opustili_ns/:slug", "destination": "/parte/:slug", "permanent": true },
-    { "source": "/opustili_ns(.*)", "destination": "/opustili-nas", "permanent": true },
-    { "source": "/kytice(.*)", "destination": "/pohrebne-sluzby/kvetinarstvo", "permanent": true },
-    { "source": "/category(.*)", "destination": "/aktuality", "permanent": true }
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/parte/index.html",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
+      "source": "/parte",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
+      "source": "/parte/",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
+      "source": "/opustili_ns/",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
+      "source": "/:cesta+/index.html",
+      "destination": "/:cesta+",
+      "permanent": true
+    },
+    {
+      "source": "/:cesta+.html",
+      "destination": "/:cesta+",
+      "permanent": true
+    },
+    {
+      "source": "/opustili_ns/:slug/",
+      "destination": "/parte/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/opustili_ns/:slug",
+      "destination": "/parte/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/category/ziadna-kategoria(.*)",
+      "destination": "/aktuality",
+      "permanent": true
+    },
+    {
+      "source": "/category(.*)",
+      "destination": "/pohrebne-sluzby/kvetinarstvo",
+      "permanent": true
+    },
+    {
+      "source": "/kytice(.*)",
+      "destination": "/pohrebne-sluzby/kvetinarstvo",
+      "permanent": true
+    },
+    {
+      "source": "/lab-klasik/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/rakvy/",
+      "destination": "/pohrebne-sluzby/rakvy",
+      "permanent": true
+    },
+    {
+      "source": "/kremacia-s-obradom-alebo-bez/",
+      "destination": "/pohrebne-sluzby/kremacia",
+      "permanent": true
+    },
+    {
+      "source": "/rozlucka-a-pochovanie-na-cintorine/",
+      "destination": "/pohrebne-sluzby/rozlucka-a-pochovanie",
+      "permanent": true
+    },
+    {
+      "source": "/kvetinarstvo/",
+      "destination": "/pohrebne-sluzby/kvetinarstvo",
+      "permanent": true
+    },
+    {
+      "source": "/oblecenie-pre-zosnuleho/",
+      "destination": "/pohrebne-sluzby/oblecenie-pre-zosnuleho",
+      "permanent": true
+    },
+    {
+      "source": "/spomienkove-karty/",
+      "destination": "/pohrebne-sluzby/spomienkove-karty",
+      "permanent": true
+    },
+    {
+      "source": "/prevoz-zosnulych-z-bytov-a-nemocnic/",
+      "destination": "/pohrebne-sluzby/prevoz-zosnulych",
+      "permanent": true
+    },
+    {
+      "source": "/medzinarodny-prevoz/",
+      "destination": "/pohrebne-sluzby/medzinarodny-prevoz",
+      "permanent": true
+    },
+    {
+      "source": "/pohrebna-limuzina/",
+      "destination": "/pohrebne-sluzby/pohrebna-limuzina",
+      "permanent": true
+    },
+    {
+      "source": "/prenosne-chladenie/",
+      "destination": "/pohrebne-sluzby/prenosne-chladenie",
+      "permanent": true
+    },
+    {
+      "source": "/smutkove-poradenstvo/",
+      "destination": "/pohrebne-sluzby/smutkove-poradenstvo",
+      "permanent": true
+    },
+    {
+      "source": "/predpriprava-pohrebu/",
+      "destination": "/pohrebne-sluzby/predpriprava-pohrebu",
+      "permanent": true
+    },
+    {
+      "source": "/spomienkove-sperky-s-odtlackom/",
+      "destination": "/sperky",
+      "permanent": true
+    },
+    {
+      "source": "/3d-vizualizacia-pomnika/",
+      "destination": "/kamenarstvo",
+      "permanent": true
+    },
+    {
+      "source": "/ako-postupovat-pri-umrti-blizkeho-cloveka/",
+      "destination": "/aktuality/ako-postupovat-pri-umrti-blizkeho-cloveka",
+      "permanent": true
+    },
+    {
+      "source": "/digitalna-pomoc-po-pohrebe-spolupracujeme-s-platformou-potom-sk/",
+      "destination": "/aktuality/digitalna-pomoc-po-pohrebe-potom-sk",
+      "permanent": true
+    },
+    {
+      "source": "/druh-pohrebneho-obradu/",
+      "destination": "/aktuality/druh-pohrebneho-obradu",
+      "permanent": true
+    },
+    {
+      "source": "/kvetinova-vyzdoba-na-pohrebe/",
+      "destination": "/aktuality/kvetinova-vyzdoba-na-pohrebe",
+      "permanent": true
+    },
+    {
+      "source": "/najkrajsie-pohrebne-vozidlo-na-slovensku/",
+      "destination": "/aktuality/najkrajsie-pohrebne-vozidlo-na-slovensku",
+      "permanent": true
+    },
+    {
+      "source": "/netradicne-ulozenie-urny/",
+      "destination": "/aktuality/netradicne-ulozenie-urny",
+      "permanent": true
+    },
+    {
+      "source": "/novy-obetny-stol-a-kazatelnica/",
+      "destination": "/aktuality/novy-obetny-stol-a-kazatelnica",
+      "permanent": true
+    },
+    {
+      "source": "/od-prezidenta-az-po-obycajnych-ludi-dostojne-pohrebne-rozlucky-pod-tatrami/",
+      "destination": "/aktuality/od-prezidenta-az-po-obycajnych-ludi",
+      "permanent": true
+    },
+    {
+      "source": "/odtlacok-prsta-zosnuleho-na-pamiatku/",
+      "destination": "/aktuality/odtlacok-prsta-zosnuleho-na-pamiatku",
+      "permanent": true
+    },
+    {
+      "source": "/pohreb-nie-je-vzdy-iba-o-ciernej-farbe/",
+      "destination": "/aktuality/pohreb-nie-je-vzdy-iba-o-ciernej-farbe",
+      "permanent": true
+    },
+    {
+      "source": "/riesenie-pozostalosti-po-pohrebe/",
+      "destination": "/aktuality/riesenie-pozostalosti-po-pohrebe",
+      "permanent": true
+    },
+    {
+      "source": "/smutocne-oznamenie-a-smutocna-hudba/",
+      "destination": "/aktuality/smutocne-oznamenia-fotografia-a-hudba",
+      "permanent": true
+    },
+    {
+      "source": "/spolupraca-so-spominam-sk/",
+      "destination": "/aktuality/spolupraca-so-spominam-sk",
+      "permanent": true
+    },
+    {
+      "source": "/sposoby-pochovavania/",
+      "destination": "/aktuality/sposoby-pochovavania",
+      "permanent": true
+    },
+    {
+      "source": "/umrtie-v-zahranici/",
+      "destination": "/aktuality/umrtie-v-zahranici",
+      "permanent": true
+    },
+    {
+      "source": "/viac-nez-pohrebna-sluzba-kompletne-riesenie-pre-pozostalych/",
+      "destination": "/aktuality/viac-nez-pohrebna-sluzba",
+      "permanent": true
+    },
+    {
+      "source": "/vyber-pohrebnej-sluzby-a-organizacia-pohrebu/",
+      "destination": "/aktuality/vyber-pohrebnej-sluzby-a-organizacia-pohrebu",
+      "permanent": true
+    },
+    {
+      "source": "/xxi-konferencia-hca-slovakia/",
+      "destination": "/aktuality/xxi-konferencia-hca-slovakia",
+      "permanent": true
+    },
+    {
+      "source": "/zucastnili-sme-sa-odborneho-skolenia/",
+      "destination": "/aktuality/absolvovali-sme-odborne-skolenie",
+      "permanent": true
+    },
+    {
+      "source": "/zucastnili-sme-sa-medzinarodnej-konferencie-pohrebnych-sluzieb-na-slovensku/",
+      "destination": "/aktuality/medzinarodna-konferencia-pohrebnych-sluzieb-2025",
+      "permanent": true
+    },
+    {
+      "source": "/zucastnili-sme-sa-medzinarodnej-konferencie-pohrebnych-sluzieb-na-slovensku-2/",
+      "destination": "/aktuality/medzinarodna-konferencia-pohrebnych-sluzieb-2026",
+      "permanent": true
+    },
+    {
+      "source": "/umrtie-blizkeho-cloveka/",
+      "destination": "/informacie-pre-pozostalych",
+      "permanent": true
+    },
+    {
+      "source": "/co-o-nas-pisu-ini/",
+      "destination": "/o-nas",
+      "permanent": true
+    },
+    {
+      "source": "/pamiatka-zosnulych/",
+      "destination": "/aktuality/pamiatka-zosnulych",
+      "permanent": true
+    },
+    {
+      "source": "/pohrebne-sluzby/kamenarstvo/",
+      "destination": "/kamenarstvo",
+      "permanent": true
+    },
+    {
+      "source": "/informacie-pre-pozostalych/umrtie-v-zahranici/",
+      "destination": "/aktuality/umrtie-v-zahranici",
+      "permanent": true
+    },
+    {
+      "source": "/informacie-pre-pozostalych/umrtie-doma/",
+      "destination": "/informacie-pre-pozostalych",
+      "permanent": true
+    },
+    {
+      "source": "/o-nas/nas-vozovy-park/",
+      "destination": "/pohrebne-sluzby/pohrebna-limuzina",
+      "permanent": true
+    },
+    {
+      "source": "/smutocne-vence/",
+      "destination": "/pohrebne-sluzby/kvetinarstvo",
+      "permanent": true
+    },
+    {
+      "source": "/pohrebne-sluzby-poprad/",
+      "destination": "/poprad",
+      "permanent": true
+    },
+    {
+      "source": "/pohrebne-sluzby-spisska-bela/",
+      "destination": "/spisska-bela",
+      "permanent": true
+    },
+    {
+      "source": "/pohrebne-sluzby-liptovsky-mikulas/",
+      "destination": "/liptovsky-mikulas",
+      "permanent": true
+    },
+    {
+      "source": "/ochrana-sukromia/",
+      "destination": "/ochrana-osobnych-udajov",
+      "permanent": true
+    },
+    {
+      "source": "/:cesta+/",
+      "destination": "/:cesta+",
+      "permanent": true
+    },
+    {
+      "source": "/opustili_ns(.*)",
+      "destination": "/opustili-nas",
+      "permanent": true
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
-        { "key": "Content-Security-Policy", "value": "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'" }
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
+        }
       ]
     },
     {
       "source": "/_astro/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/assets/ssr/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/assets/vendor/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/partneri/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/clanky/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/og/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/assets/(.*).woff2",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(css|js)/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=60" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=60"
+        }
       ]
     },
     {
       "source": "/admin",
       "headers": [
-        { "key": "Cache-Control", "value": "private, no-store, max-age=0, must-revalidate" },
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
-        { "key": "Access-Control-Allow-Origin", "value": "https://www.paciga.sk" }
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, max-age=0, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://www.paciga.sk"
+        }
       ]
     },
     {
       "source": "/admin/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "private, no-store, max-age=0, must-revalidate" },
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
-        { "key": "Access-Control-Allow-Origin", "value": "https://www.paciga.sk" }
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, max-age=0, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://www.paciga.sk"
+        }
       ]
     }
   ]

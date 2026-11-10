@@ -7,8 +7,19 @@ import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyT
 export const prerender = false;
 
 const { slug } = Astro.params;
-const p = slug ? await getParteBySlug(slug) : null;
-if (!p) return Astro.redirect('/opustili-nas', 302);
+/* Neznáme parte: stránka „toto parte už nie je“ so statusom 410 na pôvodnej
+   adrese (predtým 302 na zoznam, Google tak držal staré adresy). Výpadok
+   databázy: 503, aby Google parte nevyradil. SEO fáza 3, 10. 11. 2026. */
+let p: Awaited<ReturnType<typeof getParteBySlug>> = null;
+try {
+  p = slug ? await getParteBySlug(slug) : null;
+} catch {
+  return new Response('Smútočné oznámenia sú na chvíľu nedostupné. Skúste to, prosím, o pár minút.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Retry-After': '120', 'Cache-Control': 'no-store' },
+  });
+}
+if (!p) return Astro.rewrite('/parte-nenajdene');
 
 const kondolencie = await getKondolencie(p.id);
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=3600');

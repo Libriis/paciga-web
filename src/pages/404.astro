@@ -1,0 +1,14 @@
+---
+/* Vlastná chybová stránka v dizajne webu (SEO fáza 3, 10. 11. 2026).
+   Beží za behu, aby sa na ňu dalo prepísať aj z dynamických stránok
+   (Astro.rewrite('/404') pri neznámom článku). */
+import StrankaNenajdena from '../components/StrankaNenajdena.astro';
+export const prerender = false;
+Astro.response.status = 404;
+---
+<StrankaNenajdena
+  eyebrow="Stránka sa nenašla"
+  nadpis="Túto stránku sme nenašli."
+  text="Adresa sa mohla zmeniť alebo stránka už neexistuje. Skúste začať z domovskej stránky alebo si pozrite naše služby."
+  odkaz={{ href: '/pohrebne-sluzby', text: 'Pohrebné služby' }}
+/>
