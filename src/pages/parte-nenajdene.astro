@@ -1,0 +1,17 @@
+---
+/* Parte, ktoré na webe už nie je (SEO fáza 3, 10. 11. 2026).
+   Sem prepisuje src/pages/parte/[slug].astro cez Astro.rewrite, adresa
+   v prehliadači ostane pôvodná. Status 410 povie Googlu, že parte bolo
+   odstránené natrvalo, a vyradí ho z výsledkov rýchlejšie než 404.
+   Predtým tu bolo dočasné presmerovanie 302 na zoznam. */
+import StrankaNenajdena from '../components/StrankaNenajdena.astro';
+export const prerender = false;
+Astro.response.status = 410;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+---
+<StrankaNenajdena
+  eyebrow="Smútočné oznámenie"
+  nadpis="Toto parte už na webe nie je."
+  text="Smútočné oznámenie bolo z webu odstránené. Ostatné oznámenia nájdete v zozname. Starší archív vám radi poskytneme na ktorejkoľvek pobočke."
+  odkaz={{ href: '/opustili-nas', text: 'Zoznam smútočných oznámení' }}
+/>

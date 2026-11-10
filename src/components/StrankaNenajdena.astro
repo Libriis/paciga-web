@@ -1,0 +1,45 @@
+---
+/*
+  Spoločný obsah pre 404 (neznáma adresa) a 410 (parte, ktoré na webe už nie je).
+  SEO fáza 3, 10. 11. 2026. Predtým web posielal neznáme parte a články
+  dočasným presmerovaním 302 na zoznam a pri neznámej adrese ukázal
+  anglickú stránku Astro. Google tak držal staré adresy vo výsledkoch.
+*/
+import Base from '../layouts/Base.astro';
+
+interface Props {
+  eyebrow: string;
+  nadpis: string;
+  text: string;
+  /** hlavné tlačidlo */
+  odkaz: { href: string; text: string };
+}
+const { eyebrow, nadpis, text, odkaz } = Astro.props;
+---
+<Base title={`${nadpis} | Paciga`} description={text}>
+  <section class="news-hero">
+    <div class="container news-hero-inner">
+      <div>
+        <h1 data-textreveal><span class="eyebrow h1-tema">{eyebrow}</span>{nadpis}</h1>
+      </div>
+      <div data-reveal>
+        <p class="news-hero-lead">{text}</p>
+        <div class="hero-actions nenajdene-akcie">
+          <a href={odkaz.href} class="btn-gold">{odkaz.text}</a>
+          <a href="/" class="btn-line">Domovská stránka</a>
+        </div>
+        <p class="sluzba-uvod nenajdene-pomoc">
+          Potrebujete pomoc hneď? Zavolajte NON STOP na&#32;<a class="gold-link" href="tel:0903596364">0903 596 364</a>.
+          Pobočky:&#32;<a class="gold-link" href="/poprad">Pohrebné služby Poprad</a>,&#32;
+          <a class="gold-link" href="/spisska-bela">Pohrebné služby Spišská Belá</a> a&#32;
+          <a class="gold-link" href="/liptovsky-mikulas">Pohrebné služby Liptovský Mikuláš</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nenajdene-akcie { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .nenajdene-pomoc { margin-top: 28px; margin-bottom: 0; }
+</style>

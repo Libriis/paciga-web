@@ -54,6 +54,19 @@ stránke.
 Jednotlivé stránky a články sú v `src/data/presmerovania.mjs`, tam
 komentáre byť môžu.
 
+### Presmerovania od 10. 11. 2026 (SEO fáza 3)
+
+Pole `redirects` sa už nepíše ručne. Skladá ho `node scripts/vercel-presmerovania.mjs`
+ z pravidiel v skripte a zo `src/data/presmerovania.mjs`. Po každej zmene
+ presmerovaní ho spusti znova.
+
+- Každá stará adresa má priame pravidlo aj pre tvar s lomkou, takže skončí na cieli jedným skokom (predtým 2 až 5).
+- Parte `/opustili_ns/meno/` vedie rovno na `/parte/meno`. Od 10. 11. 2026 je v databáze všetkých 393 parte zo starého webu.
+- Tri kategórie kvetov idú na kvetinárstvo, `ziadna-kategoria` na aktuality.
+- `.html` a `index.html` rieši vercel.json, nie len middleware (ten na predgenerovaných stránkach nebeží).
+- Neznáme parte: stránka `/parte-nenajdene` so statusom 410 na pôvodnej adrese (Astro.rewrite). Neznámy článok: `/404`. Predtým oboje 302 na zoznam.
+- `public/sitemap-stare-adresy.xml` je dočasná mapa 478 starých adries pre Search Console. Nie je v robots.txt ani v sitemap-index. Zmazať, keď staré adresy z indexu zmiznú. Obnova: `node scripts/mapa-starych-adries.mjs`.
+
 ## headers
 
 ### Bezpečnostné hlavičky na všetko

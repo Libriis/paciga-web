@@ -18,7 +18,8 @@ export const prerender = false;
 
 const { slug } = Astro.params;
 const c = slug ? await getClanok(slug) : undefined;
-if (!c) return Astro.redirect('/aktuality', 302);
+/* Neznámy článok: 404 na pôvodnej adrese (predtým 302 na zoznam). SEO fáza 3. */
+if (!c) return Astro.rewrite('/404');
 
 const dalsie = await ostatneClanky(c.slug);
 

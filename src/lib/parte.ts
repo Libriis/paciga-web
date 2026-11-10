@@ -43,14 +43,17 @@ export async function getParteList(): Promise<Parte[]> {
   return SEED;
 }
 
+/** Parte podľa adresy. null = parte nie je. Pri chybe databázy vyhodí výnimku,
+    aby stránka vrátila 503 a nie „parte už nie je“ (SEO fáza 3, 11/2026). */
 export async function getParteBySlug(slug: string): Promise<Parte | null> {
   if (supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('parte')
       .select('*')
       .eq('slug', slug)
       .eq('published', true)
       .maybeSingle();
+    if (error) throw new Error('parte: ' + error.message);
     return (data as Parte) ?? null;
   }
   return SEED.find((p) => p.slug === slug) ?? null;

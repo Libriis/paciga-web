@@ -74,9 +74,16 @@ export const PRESMEROVANIA = {
   '/umrtie-blizkeho-cloveka': trvale('/informacie-pre-pozostalych'),
   /* Recenzie sú dnes časťou stránky O nás. */
   '/co-o-nas-pisu-ini': trvale('/o-nas'),
-  /* Sezónna stránka k Pamiatke zosnulých. Najbližšie jej obsahom je
-     spomienkový zoznam. */
-  '/pamiatka-zosnulych': trvale('/opustili-nas'),
+  /* Sezónna stránka k Pamiatke zosnulých. Od jesene 2026 má vlastný článok
+     (SEO fáza 3, 10. 11. 2026; predtým viedla na /opustili-nas). */
+  '/pamiatka-zosnulych': trvale('/aktuality/pamiatka-zosnulych'),
+
+  /* ---- staršie adresy, ktoré poznal Wayback (SEO audit 4. 11. 2026) ---- */
+  '/pohrebne-sluzby/kamenarstvo': trvale('/kamenarstvo'),
+  '/informacie-pre-pozostalych/umrtie-v-zahranici': trvale('/aktuality/umrtie-v-zahranici'),
+  '/informacie-pre-pozostalych/umrtie-doma': trvale('/informacie-pre-pozostalych'),
+  '/o-nas/nas-vozovy-park': trvale('/pohrebne-sluzby/pohrebna-limuzina'),
+  '/smutocne-vence': trvale('/pohrebne-sluzby/kvetinarstvo'),
 
   /* ---- POBOČKY ----
      Starý web mal na každé mesto dve stránky a práve tie ho držali na
