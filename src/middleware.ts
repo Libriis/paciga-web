@@ -12,6 +12,22 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const response = await next();
 
+  /* Starý WordPress mal niektoré parte priamo na koreni (/jozef-mikusiak).
+     Ak by adresa skončila na 404 a parte s takou adresou existuje, presmeruj
+     natrvalo na /parte/<slug>. Search Console, 10. 11. 2026. Tu, nie v 404.astro,
+     lebo tam Astro vynúti stav 404 aj pri presmerovaní. */
+  if (response.status === 404) {
+    const slug = pathname.replace(/^\/+|\/+$/g, '');
+    if (/^[a-z0-9]+(-[a-z0-9]+)+$/.test(slug)) {
+      try {
+        const { getParteBySlug } = await import('./lib/parte');
+        if (await getParteBySlug(slug)) {
+          return new Response(null, { status: 301, headers: { Location: '/parte/' + slug } });
+        }
+      } catch { /* výpadok databázy: nechaj 404 */ }
+    }
+  }
+
   // Staging nesmie skončiť v indexe. Podmienka je na hoste, nie natvrdo:
   // na www.paciga.sk sa hlavička nikdy nepridá, takže sa pri prepnutí
   // domény nemá čo odniesť so sebou.
