@@ -105,7 +105,7 @@ const drobceky = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Domov', item: new URL('/', zaklad).href },
-    { '@type': 'ListItem', position: 2, name: 'Kontakt', item: new URL('/kontakt', zaklad).href },
+    { '@type': 'ListItem', position: 2, name: 'Pohrebné služby', item: new URL('/pohrebne-sluzby', zaklad).href },
     { '@type': 'ListItem', position: 3, name: p.mesto, item: new URL('/' + p.slug, zaklad).href },
   ],
 };
@@ -130,7 +130,7 @@ const drobceky = {
     <div class="container news-hero-inner">
       <div>
         <nav class="drobceky" aria-label="Drobečková navigácia">
-          <a href="/kontakt">Kontakt</a>
+          <a href="/pohrebne-sluzby">Pohrebné služby</a>
           <span aria-hidden="true">/</span>
           <span aria-current="page">{p.mesto}</span>
         </nav>
@@ -212,9 +212,14 @@ const drobceky = {
         <div class="gold-line" data-line aria-hidden="true"></div>
       </div>
       <div class="svcgrid">
-        {p.vybavite.map((v) => (
+        {p.vybavite.map((v) => v.href ? (
+          <a class="first-card" href={v.href} data-reveal>
+            <h3>{v.text}</h3>
+            <span class="fc-go">Pozrieť →</span>
+          </a>
+        ) : (
           <article class="first-card" data-reveal>
-            <h3>{v}</h3>
+            <h3>{v.text}</h3>
           </article>
         ))}
       </div>
@@ -223,7 +228,8 @@ const drobceky = {
       <p class="sluzba-uvod" data-reveal>
         Prehľad všetkých pätnástich služieb nájdete na stránke&#32;
         <a class="gold-link" href="/pohrebne-sluzby">Pohrebné služby</a>. Kamenárske práce
-        a pomníky sú na stránke&#32;<a class="gold-link" href="/kamenarstvo">Kamenárstvo</a>.
+        a pomníky sú na stránke&#32;<a class="gold-link" href="/kamenarstvo">Kamenárstvo</a>. Zosnulého prevezieme
+        kedykoľvek, aj v noci:&#32;<a class="gold-link" href="/pohrebne-sluzby/prevoz-zosnulych">Prevoz zosnulých NON STOP</a>.
       </p>
     </div>
   </section>

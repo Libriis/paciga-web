@@ -100,7 +100,7 @@ const SLUZBY_MEGA = [
   },
   {
     skupina: 'Kamenárstvo',
-    kotva: '/pohrebne-sluzby#skupina-kamenarstvo',
+    kotva: '/kamenarstvo',
     polozky: [
       { cislo: '11', nazov: 'Kamenárske práce', href: '/kamenarstvo' },
       { cislo: '12', nazov: '3D vizualizácia pomníka', href: '/kamenarstvo#navrh' },
@@ -186,7 +186,7 @@ const SLUZBY_MEGA = [
                 <div class="mega-col">
                   <a class="mega-label" href={sk.kotva}>{sk.skupina}</a>
                   {sk.polozky.map((p) => (
-                    <a href={p.href} class="mega-link"><i>{p.cislo}</i>{p.nazov}</a>
+                    <a href={p.href} class="mega-link"><i aria-hidden="true" data-cislo={p.cislo}></i>{p.nazov}</a>
                   ))}
                 </div>
               ))}

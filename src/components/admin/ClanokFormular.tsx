@@ -27,7 +27,7 @@ const KATEGORIE: Record<string, string> = {
 };
 
 const PRAZDNY = {
-  id: '', titulok: '', slug: '', kategoria: 'prve-kroky', datum: '', published: 'true',
+  id: '', titulok: '', slug: '', kategoria: 'prve-kroky', datum: '', obsah_upraveny: '', published: 'true',
   perex: '', foto_alt: '', telo: '', foto_url: null as string | null,
   cta_nadpis: '', cta_text: '', cta_odkaz: '', cta_odkaz_text: '',
 };
@@ -66,6 +66,7 @@ export function ClanokFormular() {
         id: data.id, titulok: data.titulok || '', slug: data.slug || '',
         kategoria: data.kategoria || 'prve-kroky',
         datum: data.datum ? String(data.datum).slice(0, 10) : '',
+        obsah_upraveny: data.obsah_upraveny ? String(data.obsah_upraveny).slice(0, 10) : '',
         published: String(data.published ?? true),
         perex: data.perex || '', foto_alt: data.foto_alt || '', telo: zPola(data.telo),
         foto_url: data.foto_url ?? null,
@@ -108,6 +109,7 @@ export function ClanokFormular() {
         perex: formular.perex.trim(),
         kategoria: formular.kategoria,
         datum: formular.datum,
+        obsah_upraveny: formular.obsah_upraveny || null,
         foto_url: foto_url ?? null,
         foto_alt: formular.foto_alt.trim() || null,
         telo: naPole(telo),
@@ -195,6 +197,9 @@ export function ClanokFormular() {
               </Pole>
               <Pole popis="Dátum">
                 <Vstup type="date" required value={formular.datum} onChange={(e) => zmen('datum', e.target.value)} />
+              </Pole>
+              <Pole popis="Vecná zmena textu (len pri zmene faktov)">
+                <Vstup type="date" title="Vyplňte len pri zmene faktov, nie pri oprave preklepu. Google podľa neho vie, že článok je aktuálny." value={formular.obsah_upraveny} onChange={(e) => zmen('obsah_upraveny', e.target.value)} />
               </Pole>
               <Pole popis="Stav">
                 <Vyber value={formular.published} onChange={(e) => zmen('published', e.target.value)}>
