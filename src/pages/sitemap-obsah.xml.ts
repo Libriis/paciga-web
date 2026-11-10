@@ -26,7 +26,9 @@ export const GET: APIRoute = async ({ site }) => {
     ...clanky
       .filter(maDetail)
       .map((c) => ({ loc: `${zaklad}/aktuality/${c.slug}`, lastmod: c.upravenoIso || c.datumIso || undefined })),
-    ...parte.map((p) => ({ loc: `${zaklad}/parte/${p.slug}` })),
+    /* lastmod parte = posledná úprava riadku (SEO, 11/2026). Parte sa po
+       zverejnení mení (čas rozlúčky, fotka), Google tak vie, čo prečítať znova. */
+    ...parte.map((p) => ({ loc: `${zaklad}/parte/${p.slug}`, lastmod: p.updated_at ? String(p.updated_at).slice(0, 10) : undefined })),
   ];
 
   const telo =

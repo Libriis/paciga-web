@@ -124,8 +124,7 @@ const sluzbaLd = {
           <span aria-hidden="true">/</span>
           <span aria-current="page">{sluzba.nazov}</span>
         </nav>
-        <div class="eyebrow" data-reveal>{sluzba.eyebrow}</div>
-        <h1 data-textreveal>{sluzba.h1}</h1>
+        <h1 data-textreveal><span class="eyebrow h1-tema">{sluzba.nazov}</span>{sluzba.h1}</h1>
         <p class="sluzba-lead" data-reveal>{sluzba.lead}</p>
       </div>
     </div>
@@ -268,6 +267,18 @@ const sluzbaLd = {
       </div>
     </section>
   )}
+
+  <!-- ============ POBOČKY (SEO, 11/2026): služba odkazuje na mestá ============ -->
+  <section class="sluzba-blok sluzba-pobocky">
+    <div class="container">
+      <p class="sluzba-uvod" data-reveal>
+        Túto službu vybavíte na každej z troch pobočiek:&#32;
+        <a class="gold-link" href="/poprad">Pohrebné služby Poprad</a>,&#32;
+        <a class="gold-link" href="/spisska-bela">Pohrebné služby Spišská Belá</a> a&#32;
+        <a class="gold-link" href="/liptovsky-mikulas">Pohrebné služby Liptovský Mikuláš</a>.
+      </p>
+    </div>
+  </section>
 
   <!-- ============ SÚVISIACE SLUŽBY ============ -->
   {suvisiace.length > 0 && (

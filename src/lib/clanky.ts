@@ -64,10 +64,12 @@ function zRiadku(r: Record<string, unknown>): Clanok {
     : undefined;
 
   const iso = String(r.datum ?? '').slice(0, 10);
-  /* updated_at posúva trigger pri každej úprave. Dátum článku si však
-     redaktor môže nastaviť dopredu, a úprava pred dátumom vydania by
-     v schema pôsobila ako chyba. Preto neskorší z dvoch. */
-  const upravene = String(r.updated_at ?? '').slice(0, 10);
+  /* Dátum zmeny pre Google (dateModified a lastmod) je obsah_upraveny:
+     redaktor ho v admine nastaví len pri vecnej zmene textu. updated_at
+     sa už nepoužíva, posúva ho trigger pri každej úprave, aj pri preklepe
+     (audit 4. 11. 2026: 21 článkov tvrdilo zmenu 30. 8., deň presunu webu).
+     Neskorší z dvoch dátumov, lebo dátum vydania môže byť nastavený dopredu. */
+  const upravene = String(r.obsah_upraveny ?? '').slice(0, 10);
   const kategoria = naKategoriu(String(r.kategoria));
   return {
     slug: String(r.slug),

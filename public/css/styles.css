@@ -327,6 +327,10 @@ body {
   .fs-q { font-size: 70vw; right: -10vw; } /* na mobile len náznak pri kraji */
 }
 
+/* Téma stránky v H1 (SEO, 11/2026): vyzerá ako eyebrow, ale je súčasťou nadpisu,
+   aby Google videl názov služby, nie len slogan. */
+h1 > .h1-tema { display: block; line-height: 1.4; font-variation-settings: normal; max-width: none; }
+
 /* ---- shared atoms ---- */
 .eyebrow {
   font-size: 12px;
@@ -551,6 +555,13 @@ body {
   font-size: 14px; color: var(--muted); transition: color 0.25s ease, transform 0.3s ease;
 }
 .mega-link i { font-style: normal; font-size: 11px; color: rgb(var(--fg-rgb) / 0.35); font-variant-numeric: tabular-nums; }
+/* Číslo je v data-cislo, aby nebolo súčasťou textu odkazu („01Rakvy“). SEO, 11/2026. */
+.mega-link i::before { content: attr(data-cislo); }
+.branch-card h3 .branch-sluzba { display: block; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 6px; }
+.sluzba-blok.sluzba-pobocky { padding-top: 0; padding-bottom: 0; }
+.svcgrid + .sluzba-uvod { margin-top: 28px; }
+/* Odkaz v bežnom texte má veľkosť textu, nie 13,5 px samostatného odkazu. */
+.sluzba-uvod .gold-link, .step-body .gold-link, .first-card p .gold-link, .cta-inner p .gold-link { font-size: inherit; }
 .mega-link:hover { color: var(--text); transform: translateX(4px); }
 .mega-foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; border-top: 1px solid var(--line); padding: 14px 0 16px; }
 .mega-all { font-size: 13px; color: var(--gold); }

@@ -77,7 +77,8 @@ export interface Pobocka {
   /** čím je práve táto pobočka iná, 2 až 3 vety */
   oPobocke: string;
   /** čo sa dá vybaviť práve tu, konkrétne pre túto pobočku */
-  vybavite: string[];
+  /** karty „Čo tu vybavíte“; href vedie na službu (SEO, 11/2026) */
+  vybavite: { text: string; href?: string }[];
   /** popis fotky interiéru */
   fotoAlt: string;
   /** titulok stránky a popis pre vyhľadávače */
@@ -104,10 +105,10 @@ export const POBOCKY: Pobocka[] = [
       'Je to jediná pobočka, kde sa dá výber pomníka a výber rakvy vybaviť pri jednom stole. ' +
       'Na osobné stretnutie je tu samostatné miesto, aby ste nemuseli nič riešiť postojačky.',
     vybavite: [
-      'Výber rakvy, urny a kvetinovej výzdoby',
-      'Vzorky žuly a objednávka pomníka',
-      '3D návrh pomníka pred výrobou',
-      'Smútkové poradenstvo a predpríprava pohrebu',
+      { text: 'Výber rakvy, urny a kvetinovej výzdoby', href: '/pohrebne-sluzby/rakvy' },
+      { text: 'Vzorky žuly a objednávka pomníka', href: '/kamenarstvo' },
+      { text: '3D návrh pomníka pred výrobou', href: '/kamenarstvo#navrh' },
+      { text: 'Smútkové poradenstvo a predpríprava pohrebu', href: '/pohrebne-sluzby/smutkove-poradenstvo' },
     ],
     fotoAlt: 'Interiér pobočky Poprad: showroom s urnami, krížmi a stolom na osobné stretnutie',
     title: 'Pohrebné služby Poprad | Paciga',
@@ -132,10 +133,10 @@ export const POBOCKY: Pobocka[] = [
       'a odvtedy odtiaľto riadime všetky tri pobočky. ' +
       'Ako jediná je dostupná nepretržite, nielen v otváracích hodinách.',
     vybavite: [
-      'Kompletné vybavenie pohrebu, aj mimo otváracích hodín',
-      'Výber rakvy a smútočných vencov',
-      'Medzinárodný prevoz zosnulých',
-      'Fakturačné a administratívne veci firmy',
+      { text: 'Kompletné vybavenie pohrebu, aj mimo otváracích hodín', href: '/pohrebne-sluzby/rozlucka-a-pochovanie' },
+      { text: 'Výber rakvy a smútočných vencov', href: '/pohrebne-sluzby/rakvy' },
+      { text: 'Medzinárodný prevoz zosnulých', href: '/pohrebne-sluzby/medzinarodny-prevoz' },
+      { text: 'Fakturačné a administratívne veci firmy' },
     ],
     fotoAlt: 'Interiér pobočky Spišská Belá: showroom s rakvami a vencami',
     title: 'Pohrebné služby Spišská Belá | Paciga',
@@ -161,10 +162,10 @@ export const POBOCKY: Pobocka[] = [
       'Je tu recepcia a samostatné miesto na osobné stretnutie, kde v pokoji prejdeme, čo treba zariadiť. ' +
       'Prevoz zosnulého odtiaľto zabezpečíme v ktorúkoľvek hodinu, aj keď je pobočka zatvorená.',
     vybavite: [
-      'Kompletné vybavenie pohrebu pre Liptov',
-      'Výber rakvy, urny a kvetinovej výzdoby',
-      'Kamenárske práce a pomníky',
-      'Smútkové poradenstvo pri osobnom stretnutí',
+      { text: 'Kompletné vybavenie pohrebu pre Liptov', href: '/pohrebne-sluzby/rozlucka-a-pochovanie' },
+      { text: 'Výber rakvy, urny a kvetinovej výzdoby', href: '/pohrebne-sluzby/rakvy' },
+      { text: 'Kamenárske práce a pomníky', href: '/kamenarstvo' },
+      { text: 'Smútkové poradenstvo pri osobnom stretnutí', href: '/pohrebne-sluzby/smutkove-poradenstvo' },
     ],
     fotoAlt: 'Interiér pobočky Liptovský Mikuláš: recepcia a miesto na osobné stretnutie',
     title: 'Pohrebné služby Liptovský Mikuláš | Paciga',

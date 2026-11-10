@@ -17,6 +17,8 @@ export interface Parte {
   miesto_pohrebu: string | null;
   odkaz_rodine: string | null;
   sviecky: number;
+  /** posúva ho trigger pri každej úprave; mapa stránok z neho berie lastmod */
+  updated_at?: string | null;
 }
 
 export interface Kondolencia {
