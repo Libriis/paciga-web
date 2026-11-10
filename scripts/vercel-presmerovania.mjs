@@ -12,6 +12,10 @@ import { PRESMEROVANIA } from '../src/data/presmerovania.mjs';
 const r = (source, destination) => ({ source, destination, permanent: true });
 
 const redirects = [
+  // Testovacia adresa Vercelu je kópia webu. Presmerovať na ostrú doménu (SEO fáza 3).
+  // Náhľady vetiev majú iné adresy (paciga-xxxx-...vercel.app), tých sa to netýka.
+  { source: '/:cesta*', has: [{ type: 'host', value: 'paciga-web.vercel.app' }], destination: 'https://www.paciga.sk/:cesta*', permanent: true },
+
   // Staré statické adresy .html (zdieľané na sociálnych sieťach). Predtým ich riešil
   // len middleware, a ten na predgenerovaných stránkach nebeží (404, /aktuality/index.html 500).
   r('/index.html', '/'),
