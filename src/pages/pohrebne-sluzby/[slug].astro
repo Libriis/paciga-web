@@ -7,6 +7,7 @@
   potrebuje ImageMetadata pri builde. Preto sa importujú všetky a dáta
   na ne odkazujú kľúčom cez HERO_MAPA.
 */
+import { getClanok } from '../../lib/clanky';
 import Base from '../../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { SIRKY_HERO, KVALITA_POZADIE } from '../../lib/images';
@@ -75,6 +76,16 @@ const drobceky = {
   ],
 };
 
+/* Článok, ktorý službu dopĺňa (SEO 10. 11. 2026). Články na služby odkazujú,
+   toto je odkaz späť. Pri builde sa načíta titulok; chýbajúci článok sa vynechá. */
+const CLANOK_K_SLUZBE: Record<string, string> = {
+  kremacia: 'sposoby-pochovavania',
+  'medzinarodny-prevoz': 'umrtie-v-zahranici',
+  'pohrebna-limuzina': 'najkrajsie-pohrebne-vozidlo-na-slovensku',
+  kvetinarstvo: 'kvetinova-vyzdoba-na-pohrebe',
+  'rozlucka-a-pochovanie': 'druh-pohrebneho-obradu',
+};
+const clanokKSluzbe = CLANOK_K_SLUZBE[sluzba.slug] ? await getClanok(CLANOK_K_SLUZBE[sluzba.slug]) : undefined;
 const sluzbaLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
@@ -272,6 +283,11 @@ const sluzbaLd = {
         <a class="gold-link" href="/spisska-bela">Pohrebné služby Spišská Belá</a> a&#32;
         <a class="gold-link" href="/liptovsky-mikulas">Pohrebné služby Liptovský Mikuláš</a>.
       </p>
+      {clanokKSluzbe && (
+        <p class="sluzba-uvod" data-reveal>
+          Viac v článku&#32;<a class="gold-link" href={`/aktuality/${clanokKSluzbe.slug}`}>{clanokKSluzbe.titulok}</a>.
+        </p>
+      )}
     </div>
   </section>
 

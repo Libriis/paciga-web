@@ -480,6 +480,22 @@ export const getClanok = (slug: string): Clanok | undefined =>
 export const ostatneClanky = (slug: string, n = 3): Clanok[] =>
   CLANKY.filter((c) => c.slug !== slug).slice(0, n);
 
+/** Text s odkazmi: zápis [text](/cesta) alebo [text](https://…). SEO 10. 11. 2026:
+    články doteraz nemali v texte ani jeden odkaz. Redaktor ho píše priamo v admine. */
+export type Cast = string | { text: string; href: string };
+export function sOdkazmi(text: string): Cast[] {
+  const out: Cast[] = [];
+  const re = /\[([^\]]+)\]\((\/[^)\s]*|https?:\/\/[^)\s]+)\)/g;
+  let i = 0, m: RegExpExecArray | null;
+  while ((m = re.exec(text))) {
+    if (m.index > i) out.push(text.slice(i, m.index));
+    out.push({ text: m[1], href: m[2] });
+    i = m.index + m[0].length;
+  }
+  if (i < text.length) out.push(text.slice(i));
+  return out;
+}
+
 /** telo článku rozdelené na bloky pre šablónu */
 export type Blok = { typ: 'h'; text: string } | { typ: 'p'; text: string } | { typ: 'ul'; polozky: string[] };
 

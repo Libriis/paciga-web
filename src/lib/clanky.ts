@@ -10,10 +10,11 @@
   takže aktuality.astro ani detail článku nemusia prepisovať polia.
 */
 import { supabase } from './supabase';
-import { CLANKY as ZALOZNE, type Clanok, bloky, type Blok } from '../data/aktuality';
+import { CLANKY as ZALOZNE, type Clanok, bloky, type Blok, sOdkazmi, type Cast } from '../data/aktuality';
 
 export type { Clanok, Blok };
-export { bloky };
+export { bloky, sOdkazmi };
+export type { Cast };
 
 export type Kategoria = 'prve-kroky' | 'smutok' | 'planovanie' | 'sperky' | 'zo-zivota';
 
@@ -118,8 +119,16 @@ export async function getClanok(slug: string): Promise<Clanok | undefined> {
   return c && maDetail(c) ? c : undefined;
 }
 
-/** Ďalšie články pod detailom: najnovšie okrem aktuálneho. */
+/** Ďalšie články pod detailom: najprv z tej istej témy, potom najnovšie. SEO 10. 11. 2026:
+    predtým všade tie isté 3 najnovšie, staršie články nemali odkiaľ dostať odkaz. */
 export async function ostatneClanky(slug: string, n = 3): Promise<Clanok[]> {
-  const vsetky = await getClanky();
-  return vsetky.filter((c) => c.slug !== slug).slice(0, n);
+  const vsetky = (await getClanky()).filter((c) => maDetail(c));
+  const tento = vsetky.find((c) => c.slug === slug);
+  /* Z tej istej témy najprv staršie za aktuálnym, potom dookola. Tak dostane
+     odkaz každý článok témy, nielen tri najnovšie. */
+  const temaVsetky = tento ? vsetky.filter((c) => c.t === tento.t) : [];
+  const pos = temaVsetky.findIndex((c) => c.slug === slug);
+  const tema = pos >= 0 ? [...temaVsetky.slice(pos + 1), ...temaVsetky.slice(0, pos)] : [];
+  const zvysok = vsetky.filter((c) => c.slug !== slug && !tema.includes(c));
+  return [...tema, ...zvysok].slice(0, n);
 }

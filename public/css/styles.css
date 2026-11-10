@@ -561,7 +561,7 @@ h1 > .h1-tema { display: block; line-height: 1.4; font-variation-settings: norma
 .sluzba-blok.sluzba-pobocky { padding-top: 0; padding-bottom: 0; }
 .svcgrid + .sluzba-uvod { margin-top: 28px; }
 /* Odkaz v bežnom texte má veľkosť textu, nie 13,5 px samostatného odkazu. */
-.sluzba-uvod .gold-link, .step-body .gold-link, .first-card p .gold-link, .cta-inner p .gold-link { font-size: inherit; }
+.sluzba-uvod .gold-link, .step-body .gold-link, .first-card p .gold-link, .cta-inner p .gold-link, .clanok p .gold-link, .clanok li .gold-link, .fleetband-content p .gold-link { font-size: inherit; }
 .mega-link:hover { color: var(--text); transform: translateX(4px); }
 .mega-foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; border-top: 1px solid var(--line); padding: 14px 0 16px; }
 .mega-all { font-size: 13px; color: var(--gold); }
