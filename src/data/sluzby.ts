@@ -193,7 +193,7 @@ export const SLUZBY: Sluzba[] = [
     faq: [
       {
         q: 'Ako rýchlo sa dá obrad pripraviť?',
-        a: 'Bežne do troch až piatich dní. Termín závisí od správcu cintorína, farského úradu a od toho, kedy sa zíde rodina zo zahraničia.',
+        a: 'Bežne do troch až piatich dní. Termín závisí od správcu cintorína, farského úradu a od toho, kedy sa zíde rodina zo zahraničia. Dovtedy je zosnulý v chladiacom zariadení. Zákon v ňom dovoľuje najviac 14 dní od úmrtia.',
       },
       {
         q: 'Musí byť obrad cirkevný?',
@@ -545,9 +545,9 @@ export const SLUZBY: Sluzba[] = [
         eyebrow: 'Čo robiť teraz',
         uvod: 'Štyri kroky. Nič viac od vás v tej chvíli nikto nechce.',
         polozky: [
-          { h: 'Zavolajte lekára', p: 'Obhliadku vykoná lekár alebo záchranná služba. Bez obhliadky sa zosnulý previezť nesmie.' },
+          { h: 'Pri úmrtí doma volajte 112', p: 'Príde lekár a vykoná prehliadku mŕtveho tela. Bez nej sa zosnulý previezť nesmie.' },
           { h: 'Zavolajte nám', p: 'Na 0903 596 364, kedykoľvek. Povieme vám, čo pripraviť, a dohodneme príjazd.' },
-          { h: 'Pripravte doklady', p: 'Občiansky preukaz zosnulého a list o obhliadke od lekára. Ak ich neviete nájsť, vyriešime to neskôr.' },
+          { h: 'Pripravte doklady', p: 'Občiansky preukaz zosnulého a potvrdenie o prehliadke mŕtveho tela od lekára. Ak ich neviete nájsť, vyriešime to neskôr.' },
           { h: 'Ostatné počká', p: 'Obrad, rakvu ani kvety neriešte v noci. Vrátime sa k tomu, keď sa vyspíte.' },
         ],
       },
@@ -556,7 +556,7 @@ export const SLUZBY: Sluzba[] = [
         nadpis: 'Odkiaľ zosnulých prevážame',
         eyebrow: 'Rozsah',
         polozky: [
-          { h: 'Z bytov a domov', p: 'Po obhliadke lekárom. Prídeme diskrétne, bez zbytočného ruchu na chodbe.' },
+          { h: 'Z bytov a domov', p: 'Po prehliadke lekárom. Prídeme diskrétne, bez zbytočného ruchu na chodbe.' },
           { h: 'Z nemocníc', p: 'Prevezmeme zosnulého priamo od zdravotníckeho zariadenia a vybavíme papiere.' },
           { h: 'Zo sociálnych zariadení', p: 'Z domovov seniorov a zariadení sociálnych služieb, s ktorými spolupracujeme dlhodobo.' },
           { h: 'Na súdnu pitvu a späť', p: 'Ak je nariadená obhliadka súdnym lekárom, prevoz zabezpečíme oboma smermi.' },
@@ -580,7 +580,7 @@ export const SLUZBY: Sluzba[] = [
       },
       {
         q: 'Voláme vás pred lekárom alebo po ňom?',
-        a: 'Najprv lekára na obhliadku. Bez listu o obhliadke zosnulého previezť nesmieme. Ale zavolať nám môžete aj skôr, poradíme vám.',
+        a: 'Pri úmrtí doma najprv volajte 112. Lekár vykoná prehliadku a vypíše potvrdenie o prehliadke mŕtveho tela, bez neho zosnulého previezť nesmieme. Zavolať nám ale môžete aj skôr, poradíme vám.',
       },
       {
         q: 'Čo ak sa to stalo v noci alebo cez sviatok?',
@@ -688,7 +688,7 @@ export const SLUZBY: Sluzba[] = [
         eyebrow: 'Použitie',
         polozky: [
           { h: 'V domácnosti', p: 'Rodina sa rozlúči doma, v prostredí, ktoré zosnulý poznal. Bez cesty do chladiaceho zariadenia.' },
-          { h: 'V zariadeniach pre seniorov', p: 'Rýchle zachladenie na mieste, kým prebehne obhliadka súdnym lekárom.' },
+          { h: 'V zariadeniach pre seniorov', p: 'Rýchle zachladenie na mieste, kým prebehne prehliadka lekárom.' },
           { h: 'V sociálnych zariadeniach', p: 'Riešenie pre zariadenia, ktoré vlastné chladenie nemajú a potrebujú získať čas.' },
         ],
       },
@@ -701,7 +701,7 @@ export const SLUZBY: Sluzba[] = [
         polozky: [
           { k: 'Chladiaca kazeta MT 10', v: 'Rozmer 360 × 660 × 18 mm, chladiaca plocha 1,2 m². Napojenie ventilom MT 15 na prístroj MT 100.' },
           { k: 'Prístroj MT 100', v: 'Napájanie 230 V / 50 Hz. Prietok kvapaliny 0,9 m³/hod. Prevádzkový tlak 1,0 MPa.' },
-          { k: 'Teplota', v: 'Chladenie na približne -8 °C. Telo sa zachladí rýchlo, do obhliadky súdnym lekárom.' },
+          { k: 'Teplota', v: 'Chladenie na približne -8 °C. Telo sa zachladí rýchlo, ešte pred prehliadkou lekárom.' },
           { k: 'Kazety', v: 'Jednorazové a biologicky rozložiteľné. Po použití sa nevracajú ani nečistia.' },
         ],
       },
