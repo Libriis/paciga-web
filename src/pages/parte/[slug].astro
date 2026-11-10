@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Foto from '../../components/Foto.astro';
 import Zdielanie from '../../components/Zdielanie.astro';
 import { obecZMiesta } from '../../lib/obce';
+import { drobcekyLd } from '../../data/firma';
 import { getParteBySlug, getKondolencie, inicialky, fmtDlhy, fmtKratky, svieckyText, mapUrl, icsDataUrl, dnesnyDatum, posunBratislava } from '../../lib/parte';
 
 export const prerender = false;
@@ -57,15 +58,10 @@ const ogDescription = rozluckaVeta
   : 'S úctou, pohrebná služba Paciga.';
 
 const ics = icsDataUrl(p);
-const jsonld = p.rozlucka_datum && p.rozlucka_cas ? JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'Event',
-  name: `Posledná rozlúčka: ${p.meno}`,
-  startDate: `${p.rozlucka_datum.slice(0, 10)}T${p.rozlucka_cas.slice(0, 5)}:00${posunBratislava(p.rozlucka_datum)}`,
-  eventStatus: 'https://schema.org/EventScheduled',
-  location: { '@type': 'Place', name: p.rozlucka_miesto },
-  organizer: { '@type': 'Organization', name: 'Paciga', url: 'https://www.paciga.sk' },
-}).replace(/</g, '\\u003c') : null;
+/* Značka Event odstránená (SEO 10. 11. 2026): Google udalosti pre Slovensko
+   neukazuje a rozlúčka nie je verejné podujatie na rezerváciu. Ostávajú drobčeky.
+   Stiahnutie do kalendára (.ics) funguje ďalej. */
+const jsonld = JSON.stringify(drobcekyLd((Astro.site ?? Astro.url).href, [['Domov', '/'], ['Parte a smútočné oznámenia', '/opustili-nas'], [p.meno, '/parte/' + p.slug]])).replace(/</g, '\\u003c');
 ---
 <Base title={title} description={description} active="opustili-nas" mainId="parte-main"
   ogTitle={`${p.meno} | Smútočné oznámenie`} ogDescription={ogDescription}

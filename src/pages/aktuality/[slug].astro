@@ -7,7 +7,8 @@
 */
 import Base from '../../layouts/Base.astro';
 import Foto from '../../components/Foto.astro';
-import { SIRKY_HERO } from '../../lib/images';
+import { SIRKY_HERO, verejnyObrazok } from '../../lib/images';
+import { drobcekyLd } from '../../data/firma';
 import Zdielanie from '../../components/Zdielanie.astro';
 import { getClanok, ostatneClanky, bloky, maDetail } from '../../lib/clanky';
 
@@ -32,16 +33,19 @@ const jsonld = JSON.stringify({
   headline: c.titulok,
   datePublished: c.datumIso,
   dateModified: c.upravenoIso ?? c.datumIso,
-  image: new URL(c.foto, Astro.site ?? Astro.url).href,
-  author: { '@type': 'Organization', name: 'Paciga' },
-  publisher: { '@type': 'Organization', name: 'Paciga', url: 'https://www.paciga.sk' },
+  /* SEO 10. 11. 2026: obrázok cez public/og (predtým /assets/clanky/… = 404), autor a vydavateľ = firma. */
+  image: new URL(verejnyObrazok(c.foto), Astro.site ?? Astro.url).href,
+  author: { '@id': new URL('/', Astro.site ?? Astro.url).href + '#firma' },
+  publisher: { '@id': new URL('/', Astro.site ?? Astro.url).href + '#firma' },
 }).replace(/</g, '\\u003c');
+const drobceky = JSON.stringify(drobcekyLd((Astro.site ?? Astro.url).href, [['Domov', '/'], ['Aktuality', '/aktuality'], [c.titulok, '/aktuality/' + c.slug]])).replace(/</g, '\\u003c');
 ---
 <Base title={title} description={description} active="aktuality"
   ogTitle={c.titulok} ogDescription={c.text} ogImage={c.foto}>
 
   <Fragment slot="head">
     <script type="application/ld+json" set:html={jsonld}></script>
+    <script type="application/ld+json" set:html={drobceky}></script>
   </Fragment>
 
   <!-- ============ HLAVIČKA: newsroom band s fotkou článku ============ -->

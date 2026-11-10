@@ -30,6 +30,8 @@ export const FIRMA = {
   zalozena: '2018',
   telefon: '+421903596364',
   email: 'paciga@paciga.sk',
+  /** sídlo podľa obchodného registra (ORSR), nie prevádzka na Letnej 17 */
+  sidlo: { ulica: 'Partizánska 1140/22', psc: '059 01', mesto: 'Spišská Belá' },
   /* sameAs v schema. Každý profil tu je ďalší dôkaz pre vyhľadávače aj AI
      asistentov, že ide o tú istú firmu. Instagram doplnený 18. 9. 2026. */
   socialne: [
@@ -127,9 +129,9 @@ export const POBOCKY: Pobocka[] = [
     email: 'info.paciga@gmail.com',
     nonstop: true,
     zatvara: '16:00',
-    lead: 'Sídlo firmy na Letnej ulici. Miesto, kde sa všetko začalo.',
+    lead: 'Hlavná pobočka na Letnej ulici. Miesto, kde sa všetko začalo.',
     oPobocke:
-      'Spišská Belá je sídlo firmy. 24. mája 2018 sme tu nadviazali na spoločnosť Archa Belá ' +
+      'Spišská Belá je hlavná pobočka firmy. 24. mája 2018 sme tu nadviazali na spoločnosť Archa Belá ' +
       'a odvtedy odtiaľto riadime všetky tri pobočky. ' +
       'Ako jediná je dostupná nepretržite, nielen v otváracích hodinách.',
     vybavite: [
@@ -141,7 +143,7 @@ export const POBOCKY: Pobocka[] = [
     fotoAlt: 'Interiér pobočky Spišská Belá: showroom s rakvami a vencami',
     title: 'Pohrebné služby Spišská Belá | Paciga',
     description:
-      'Pohrebná a kamenárska služba Paciga v Spišskej Belej, Letná 17. Sídlo firmy od roku 2018, ' +
+      'Pohrebná a kamenárska služba Paciga v Spišskej Belej, Letná 17. Hlavná pobočka od roku 2018, ' +
       'dostupné nepretržite. NON STOP prevoz zosnulých 0903 596 364.',
   },
   {
@@ -219,11 +221,54 @@ function hodiny(p: Pobocka) {
   ];
 }
 
+/*
+ * Súradnice pobočiek z pinov profilov v Google Mapách (SEO audit 4. 11. 2026).
+ * Nie sú vymyslené: sú to tie isté body, kam navigujú Mapy. Overiť s klientom
+ * pri prístupe k profilom (fáza 4).
+ */
+const GEO: Record<string, [number, number]> = {
+  poprad: [49.0535985, 20.3005346],
+  'spisska-bela': [49.1883911, 20.4593225],
+  'liptovsky-mikulas': [49.0845532, 19.6090482],
+};
+
+/** Jedna identita firmy a pobočiek naprieč celým webom. */
+export const firmaId = (zaklad: string) => new URL('/', zaklad).href + '#firma';
+export const pobockaId = (zaklad: string, p: Pobocka) => new URL('/', zaklad).href + '#pobocka-' + p.slug;
+
 /**
- * Hlavná značka ako FuneralHome, tri pobočky ako jej oddelenia.
- *
- * @id drží stabilnú identitu naprieč stránkami: keď tú istú firmu spomenie
- * viac stránok, Google vie, že ide o jeden subjekt, nie o tri.
+ * Pobočka ako samostatná prevádzka (LocalBusiness). SEO oprava 10. 11. 2026:
+ * predtým typ FuneralHome, ktorý v schema.org neexistuje, a pobočky ako
+ * „oddelenia“ prevádzky v Spišskej Belej. Podtyp pre pohrebníctvo neexistuje.
+ */
+export function pobockaUzol(zaklad: string, p: Pobocka, obrazok?: string) {
+  const geo = GEO[p.slug];
+  return {
+    '@type': 'LocalBusiness',
+    '@id': pobockaId(zaklad, p),
+    name: p.nazov,
+    url: new URL('/' + p.slug, zaklad).href,
+    parentOrganization: { '@id': firmaId(zaklad) },
+    address: adresa(p),
+    ...(geo ? { geo: { '@type': 'GeoCoordinates', latitude: geo[0], longitude: geo[1] } } : {}),
+    telephone: p.telefon,
+    email: p.email,
+    openingHoursSpecification: hodiny(p),
+    areaServed: { '@type': 'City', name: p.mesto },
+    image: obrazok ?? new URL('/og/asset-07.jpg', zaklad).href,
+    hasMap: mapaOdkaz(p),
+  };
+}
+
+/** Všetky tri pobočky (domovská stránka a /kontakt). */
+export function pobockyLd(zaklad: string) {
+  return { '@context': 'https://schema.org', '@graph': POBOCKY.map((p) => pobockaUzol(zaklad, p)) };
+}
+
+/**
+ * Firma ako celok (Organization) so sídlom podľa obchodného registra.
+ * name = značka „Paciga“ (zhodne s WebSite), právny názov v legalName.
+ * Pobočky sa na firmu odkazujú cez parentOrganization a @id.
  *
  * @param zaklad absolútny základ webu (Astro.site), s lomkou na konci
  */
@@ -231,24 +276,29 @@ export function firmaLd(zaklad: string) {
   const url = new URL('/', zaklad).href;
   return {
     '@context': 'https://schema.org',
-    '@type': 'FuneralHome',
-    '@id': url + '#firma',
-    name: FIRMA.pravnyNazov,
-    alternateName: FIRMA.znacka,
+    '@type': 'Organization',
+    '@id': firmaId(zaklad),
+    name: FIRMA.znacka,
+    legalName: FIRMA.pravnyNazov,
     description: FIRMA.popis,
     url,
     telephone: FIRMA.telefon,
     email: FIRMA.email,
     foundingDate: FIRMA.zalozena,
-    taxID: FIRMA.icDph,
     vatID: FIRMA.icDph,
-    identifier: FIRMA.ico,
+    identifier: { '@type': 'PropertyValue', propertyID: 'IČO', value: FIRMA.ico },
     image: new URL('/og/asset-07.jpg', zaklad).href,
     /* Logo pre Google (panel firmy). Biele logo na tmavom pozadí,
        lebo samotné biele logo by na bielom podklade Googlu zmizlo. */
     logo: new URL('/logo.png', zaklad).href,
     sameAs: FIRMA.socialne,
-    address: adresa(POBOCKY[1]), // sídlo firmy je Spišská Belá
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: FIRMA.sidlo.ulica,
+      postalCode: FIRMA.sidlo.psc,
+      addressLocality: FIRMA.sidlo.mesto,
+      addressCountry: 'SK',
+    },
     areaServed: POBOCKY.map((p) => ({ '@type': 'City', name: p.mesto })),
     /* NON STOP linka je to najdôležitejšie, čo o firme treba vedieť:
        prevoz zosnulých beží 24 hodín denne, každý deň v roku. */
@@ -267,16 +317,16 @@ export function firmaLd(zaklad: string) {
         },
       },
     ],
-    department: POBOCKY.map((p) => ({
-      '@type': 'FuneralHome',
-      '@id': url + '#pobocka-' + p.mesto.toLowerCase().replace(/[^a-z]+/g, '-'),
-      name: p.nazov,
-      parentOrganization: { '@id': url + '#firma' },
-      address: adresa(p),
-      telephone: p.telefon,
-      email: p.email,
-      openingHoursSpecification: hodiny(p),
-      areaServed: { '@type': 'City', name: p.mesto },
+  };
+}
+
+/** Drobčeky pre vyhľadávače: [názov, cesta], posledná položka je aktuálna stránka. */
+export function drobcekyLd(zaklad: string, polozky: [string, string][]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: polozky.map(([name, cesta], i) => ({
+      '@type': 'ListItem', position: i + 1, name, item: new URL(cesta, zaklad).href,
     })),
   };
 }
@@ -290,6 +340,7 @@ export function webLd(zaklad: string) {
     '@id': url + '#web',
     url,
     name: FIRMA.znacka,
+    alternateName: ['Pohrebné a kamenárske služby Paciga', 'paciga.sk'],
     inLanguage: 'sk-SK',
     publisher: { '@id': url + '#firma' },
   };
