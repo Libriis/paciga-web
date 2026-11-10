@@ -15,6 +15,11 @@ const redirects = [
   // Staré statické adresy .html (zdieľané na sociálnych sieťach). Predtým ich riešil
   // len middleware, a ten na predgenerovaných stránkach nebeží (404, /aktuality/index.html 500).
   r('/index.html', '/'),
+  // Zoznam parte: /parte samo osebe stránku nemá, staré /opustili_ns/ bol zoznam.
+  r('/parte/index.html', '/opustili-nas'),
+  r('/parte', '/opustili-nas'),
+  r('/parte/', '/opustili-nas'),
+  r('/opustili_ns/', '/opustili-nas'),
   r('/:cesta+/index.html', '/:cesta+'),
   r('/:cesta+.html', '/:cesta+'),
 

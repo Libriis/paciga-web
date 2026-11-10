@@ -7,6 +7,26 @@
       "permanent": true
     },
     {
+      "source": "/parte/index.html",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
+      "source": "/parte",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
+      "source": "/parte/",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
+      "source": "/opustili_ns/",
+      "destination": "/opustili-nas",
+      "permanent": true
+    },
+    {
       "source": "/:cesta+/index.html",
       "destination": "/:cesta+",
       "permanent": true
