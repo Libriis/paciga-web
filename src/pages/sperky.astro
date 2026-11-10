@@ -6,6 +6,8 @@
   konfigurátor (Mobbin) + segmented button group (21st.dev).
   Prepínanie čistým DOM skriptom, bez React ostrova.
 */
+import { drobcekyLd } from '../data/firma';
+const drobcekyJson = JSON.stringify(drobcekyLd((Astro.site ?? Astro.url).href, [['Domov', '/'], ['Pohrebné služby', '/pohrebne-sluzby'], ['Spomienkové šperky', '/sperky']]));
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
 import { Image, getImage } from 'astro:assets';
@@ -98,6 +100,10 @@ const ogTitle = "Spomienkové šperky | Paciga";
 const ogDescription = "Nikdy nezabudnem. Šperky s odtlačkom prsta vášho blízkeho, gravírované podľa vášho želania.";
 ---
 <Base title={title} description={description} active="sperky" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/sperky/kolekcia.jpg">
+
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={drobcekyJson} />
+  </Fragment>
 
   <!-- ============ HERO: split s diagonálnou fotkou ============
        Podľa 21st.dev hero-section-2, preložené do brand tokenov bez Reactu:

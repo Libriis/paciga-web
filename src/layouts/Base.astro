@@ -4,8 +4,8 @@
 // utility-first, legacy classy v public/css/styles.css ostávajú v platnosti.
 import '../styles/tw.css';
 import { GOOGLE_PROFIL } from '../data/recenzie';
-import { firmaLd, webLd } from '../data/firma';
-import { lokalnyObrazok } from '../lib/images';
+import { firmaLd, webLd, pobockyLd } from '../data/firma';
+import { verejnyObrazok } from '../lib/images';
 
 interface Props {
   title: string;
@@ -35,9 +35,7 @@ const {
    Náhľady sú preto hotové súbory v public/og/, ktoré generuje
    scripts/staticke-obrazky.mjs. Externé URL (Supabase foto v parte)
    ostávajú tak, ako prišli. */
-const ogCesta = lokalnyObrazok(ogImage)
-  ? '/og/' + ogImage!.replace('/assets/', '').replace(/\//g, '-').replace(/\.[^.]+$/, '.jpg')
-  : ogImage;
+const ogCesta = verejnyObrazok(ogImage);
 const ogImageAbs = new URL(ogCesta, Astro.site ?? Astro.url).href;
 
 /* Kanonická adresa. Skladá sa z Astro.site (www.paciga.sk), nie z Astro.url:
@@ -57,7 +55,9 @@ const canonical = new URL(cesta, zaklad).href;
    príde odkiaľkoľvek. Detail služby si k tomu pridáva vlastnú Service
    a BreadcrumbList značku, tie sa nebijú — spája ich @id.
    Údaje a dôvody sú v src/data/firma.ts. */
-const znacky = [firmaLd(zaklad), webLd(zaklad)];
+/* Všetky tri pobočky ako samostatné prevádzky len tam, kde sú všetky na stránke. */
+const sPobockami = ['/', '/kontakt'].includes(Astro.url.pathname.replace(/\/$/, '') || '/');
+const znacky = [firmaLd(zaklad), webLd(zaklad), ...(sPobockami ? [pobockyLd(zaklad)] : [])];
 
 const NAV = [
   { key: 'domov', href: '/', label: 'Domov' },

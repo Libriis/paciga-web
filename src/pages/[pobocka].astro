@@ -31,7 +31,7 @@ import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
 import type { FaqItem } from '../components/Faq.astro';
 import { SIRKY_HERO, KVALITA_POZADIE } from '../lib/images';
-import { FIRMA, POBOCKY, mapaOdkaz, type Pobocka } from '../data/firma';
+import { FIRMA, POBOCKY, mapaOdkaz, pobockaUzol, type Pobocka } from '../data/firma';
 
 import interierPoprad from '../assets/interier-poprad.jpg';
 import interierBela from '../assets/interier-bela.jpg';
@@ -63,7 +63,7 @@ const otazky: FaqItem[] = [
   {
     q: `Kedy sa dá na pobočku v ${p.mestoV} prísť?`,
     a: p.nonstop
-      ? 'Nepretržite. Spišská Belá je sídlo firmy a ako jediná pobočka je dostupná v ktorúkoľvek hodinu, aj cez víkendy a sviatky.'
+      ? 'Nepretržite. Spišská Belá je hlavná pobočka firmy a ako jediná pobočka je dostupná v ktorúkoľvek hodinu, aj cez víkendy a sviatky.'
       : `Osobne v pondelok až piatok od 8:00 do ${p.zatvara}. Prevoz zosnulého ale zabezpečíme aj mimo týchto hodín, na to slúži NON STOP linka ${telText(p.telefon)}.`,
   },
   {
@@ -79,28 +79,7 @@ const otazky: FaqItem[] = [
 /* Táto pobočka ako samostatný záznam pre vyhľadávače. @id je to isté,
    aké jej dáva zoznam oddelení v Base.astro, takže Google vidí jeden
    subjekt popísaný na dvoch miestach, nie dva. */
-const pobockaLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FuneralHome',
-  '@id': zaklad + '#pobocka-' + p.mesto.toLowerCase().replace(/[^a-z]+/g, '-'),
-  name: p.nazov,
-  description: p.description,
-  url: new URL('/' + p.slug, zaklad).href,
-  parentOrganization: { '@id': zaklad + '#firma' },
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: p.ulica,
-    postalCode: p.psc,
-    addressLocality: p.mesto,
-    addressCountry: 'SK',
-  },
-  telephone: p.telefon,
-  email: p.email,
-  areaServed: { '@type': 'City', name: p.mesto },
-  openingHoursSpecification: p.nonstop
-    ? [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], opens: '00:00', closes: '23:59' }]
-    : [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: p.zatvara }],
-};
+const pobockaLd = { '@context': 'https://schema.org', description: p.description, ...pobockaUzol(zaklad, p, new URL(foto.src, zaklad).href) };
 
 const drobceky = {
   '@context': 'https://schema.org',

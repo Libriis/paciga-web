@@ -71,7 +71,7 @@ const drobceky = {
       name: 'Pohrebné služby',
       item: new URL('/pohrebne-sluzby', Astro.site ?? Astro.url).href,
     },
-    { '@type': 'ListItem', position: 3, name: sluzba.nazov, item: Astro.url.href },
+    { '@type': 'ListItem', position: 3, name: sluzba.nazov, item: new URL('/pohrebne-sluzby/' + sluzba.slug, Astro.site ?? Astro.url).href },
   ],
 };
 
@@ -81,13 +81,8 @@ const sluzbaLd = {
   name: sluzba.nazov,
   description: sluzba.description,
   serviceType: sluzba.nazov,
-  provider: {
-    '@type': 'FuneralHome',
-    name: 'Pohrebné a kamenárske služby Paciga, s. r. o.',
-    telephone: '+421903596364',
-    email: 'paciga@paciga.sk',
-    url: new URL('/', Astro.site ?? Astro.url).href,
-  },
+  /* Odkaz na firmu z Base.astro (SEO 10. 11. 2026), nie anonymná kópia s typom FuneralHome. */
+  provider: { '@id': new URL('/', Astro.site ?? Astro.url).href + '#firma' },
   areaServed: ['Poprad', 'Spišská Belá', 'Liptovský Mikuláš'],
 };
 ---

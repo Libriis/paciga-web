@@ -24,6 +24,14 @@ for (const [kluc, modul] of Object.entries(moduly)) {
 }
 
 /** '/assets/foto.jpg' → ImageMetadata, alebo null pre externé zdroje. */
+/** Verejná cesta obrázka pre og:image a schema. Fotky v src/assets majú hotový
+    náhľad v public/og/ (scripts/staticke-obrazky.mjs), externé URL ostávajú. */
+export function verejnyObrazok(src: string): string {
+  return lokalnyObrazok(src)
+    ? '/og/' + src.replace('/assets/', '').replace(/\//g, '-').replace(/\.[^.]+$/, '.jpg')
+    : src;
+}
+
 export function lokalnyObrazok(src: string | null | undefined): ImageMetadata | null {
   if (!src) return null;
   return podlaCesty.get(src) ?? null;

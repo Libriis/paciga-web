@@ -1,4 +1,6 @@
 ---
+import { drobcekyLd } from '../data/firma';
+const drobcekyJson = JSON.stringify(drobcekyLd((Astro.site ?? Astro.url).href, [['Domov', '/'], ['Pohrebné služby', '/pohrebne-sluzby'], ['Kamenárstvo', '/kamenarstvo']]));
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
 import { SIRKY_HERO, KVALITA_POZADIE } from '../lib/images';
@@ -35,6 +37,10 @@ const ogTitle = "Kamenárstvo | Paciga";
 const ogDescription = "Vytesané navždy. Pomník uvidíte v 3D skôr, ako sa kameňa dotkne dláto.";
 ---
 <Base title={title} description={description} active="kamenarstvo" ogTitle={ogTitle} ogDescription={ogDescription} ogImage="/assets/cintorin.jpg">
+
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={drobcekyJson} />
+  </Fragment>
 
 
 
