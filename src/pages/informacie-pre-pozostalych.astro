@@ -10,7 +10,7 @@ import IkonaKroku from '../components/IkonaKroku.astro';
 const otazky: FaqItem[] = [
   {
     q: 'Komu mám zavolať ako prvému?',
-    a: 'Ak úmrtie nastalo doma alebo za nejasných okolností, volajte najprv tiesňovú linku 112. Operátor vyšle lekára na obhliadku. Po obhliadke zavolajte nám na číslo 0903 596 364 a prevoz aj všetko ostatné zabezpečíme za vás. Ak úmrtie nastalo v nemocnici, kontaktuje vás poverený zamestnanec nemocnice.',
+    a: 'Ak úmrtie nastalo doma alebo za nejasných okolností, volajte najprv tiesňovú linku 112. Operátor vyšle lekára na prehliadku. Po prehliadke zavolajte nám na číslo 0903 596 364 a prevoz aj všetko ostatné zabezpečíme za vás. Ak úmrtie nastalo v nemocnici, kontaktuje vás poverený zamestnanec nemocnice.',
   },
   {
     q: 'V akom čase vám môžem volať?',
@@ -30,7 +30,11 @@ const otazky: FaqItem[] = [
   },
   {
     q: 'Kto vypláca príspevok na pohreb a čo k nemu treba?',
-    a: 'Príspevok na pohreb vo výške 200 eur vypláca Úrad práce, sociálnych vecí a rodiny na základe tlačiva Žiadosť o príspevok na pohreb. K žiadosti treba fotokópiu úmrtného listu, faktúru od pohrebnej služby a potvrdenie od pohrebnej služby. Žiadosť vyplníme a vybavíme za vás vrátane príloh. Vy nemusíte robiť nič.',
+    a: 'Príspevok na pohreb vo výške 200 eur vypláca Úrad práce, sociálnych vecí a rodiny na základe tlačiva Žiadosť o príspevok na pohreb. K žiadosti treba fotokópiu úmrtného listu, faktúru od pohrebnej služby a potvrdenie od pohrebnej služby. Žiadosť vyplníme a vybavíme za vás vrátane príloh. Vy nemusíte robiť nič. Od 1. januára 2027 je príspevok 250 eur (zákon č. 149/2026 Z. z.).',
+  },
+  {
+    q: 'Do kedy musí byť pohreb?',
+    a: 'Ak zosnulý nie je v chladiacom zariadení, pohreb musí byť do 96 hodín od úmrtia, nie však skôr ako po 24 hodinách. V chladiacom zariadení do 14 dní od úmrtia, v mraziacom do 30 dní od uloženia. Ak sa vykonala pitva, platia osobitné pravidlá. Určuje to zákon č. 131/2010 Z. z. o pohrebníctve, § 3. Termín s vami dohodneme tak, aby lehota platila.',
   },
   {
     q: 'Blízky zomrel v zahraničí. Čo mám robiť?',
@@ -47,7 +51,7 @@ const otazky: FaqItem[] = [
    dátumu posudzujú, či je informácia ešte platná. Preto je viditeľný pod
    nadpisom a zároveň v schema ako dateModified. Prepíš ho pri zmene faktov,
    pri zmene vzhľadu nie. Posledné fakty: stretnutie s klientom 3. 8. 2026. */
-const AKTUALIZOVANE = { iso: '2026-08-03', text: '3. augusta 2026' };
+const AKTUALIZOVANE = { iso: '2026-11-10', text: '10. novembra 2026' };
 
 const title = "Informácie pre pozostalých | Paciga, pohrebné a kamenárske služby";
 const description = "Čo robiť pri úmrtí blízkeho doma, v nemocnici, za nejasných okolností alebo v zahraničí. Aké dokumenty pripraviť a ako požiadať o príspevok na pohreb. NON STOP 0903 596 364.";
@@ -113,7 +117,7 @@ const strankaLd = {
         <div class="step-num" aria-hidden="true">01</div>
         <div class="step-body">
           <h3>Úmrtie doma</h3>
-          <p>Ihneď volajte tiesňovú linku 112. Operátor vyšle lekára na obhliadku. Lekár zistí príčinu, okolnosti a čas úmrtia, vypíše Potvrdenie o prehliadke mŕtveho tela a rozhodne, či je potrebná pitva.</p>
+          <p>Ihneď volajte tiesňovú linku 112. Operátor vyšle lekára na prehliadku. Lekár zistí príčinu, okolnosti a čas úmrtia, vypíše Potvrdenie o prehliadke mŕtveho tela a rozhodne, či je potrebná pitva.</p>
           <ul>
             <li>Ak lekár nariadi pitvu, prevoz na súdnolekárske pracovisko v Martine zabezpečíme my.</li>
             <li>Ak pitva nariadená nie je, zavolajte nám. Zosnulého s úctou prevezieme do chladiaceho zariadenia, pozri&#32;<a class="gold-link" href="/pohrebne-sluzby/prevoz-zosnulych">prevoz zosnulých NON STOP</a>.</li>
@@ -207,6 +211,7 @@ const strankaLd = {
             <li>Potvrdenie od pohrebnej služby.</li>
           </ul>
           <p class="step-note">Žiadosť vyplníme a vybavíme za vás vrátane všetkých príloh. Vy nemusíte robiť nič.</p>
+          <p class="step-note">Od 1. januára 2027 je príspevok 250 eur (zákon č.&nbsp;149/2026 Z.&nbsp;z.).</p>
         </div>
       </div>
     </div>
