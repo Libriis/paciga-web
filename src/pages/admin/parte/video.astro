@@ -1,0 +1,12 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ParteVideo from '../../../components/admin/ParteVideo.tsx';
+---
+<AdminLayout title="Video parte" sekcia="parte" nove>
+  <ParteVideo client:only="react" />
+
+<script>
+import { requireAuth } from '../../../scripts/admin-core.js';
+await requireAuth('web');
+</script>
+</AdminLayout>
