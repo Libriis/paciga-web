@@ -157,7 +157,10 @@ export function ParteFormular() {
       <HlavaStranky
         nadpis={formular.id ? formular.meno || 'Úprava parte' : 'Nové parte'}
         popis={formular.id ? 'Úprava smútočného oznámenia.' : 'Údaje o zosnulom a termín rozlúčky.'}
-        akcie={<OdkazTlacidlo href={ZOZNAM}>Späť na zoznam</OdkazTlacidlo>}
+        akcie={<>
+          {formular.id && <OdkazTlacidlo href={`/admin/parte/video?id=${formular.id}`}>Video na sociálne siete</OdkazTlacidlo>}
+          <OdkazTlacidlo href={ZOZNAM}>Späť na zoznam</OdkazTlacidlo>
+        </>}
       />
 
       <Ramec>
