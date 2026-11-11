@@ -10,7 +10,7 @@ import {
 } from './ui';
 import { getClient } from '@/scripts/admin-core.js';
 import {
-  DLZKA, FPS, SIRKA, VYSKA, nacitajLogo, nacitajObrazok, nacitajPismo, vytvorScenu,
+  DLZKA, FPS, SIRKA, VYREZ_45, VYSKA, nacitajLogo, nacitajObrazok, nacitajPismo, vytvorScenu,
 } from '@/lib/parte-video/scena.js';
 import { textyZParte } from '@/lib/parte-video/udaje.js';
 import { stiahni, vieVyrobitVideo, vyrobMp4, vyrobPng } from '@/lib/parte-video/export.js';
@@ -28,6 +28,7 @@ export function ParteVideo() {
   const [zdroje, setZdroje] = useState<{ logo: HTMLImageElement; foto: HTMLImageElement | null } | null>(null);
   const [chybaFotky, setChybaFotky] = useState('');
   const [hra, setHra] = useState(true);
+  const [vyrez, setVyrez] = useState(false);
   const [vyraba, setVyraba] = useState(false);
   const [priebeh, setPriebeh] = useState({ hotovo: 0, celkom: 0 });
   const [hlaska, setHlaska] = useState('');
@@ -223,13 +224,31 @@ export function ParteVideo() {
 
         <Ramec>
           <Bunka className="flex flex-col items-center gap-4">
-            <canvas ref={platnoRef} width={SIRKA} height={VYSKA}
-              className="w-full max-w-[300px] rounded-md border border-border bg-[#0c0d0f]"
-              style={{ aspectRatio: `${SIRKA} / ${VYSKA}` }} />
+            <div className="relative w-full max-w-[300px] overflow-hidden rounded-md">
+              <canvas ref={platnoRef} width={SIRKA} height={VYSKA}
+                className="block w-full rounded-md border border-border bg-[#0c0d0f]"
+                style={{ aspectRatio: `${SIRKA} / ${VYSKA}` }} />
+              {/* Len v náhľade, do videa sa nekreslí: čo uvidí človek v mriežke profilu (4:5). */}
+              {vyrez && (
+                <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 border-y-2 border-dashed border-[#e0b44a]"
+                  style={{ top: `${(VYREZ_45.y / VYSKA) * 100}%`, height: `${(VYREZ_45.vyska / VYSKA) * 100}%`,
+                    boxShadow: '0 0 0 9999px rgba(0,0,0,.55)' }} />
+              )}
+            </div>
             {!scena && <Nacitavam text="Pripravujem náhľad…" />}
-            <Tlacidlo type="button" maly variant="ticho" onClick={() => setHra((h) => !h)}>
-              {hra ? 'Zastaviť a ukázať koniec' : 'Prehrať znova'}
-            </Tlacidlo>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Tlacidlo type="button" maly variant="ticho" onClick={() => setHra((h) => !h)}>
+                {hra ? 'Zastaviť a ukázať koniec' : 'Prehrať znova'}
+              </Tlacidlo>
+              <Tlacidlo type="button" maly variant="ticho" aria-pressed={vyrez} onClick={() => setVyrez((v) => !v)}>
+                {vyrez ? 'Skryť výrez 4:5' : 'Ukázať výrez 4:5'}
+              </Tlacidlo>
+            </div>
+            {vyrez && (
+              <p className="max-w-[300px] text-center text-[12px] text-muted-foreground">
+                Svetlá časť sa ukáže v mriežke profilu a vo feede. Rámik vo videu nebude.
+              </p>
+            )}
             <div className="flex w-full flex-col gap-2">
               <Tlacidlo type="button" variant="plne" cakaj={vyraba} disabled={!scena || !vieVideo} onClick={stiahniVideo}>
                 Stiahnuť video (MP4)

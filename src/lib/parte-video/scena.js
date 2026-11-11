@@ -16,6 +16,17 @@ export const DLZKA = 10;
 
 const ZAKLAD = '/parte-video';
 
+/* Výrez 4:5 (1080x1350 na stred). Tak sa reel ukáže v mriežke profilu a vo feede,
+   keď ho človek neotvorí. Fotka, meno, dátumy a karta musia byť celé v ňom
+   (Tomáš 11. 11. 2026). Logo hore a sviečka dole ostávajú mimo, len ako ozdoba. */
+export const VYREZ_45 = { y: (VYSKA - (SIRKA * 5) / 4) / 2, vyska: (SIRKA * 5) / 4 };
+
+/* Blok od fotky po kartu je oproti šablóne V7 posunutý o 90 px nižšie,
+   aby sedel na stred výrezu 4:5 (prstenec od 336, karta do 1560 px).
+   Sviečka ide o rovnakých 90 px nižšie, aby sa karty nedotkla. */
+const POSUN_Y = 90;
+const PORTRET_Y = 526 + POSUN_Y;
+
 /* ---------- písmo ---------- */
 
 /* Archivo s plnými osami. Pre každú šírku písma vlastná rodina: deskriptor
@@ -290,7 +301,7 @@ function rozloz(c, d) {
     L.poVel = celk > vnutro ? Math.max(18, Math.floor((26 * vnutro) / celk)) : 26;
     L.poMedzera = sp * (L.poVel / 26);
   }
-  L.kartaY = L.poPohrebe ? 1236 : 1250;
+  L.kartaY = L.poPohrebe ? 1236 + POSUN_Y : 1250 + POSUN_Y;
   const zaRiadkom = L.poPohrebe ? 14 + 1 + 66 : 19;
   L.kartaV = 2 + 22 + 21 + 12 + L.riadokV + zaRiadkom;
   return L;
@@ -354,7 +365,7 @@ export function vytvorScenu(d) {
     lg.addColorStop(0.72, 'rgba(12,13,15,0)'); lg.addColorStop(1, 'rgba(12,13,15,.85)');
     c.fillStyle = lg; c.fillRect(0, 0, SIRKA, VYSKA);
     c.save();
-    c.translate(540, 576); c.scale(1026, 1190.4);
+    c.translate(540, 576 + POSUN_Y); c.scale(1026, 1190.4);
     const rg = c.createRadialGradient(0, 0, 0, 0, 0, 1);
     rg.addColorStop(0.45, 'rgba(12,13,15,0)'); rg.addColorStop(1, 'rgba(12,13,15,.72)');
     c.fillStyle = rg; c.fillRect(-2, -2, 4, 4);
@@ -367,13 +378,13 @@ export function vytvorScenu(d) {
       c.globalAlpha = 1;
     }
 
-    /* portrét: stred 540, 526 */
+    /* portrét: stred 540, PORTRET_Y (616) */
     const fl = Math.sin(t * 2.3) * 0.5 + Math.sin(t * 6.1 + 0.7) * 0.3 + Math.sin(t * 11.3 + 2.1) * 0.2;
     {
       const op = tw(t, 0, 1.0, sineOut, 0.3, 1), sc = tw(t, 0, 1.0, sineOut, 0.9, 1);
       const dych = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 1.9) * Math.sin(t * 0.83 + 1.1));
       c.save();
-      c.translate(540, 526); c.scale(sc, sc);
+      c.translate(540, PORTRET_Y); c.scale(sc, sc);
       const g = c.createRadialGradient(0, 0, 0, 0, 0, 530);
       g.addColorStop(0, ink(0.14)); g.addColorStop(0.5, ink(0.04)); g.addColorStop(1, ink(0));
       c.fillStyle = g;
@@ -387,7 +398,7 @@ export function vytvorScenu(d) {
       const op = tw(t, 0, 0.6, expoOut, 0.35, 1), sc = tw(t, 0, 0.6, expoOut, 0.975, 1);
       c.save();
       c.globalAlpha = op;
-      c.translate(540, 526); c.scale(sc, sc); c.translate(-250, -250);
+      c.translate(540, PORTRET_Y); c.scale(sc, sc); c.translate(-250, -250);
       c.beginPath(); c.arc(250, 250, 250, 0, Math.PI * 2); c.clip();
       c.fillStyle = '#131418'; c.fillRect(0, 0, 500, 500);
       if (foto) {
@@ -417,17 +428,17 @@ export function vytvorScenu(d) {
       const p = tw(t, 0.1, 1.2, sineInOut, 0, 1);
       if (p > 0) {
         c.strokeStyle = ink(0.32); c.lineWidth = 1.5;
-        c.beginPath(); c.arc(540, 526, 278.5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * p); c.stroke();
+        c.beginPath(); c.arc(540, PORTRET_Y, 278.5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * p); c.stroke();
       }
     }
     {
       const og = tw(t, 0.9, 1.2, sineOut, 0, 0.6);
-      if (og > 0) { c.globalAlpha = og * 0.75; c.drawImage(ziara, 540 - 320, 526 - 320); }
+      if (og > 0) { c.globalAlpha = og * 0.75; c.drawImage(ziara, 540 - 320, PORTRET_Y - 320); }
       const o = tw(t, 0.9, 1.2, sineOut, 0, 0.85);
       if (o > 0) {
         c.globalAlpha = o;
-        c.fillStyle = conic(c, 540, 526, ORBIT);
-        c.beginPath(); c.arc(540, 526, 280, 0, Math.PI * 2); c.arc(540, 526, 276, 0, Math.PI * 2, true); c.fill();
+        c.fillStyle = conic(c, 540, PORTRET_Y, ORBIT);
+        c.beginPath(); c.arc(540, PORTRET_Y, 280, 0, Math.PI * 2); c.arc(540, PORTRET_Y, 276, 0, Math.PI * 2, true); c.fill();
       }
       c.globalAlpha = 1;
     }
@@ -439,7 +450,7 @@ export function vytvorScenu(d) {
       pismo(c, 36, 440);
       c.fillStyle = ink(0.6);
       const w = c.measureText(d.lead || '').width;
-      c.fillText(d.lead || '', (SIRKA - w) / 2, uciarie(820, 40, 36) + y);
+      c.fillText(d.lead || '', (SIRKA - w) / 2, uciarie(820 + POSUN_Y, 40, 36) + y);
       c.globalAlpha = 1;
     }
 
@@ -447,7 +458,7 @@ export function vytvorScenu(d) {
     {
       const vel = L.menoVel, lh = vel * 1.03, kp = vel / MENO_VEL;
       /* zmenšené meno ostáva na strede pôvodného bloku (856 až 1146,38) */
-      const blokTop = 1001.19 - (154.42 * kp + lh) / 2;
+      const blokTop = 1001.19 + POSUN_Y - (154.42 * kp + lh) / 2;
       const tops = [blokTop, blokTop + 154.42 * kp];
       pismo(c, vel, 660, 110, -0.015 * vel);
       c.fillStyle = ink(1);
@@ -467,7 +478,7 @@ export function vytvorScenu(d) {
       pismo(c, 38, 540, 110);
       c.fillStyle = ink(1);
       let x = L.datumyX;
-      const bl = uciarie(1171.5, 41, 38);
+      const bl = uciarie(1171.5 + POSUN_Y, 41, 38);
       if (d.d1) {
         c.globalAlpha = tw(t, 0.6, 0.6, expoOut, 0, 1);
         c.fillText(d.d1, x + tw(t, 0.6, 0.6, expoOut, 14, 0), bl);
@@ -477,7 +488,7 @@ export function vytvorScenu(d) {
       if (ks > 0) {
         c.globalAlpha = ko;
         c.save();
-        c.translate(x, 1168 + 48); c.scale(1, ks); c.translate(0, -48);
+        c.translate(x, 1168 + POSUN_Y + 48); c.scale(1, ks); c.translate(0, -48);
         c.fillRect(14, 0, 2, 48);
         c.fillRect(0, 13.8, 30, 2);
         c.restore();
@@ -603,7 +614,7 @@ export function vytvorScenu(d) {
         const hs = 1 + fl * 0.035;
         c.save();
         c.globalAlpha = ha;
-        c.translate(540, 1600); c.scale(hs, hs);
+        c.translate(540, 1600 + POSUN_Y); c.scale(hs, hs);
         const g = c.createRadialGradient(0, 0, 0, 0, 0, 466.69);
         g.addColorStop(0, ink(0.3)); g.addColorStop(0.34, ink(0.1)); g.addColorStop(0.68, ink(0));
         c.fillStyle = g;
@@ -613,9 +624,9 @@ export function vytvorScenu(d) {
       const ba = tw(t, 1.2, 0.7, expoOut, 0, 1), by = tw(t, 1.2, 0.7, expoOut, 30, 0);
       if (ba > 0) {
         c.globalAlpha = ba;
-        c.drawImage(sviecka, 521, 1654 + by);
+        c.drawImage(sviecka, 521, 1654 + POSUN_Y + by);
         c.fillStyle = ink(0.5);
-        c.beginPath(); c.roundRect(538, 1630 + by, 4, 26, 2); c.fill();
+        c.beginPath(); c.roundRect(538, 1630 + POSUN_Y + by, 4, 26, 2); c.fill();
         c.globalAlpha = 1;
       }
       const fa = tw(t, 1.7, 0.7, sineOut, 0, 1);
@@ -624,7 +635,7 @@ export function vytvorScenu(d) {
         const sx = 1 - fl * 0.035, sy = 1 + fl * 0.085;
         c.save();
         c.globalAlpha = fa;
-        c.translate(540, 1638); c.rotate((rot * Math.PI) / 180); c.scale(sx, sy);
+        c.translate(540, 1638 + POSUN_Y); c.rotate((rot * Math.PI) / 180); c.scale(sx, sy);
         /* žiara plameňa (drop-shadow 22 a 60 px): obrázok mimo plátna, kreslí sa len jeho tieň */
         const POSUN = 4000;
         /* tretí, širší tieň napodobní reťazenie dvoch drop-shadow v CSS */
