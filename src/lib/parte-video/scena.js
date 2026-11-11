@@ -27,6 +27,11 @@ export const VYREZ_45 = { y: (VYSKA - (SIRKA * 5) / 4) / 2, vyska: (SIRKA * 5) /
 const POSUN_Y = 90;
 const PORTRET_Y = 526 + POSUN_Y;
 
+/* Logo hore: pôvodne 48 px, od 11. 11. 2026 o 70 px nižšie. Na iPhone ho inak
+   prekrýva výrez displeja (notch). Nižšie nejde, narazilo by do prstenca fotky.
+   Spodok loga ostáva tesne nad výrezom 4:5 (285 px). */
+const LOGO_Y = 118;
+
 /* ---------- písmo ---------- */
 
 /* Archivo s plnými osami. Pre každú šírku písma vlastná rodina: deskriptor
@@ -374,7 +379,7 @@ export function vytvorScenu(d) {
     /* logo hore */
     if (d.logo) {
       c.globalAlpha = tw(t, 0, 0.6, sineOut, 0.4, 1);
-      c.drawImage(d.logo, 320, 48, 440, logoV);
+      c.drawImage(d.logo, 320, LOGO_Y, 440, logoV);
       c.globalAlpha = 1;
     }
 
