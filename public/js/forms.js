@@ -17,19 +17,28 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      /* Meta Lead len pri dopyte a len so súhlasom (pgMeta z Base.astro).
+         Server pošle Lead do CAPI, prehliadač ten istý id cez fbq(). */
+      var metaId = null, payload = buildPayload(form);
+      if (udalost === 'dopyt_odoslany' && window.pgMeta) {
+        metaId = window.pgMeta.id();
+        var m = window.pgMeta.udaje(metaId);
+        if (m) payload.meta = m; else metaId = null;
+      }
       if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Odosielam…'; }
       if (status) { status.textContent = ''; status.classList.remove('err'); }
 
       fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(buildPayload(form))
+        body: JSON.stringify(payload)
       })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
         .then(function (res) {
           if (res.ok) {
             form.innerHTML = successHtml;
             hlas(udalost, { slug: form.getAttribute('data-slug') });
+            if (metaId) window.pgMeta.pixel('Lead', metaId);
           } else {
             if (status) { status.textContent = (res.d && res.d.error) || 'Nepodarilo sa odoslať. Skúste to prosím neskôr.'; status.classList.add('err'); }
             if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label; }

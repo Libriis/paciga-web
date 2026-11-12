@@ -11,7 +11,9 @@
      dopyt_odoslany        kontaktný formulár prešiel    (forms.js)
      kondolencia_odoslana  kondolencia prešla            slug (forms.js)
      sviecka_zapalena      server sviečku zarátal        slug (candles.js)
-   Každá nesie aj stranka = cesta bez query a hashu. */
+   Každá nesie aj stranka = cesta bez query a hashu.
+   Meta (Pixel + CAPI): telefon_klik a email_klik = Contact, dopyt = Lead
+   (forms.js). Kondolencie a sviečky do Meta nejdú. */
 (function () {
   'use strict';
 
@@ -29,6 +31,11 @@
     }
     dl.push(z);
   }
+  /* Meta Pixel + CAPI (Base.astro). Bez súhlasu pgMeta nič nepošle. */
+  function meta(nazov) {
+    try { if (window.pgMeta) window.pgMeta.sleduj(nazov); } catch (e) {}
+  }
+
   /* forms.js a candles.js hlásia úspech cez tento helper */
   window.pgUdalost = udalost;
 
@@ -80,6 +87,7 @@
     }
 
     if (href.indexOf('tel:') === 0) {
+      meta('Contact');
       udalost('telefon_klik', {
         cislo: href.slice(4).replace(/[^\d+]/g, ''),
         miesto: miesto(el)
@@ -88,6 +96,7 @@
     }
 
     if (href.indexOf('mailto:') === 0) {
+      meta('Contact');
       udalost('email_klik', { miesto: miesto(el) });
     }
   }, true);
