@@ -373,10 +373,11 @@ const SLUZBY_MEGA = [
     if (!metaBezi) return null;
     return { suhlas: true, eventId: id, fbp: cookie('_fbp'), fbc: cookie('_fbc'), url: location.href };
   }
-  function metaServer(udalost, id) {
+  function metaServer(udalost, id, kategoria) {
     var d = metaUdaje(id);
     if (!d) return;
     d.udalost = udalost;
+    if (kategoria) d.kategoria = kategoria;
     try {
       fetch('/api/meta', {
         method: 'POST',
@@ -396,13 +397,27 @@ const SLUZBY_MEGA = [
     pixel: function (udalost, id) {
       if (metaBezi && window.fbq) fbq('track', udalost, {}, { eventID: id });
     },
-    sleduj: function (udalost) {
+    sleduj: function (udalost, kategoria) {
       if (!metaBezi) return;
       var id = metaId();
-      if (window.fbq) fbq('track', udalost, {}, { eventID: id });
-      metaServer(udalost, id);
+      var data = kategoria ? { content_category: kategoria } : {};
+      if (window.fbq) fbq('track', udalost, data, { eventID: id });
+      metaServer(udalost, id, kategoria);
     }
   };
+
+  /* ViewContent len na stránkach, kde sa človek zaujíma o službu.
+     Parte, kondolencie, aktuality a informácie pre pozostalých zámerne nie:
+     tam chodia smútiaci, nie zákazníci. Server berie len tieto kategórie. */
+  function metaKategoria(cesta) {
+    cesta = cesta.replace(/\/+$/, '') || '/';
+    if (/^\/pohrebne-sluzby(\/|$)/.test(cesta)) return 'pohrebne-sluzby';
+    if (cesta === '/kamenarstvo') return 'kamenarstvo';
+    if (cesta === '/sperky') return 'sperky';
+    if (cesta === '/kontakt') return 'kontakt';
+    if (/^\/(poprad|spisska-bela|liptovsky-mikulas)$/.test(cesta)) return 'pobocka';
+    return '';
+  }
 
   function zapniMeta() {
     if (!metaSmie) return;
@@ -426,7 +441,10 @@ const SLUZBY_MEGA = [
       var pvPoslany = false;
       function pvServer() {
         if (pvPoslany) return; pvPoslany = true;
-        setTimeout(function () { metaServer('PageView', pvId); }, 0);
+        setTimeout(function () {
+          metaServer('PageView', pvId);
+          if (vcKat) metaServer('ViewContent', vcId, vcKat);
+        }, 0);
       }
       t.onload = t.onerror = pvServer;
       setTimeout(pvServer, 4000);
@@ -434,6 +452,9 @@ const SLUZBY_MEGA = [
     var pvId = metaId();
     fbq('init', PIXEL);
     fbq('track', 'PageView', {}, { eventID: pvId });
+    var vcKat = metaKategoria(location.pathname);
+    var vcId = metaId();
+    if (vcKat) fbq('track', 'ViewContent', { content_category: vcKat }, { eventID: vcId });
   }
 
   function zapni() {

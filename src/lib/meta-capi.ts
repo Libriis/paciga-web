@@ -20,7 +20,12 @@ import { zaBehu } from './env';
 export const META_PIXEL_ID = '1378451786193317';
 const GRAPH = 'https://graph.facebook.com/v24.0';
 
-export type MetaUdalost = 'PageView' | 'Contact' | 'Lead';
+export type MetaUdalost = 'PageView' | 'ViewContent' | 'FindLocation' | 'Contact' | 'Lead';
+
+/** Kategórie pre ViewContent a FindLocation. Prehliadač posiela len tieto,
+    čokoľvek iné server zahodí. Parte, kondolencie a sviečky sem nepatria. */
+export const KATEGORIE = ['pohrebne-sluzby', 'kamenarstvo', 'sperky', 'pobocka', 'kontakt'] as const;
+export type Kategoria = (typeof KATEGORIE)[number];
 
 export type MetaVstup = {
   udalost: MetaUdalost;
@@ -32,6 +37,7 @@ export type MetaVstup = {
   fbc?: string;
   email?: string;
   telefon?: string;
+  kategoria?: Kategoria;
 };
 
 async function sha256(s: string): Promise<string> {
@@ -82,6 +88,7 @@ export async function posliMeta(v: MetaVstup): Promise<boolean> {
       event_source_url: v.url,
       action_source: 'website',
       user_data,
+      ...(v.kategoria ? { custom_data: { content_category: v.kategoria } } : {}),
     }],
   };
   const test = zaBehu('META_TEST_EVENT_CODE');
