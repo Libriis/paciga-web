@@ -51,6 +51,13 @@ Spúšťa ho ten istý súhlas ako GTM (Base.astro, `zapniMeta`).
 | načítanie stránky | PageView | áno | `/api/meta` |
 | telefon_klik, email_klik | Contact | áno | `/api/meta` |
 | dopyt_odoslany | Lead | áno | `/api/kontakt` (s hashom e-mailu a telefónu) |
+| načítanie stránky služby, pobočky, kontaktu | ViewContent (content_category) | áno | `/api/meta` |
+| mapa_klik (Navigovať na pobočku) | FindLocation | áno | `/api/meta` |
+
+ViewContent kategórie: `pohrebne-sluzby` (/pohrebne-sluzby a podstránky), `kamenarstvo`,
+`sperky`, `pobocka` (/poprad, /spisska-bela, /liptovsky-mikulas), `kontakt`.
+Parte, kondolencie, aktuality a informácie pre pozostalých ViewContent nemajú, zámerne.
+`mapa_klik` ide aj do dataLayer (GTM), pole `miesto`.
 
 - Prehliadač aj server posielajú rovnaké `event_id`, Meta udalosť zaráta raz.
 - Kondolencie a sviečky do Meta nejdú.

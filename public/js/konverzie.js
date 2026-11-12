@@ -8,12 +8,14 @@
      email_klik            klik na odkaz mailto:         miesto
      zdielanie_klik        zdieľanie parte alebo článku  kanal
      formular_zacaty       prvý fokus do poľa formulára  formular, slug
+     mapa_klik             klik na Navigovať (Google Mapy) miesto
      dopyt_odoslany        kontaktný formulár prešiel    (forms.js)
      kondolencia_odoslana  kondolencia prešla            slug (forms.js)
      sviecka_zapalena      server sviečku zarátal        slug (candles.js)
    Každá nesie aj stranka = cesta bez query a hashu.
    Meta (Pixel + CAPI): telefon_klik a email_klik = Contact, dopyt = Lead
-   (forms.js). Kondolencie a sviečky do Meta nejdú. */
+   (forms.js), mapa_klik = FindLocation. ViewContent posiela Base.astro
+   pri načítaní stránky služby. Kondolencie a sviečky do Meta nejdú. */
 (function () {
   'use strict';
 
@@ -32,8 +34,8 @@
     dl.push(z);
   }
   /* Meta Pixel + CAPI (Base.astro). Bez súhlasu pgMeta nič nepošle. */
-  function meta(nazov) {
-    try { if (window.pgMeta) window.pgMeta.sleduj(nazov); } catch (e) {}
+  function meta(nazov, kategoria) {
+    try { if (window.pgMeta) window.pgMeta.sleduj(nazov, kategoria); } catch (e) {}
   }
 
   /* forms.js a candles.js hlásia úspech cez tento helper */
@@ -83,6 +85,13 @@
       else if (/facebook\.com/.test(href)) kanal = 'facebook';
       else if (/wa\.me|whatsapp/.test(href)) kanal = 'whatsapp';
       udalost('zdielanie_klik', { kanal: kanal });
+      return;
+    }
+
+    /* Navigácia na pobočku (Google Mapy): človek chce prísť osobne. */
+    if (/^https:\/\/(www\.)?google\.[a-z.]+\/maps|^https:\/\/maps\.app\.goo\.gl|^https:\/\/(www\.)?waze\.com/.test(href)) {
+      meta('FindLocation', 'pobocka');
+      udalost('mapa_klik', { miesto: miesto(el) });
       return;
     }
 

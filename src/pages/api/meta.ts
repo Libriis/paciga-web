@@ -1,16 +1,16 @@
 import type { APIRoute } from 'astro';
 import { cudziPovod } from '../../lib/povod';
 import { ROBOT } from '../../lib/robot';
-import { metaZTela, nasaUrl, posliMeta, type MetaUdalost } from '../../lib/meta-capi';
+import { KATEGORIE, metaZTela, nasaUrl, posliMeta, type Kategoria, type MetaUdalost } from '../../lib/meta-capi';
 
 export const prerender = false;
 
 /* Serverová kópia udalosti z Meta Pixela (CAPI). Prehliadač sem posiela
-   PageView a Contact len po súhlase s cookies, s rovnakým event_id ako
+   PageView, ViewContent, FindLocation a Contact len po súhlase s cookies, s rovnakým event_id ako
    fbq(). Lead sem nechodí, ten posiela /api/kontakt aj s kontaktom.
    Odpoveď je vždy 204: volajúci nemá čo čítať a robot nemá čo zistiť. */
 
-const POVOLENE: MetaUdalost[] = ['PageView', 'Contact'];
+const POVOLENE: MetaUdalost[] = ['PageView', 'ViewContent', 'FindLocation', 'Contact'];
 const nic = () => new Response(null, { status: 204 });
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
@@ -29,10 +29,15 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const url = nasaUrl((b as { url?: unknown }).url);
   if (!meta || !url) return nic();
 
+  const k = (b as { kategoria?: unknown }).kategoria;
+  const kategoria = KATEGORIE.includes(k as Kategoria) ? (k as Kategoria) : undefined;
+  // ViewContent bez platnej kategórie nemá zmysel (napríklad podvrhnutý z parte).
+  if (udalost === 'ViewContent' && !kategoria) return nic();
+
   let ip: string | undefined;
   try { ip = clientAddress; } catch { /* lokálny build bez adaptéra */ }
 
   // Await je nutný: Vercel po odoslaní odpovede funkciu zastaví.
-  await posliMeta({ udalost, url, ip, ua, ...meta });
+  await posliMeta({ udalost, url, ip, ua, kategoria, ...meta });
   return nic();
 };
