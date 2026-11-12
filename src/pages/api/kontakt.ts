@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import { sendEmail } from '../../lib/email';
 import { rateLimitOk } from '../../lib/ratelimit';
 import { cudziPovod } from '../../lib/povod';
+import { metaZTela, nasaUrl, posliMeta } from '../../lib/meta-capi';
 
 export const prerender = false;
 
@@ -53,6 +54,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   if (!ulozene && !odoslane) {
     return json({ error: 'Správu sa nepodarilo odoslať. Zavolajte nám prosím na 0903 596 364.' }, 500);
+  }
+
+  /* Meta CAPI: dopyt = Lead. Len keď prehliadač poslal súhlas s cookies
+     (forms.js pridá objekt meta iba po kliku Súhlasím). E-mail a telefón
+     odchádzajú len ako SHA-256 odtlačok. Rovnaké eventId použije fbq(). */
+  const meta = metaZTela(body.meta);
+  const url = nasaUrl(body.meta?.url);
+  if (meta && url) {
+    await posliMeta({
+      udalost: 'Lead', url, ...meta,
+      ip: ip === 'unknown' ? undefined : ip,
+      ua: request.headers.get('user-agent') ?? undefined,
+      email, telefon,
+    });
   }
   return json({ ok: true });
 };

@@ -40,3 +40,22 @@ Google Analytics 4 udalosti (sekundárne, len na sledovanie):
 5. Test: GTM Preview, na webe kliknúť Súhlasím, potom kliknúť na telefón. V Preview sa má objaviť `telefon_klik`.
 
 Poznámka: udalosti sa pushujú aj pred súhlasom. GTM ich spracuje až keď návštevník klikne Súhlasím a gtm.js sa načíta. Bez súhlasu neodíde nič.
+
+## Meta Pixel a Conversions API (od 12. 11. 2026)
+
+Pixel `1378451786193317` (Paciga-web-navstevy) je priamo v kóde webu, nie v GTM.
+Spúšťa ho ten istý súhlas ako GTM (Base.astro, `zapniMeta`).
+
+| Udalosť na webe | Meta udalosť | Prehliadač (fbq) | Server (CAPI) |
+|---|---|---|---|
+| načítanie stránky | PageView | áno | `/api/meta` |
+| telefon_klik, email_klik | Contact | áno | `/api/meta` |
+| dopyt_odoslany | Lead | áno | `/api/kontakt` (s hashom e-mailu a telefónu) |
+
+- Prehliadač aj server posielajú rovnaké `event_id`, Meta udalosť zaráta raz.
+- Kondolencie a sviečky do Meta nejdú.
+- Bez súhlasu neodíde do Meta nič, ani zo servera.
+- Vercel env: `META_CAPI_TOKEN` (povinný, bez neho server nič neposiela),
+  `META_TEST_EVENT_CODE` (len na skúšku v Events Manager > Test events, potom zmazať).
+- Server posiela len pre adresy `paciga.sk` a `www.paciga.sk`. Náhľady a localhost nie.
+- Marketér NESMIE pridať Meta Pixel aj do GTM. Udalosti by sa rátali dvakrát.
