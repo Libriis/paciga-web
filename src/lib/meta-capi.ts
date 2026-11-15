@@ -59,7 +59,7 @@ export function telefonE164(t: string): string | null {
 
 /* Formát cookies, ktoré nastavuje fbevents.js: fb.1.<čas>.<náhoda>.
    Čokoľvek iné zahadzujeme, nech do Meta neodíde náhodný text. */
-const FB_COOKIE = /^fb\.\d\.\d{10,13}\.[\w.-]{1,200}$/;
+const FB_COOKIE = /^fb\.\d\.\d{10,13}\.[\w.-]{1,500}$/;
 export const EVENT_ID = /^[\w-]{8,64}$/;
 
 /** Pošle jednu udalosť do Meta. Nikdy nevyhodí chybu; vráti true pri 2xx. */

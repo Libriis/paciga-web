@@ -368,10 +368,20 @@ const SLUZBY_MEGA = [
     var m = document.cookie.match(new RegExp('(?:^|; )' + meno + '=([^;]*)'));
     return m ? decodeURIComponent(m[1]) : undefined;
   }
+  /* Click ID (fbc). Po kliku na reklamu má adresa ?fbclid=..., ale cookie _fbc
+     fbevents.js ešte nemusí mať nastavené, keď server posiela PageView.
+     Vtedy ho zložíme sami v tvare od Meta: fb.1.<čas v ms>.<fbclid>.
+     Čas sa vyráta raz na stránku, nech majú všetky udalosti tú istú hodnotu. */
+  var fbcZAdresy;
+  try {
+    var mFb = location.search.match(/[?&]fbclid=([^&#]+)/);
+    if (mFb) fbcZAdresy = 'fb.1.' + Date.now() + '.' + decodeURIComponent(mFb[1]);
+  } catch (e) {}
+  function metaFbc() { return cookie('_fbc') || fbcZAdresy; }
   /* Údaje pre server. Bez súhlasu vráti null a server nepošle nič. */
   function metaUdaje(id) {
     if (!metaBezi) return null;
-    return { suhlas: true, eventId: id, fbp: cookie('_fbp'), fbc: cookie('_fbc'), url: location.href };
+    return { suhlas: true, eventId: id, fbp: cookie('_fbp'), fbc: metaFbc(), url: location.href };
   }
   function metaServer(udalost, id, kategoria) {
     var d = metaUdaje(id);
