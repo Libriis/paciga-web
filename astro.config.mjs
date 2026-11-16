@@ -62,9 +62,10 @@ export default defineConfig({
     sitemap({
       // Administrácia, API a lab náhľady nepatria do vyhľadávania.
       // Rovnaký zoznam ako Disallow v src/pages/robots.txt.ts.
-      //
+      // /parte-nenajdene vracia 410 (cieľ Astro.rewrite pre zmazané parte),
+      // Search Console ho v mape hlásil ako Nenájdené (16. 11. 2026).
       filter: (stranka) =>
-        !/\/(admin|api)\/|\/lab-/.test(stranka),
+        !/\/(admin|api)\/|\/lab-|\/parte-nenajdene\/?$/.test(stranka),
       // Parte a články z databázy sa vykresľujú až na požiadanie, preto ich
       // táto integrácia nevidí. Dodáva ich src/pages/sitemap-obsah.xml.ts.
       customSitemaps: ['https://www.paciga.sk/sitemap-obsah.xml'],
