@@ -14,12 +14,14 @@ const STAGING = `User-agent: *
 Disallow: /
 `;
 
-// Bez lomky na konci. `Disallow: /admin/` je predpona, ktorá nesadne na
-// holé /admin — a práve to je adresa, na ktorú vedie prihlásenie. Nájdené
-// auditom ASVS 5.0 L2 (23. 8. 2026). Teraz platí pre /admin aj /admin/*.
+// /admin tu zámerne NIE JE (od 16. 11. 2026). Google /admin zaindexoval
+// a robots.txt mu bránil prečítať noindex, takže adresa v indexe ostávala
+// (Search Console: Indexovaná, ale zablokovaná súborom robots.txt).
+// /admin aj /admin/* posielajú X-Robots-Tag noindex (vercel.json) a meta
+// robots noindex, Google ich teraz prečíta a z indexu vyradí. Prístup
+// chráni prihlásenie, nie robots.txt.
 const produkcia = (site: string) => `User-agent: *
 Allow: /
-Disallow: /admin
 Disallow: /api/
 Disallow: /lab-
 
